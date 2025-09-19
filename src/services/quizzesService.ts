@@ -60,12 +60,11 @@ export const getCurrentQuestion = async (quizId: string) => {
 export const joinQuiz = async (
   joinCode: string,
   name: string,
-  userId?: string,
   avatar?: string
 ) => {
-  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.JOIN, {
+  const res = await apiCall(API_ENDPOINTS.QUIZZES.JOIN, {
     method: "POST",
-    body: JSON.stringify({ joinCode, name, userId, avatar }),
+    body: JSON.stringify({ joinCode, name, avatar }),
   });
   return res.json();
 };
@@ -105,7 +104,7 @@ export const submitAnswer = async (
     timeLeftSeconds: number;
   }
 ) => {
-  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.ANSWER(quizId), {
+  const res = await apiCall(API_ENDPOINTS.QUIZZES.ANSWER(quizId), {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -135,7 +134,7 @@ export const endQuestion = async (quizId: string) => {
 };
 
 export const leaveQuiz = async (quizId: string, quizUserId: string) => {
-  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.LEAVE(quizId), {
+  const res = await apiCall(API_ENDPOINTS.QUIZZES.LEAVE(quizId), {
     method: "POST",
     body: JSON.stringify({ quizUserId }),
   });

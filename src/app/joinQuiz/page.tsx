@@ -11,14 +11,12 @@ import {
   leaveQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
-import { useAuth } from "@/contexts/AuthContext";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import LandingFooter from "@/components/landing/LandingFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { QuizQuestion } from "@/services/quizzesService";
 
 function JoinQuizContent() {
-  const { userId } = useAuth();
   const search = useSearchParams();
   const prefill = search.get("code") || "";
   const [joinCode, setJoinCode] = useState(prefill);
@@ -319,7 +317,6 @@ function JoinQuizContent() {
     const res = await joinQuiz(
       joinCode.trim().toUpperCase(),
       name.trim(),
-      userId || undefined,
       selectedAvatar
     );
     if (res?.success) {
@@ -620,7 +617,7 @@ function JoinQuizContent() {
         <div className="w-full max-w-3xl">
           {showKickedOut ? (
             <div className="text-center pt-8 pb-16">
-              <div className="max-w-2xl mx-auto">
+              <div className="max-w-2xl mx-auto mt-12">
                 <h2 className="text-3xl font-light text-red-600 mb-4">
                   You were removed from the quiz
                 </h2>
