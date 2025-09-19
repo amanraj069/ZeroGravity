@@ -122,6 +122,23 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
     );
   };
 
+  const deleteOption = (qIdx: number, oIdx: number) => {
+    setQuestions((prev) =>
+      prev.map((q, i) => {
+        if (i !== qIdx) return q;
+        if (q.options.length <= 2) return q;
+
+        const newOptions = q.options.filter((_, j) => j !== oIdx);
+        const updatedOptions = newOptions.map((option, index) => ({
+          ...option,
+          key: String.fromCharCode(65 + index),
+        }));
+
+        return { ...q, options: updatedOptions };
+      })
+    );
+  };
+
   const markCorrect = (qIdx: number, key: string) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
@@ -407,11 +424,9 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                     {(q?.options || []).map((o, oi) => (
                       <div
                         key={o.key}
-                        className={`flex items-center gap-3 p-3 border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer ${
+                        className={`flex items-center gap-3 p-3 border border-gray-200 hover:border-gray-300 transition-colors ${
                           o.isCorrect ? "bg-green-50 border-green-200" : ""
                         }`}
-                        onClick={() => markCorrect(currentIndex, o.key)}
-                        title="Click to mark as correct answer"
                       >
                         <input
                           type="radio"
@@ -419,12 +434,14 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                           checked={!!o.isCorrect}
                           onChange={() => markCorrect(currentIndex, o.key)}
                           title="Mark as correct answer"
-                          className="w-4 h-4 text-green-600 focus:ring-green-500 focus:ring-2 pointer-events-none"
+                          className="w-4 h-4 text-green-600 focus:ring-green-500 focus:ring-2 cursor-pointer"
                         />
                         <div
-                          className={`w-8 h-8 flex items-center justify-center ${
+                          className={`w-8 h-8 flex items-center justify-center cursor-pointer ${
                             o.isCorrect ? "bg-green-100" : "bg-gray-100"
                           }`}
+                          onClick={() => markCorrect(currentIndex, o.key)}
+                          title="Click to mark as correct answer"
                         >
                           <span
                             className={`text-sm font-medium ${
@@ -441,16 +458,37 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                           onChange={(e) =>
                             updateOption(currentIndex, oi, e.target.value)
                           }
-                          onClick={(e) => e.stopPropagation()}
                         />
+                        {(q?.options || []).length > 2 && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteOption(currentIndex, oi);
+                            }}
+                            className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors rounded"
+                            title="Delete this option"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </button>
+                        )}
                       </div>
                     ))}
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-6">
+                    {/* Add option button */}
                     <button
-                      className="flex items-center gap-2 text-sm text-black hover:text-gray-700 transition-colors font-medium"
+                      className="flex items-center gap-2 p-3 border border-dashed border-gray-300 hover:border-gray-400 transition-colors text-sm text-gray-600 hover:text-gray-700 w-full"
                       onClick={() => addOption(currentIndex)}
                     >
                       <svg
@@ -468,6 +506,10 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                       </svg>
                       Add option
                     </button>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center justify-end pt-4 border-t border-gray-100 mt-6">
                     <div className="flex items-center gap-3">
                       <button
                         className="px-3 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium"
