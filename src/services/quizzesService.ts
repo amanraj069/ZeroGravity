@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
+import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
 import { QuizListResponse } from "@/types/quiz";
 
 export interface QuizOption {
