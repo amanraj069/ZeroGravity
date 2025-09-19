@@ -72,9 +72,13 @@ export const API_ENDPOINTS = {
     PUSH: (quizId: string, index: number) =>
       `${API_BASE_URL}/api/quizzes/${quizId}/push/${index}`,
     ANSWER: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}/answer`,
+    CURRENT: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/current`,
     LEADERBOARD: (quizId: string) =>
       `${API_BASE_URL}/api/quizzes/${quizId}/leaderboard`,
     END: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}/end`,
+    END_QUESTION: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/end-question`,
     ADMIN_LIST_PAST: (params?: string) =>
       `${API_BASE_URL}/api/quizzes/admin/past${params ? `?${params}` : ""}`,
     ADMIN_DETAILS: (quizId: string) =>

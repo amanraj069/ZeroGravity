@@ -53,8 +53,7 @@ export const getQuiz = async (quizId: string) => {
 };
 
 export const getCurrentQuestion = async (quizId: string) => {
-  const url = `${API_ENDPOINTS.QUIZZES.GET(quizId)}/current`;
-  const res = await apiCallWithAuth(url);
+  const res = await apiCall(API_ENDPOINTS.QUIZZES.CURRENT(quizId));
   return res.json();
 };
 
@@ -121,6 +120,16 @@ export const endQuiz = async (quizId: string) => {
   const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.END(quizId), {
     method: "POST",
   });
+  return res.json();
+};
+
+export const endQuestion = async (quizId: string) => {
+  const res = await apiCallWithAuth(
+    API_ENDPOINTS.QUIZZES.END_QUESTION(quizId),
+    {
+      method: "POST",
+    }
+  );
   return res.json();
 };
 
