@@ -23,7 +23,25 @@ function JoinQuizContent() {
   const prefill = search.get("code") || "";
   const [joinCode, setJoinCode] = useState(prefill);
   const [name, setName] = useState<string>("");
+  const [selectedAvatar, setSelectedAvatar] = useState<string>("");
+  const [showAvatarError, setShowAvatarError] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
+
+  // Available avatars
+  const avatars = [
+    "Avatar1.png",
+    "Avatar2.png",
+    "Avatar3.png",
+    "Avatar4.png",
+    "Avatar5.png",
+    "Avatar6.png",
+    "Avatar7.png",
+    "Avatar8.png",
+    "Avatar9.png",
+    "Avatar10.png",
+    "Avatar11.png",
+    "Avatar12.png",
+  ];
   const STORAGE_KEY = "zg_current_quiz";
   const [joined, setJoined] = useState<{
     quizId: string;
@@ -39,6 +57,7 @@ function JoinQuizContent() {
   const [showKickedOut, setShowKickedOut] = useState<boolean>(false);
   const [serverStartTime, setServerStartTime] = useState<Date | null>(null);
   const [serverTimeLimit, setServerTimeLimit] = useState<number>(0);
+  const [isRestoredSession, setIsRestoredSession] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Handle hydration-safe initialization
@@ -55,6 +74,16 @@ function JoinQuizContent() {
       // Ignore errors
     }
 
+    // Initialize avatar from localStorage
+    try {
+      const savedAvatar = localStorage.getItem("zg_avatar");
+      if (savedAvatar) {
+        setSelectedAvatar(savedAvatar);
+      }
+    } catch {
+      // Ignore errors
+    }
+
     // Initialize joined state from localStorage
     try {
       const saved = localStorage.getItem("zg_current_quiz");
@@ -62,6 +91,7 @@ function JoinQuizContent() {
         const parsed = JSON.parse(saved);
         if (parsed?.quizId && parsed?.quizUserId) {
           setJoined(parsed);
+          setIsRestoredSession(true);
         }
       }
     } catch {
@@ -69,12 +99,35 @@ function JoinQuizContent() {
     }
   }, []);
 
+  // Clear avatar error when avatar is selected
+  useEffect(() => {
+    if (selectedAvatar) {
+      setShowAvatarError(false);
+      // Immediately save to localStorage when avatar is selected
+      try {
+        localStorage.setItem("zg_avatar", selectedAvatar);
+      } catch {
+        // Ignore errors
+      }
+    }
+  }, [selectedAvatar]);
+
   useEffect(() => {
     // If restored, immediately join the room
     if (joined?.quizId && mounted) {
       joinQuizRoom(joined.quizId);
+
+      // Reset the restored session flag after a short delay
+      // This allows normal kicked out functionality to work after initialization
+      if (isRestoredSession) {
+        const timeoutId = setTimeout(() => {
+          setIsRestoredSession(false);
+        }, 3000); // 3 seconds should be enough for session restoration
+
+        return () => clearTimeout(timeoutId);
+      }
     }
-  }, [joined?.quizId, mounted]);
+  }, [joined?.quizId, mounted, isRestoredSession]);
 
   useEffect(() => {
     if (!joined?.quizId) return;
@@ -135,6 +188,36 @@ function JoinQuizContent() {
         payload?.quizUserId !== joined.quizUserId
       )
         return;
+
+      // Don't show kicked out message immediately after restoring session
+      // Give some time for the session to stabilize (only for the first few seconds)
+      if (isRestoredSession) {
+        console.log(
+          "Ignoring participant:left event during session restoration period"
+        );
+        return;
+      }
+
+      console.log("Participant was individually removed by admin");
+      setCurrentQuestion(null);
+      setShowKickedOut(true);
+      setHasAnswered(false);
+      setIsTimeUp(false);
+      setTimeLeft(0);
+      // Clear timer
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {}
+    };
+    const onParticipantsCleared = (payload: { quizId: string }) => {
+      if (payload?.quizId !== joined.quizId) return;
+
+      // When admin clears all participants, always show kicked out message
+      console.log("All participants were cleared by admin");
       setCurrentQuestion(null);
       setShowKickedOut(true);
       setHasAnswered(false);
@@ -153,6 +236,7 @@ function JoinQuizContent() {
     s.on("question:timeup", onQuestionTimeUp);
     s.on("quiz:ended", onEnded);
     s.on("participant:left", onKickedOut);
+    s.on("participants:cleared", onParticipantsCleared);
     // On mount, also fetch current state in case we refreshed mid-question
     (async () => {
       const cur = await getCurrentQuestion(joined.quizId);
@@ -178,6 +262,7 @@ function JoinQuizContent() {
       s.off("question:timeup", onQuestionTimeUp);
       s.off("quiz:ended", onEnded);
       s.off("participant:left", onKickedOut);
+      s.off("participants:cleared", onParticipantsCleared);
     };
   }, [joined]);
 
@@ -224,13 +309,22 @@ function JoinQuizContent() {
 
   const handleJoin = async () => {
     if (!joinCode || !name) return;
+
+    if (!selectedAvatar) {
+      setShowAvatarError(true);
+      return;
+    }
+
+    setShowAvatarError(false);
     const res = await joinQuiz(
       joinCode.trim().toUpperCase(),
       name.trim(),
-      userId || undefined
+      userId || undefined,
+      selectedAvatar
     );
     if (res?.success) {
       setJoined({ quizId: res.quizId, quizUserId: res.quizUserId });
+      setIsRestoredSession(false); // This is a fresh join, not a restored session
       try {
         localStorage.setItem(
           STORAGE_KEY,
@@ -238,6 +332,7 @@ function JoinQuizContent() {
         );
         localStorage.setItem("zg_join_code", joinCode.trim().toUpperCase());
         localStorage.setItem("zg_name_obf", obfuscate(name.trim()));
+        localStorage.setItem("zg_avatar", selectedAvatar);
       } catch {}
     } else {
       alert(res?.message || "Failed to join");
@@ -276,6 +371,7 @@ function JoinQuizContent() {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem("zg_join_code");
         localStorage.removeItem("zg_participant_name");
+        localStorage.removeItem("zg_avatar");
       } catch {}
       window.location.href = "/joinQuiz";
       return;
@@ -300,15 +396,19 @@ function JoinQuizContent() {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem("zg_join_code");
         localStorage.removeItem("zg_name_obf");
+        localStorage.removeItem("zg_avatar");
       } catch {}
 
       // Reset all state to take user back to entry screen
       setJoined(null);
       setCurrentQuestion(null);
       setShowQuizEnded(false);
+      setShowKickedOut(false);
       setHasAnswered(false);
       setIsTimeUp(false);
       setTimeLeft(0);
+      setIsRestoredSession(false);
+      setSelectedAvatar("");
 
       // Clear timer if running
       if (timerRef.current) {
@@ -334,9 +434,9 @@ function JoinQuizContent() {
         <LandingNavbar />
 
         {/* Hero-style header */}
-        <div className="text-center py-12 sm:py-16 bg-white">
+        <div className="text-center py-8 lg:py-12 bg-white">
           <div className="max-w-4xl mx-auto px-4">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-light text-black mb-6 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
               Join Quiz
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
@@ -347,41 +447,94 @@ function JoinQuizContent() {
         </div>
 
         <main className="flex-1 flex items-center justify-center px-6 pt-4 pb-20 min-h-0">
-          <div className="max-w-md mx-auto w-full">
-            <div className="bg-white/80 backdrop-blur-sm p-8 shadow-lg">
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-light text-gray-700 mb-3">
-                    Quiz Access Code
-                  </label>
-                  <input
-                    className="w-full border border-gray-200 px-6 py-4 text-lg font-light focus:outline-none focus:border-black/30 focus:ring-1 focus:ring-black/20 transition-all placeholder-gray-400 bg-white/90"
-                    placeholder="Enter 6-letter code"
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                    maxLength={6}
-                  />
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+              {/* Form section - First on mobile, Second on desktop */}
+              <div className="bg-white/90 backdrop-blur-sm p-8 lg:p-10 border border-black shadow-lg h-auto lg:h-[60vh] flex flex-col justify-center order-1 lg:order-2">
+                <div className="space-y-8">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-800 mb-4">
+                      Quiz Access Code
+                    </label>
+                    <input
+                      className="w-full border-2 border-gray-300 px-6 py-4 text-lg font-light focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all placeholder-gray-500 bg-white shadow-sm"
+                      placeholder="Enter 6-letter code"
+                      value={joinCode}
+                      onChange={(e) =>
+                        setJoinCode(e.target.value.toUpperCase())
+                      }
+                      maxLength={6}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-800 mb-4">
+                      Your Cosmic Identity
+                    </label>
+                    <input
+                      className="w-full border-2 border-gray-300 px-6 py-4 text-lg font-light focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all placeholder-gray-500 bg-white shadow-sm"
+                      placeholder="Enter your name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+
+                  {showAvatarError && (
+                    <div className="bg-red-50 border border-red-200 p-3">
+                      <p className="text-sm text-red-600 text-center">
+                        Please select an avatar to continue
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    className="w-full bg-black text-white py-4 px-8 text-lg font-medium hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
+                    onClick={handleJoin}
+                    disabled={!joinCode.trim() || !name.trim()}
+                  >
+                    Launch Into Quiz
+                  </button>
+                </div>
+              </div>
+
+              {/* Avatar Selection - Second on mobile, First on desktop */}
+              <div className="bg-white/80 backdrop-blur-sm p-6 lg:p-8 border border-black h-[50vh] lg:h-[60vh] flex flex-col order-2 lg:order-1">
+                <div className="mb-6">
+                  <h3 className="text-xl font-light text-gray-900 mb-2">
+                    Choose Your Avatar
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Select an avatar to represent you in the quiz
+                  </p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-light text-gray-700 mb-3">
-                    Your Cosmic Identity
-                  </label>
-                  <input
-                    className="w-full border border-gray-200 px-6 py-4 text-lg font-light focus:outline-none focus:border-black/30 focus:ring-1 focus:ring-black/20 transition-all placeholder-gray-400 bg-white/90"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                <div className="flex-1 overflow-y-auto">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 p-4">
+                    {avatars.map((avatar) => (
+                      <button
+                        key={avatar}
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSelectedAvatar(avatar);
+                        }}
+                        className={`relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300 ${
+                          selectedAvatar === avatar
+                            ? "border-4 border-orange-600 shadow-lg ring-2 ring-orange-200"
+                            : "border-2 border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <img
+                          src={`/quiz/avatars/${avatar}`}
+                          alt={`Avatar ${avatar.replace(".png", "")}`}
+                          className="w-full h-full object-cover scale-110"
+                          draggable={false}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
-
-                <button
-                  className="w-full bg-black text-white py-4 px-8 text-lg font-light hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-black/20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black"
-                  onClick={handleJoin}
-                  disabled={!joinCode.trim() || !name.trim()}
-                >
-                  Launch Into Quiz
-                </button>
               </div>
             </div>
           </div>
@@ -567,7 +720,7 @@ function JoinQuizContent() {
                       {currentQuestion.text}
                     </h2>
                   </div>
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {currentQuestion.options.map((o, idx: number) => (
                       <button
                         key={o.key}
@@ -624,8 +777,12 @@ function JoinQuizContent() {
           ) : (
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto">
-                <div className="w-24 h-24 mx-auto mb-8 bg-gray-100 rounded-full flex items-center justify-center">
-                  <span className="text-4xl">📝</span>
+                <div className="w-128 h-128 mx-auto mb-8 flex items-center justify-center">
+                  <img
+                    src="/quiz/waitingQuizzes.png"
+                    alt="Waiting for quiz"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <h2 className="text-2xl font-light text-gray-900 mb-4">
                   Waiting for quiz to start
@@ -634,12 +791,7 @@ function JoinQuizContent() {
                   You&apos;re all set! The host will start pushing questions
                   shortly.
                 </p>
-                <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                  <p className="text-sm text-gray-500">
-                    Get ready to answer some questions!
-                  </p>
-                </div>
-                <div className="mt-6 flex items-center justify-center space-x-2">
+                <div className="mt-12 flex items-center justify-center space-x-2">
                   <div className="w-2 h-2 bg-gray-400 animate-pulse"></div>
                   <div
                     className="w-2 h-2 bg-gray-400 animate-pulse"

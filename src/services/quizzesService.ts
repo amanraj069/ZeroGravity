@@ -60,11 +60,12 @@ export const getCurrentQuestion = async (quizId: string) => {
 export const joinQuiz = async (
   joinCode: string,
   name: string,
-  userId?: string
+  userId?: string,
+  avatar?: string
 ) => {
   const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.JOIN, {
     method: "POST",
-    body: JSON.stringify({ joinCode, name, userId }),
+    body: JSON.stringify({ joinCode, name, userId, avatar }),
   });
   return res.json();
 };

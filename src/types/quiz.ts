@@ -35,6 +35,7 @@ export interface QuizListResponse {
 export interface QuizParticipant {
   quizUserId: string;
   participantName: string;
+  participantAvatar?: string;
   totalScore?: number;
 }
 

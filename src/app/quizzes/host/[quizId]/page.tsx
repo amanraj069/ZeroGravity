@@ -93,15 +93,37 @@ export default function HostQuizPage() {
       participant: QuizParticipant;
     }) => {
       if (payload?.quizId !== quizId) return;
+      console.log("New participant joined:", payload.participant);
       setParticipants((prev) => {
         // Check if participant already exists to avoid duplicates
         const exists = prev.find(
           (p) => p.quizUserId === payload.participant.quizUserId
         );
-        if (exists) return prev;
+        if (exists) {
+          console.log("Participant already exists, skipping duplicate");
+          return prev;
+        }
+        console.log("Adding new participant to list");
         return [...prev, payload.participant];
       });
     };
+
+    // Fallback: Poll for participants every 5 seconds when quiz is hosted but not active
+    const pollParticipants = async () => {
+      if (isHosted && !isActive) {
+        try {
+          const p = await listParticipants(quizId);
+          if (p?.success) {
+            setParticipants(p.participants);
+          }
+        } catch (error) {
+          console.error("Failed to poll participants:", error);
+        }
+      }
+    };
+
+    const pollInterval = setInterval(pollParticipants, 5000);
+
     const onQuestion = (payload: {
       quizId: string;
       index: number;
@@ -168,6 +190,7 @@ export default function HostQuizPage() {
     s.on("quiz:ended", onEnded);
     s.on("question:timeup", onQuestionTimeUp);
     return () => {
+      clearInterval(pollInterval);
       s.off("quiz:started", onStarted);
       s.off("participant:joined", onJoined);
       s.off("question:pushed", onQuestion);
@@ -175,7 +198,7 @@ export default function HostQuizPage() {
       s.off("quiz:ended", onEnded);
       s.off("question:timeup", onQuestionTimeUp);
     };
-  }, [quizId]);
+  }, [quizId, isHosted, isActive]);
 
   const host = async () => {
     const r = await hostQuiz(quizId);
@@ -304,7 +327,7 @@ export default function HostQuizPage() {
             {/* Participants Panel - 60% width */}
             <div className="w-full lg:w-[60%] space-y-6">
               {/* Participants List with Avatars */}
-              <div className="bg-white border border-gray-100 shadow-sm p-8 max-h-[80vh] flex flex-col">
+              <div className="bg-white border border-gray-100 shadow-sm p-8 min-h-[80vh] flex flex-col">
                 <div className="mb-6 flex items-end justify-between border-b border-gray-100 pb-4">
                   <h2 className="text-2xl font-light text-gray-900">
                     Participants
@@ -312,14 +335,21 @@ export default function HostQuizPage() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={async () => {
+                        console.log("Manually refreshing participants...");
                         const p = await listParticipants(quizId);
-                        if (p?.success) setParticipants(p.participants);
+                        if (p?.success) {
+                          setParticipants(p.participants);
+                          console.log(
+                            "Participants refreshed:",
+                            p.participants.length
+                          );
+                        }
                       }}
-                      className="inline-flex items-center bg-gray-50 px-3 py-1 text-xs text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors"
+                      className="inline-flex items-center bg-blue-50 px-3 py-1 text-xs text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
                       title="Refresh participants list"
                     >
                       <svg
-                        className="w-3 h-3 mr-1"
+                        className="w-4 h-4 mr-2"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -339,73 +369,93 @@ export default function HostQuizPage() {
                   </div>
                 </div>
 
-                {/* Avatar Grid - 4 per column, flow by columns */}
-                <div className="grid grid-rows-4 grid-flow-col auto-cols-max gap-8 max-h-[50vh] overflow-auto pr-2">
-                  {participants.map((p) => (
-                    <div
-                      key={p.quizUserId}
-                      className="flex flex-col items-center text-center relative group"
-                    >
-                      <div className="relative">
+                {/* Avatar Grid Layout - newest participants at beginning */}
+                <div className="flex-1 min-h-0">
+                  <div className="grid grid-cols-4 gap-6 max-h-[50vh] overflow-auto pr-2">
+                    {participants
+                      .slice()
+                      .reverse()
+                      .map((p) => (
                         <div
-                          className={`w-24 h-24 min-w-24 min-h-24 aspect-square rounded-full overflow-hidden flex items-center justify-center text-white text-3xl leading-none font-medium shadow-lg flex-shrink-0 ${getAvatarColor(
-                            p.participantName || "U"
-                          )}`}
+                          key={p.quizUserId}
+                          className="flex flex-col items-center text-center relative group"
                         >
-                          {p.participantName?.charAt(0)?.toUpperCase() || "?"}
-                        </div>
-                        <button
-                          onClick={async () => {
-                            const ok = confirm(
-                              `Remove ${p.participantName} from the quiz?`
-                            );
-                            if (!ok) return;
-                            try {
-                              const { leaveQuiz } = await import(
-                                "@/services/quizzesService"
-                              );
-                              const res = await leaveQuiz(quizId, p.quizUserId);
-                              if (!res?.success) {
-                                alert("Failed to remove participant");
-                              } else {
-                                setParticipants((prev) =>
-                                  prev.filter(
-                                    (participant) =>
-                                      participant.quizUserId !== p.quizUserId
-                                  )
+                          <div className="relative">
+                            {p.participantAvatar ? (
+                              <div className="w-32 h-32 min-w-32 min-h-32 aspect-square rounded-full overflow-hidden shadow-lg flex-shrink-0 border-2 border-gray-200">
+                                <img
+                                  src={`/quiz/avatars/${p.participantAvatar}`}
+                                  alt={`Avatar for ${p.participantName}`}
+                                  className="w-full h-full object-cover scale-110"
+                                />
+                              </div>
+                            ) : (
+                              <div
+                                className={`w-32 h-32 min-w-32 min-h-32 aspect-square rounded-full overflow-hidden flex items-center justify-center text-white text-4xl leading-none font-medium shadow-lg flex-shrink-0 ${getAvatarColor(
+                                  p.participantName || "U"
+                                )}`}
+                              >
+                                {p.participantName?.charAt(0)?.toUpperCase() ||
+                                  "?"}
+                              </div>
+                            )}
+                            <button
+                              onClick={async () => {
+                                const ok = confirm(
+                                  `Remove ${p.participantName} from the quiz?`
                                 );
-                              }
-                            } catch (error) {
-                              console.error(
-                                "Error removing participant:",
-                                error
-                              );
-                              alert("Failed to remove participant");
-                            }
-                          }}
-                          className="absolute -top-0 -right-2 w-7 h-7 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg border-2 border-white"
-                          title={`Remove ${p.participantName}`}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                      <span className="text-sm text-gray-600 mt-3 truncate w-full font-medium">
-                        {p.participantName}
-                      </span>
-                    </div>
-                  ))}
+                                if (!ok) return;
+                                try {
+                                  const { leaveQuiz } = await import(
+                                    "@/services/quizzesService"
+                                  );
+                                  const res = await leaveQuiz(
+                                    quizId,
+                                    p.quizUserId
+                                  );
+                                  if (!res?.success) {
+                                    alert("Failed to remove participant");
+                                  } else {
+                                    setParticipants((prev) =>
+                                      prev.filter(
+                                        (participant) =>
+                                          participant.quizUserId !==
+                                          p.quizUserId
+                                      )
+                                    );
+                                  }
+                                } catch (error) {
+                                  console.error(
+                                    "Error removing participant:",
+                                    error
+                                  );
+                                  alert("Failed to remove participant");
+                                }
+                              }}
+                              className="absolute -top-1 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg border-2 border-white"
+                              title={`Remove ${p.participantName}`}
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                          <span className="text-base text-gray-600 mt-4 truncate w-full font-medium">
+                            {p.participantName}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
                 </div>
 
                 {participants.length === 0 && (
