@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getQuiz, leaderboard } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 
 export default function LeaderboardPage() {
@@ -113,7 +113,7 @@ export default function LeaderboardPage() {
             <p className="text-gray-600">Loading leaderboard...</p>
           </div>
         </main>
-        <LandingFooter />
+        <SimpleFooter />
       </div>
     );
   }
@@ -292,7 +292,7 @@ export default function LeaderboardPage() {
         </div>
       </main>
 
-      <LandingFooter />
+      <SimpleFooter />
     </div>
   );
 }

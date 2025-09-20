@@ -12,7 +12,7 @@ import {
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { QuizQuestion } from "@/services/quizzesService";
 
@@ -536,7 +536,7 @@ function JoinQuizContent() {
             </div>
           </div>
         </main>
-        <LandingFooter />
+        <SimpleFooter />
       </div>
     );
   }
@@ -1031,7 +1031,7 @@ function JoinQuizContent() {
           )}
         </div>
       </main>
-      <LandingFooter />
+      <SimpleFooter />
     </div>
   );
 }

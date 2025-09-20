@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 interface StartCreateQuizPageProps {
@@ -62,7 +62,7 @@ function StartCreateQuizContent({ searchParams }: StartCreateQuizPageProps) {
           </div>
         </div>
       </main>
-      <LandingFooter />
+      <SimpleFooter />
     </div>
   );
 }

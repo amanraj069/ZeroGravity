@@ -156,6 +156,13 @@ export const clearParticipants = async (quizId: string) => {
   return res.json();
 };
 
+export const deleteQuiz = async (quizId: string) => {
+  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.DELETE(quizId), {
+    method: "DELETE",
+  });
+  return res.json();
+};
+
 // Simple obfuscation (not cryptographic): base64
 export const obfuscate = (text: string) => {
   if (typeof window === "undefined") return text;

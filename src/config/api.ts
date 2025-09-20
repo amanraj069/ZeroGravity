@@ -80,6 +80,7 @@ export const API_ENDPOINTS = {
     END_QUESTION: (quizId: string) =>
       `${API_BASE_URL}/api/quizzes/${quizId}/end-question`,
     UNHOST: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}/unhost`,
+    DELETE: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}`,
     ADMIN_LIST_PAST: (params?: string) =>
       `${API_BASE_URL}/api/quizzes/admin/past${params ? `?${params}` : ""}`,
     ADMIN_DETAILS: (quizId: string) =>

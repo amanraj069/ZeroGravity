@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
-import { listUserQuizzes } from "@/services/quizzesService";
+import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
 import Image from "next/image";
 
@@ -19,6 +19,7 @@ export default function QuizzesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredQuizzes, setFilteredQuizzes] = useState<Quiz[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [deletingQuizId, setDeletingQuizId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -104,6 +105,39 @@ export default function QuizzesPage() {
     }
   };
 
+  const handleDeleteQuiz = async (quizId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent triggering the quiz click
+
+    if (
+      !confirm(
+        "Are you sure you want to delete this quiz? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    setDeletingQuizId(quizId);
+    try {
+      const response = await deleteQuiz(quizId);
+      if (response.success) {
+        // Remove the quiz from the local state
+        setQuizzes((prevQuizzes) =>
+          prevQuizzes.filter((quiz) => quiz.quizId !== quizId)
+        );
+        setFilteredQuizzes((prevFiltered) =>
+          prevFiltered.filter((quiz) => quiz.quizId !== quizId)
+        );
+      } else {
+        alert(`Failed to delete quiz: ${response.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error deleting quiz:", error);
+      alert("Failed to delete quiz. Please try again.");
+    } finally {
+      setDeletingQuizId(null);
+    }
+  };
+
   if (authLoading) {
     return (
       <ZeroGravityLoading
@@ -133,7 +167,7 @@ export default function QuizzesPage() {
             <div className="text-center py-16">
               <div className="max-w-2xl mx-auto">
                 <div className="mb-8">
-                  <div className="w-20 h-20 mx-auto bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+                  <div className="w-20 h-20 mx-auto bg-yellow-100 flex items-center justify-center mb-6">
                     <svg
                       className="w-10 h-10 text-yellow-600"
                       fill="none"
@@ -158,39 +192,39 @@ export default function QuizzesPage() {
                   </p>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-100">
+                <div className="bg-white shadow-sm p-8 border border-gray-100">
                   <h2 className="text-xl font-semibold text-gray-900 mb-6">
                     Pro Features Include:
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500"></div>
                       <span className="text-gray-700">
                         Create unlimited quizzes
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500"></div>
                       <span className="text-gray-700">
                         Real-time participant tracking
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500"></div>
                       <span className="text-gray-700">
                         Detailed analytics and insights
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500"></div>
                       <span className="text-gray-700">Custom join codes</span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500"></div>
                       <span className="text-gray-700">Live leaderboards</span>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-green-500"></div>
                       <span className="text-gray-700">
                         Quiz hosting controls
                       </span>
@@ -203,7 +237,7 @@ export default function QuizzesPage() {
                         // TODO: Add upgrade functionality
                         alert("Upgrade functionality coming soon!");
                       }}
-                      className="bg-black text-white px-8 py-3 hover:bg-gray-800 transition-colors text-base font-medium rounded-lg"
+                      className="bg-black text-white px-8 py-3 hover:bg-gray-800 transition-colors text-base font-medium"
                     >
                       Upgrade to Pro
                     </button>
@@ -216,7 +250,7 @@ export default function QuizzesPage() {
             </div>
           </div>
         </main>
-        <LandingFooter />
+        <SimpleFooter />
       </div>
     );
   }
@@ -240,13 +274,13 @@ export default function QuizzesPage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => router.push("/joinQuiz")}
-                  className="border border-gray-300 text-gray-700 px-6 py-3 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium"
+                  className="border border-gray-300 text-gray-700 px-6 py-3 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Join Quiz
                 </button>
                 <button
                   onClick={() => router.push("/createQuiz")}
-                  className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors text-sm font-medium"
+                  className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Create New Quiz
                 </button>
@@ -261,7 +295,7 @@ export default function QuizzesPage() {
               placeholder="Search quizzes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+              className="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
             />
             {searchLoading && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -309,25 +343,25 @@ export default function QuizzesPage() {
                       {/* Feature List - Simple and Clean */}
                       <div className="space-y-3 max-w-md mx-auto lg:mx-0">
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black rounded-full"></div>
+                          <div className="w-2 h-2 bg-black"></div>
                           <span className="text-sm text-gray-700">
                             Real-time results and analytics
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black rounded-full"></div>
+                          <div className="w-2 h-2 bg-black"></div>
                           <span className="text-sm text-gray-700">
                             Support for multiple participants
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black rounded-full"></div>
+                          <div className="w-2 h-2 bg-black"></div>
                           <span className="text-sm text-gray-700">
                             Easy sharing with join codes
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black rounded-full"></div>
+                          <div className="w-2 h-2 bg-black"></div>
                           <span className="text-sm text-gray-700">
                             Detailed performance insights
                           </span>
@@ -369,7 +403,7 @@ export default function QuizzesPage() {
               <div className="max-w-md mx-auto text-center">
                 {/* Search Icon */}
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto bg-gray-100 flex items-center justify-center">
                     <svg
                       className="w-8 h-8 text-gray-400"
                       fill="none"
@@ -417,13 +451,13 @@ export default function QuizzesPage() {
                 <div
                   key={quiz.quizId}
                   onClick={() => handleQuizClick(quiz)}
-                  className="bg-white rounded-xl shadow-sm p-6 hover:shadow-lg transition-all cursor-pointer border border-gray-100 hover:border-gray-200 group"
+                  className="bg-white shadow-sm p-6 hover:shadow-lg transition-all cursor-pointer border border-gray-100 hover:border-gray-200 group"
                 >
-                  {/* Header with Status, Date and Join Code */}
+                  {/* Header with Status, Date and Actions */}
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        className={`px-3 py-1 text-xs font-medium ${getStatusColor(
                           quiz.status
                         )}`}
                       >
@@ -433,23 +467,47 @@ export default function QuizzesPage() {
                         Created {new Date(quiz.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    {quiz.joinCode && quiz.status === "published" && (
-                      <div className="text-right">
-                        <div className="text-xs text-gray-500 mb-1">
-                          Join Code
+                    <div className="flex items-center gap-2">
+                      {quiz.joinCode && quiz.status === "published" && (
+                        <div className="text-right">
+                          <div className="text-xs text-gray-500 mb-1">
+                            Join Code
+                          </div>
+                          <span className="text-sm font-mono text-gray-700 bg-gray-100 px-3 py-1">
+                            {quiz.joinCode}
+                          </span>
                         </div>
-                        <span className="text-sm font-mono text-gray-700 bg-gray-100 px-3 py-1 rounded-md">
-                          {quiz.joinCode}
-                        </span>
-                      </div>
-                    )}
-                    {quiz.status === "ended" && (
-                      <div className="text-right">
-                        <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
+                      )}
+                      {quiz.status === "ended" && (
+                        <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1">
                           Code Expired
                         </span>
-                      </div>
-                    )}
+                      )}
+                      <button
+                        onClick={(e) => handleDeleteQuiz(quiz.quizId, e)}
+                        disabled={deletingQuizId === quiz.quizId}
+                        className="text-red-500 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                        title="Delete quiz"
+                      >
+                        {deletingQuizId === quiz.quizId ? (
+                          <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Quiz Title */}
@@ -485,7 +543,7 @@ export default function QuizzesPage() {
           )}
         </div>
       </main>
-      <LandingFooter />
+      <SimpleFooter />
     </div>
   );
 }

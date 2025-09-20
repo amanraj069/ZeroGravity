@@ -15,7 +15,7 @@ import {
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 import { Quiz, QuizParticipant, QuizLeaderboardEntry } from "@/types/quiz";
 import QRCode from "qrcode";
 
@@ -861,7 +861,7 @@ export default function HostQuizPage() {
           </div>
         </div>
       </main>
-      <LandingFooter />
+      <SimpleFooter />
 
       {/* QR Code Popup Modal */}
       {showQRPopup && (

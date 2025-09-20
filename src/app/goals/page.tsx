@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Goals from "@/components/goals/Goals";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 function GoalsContent() {
@@ -52,7 +52,7 @@ export default function GoalsPage() {
           <GoalsContent />
         </Suspense>
       </main>
-      <LandingFooter />
+      <SimpleFooter />
     </div>
   );
 }

@@ -11,7 +11,7 @@ import {
 } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
 import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import SimpleFooter from "@/components/landing/SimpleFooter";
 
 const emptyQuestion = (): QuizQuestion => ({
   text: "",
@@ -497,7 +497,7 @@ export default function CreateQuizContent({
         </div>
       </main>
 
-      <LandingFooter />
+      <SimpleFooter />
     </div>
   );
 }
