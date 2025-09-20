@@ -574,38 +574,96 @@ function JoinQuizContent() {
             </p>
 
             {currentQuestion && !showQuizEnded && !showKickedOut && (
-              <div className="flex items-center justify-center space-x-4 mt-6">
-                <div className="flex items-center space-x-2">
+              <div className="mt-8">
+                {/* Enhanced Timer Display */}
+                <div className="max-w-md mx-auto">
+                  <div className="text-center mb-4">
+                    <div className="flex items-center justify-center space-x-2 mb-2">
+                      <div
+                        className={`w-3 h-3 rounded-full ${
+                          timeLeft <= 10
+                            ? "bg-red-500"
+                            : timeLeft <= 30
+                            ? "bg-yellow-500"
+                            : "bg-green-500"
+                        } animate-pulse`}
+                      ></div>
+                      <span className="text-sm text-gray-600 font-medium tracking-wide uppercase">
+                        Time Remaining
+                      </span>
+                    </div>
+                  </div>
+
                   <div
-                    className={`w-2 h-2 ${
-                      timeLeft <= 10 ? "bg-red-500" : "bg-black"
-                    } animate-pulse`}
-                  ></div>
-                  <span className="text-sm text-gray-500 font-light">
-                    Time remaining
-                  </span>
-                </div>
-                <div
-                  className={`px-6 py-3 border-2 rounded-lg ${
-                    timeLeft <= 10
-                      ? "bg-red-50 border-red-200"
-                      : timeLeft <= 30
-                      ? "bg-yellow-50 border-yellow-200"
-                      : "bg-gray-100 border-gray-200"
-                  }`}
-                >
-                  <span
-                    className={`text-2xl sm:text-3xl font-light font-mono tracking-wider ${
+                    className={`relative p-8 rounded-2xl shadow-lg border-2 transition-all duration-300 ${
                       timeLeft <= 10
-                        ? "text-red-600"
+                        ? "bg-gradient-to-br from-red-50 to-red-100 border-red-300 shadow-red-200/50"
                         : timeLeft <= 30
-                        ? "text-yellow-600"
-                        : "text-black"
+                        ? "bg-gradient-to-br from-yellow-50 to-amber-100 border-yellow-300 shadow-yellow-200/50"
+                        : "bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-300 shadow-blue-200/50"
                     }`}
                   >
-                    {Math.floor(timeLeft / 60)}:
-                    {(timeLeft % 60).toString().padStart(2, "0")}
-                  </span>
+                    {/* Timer Circle Background */}
+                    <div className="absolute inset-4 rounded-xl bg-white/60 backdrop-blur-sm"></div>
+
+                    {/* Timer Display */}
+                    <div className="relative text-center">
+                      <div
+                        className={`text-5xl sm:text-6xl font-mono font-bold tracking-wider mb-2 ${
+                          timeLeft <= 10
+                            ? "text-red-600"
+                            : timeLeft <= 30
+                            ? "text-amber-600"
+                            : "text-blue-600"
+                        }`}
+                      >
+                        {Math.floor(timeLeft / 60)}:
+                        {(timeLeft % 60).toString().padStart(2, "0")}
+                      </div>
+
+                      {/* Progress bar */}
+                      <div className="w-32 mx-auto">
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-1000 ease-linear ${
+                              timeLeft <= 10
+                                ? "bg-gradient-to-r from-red-400 to-red-600"
+                                : timeLeft <= 30
+                                ? "bg-gradient-to-r from-yellow-400 to-amber-600"
+                                : "bg-gradient-to-r from-blue-400 to-indigo-600"
+                            }`}
+                            style={{
+                              width: `${Math.max(
+                                0,
+                                (timeLeft /
+                                  (currentQuestion?.timeLimitSeconds ||
+                                    timeLeft)) *
+                                  100
+                              )}%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Floating animation elements */}
+                    {timeLeft <= 10 && (
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div
+                          className="absolute top-2 right-4 w-1 h-1 bg-red-400 rounded-full animate-ping"
+                          style={{ animationDelay: "0s" }}
+                        ></div>
+                        <div
+                          className="absolute top-6 left-6 w-1 h-1 bg-red-400 rounded-full animate-ping"
+                          style={{ animationDelay: "0.5s" }}
+                        ></div>
+                        <div
+                          className="absolute bottom-4 right-6 w-1 h-1 bg-red-400 rounded-full animate-ping"
+                          style={{ animationDelay: "1s" }}
+                        ></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -667,106 +725,275 @@ function JoinQuizContent() {
           ) : currentQuestion ? (
             <div className="space-y-4">
               {hasAnswered ? (
-                <div className="text-center pt-8 pb-16">
+                <div className="text-center pt-12 pb-16">
                   <div className="max-w-2xl mx-auto">
-                    <div className="w-20 h-20 mx-auto mb-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <div className="animate-spin h-8 w-8 border-b-2 border-blue-600"></div>
+                    {/* Success Icon with Animation */}
+                    <div className="relative mx-auto mb-8">
+                      <div className="w-32 h-32 mx-auto bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center shadow-lg border border-green-200">
+                        <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                          <svg
+                            className="w-8 h-8 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      {/* Floating particles animation */}
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div
+                          className="absolute top-4 left-8 w-2 h-2 bg-green-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0s" }}
+                        ></div>
+                        <div
+                          className="absolute top-8 right-6 w-1 h-1 bg-emerald-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.3s" }}
+                        ></div>
+                        <div
+                          className="absolute bottom-6 left-4 w-1.5 h-1.5 bg-green-300 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.6s" }}
+                        ></div>
+                        <div
+                          className="absolute bottom-8 right-8 w-1 h-1 bg-emerald-300 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.9s" }}
+                        ></div>
+                      </div>
                     </div>
-                    <h2 className="text-2xl font-light text-gray-900 mb-4">
+
+                    <h2 className="text-3xl font-light text-gray-900 mb-6 tracking-tight">
                       Answer Submitted
                     </h2>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-lg text-gray-600 leading-relaxed mb-8">
                       Great job! Waiting for the next question...
                     </p>
+
+                    {/* Elegant waiting indicator */}
+                    <div className="flex items-center justify-center space-x-3 mb-8">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <div
+                          className="w-2 h-2 bg-green-400 rounded-full animate-pulse"
+                          style={{ animationDelay: "0.2s" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 bg-green-400 rounded-full animate-pulse"
+                          style={{ animationDelay: "0.4s" }}
+                        ></div>
+                      </div>
+                      <span className="text-sm text-gray-500 font-light">
+                        Processing...
+                      </span>
+                    </div>
+
+                    {/* Progress indicator */}
+                    <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                      <div className="flex items-center justify-center space-x-3">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
+                        </div>
+                        <span className="text-sm text-gray-600 font-medium">
+                          Submitted
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : isTimeUp ? (
-                <div className="text-center pt-8 pb-16">
+                <div className="text-center pt-12 pb-16">
                   <div className="max-w-2xl mx-auto">
-                    <div className="w-20 h-20 mx-auto mb-8 bg-red-100 rounded-full flex items-center justify-center">
-                      <span className="text-3xl">⏰</span>
+                    {/* Enhanced Time's Up Icon */}
+                    <div className="relative mx-auto mb-8">
+                      <div className="w-32 h-32 mx-auto bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center shadow-lg border border-red-200">
+                        <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+                          <svg
+                            className="w-8 h-8 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      {/* Warning particles animation */}
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div
+                          className="absolute top-4 left-8 w-2 h-2 bg-red-400 rounded-full animate-ping"
+                          style={{ animationDelay: "0s" }}
+                        ></div>
+                        <div
+                          className="absolute top-8 right-6 w-1 h-1 bg-orange-400 rounded-full animate-ping"
+                          style={{ animationDelay: "0.5s" }}
+                        ></div>
+                        <div
+                          className="absolute bottom-6 left-4 w-1.5 h-1.5 bg-red-300 rounded-full animate-ping"
+                          style={{ animationDelay: "1s" }}
+                        ></div>
+                        <div
+                          className="absolute bottom-8 right-8 w-1 h-1 bg-orange-300 rounded-full animate-ping"
+                          style={{ animationDelay: "1.5s" }}
+                        ></div>
+                      </div>
                     </div>
-                    <h2 className="text-2xl font-light text-red-600 mb-4">
+
+                    <h2 className="text-3xl font-light text-red-600 mb-6 tracking-tight">
                       Time&apos;s Up!
                     </h2>
-                    <p className="text-gray-600 leading-relaxed mb-6">
+                    <p className="text-lg text-gray-600 leading-relaxed mb-8">
                       Don&apos;t worry, there&apos;s always the next question.
                     </p>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500">
-                        Waiting for host to push next question...
-                      </p>
+
+                    {/* Enhanced waiting message */}
+                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 shadow-sm mb-8">
+                      <div className="flex items-center justify-center space-x-3 mb-4">
+                        <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-4 h-4 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-gray-700 font-medium">
+                          Waiting for next question
+                        </span>
+                      </div>
+
+                      {/* Animated progress dots */}
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                          <div
+                            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.2s" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                            style={{ animationDelay: "0.4s" }}
+                          ></div>
+                        </div>
+                        <span className="text-sm text-gray-500 ml-3">
+                          Host is preparing...
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-6 flex items-center justify-center space-x-2">
-                      <div className="w-2 h-2 bg-gray-400 animate-pulse"></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 animate-pulse"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 animate-pulse"
-                        style={{ animationDelay: "0.4s" }}
-                      ></div>
+
+                    {/* Encouragement message */}
+                    <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                      <p className="text-sm text-blue-700 font-medium">
+                        🎯 Stay focused! The next question is coming soon.
+                      </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="bg-white shadow-lg p-8 border border-gray-200 rounded-xl">
-                  <div className="mb-8">
-                    <h2 className="text-xl font-medium text-gray-900 leading-relaxed">
+                <div className="bg-gradient-to-br from-white to-gray-50 shadow-xl p-8 lg:p-10 border border-gray-200 rounded-2xl">
+                  {/* Question Header */}
+                  <div className="mb-10">
+                    <div className="flex items-center justify-center mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                        <svg
+                          className="w-6 h-6 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <h2 className="text-2xl lg:text-3xl font-light text-gray-900 leading-relaxed text-center max-w-4xl mx-auto">
                       {currentQuestion.text}
                     </h2>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                  {/* Answer Options */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
                     {currentQuestion.options.map((o, idx: number) => (
                       <button
                         key={o.key}
-                        className={`p-6 text-left transition-all duration-200 border-2 font-medium rounded-lg
+                        className={`group relative p-6 lg:p-8 text-left transition-all duration-300 border-2 font-medium rounded-xl shadow-sm hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-sm
                           ${
                             idx % 4 === 0
-                              ? "bg-rose-50 border-rose-200 hover:bg-rose-100 hover:border-rose-300"
+                              ? "bg-gradient-to-br from-rose-50 to-pink-100 border-rose-200 hover:from-rose-100 hover:to-pink-200 hover:border-rose-300 hover:shadow-rose-200/50"
                               : idx % 4 === 1
-                              ? "bg-emerald-50 border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300"
+                              ? "bg-gradient-to-br from-emerald-50 to-green-100 border-emerald-200 hover:from-emerald-100 hover:to-green-200 hover:border-emerald-300 hover:shadow-emerald-200/50"
                               : idx % 4 === 2
-                              ? "bg-blue-50 border-blue-200 hover:bg-blue-100 hover:border-blue-300"
-                              : "bg-amber-50 border-amber-200 hover:bg-amber-100 hover:border-amber-300"
-                          }
-                          hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+                              ? "bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200 hover:from-blue-100 hover:to-indigo-200 hover:border-blue-300 hover:shadow-blue-200/50"
+                              : "bg-gradient-to-br from-amber-50 to-yellow-100 border-amber-200 hover:from-amber-100 hover:to-yellow-200 hover:border-amber-300 hover:shadow-amber-200/50"
+                          }`}
                         onClick={(e) => {
                           const target = e.currentTarget as HTMLButtonElement;
-                          target.classList.remove(
-                            "bg-rose-50",
-                            "border-rose-200",
-                            "hover:bg-rose-100",
-                            "hover:border-rose-300",
-                            "bg-emerald-50",
-                            "border-emerald-200",
-                            "hover:bg-emerald-100",
-                            "hover:border-emerald-300",
-                            "bg-blue-50",
-                            "border-blue-200",
-                            "hover:bg-blue-100",
-                            "hover:border-blue-300",
-                            "bg-amber-50",
-                            "border-amber-200",
-                            "hover:bg-amber-100",
-                            "hover:border-amber-300"
-                          );
-                          target.classList.add(
-                            "bg-black",
-                            "text-white",
-                            "border-black"
-                          );
+                          // Add selected styling
+                          target.className =
+                            "group relative p-6 lg:p-8 text-left transition-all duration-300 border-2 font-medium rounded-xl shadow-lg bg-gradient-to-br from-gray-800 to-black border-black text-white transform scale-[1.02]";
                           sendAnswer(o.key);
                         }}
                         disabled={hasAnswered || isTimeUp}
                       >
-                        <span className="inline-flex items-center justify-center w-10 h-10 bg-white bg-opacity-80 text-gray-900 font-bold text-sm mr-4 rounded-full">
-                          {o.key}
+                        {/* Option Key Badge */}
+                        <div className="flex items-center mb-3">
+                          <span
+                            className={`inline-flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg shadow-md transition-all duration-300 group-hover:scale-110
+                            ${
+                              idx % 4 === 0
+                                ? "bg-rose-500 text-white"
+                                : idx % 4 === 1
+                                ? "bg-emerald-500 text-white"
+                                : idx % 4 === 2
+                                ? "bg-blue-500 text-white"
+                                : "bg-amber-500 text-white"
+                            }`}
+                          >
+                            {o.key}
+                          </span>
+                        </div>
+
+                        {/* Option Text */}
+                        <span className="text-gray-900 text-lg leading-relaxed group-hover:text-gray-800 transition-colors">
+                          {o.text}
                         </span>
-                        <span className="text-gray-900">{o.text}</span>
+
+                        {/* Hover Effect Overlay */}
+                        <div className="absolute inset-0 rounded-xl bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none"></div>
                       </button>
                     ))}
+                  </div>
+
+                  {/* Answer Instructions */}
+                  <div className="mt-8 text-center">
+                    <p className="text-sm text-gray-500 font-light">
+                      Select your answer by clicking on one of the options above
+                    </p>
                   </div>
                 </div>
               )}

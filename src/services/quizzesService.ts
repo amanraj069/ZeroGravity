@@ -123,6 +123,13 @@ export const endQuiz = async (quizId: string) => {
   return res.json();
 };
 
+export const unhostQuiz = async (quizId: string) => {
+  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.UNHOST(quizId), {
+    method: "POST",
+  });
+  return res.json();
+};
+
 export const endQuestion = async (quizId: string) => {
   const res = await apiCallWithAuth(
     API_ENDPOINTS.QUIZZES.END_QUESTION(quizId),

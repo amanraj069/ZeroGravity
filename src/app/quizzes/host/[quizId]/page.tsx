@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import {
   getQuiz,
   listParticipants,
@@ -11,6 +11,7 @@ import {
   endQuiz,
   endQuestion,
   hostQuiz,
+  unhostQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import LandingNavbar from "@/components/landing/LandingNavbar";
@@ -21,6 +22,7 @@ import QRCode from "qrcode";
 export default function HostQuizPage() {
   const params = useParams();
   const search = useSearchParams();
+  const router = useRouter();
   const quizId = String(params?.quizId || "");
   const joinCode = search.get("code") || "";
 
@@ -252,13 +254,34 @@ export default function HostQuizPage() {
   const push = async (idx: number) => {
     const r = await pushQuestion(quizId, idx);
     if (!r?.success) alert("Failed to push question");
-    else setViewMode("control");
+    else {
+      setViewMode("control");
+      // Redirect to hosted page when first question is pushed
+      if (idx === 0) {
+        router.push(`/hosted/${quizId}`);
+      }
+    }
   };
 
   const stop = async () => {
     const r = await endQuiz(quizId);
     if (!r?.success) alert("Failed to stop quiz");
     else setIsActive(false);
+  };
+
+  const unhost = async () => {
+    const r = await unhostQuiz(quizId);
+    if (!r?.success) {
+      alert("Failed to unhost quiz");
+    } else {
+      setIsHosted(false);
+      setIsActive(false);
+      setGeneratedJoinCode("");
+      setParticipants([]);
+      setCurrentIndex(-1);
+      setVoteCounts({});
+      setBoard([]);
+    }
   };
 
   const endCurrentQuestion = async () => {
@@ -525,40 +548,15 @@ export default function HostQuizPage() {
                               <button
                                 onClick={async () => {
                                   const ok = confirm(
-                                    "Generate a new join code? The current code will no longer work."
+                                    "Stop hosting this quiz? This will remove the join code and clear all participants."
                                   );
                                   if (!ok) return;
-                                  try {
-                                    const res = await hostQuiz(quizId);
-                                    if (!res?.success) {
-                                      alert("Failed to generate new code");
-                                    } else {
-                                      setGeneratedJoinCode(res.joinCode);
-                                    }
-                                  } catch (error) {
-                                    console.error(
-                                      "Error generating new code:",
-                                      error
-                                    );
-                                    alert("Failed to generate new code");
-                                  }
+                                  await unhost();
                                 }}
-                                className="px-5 py-2.5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 flex items-center justify-center transition-colors font-light"
-                                title="Generate new join code"
+                                className="w-10 h-10 bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors shadow-sm"
+                                title="Stop hosting quiz"
                               >
-                                <svg
-                                  className="w-5 h-5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                                  />
-                                </svg>
+                                <div className="w-4 h-4 bg-white"></div>
                               </button>
                               <button
                                 className="px-5 py-2.5 bg-black text-white hover:bg-gray-800 transition-colors font-light"
