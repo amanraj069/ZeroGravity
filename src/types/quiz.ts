@@ -15,6 +15,7 @@ export interface Quiz {
   }>;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string | null;
   participants?: number;
   totalParticipants?: number;
 }

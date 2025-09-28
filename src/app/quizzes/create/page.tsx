@@ -16,8 +16,8 @@ import SimpleFooter from "@/components/landing/SimpleFooter";
 const emptyQuestion = (): QuizQuestion => ({
   text: "",
   options: [
-    { key: "A", text: "" },
-    { key: "B", text: "" },
+    { key: "1", text: "" },
+    { key: "2", text: "" },
   ],
   timeLimitSeconds: 60,
   maxMarks: 10,
@@ -116,7 +116,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
     setQuestions((prev) =>
       prev.map((q, i) => {
         if (i !== qIdx) return q;
-        const nextKey = String.fromCharCode(65 + q.options.length);
+        const nextKey = String(q.options.length + 1);
         return { ...q, options: [...q.options, { key: nextKey, text: "" }] };
       })
     );
@@ -131,7 +131,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         const newOptions = q.options.filter((_, j) => j !== oIdx);
         const updatedOptions = newOptions.map((option, index) => ({
           ...option,
-          key: String.fromCharCode(65 + index),
+          key: String(index + 1),
         }));
 
         return { ...q, options: updatedOptions };
@@ -169,13 +169,34 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
       return { isValid: false, message: "Please add a question title" };
     }
 
-    const hasCorrectOption =
-      q.options &&
-      q.options.some((o) => o.isCorrect && o.text && o.text.trim() !== "");
-    if (!hasCorrectOption) {
+    // Check if any options have no content
+    const emptyOptions = q.options?.filter(
+      (o) => !o.text || o.text.trim() === ""
+    );
+    if (emptyOptions && emptyOptions.length > 0) {
       return {
         isValid: false,
-        message: "Please add at least one correct answer option",
+        message: "Please add content to all answer options",
+      };
+    }
+
+    // Check if at least one correct answer is marked
+    const correctOptions = q.options?.filter((o) => o.isCorrect);
+    if (!correctOptions || correctOptions.length === 0) {
+      return {
+        isValid: false,
+        message: "Please mark at least one answer as correct",
+      };
+    }
+
+    // Check if correct answers have content
+    const hasCorrectOptionWithContent =
+      q.options &&
+      q.options.some((o) => o.isCorrect && o.text && o.text.trim() !== "");
+    if (!hasCorrectOptionWithContent) {
+      return {
+        isValid: false,
+        message: "Correct answer options must have content",
       };
     }
 
@@ -291,35 +312,37 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
       <main className="flex-1 py-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 px-6">
           <aside className="md:col-span-3 lg:col-span-3">
-            <div className="bg-white shadow-sm p-6 sticky top-24 border border-gray-100">
-              <div className="mb-4">
+            <div className="bg-white shadow-sm border border-gray-100 flex flex-col h-fit max-h-[515px]">
+              <div className="p-6 pb-4 border-b border-gray-100 flex-shrink-0">
                 <span className="text-sm font-medium text-gray-900">
                   Questions
                 </span>
               </div>
-              <div className="grid grid-cols-8 sm:grid-cols-6 md:grid-cols-4 lg:grid-cols-3 gap-2">
-                {questions.map((_, i) => (
+              <div className="flex-1 overflow-y-auto p-6 pt-4">
+                <div className="grid grid-cols-3 gap-2">
+                  {questions.map((_, i) => (
+                    <button
+                      key={i}
+                      className={`border p-2 text-sm transition-all ${
+                        i === currentIndex
+                          ? "bg-black text-white border-black shadow-sm"
+                          : "bg-white hover:border-gray-300 hover:shadow-sm border-gray-200"
+                      }`}
+                      onClick={() => setCurrentIndex(i)}
+                      title={`Go to question ${i + 1}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
                   <button
-                    key={i}
-                    className={`border p-2 text-sm transition-all ${
-                      i === currentIndex
-                        ? "bg-black text-white border-black shadow-sm"
-                        : "bg-white hover:border-gray-300 hover:shadow-sm border-gray-200"
-                    }`}
-                    onClick={() => setCurrentIndex(i)}
-                    title={`Go to question ${i + 1}`}
+                    className="border border-gray-200 p-2 text-sm bg-white hover:border-gray-300 hover:shadow-sm transition-all"
+                    onClick={addQuestion}
+                    disabled={questions.length >= 100}
+                    title="Add question"
                   >
-                    {i + 1}
+                    +
                   </button>
-                ))}
-                <button
-                  className="border border-gray-200 p-2 text-sm bg-white hover:border-gray-300 hover:shadow-sm transition-all"
-                  onClick={addQuestion}
-                  disabled={questions.length >= 100}
-                  title="Add question"
-                >
-                  +
-                </button>
+                </div>
               </div>
             </div>
           </aside>
@@ -436,7 +459,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                           title="Mark as correct answer"
                           className="w-4 h-4 text-green-600 focus:ring-green-500 focus:ring-2 cursor-pointer"
                         />
-                        <div
+                        {/* <div
                           className={`w-8 h-8 flex items-center justify-center cursor-pointer ${
                             o.isCorrect ? "bg-green-100" : "bg-gray-100"
                           }`}
@@ -450,10 +473,10 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                           >
                             {o.key}
                           </span>
-                        </div>
+                        </div> */}
                         <input
                           className="flex-1 border-none bg-transparent focus:outline-none text-gray-900 placeholder-gray-400"
-                          placeholder={`Enter option ${o.key}...`}
+                          placeholder={`Enter Option ${o.key}`}
                           value={o.text}
                           onChange={(e) =>
                             updateOption(currentIndex, oi, e.target.value)
@@ -554,5 +577,3 @@ export default function CreateQuizPage({ searchParams }: CreateQuizPageProps) {
     </Suspense>
   );
 }
-
-export const runtime = "edge";

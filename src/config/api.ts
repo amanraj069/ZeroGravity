@@ -81,6 +81,11 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/api/quizzes/${quizId}/end-question`,
     UNHOST: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}/unhost`,
     DELETE: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}`,
+    LIST_DELETED: `${API_BASE_URL}/api/quizzes/deleted`,
+    RESTORE: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/restore`,
+    DELETE_PERMANENT: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/permanent`,
     ADMIN_LIST_PAST: (params?: string) =>
       `${API_BASE_URL}/api/quizzes/admin/past${params ? `?${params}` : ""}`,
     ADMIN_DETAILS: (quizId: string) =>

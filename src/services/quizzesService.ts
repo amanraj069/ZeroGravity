@@ -163,6 +163,39 @@ export const deleteQuiz = async (quizId: string) => {
   return res.json();
 };
 
+export const listDeletedQuizzes = async (params?: {
+  search?: string;
+  page?: number;
+  limit?: number;
+}): Promise<QuizListResponse> => {
+  const qs = new URLSearchParams();
+  if (params?.search) qs.set("search", params.search);
+  if (params?.page) qs.set("page", String(params.page));
+  if (params?.limit) qs.set("limit", String(params.limit));
+  const url = `${API_ENDPOINTS.QUIZZES.LIST_DELETED}${
+    qs.toString() ? `?${qs.toString()}` : ""
+  }`;
+  const res = await apiCallWithAuth(url);
+  return res.json();
+};
+
+export const restoreQuiz = async (quizId: string) => {
+  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.RESTORE(quizId), {
+    method: "POST",
+  });
+  return res.json();
+};
+
+export const permanentlyDeleteQuiz = async (quizId: string) => {
+  const res = await apiCallWithAuth(
+    API_ENDPOINTS.QUIZZES.DELETE_PERMANENT(quizId),
+    {
+      method: "DELETE",
+    }
+  );
+  return res.json();
+};
+
 // Simple obfuscation (not cryptographic): base64
 export const obfuscate = (text: string) => {
   if (typeof window === "undefined") return text;

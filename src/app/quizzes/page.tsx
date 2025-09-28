@@ -108,11 +108,12 @@ export default function QuizzesPage() {
   const handleDeleteQuiz = async (quizId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent triggering the quiz click
 
-    if (
-      !confirm(
-        "Are you sure you want to delete this quiz? This action cannot be undone."
-      )
-    ) {
+    const confirmMessage =
+      user?.subscription === "pro"
+        ? "Are you sure you want to delete this quiz? You can restore it later from the 'View Deleted' section."
+        : "Are you sure you want to delete this quiz? This will soft delete the quiz (it won't be permanently removed).";
+
+    if (!confirm(confirmMessage)) {
       return;
     }
 
@@ -127,6 +128,13 @@ export default function QuizzesPage() {
         setFilteredQuizzes((prevFiltered) =>
           prevFiltered.filter((quiz) => quiz.quizId !== quizId)
         );
+
+        // Show success message based on subscription
+        const successMessage =
+          user?.subscription === "pro"
+            ? "Quiz moved to deleted items. You can restore it anytime from 'View Deleted'."
+            : "Quiz has been deleted. Upgrade to Pro to access restore functionality.";
+        alert(successMessage);
       } else {
         alert(`Failed to delete quiz: ${response.message || "Unknown error"}`);
       }
@@ -278,6 +286,14 @@ export default function QuizzesPage() {
                 >
                   Join Quiz
                 </button>
+                {user?.subscription === "pro" && (
+                  <button
+                    onClick={() => router.push("/quizzes/deleted")}
+                    className="border border-gray-300 text-gray-700 px-6 py-3 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium cursor-pointer"
+                  >
+                    View Deleted
+                  </button>
+                )}
                 <button
                   onClick={() => router.push("/createQuiz")}
                   className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
