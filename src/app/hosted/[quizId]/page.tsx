@@ -7,13 +7,12 @@ import {
   listParticipants,
   pushQuestion,
   endQuestion,
-  leaderboard,
   endQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import SimpleFooter from "@/components/landing/SimpleFooter";
-import { Quiz, QuizParticipant, QuizLeaderboardEntry } from "@/types/quiz";
+import { Quiz, QuizParticipant } from "@/types/quiz";
 
 export default function HostedQuizPage() {
   const params = useParams();
@@ -24,7 +23,6 @@ export default function HostedQuizPage() {
   const [participants, setParticipants] = useState<QuizParticipant[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [voteCounts, setVoteCounts] = useState<Record<string, number>>({});
-  const [board, setBoard] = useState<QuizLeaderboardEntry[]>([]);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [currentQuestionTimeLeft, setCurrentQuestionTimeLeft] =
     useState<number>(0);
@@ -109,13 +107,9 @@ export default function HostedQuizPage() {
       setCurrentQuestionTimeLeft(0);
       setIsQuestionActive(false);
 
-      // Fetch final vote counts and leaderboard when question ends
+      // Fetch final vote counts and participants when question ends
       try {
-        const [b, p] = await Promise.all([
-          leaderboard(quizId),
-          listParticipants(quizId),
-        ]);
-        if (b?.success) setBoard(b.leaderboard);
+        const p = await listParticipants(quizId);
         if (p?.success) setParticipants(p.participants);
       } catch (error) {
         console.error("Failed to fetch final results:", error);
@@ -188,11 +182,7 @@ export default function HostedQuizPage() {
         setCurrentIndex(-1);
       }
 
-      const [b, p] = await Promise.all([
-        leaderboard(quizId),
-        listParticipants(quizId),
-      ]);
-      if (b?.success) setBoard(b.leaderboard);
+      const p = await listParticipants(quizId);
       if (p?.success) setParticipants(p.participants);
     }
   };

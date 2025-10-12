@@ -29,6 +29,7 @@ export default function DeletedQuizzesPage() {
     } else if (isLoggedIn && user?.subscription === "pro") {
       fetchDeletedQuizzes();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, authLoading, user, router]);
 
   useEffect(() => {

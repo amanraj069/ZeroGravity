@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React from "react";
 
 export default function SimpleFooter() {
   const currentYear = new Date().getFullYear();

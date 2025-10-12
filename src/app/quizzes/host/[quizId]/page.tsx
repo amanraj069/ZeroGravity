@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import NextImage from "next/image";
 import {
   getQuiz,
   listParticipants,
@@ -406,10 +407,12 @@ export default function HostQuizPage() {
                           <div className="relative">
                             {p.participantAvatar ? (
                               <div className="w-32 h-32 min-w-32 min-h-32 aspect-square rounded-full overflow-hidden shadow-lg flex-shrink-0 border-2 border-gray-200">
-                                <img
+                                <NextImage
                                   src={`/quiz/avatars/${p.participantAvatar}`}
                                   alt={`Avatar for ${p.participantName}`}
                                   className="w-full h-full object-cover scale-110"
+                                  width={128}
+                                  height={128}
                                 />
                               </div>
                             ) : (
@@ -910,10 +913,12 @@ export default function HostQuizPage() {
 
               {qrCodeDataUrl && (
                 <div className="flex justify-center mb-6">
-                  <img
+                  <NextImage
                     src={qrCodeDataUrl}
                     alt="QR Code for joining quiz"
                     className="border border-gray-200 rounded-lg"
+                    width={200}
+                    height={200}
                   />
                 </div>
               )}

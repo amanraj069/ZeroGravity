@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import NextImage from "next/image";
 import {
   joinQuiz,
   submitAnswer,
@@ -262,6 +263,7 @@ function JoinQuizContent() {
       s.off("participant:left", onKickedOut);
       s.off("participants:cleared", onParticipantsCleared);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joined]);
 
   useEffect(() => {
@@ -522,11 +524,13 @@ function JoinQuizContent() {
                             : "border-2 border-gray-200 hover:border-gray-300"
                         }`}
                       >
-                        <img
+                        <NextImage
                           src={`/quiz/avatars/${avatar}`}
                           alt={`Avatar ${avatar.replace(".png", "")}`}
                           className="w-full h-full object-cover scale-110"
                           draggable={false}
+                          width={100}
+                          height={100}
                         />
                       </button>
                     ))}
@@ -1002,10 +1006,12 @@ function JoinQuizContent() {
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto">
                 <div className="w-128 h-128 mx-auto mb-8 flex items-center justify-center">
-                  <img
+                  <NextImage
                     src="/quiz/waitingQuizzes.png"
                     alt="Waiting for quiz"
                     className="w-full h-full object-contain"
+                    width={512}
+                    height={512}
                   />
                 </div>
                 <h2 className="text-2xl font-light text-gray-900 mb-4">
