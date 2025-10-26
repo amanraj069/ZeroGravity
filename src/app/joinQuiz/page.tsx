@@ -889,7 +889,7 @@ function JoinQuizContent() {
 
                   {/* Answer Options */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
-                    {currentQuestion.options.map((o, idx: number) => (
+                    {currentQuestion.options.map((o) => (
                       <button
                         key={o.key}
                         className="group relative p-5 lg:p-6 text-left transition-all duration-200 border border-gray-200 hover:border-gray-400 hover:bg-gray-50 active:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:bg-white"
