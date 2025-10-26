@@ -488,7 +488,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                               e.stopPropagation();
                               deleteOption(currentIndex, oi);
                             }}
-                            className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors rounded"
+                            className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors "
                             title="Delete this option"
                           >
                             <svg

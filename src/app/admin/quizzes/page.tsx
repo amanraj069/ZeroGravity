@@ -40,7 +40,7 @@ export default function AdminQuizzesPage() {
       <h1 className="text-2xl font-semibold">Past Quizzes</h1>
       <div className="flex gap-3 items-center">
         <input
-          className="border rounded px-3 py-2 w-72"
+          className="border  px-3 py-2 w-72"
           placeholder="Search by title"
           value={search}
           onChange={(e) => {
@@ -49,7 +49,7 @@ export default function AdminQuizzesPage() {
           }}
         />
       </div>
-      <div className="border rounded divide-y">
+      <div className="border  divide-y">
         {items.map((q) => (
           <a
             key={q.quizId}
@@ -73,7 +73,7 @@ export default function AdminQuizzesPage() {
       </div>
       <div className="flex items-center gap-3">
         <button
-          className="px-3 py-1 border rounded"
+          className="px-3 py-1 border "
           disabled={page <= 1}
           onClick={() => setPage((p) => Math.max(1, p - 1))}
         >
@@ -83,7 +83,7 @@ export default function AdminQuizzesPage() {
           Page {page} / {maxPage}
         </div>
         <button
-          className="px-3 py-1 border rounded"
+          className="px-3 py-1 border "
           disabled={page >= maxPage}
           onClick={() => setPage((p) => Math.min(maxPage, p + 1))}
         >

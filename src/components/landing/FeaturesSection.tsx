@@ -27,7 +27,7 @@ export default function FeaturesSection() {
             alt="Goal Management Features"
             width={500}
             height={400}
-            className="rounded-lg shadow-sm w-full h-auto"
+            className=" shadow-sm w-full h-auto"
           />
         </AnimatedFeatureItem>
         <AnimatedFeatureItem className="order-1 lg:order-2 space-y-3 sm:space-y-4 lg:space-y-6">
@@ -40,15 +40,15 @@ export default function FeaturesSection() {
           </p>
           <ul className="space-y-2 sm:space-y-3 text-gray-600 text-xs sm:text-sm lg:text-base">
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Rich goal descriptions with context and notes</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Smart categorization for work, health, and more</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Real-time progress visualization with celebrations</span>
             </li>
           </ul>
@@ -66,15 +66,15 @@ export default function FeaturesSection() {
           </p>
           <ul className="space-y-2 sm:space-y-3 text-gray-600 text-xs sm:text-sm lg:text-base">
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Progress bars with milestone celebrations</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Interactive checklists for complex goals</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Achievement streaks keep you on fire</span>
             </li>
           </ul>
@@ -85,7 +85,7 @@ export default function FeaturesSection() {
             alt="Progress Tracking"
             width={500}
             height={400}
-            className="rounded-lg shadow-sm w-full h-auto"
+            className=" shadow-sm w-full h-auto"
           />
         </AnimatedFeatureItem>
       </AnimatedFeatureGrid>
@@ -97,7 +97,7 @@ export default function FeaturesSection() {
             alt="Reminders and Notifications"
             width={500}
             height={400}
-            className="rounded-lg shadow-sm w-full h-auto"
+            className=" shadow-sm w-full h-auto"
           />
         </AnimatedFeatureItem>
         <AnimatedFeatureItem className="space-y-3 sm:space-y-4 lg:space-y-6 order-1 lg:order-2">
@@ -110,15 +110,15 @@ export default function FeaturesSection() {
           </p>
           <ul className="space-y-2 sm:space-y-3 text-gray-600 text-xs sm:text-sm lg:text-base">
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Smart deadline management with flexible scheduling</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Motivation points that fuel your progress</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Visual countdown timers for positive urgency</span>
             </li>
           </ul>
@@ -136,15 +136,15 @@ export default function FeaturesSection() {
           </p>
           <ul className="space-y-2 sm:space-y-3 text-gray-600 text-xs sm:text-sm lg:text-base">
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Individual privacy settings for each goal</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>One-click toggle between private and public</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Secure, encrypted workspace for sensitive goals</span>
             </li>
           </ul>
@@ -155,7 +155,7 @@ export default function FeaturesSection() {
             alt="Privacy Controls"
             width={500}
             height={400}
-            className="rounded-lg shadow-sm w-full h-auto"
+            className=" shadow-sm w-full h-auto"
           />
         </AnimatedFeatureItem>
       </AnimatedFeatureGrid>
@@ -167,7 +167,7 @@ export default function FeaturesSection() {
             alt="Community Features"
             width={500}
             height={400}
-            className="rounded-lg shadow-sm w-full h-auto"
+            className=" shadow-sm w-full h-auto"
           />
         </AnimatedFeatureItem>
         <AnimatedFeatureItem className="order-1 lg:order-2 space-y-3 sm:space-y-4 lg:space-y-6">
@@ -180,15 +180,15 @@ export default function FeaturesSection() {
           </p>
           <ul className="space-y-2 sm:space-y-3 text-gray-600 text-xs sm:text-sm lg:text-base">
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Connect through shared goals and inspiration</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>Discover new possibilities through success stories</span>
             </li>
             <li className="flex items-start">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black rounded-full mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black  mr-2 sm:mr-3 mt-1.5 sm:mt-2 flex-shrink-0"></div>
               <span>
                 Build meaningful accountability partnerships that last
               </span>

@@ -30,7 +30,7 @@ export default function LandingFooter() {
           floatingParticles.map((i) => (
             <motion.div
               key={i}
-              className="absolute w-0.5 h-0.5 bg-white rounded-full opacity-20"
+              className="absolute w-0.5 h-0.5 bg-white  opacity-20"
               initial={{
                 x: Math.random() * windowWidth,
                 y: Math.random() * 200,
@@ -79,7 +79,7 @@ export default function LandingFooter() {
                   href="https://www.linkedin.com/in/amanraj-iiits"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-blue-600/80 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
+                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-blue-600/80  flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   title="LinkedIn"
@@ -96,7 +96,7 @@ export default function LandingFooter() {
 
                 <motion.a
                   href="mailto:amanraj3567@gmail.com"
-                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-red-600/80 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
+                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-red-600/80  flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   title="Email"

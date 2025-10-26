@@ -43,7 +43,13 @@ export interface QuizParticipant {
 export interface QuizLeaderboardEntry {
   quizUserId: string;
   participantName: string;
+  participantAvatar?: string;
   totalScore?: number;
+  correctAnswers?: number;
+  incorrectAnswers?: number;
+  totalResponses?: number;
+  accuracy?: number;
+  pointsEarned?: number;
 }
 
 export interface AdminQuizDetails {

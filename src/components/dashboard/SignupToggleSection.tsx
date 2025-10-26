@@ -27,12 +27,12 @@ export default function SignupToggleSection({
             <button
               onClick={onToggleSignup}
               disabled={signupToggleLoading}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${
+              className={`relative inline-flex h-7 w-12 items-center  transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 ${
                 signupEnabled ? "bg-black" : "bg-gray-200"
               } ${signupToggleLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                className={`inline-block h-5 w-5 transform  bg-white transition-transform ${
                   signupEnabled ? "translate-x-6" : "translate-x-1"
                 }`}
               />

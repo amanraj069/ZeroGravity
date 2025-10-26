@@ -160,7 +160,7 @@ export default function WaitlistSection() {
             </form>
 
             <div className="flex items-center justify-center mt-4 text-gray-600">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+              <div className="w-2 h-2 bg-green-500  mr-2"></div>
               <span className="text-sm">
                 {waitlistCount.toLocaleString()} people already joined
               </span>

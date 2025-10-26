@@ -315,7 +315,7 @@ export default function QuizzesPage() {
             />
             {searchLoading && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-black  animate-spin"></div>
               </div>
             )}
           </div>
@@ -506,7 +506,7 @@ export default function QuizzesPage() {
                         title="Delete quiz"
                       >
                         {deletingQuizId === quiz.quizId ? (
-                          <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                          <div className="w-4 h-4 border-2 border-red-500 border-t-transparent  animate-spin"></div>
                         ) : (
                           <svg
                             className="w-4 h-4"

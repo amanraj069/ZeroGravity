@@ -17,10 +17,13 @@ import {
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import SimpleFooter from "@/components/landing/SimpleFooter";
+import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { useAuth } from "@/contexts/AuthContext";
 import { Quiz, QuizParticipant, QuizLeaderboardEntry } from "@/types/quiz";
 import QRCode from "qrcode";
 
 export default function HostQuizPage() {
+  const { isLoggedIn, isLoading: authLoading } = useAuth();
   const params = useParams();
   const search = useSearchParams();
   const router = useRouter();
@@ -47,6 +50,8 @@ export default function HostQuizPage() {
   >("control");
   const [showQRPopup, setShowQRPopup] = useState<boolean>(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+
+  const questions = useMemo(() => quiz?.questions || [], [quiz]);
 
   // Function to generate consistent colors for avatars
   const getAvatarColor = (name: string) => {
@@ -203,6 +208,40 @@ export default function HostQuizPage() {
     };
   }, [quizId, isHosted, isActive]);
 
+  useEffect(() => {
+    if (!authLoading && !isLoggedIn) {
+      router.push("/login");
+    }
+  }, [isLoggedIn, authLoading, router]);
+
+  // Timer for host display
+  useEffect(() => {
+    if (currentQuestionStartTime && currentQuestionTimeLimit > 0) {
+      const timer = setInterval(() => {
+        const elapsed = Math.floor(
+          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000
+        );
+        const remaining = Math.max(0, currentQuestionTimeLimit - elapsed);
+        setCurrentQuestionTimeLeft(remaining);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [currentQuestionStartTime, currentQuestionTimeLimit]);
+
+  if (authLoading) {
+    return (
+      <ZeroGravityLoading
+        title="Authenticating"
+        subtitle="Verifying your cosmic credentials..."
+      />
+    );
+  }
+
+  if (!isLoggedIn) {
+    return null; // Will redirect to login
+  }
+
   const host = async () => {
     const r = await hostQuiz(quizId);
     if (!r?.success) {
@@ -311,8 +350,6 @@ export default function HostQuizPage() {
     }
   };
 
-  const questions = useMemo(() => quiz?.questions || [], [quiz]);
-
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60)
       .toString()
@@ -326,21 +363,6 @@ export default function HostQuizPage() {
     if (nextIndex >= questions.length) return;
     await push(nextIndex);
   };
-
-  // Timer for host display
-  useEffect(() => {
-    if (currentQuestionStartTime && currentQuestionTimeLimit > 0) {
-      const timer = setInterval(() => {
-        const elapsed = Math.floor(
-          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000
-        );
-        const remaining = Math.max(0, currentQuestionTimeLimit - elapsed);
-        setCurrentQuestionTimeLeft(remaining);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-  }, [currentQuestionStartTime, currentQuestionTimeLimit]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">

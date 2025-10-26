@@ -316,7 +316,7 @@ export default function Signup() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-black text-white py-2 sm:py-2 rounded-sm px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="flex-1 bg-black text-white py-2 sm:py-2 -sm px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isSubmitting ? "Creating Account..." : "Create Account"}
             </button>

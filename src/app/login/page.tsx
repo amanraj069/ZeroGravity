@@ -78,7 +78,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {error && (
-            <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded border border-red-200">
+            <div className="text-red-600 text-sm text-center bg-red-50 p-3  border border-red-200">
               {error}
             </div>
           )}
@@ -97,7 +97,7 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-none focus:outline-none focus:border-black transition-colors bg-white text-black text-sm sm:text-base"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 -none focus:outline-none focus:border-black transition-colors bg-white text-black text-sm sm:text-base"
               placeholder="Enter your email here"
             />
           </div>
@@ -117,7 +117,7 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 rounded-none focus:outline-none focus:border-black transition-colors bg-white text-black text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 -none focus:outline-none focus:border-black transition-colors bg-white text-black text-sm sm:text-base"
                 placeholder="••••••••"
               />
               <button

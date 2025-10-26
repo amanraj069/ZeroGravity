@@ -192,7 +192,7 @@ const DailyTasks: React.FC = () => {
               {!isLoggedIn ? (
                 <a
                   href="/login"
-                  className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors inline-block"
+                  className="bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors inline-block"
                 >
                   Go to Login
                 </a>
@@ -216,7 +216,7 @@ const DailyTasks: React.FC = () => {
                       setIsLoading(false);
                     }
                   }}
-                  className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors"
+                  className="bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors"
                 >
                   Try Again
                 </button>
@@ -231,7 +231,7 @@ const DailyTasks: React.FC = () => {
   return (
     <>
       {/* Header with Analytics */}
-      <div className="bg-white rounded-lg p-4 shadow-sm">
+      <div className="bg-white  p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex-1">
             <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
@@ -250,7 +250,7 @@ const DailyTasks: React.FC = () => {
           </div>
           <button
             onClick={() => setShowAddTask(true)}
-            className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             Add Task
@@ -259,7 +259,7 @@ const DailyTasks: React.FC = () => {
       </div>
 
       {/* Date Selector */}
-      <div className="bg-white rounded-lg p-4 shadow-sm">
+      <div className="bg-white  p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="flex items-center gap-2">
             <Calendar className="w-5 h-5 text-gray-500" />
@@ -276,10 +276,10 @@ const DailyTasks: React.FC = () => {
               id="selectedDate"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black transition-colors"
+              className="px-3 py-2 border border-gray-300 -md text-sm focus:border-black focus:ring-1 focus:ring-black transition-colors"
             />
             {isToday(selectedDate) ? (
-              <div className="text-xs text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full">
+              <div className="text-xs text-green-600 font-medium bg-green-50 px-3 py-1 ">
                 Today
               </div>
             ) : (
@@ -287,7 +287,7 @@ const DailyTasks: React.FC = () => {
                 onClick={() =>
                   setSelectedDate(new Date().toISOString().split("T")[0])
                 }
-                className="text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full transition-colors"
+                className="text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1  transition-colors"
               >
                 Go to Today
               </button>
@@ -299,8 +299,8 @@ const DailyTasks: React.FC = () => {
       {/* Tasks Display */}
       <div className="space-y-4">
         {tasks.length === 0 ? (
-          <div className="bg-white rounded-lg p-8 text-center shadow-sm">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white  p-8 text-center shadow-sm">
+            <div className="w-16 h-16 bg-gray-100  flex items-center justify-center mx-auto mb-4">
               <Target className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -311,7 +311,7 @@ const DailyTasks: React.FC = () => {
             </p>
             <button
               onClick={() => setShowAddTask(true)}
-              className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors"
+              className="bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors"
             >
               Create Task
             </button>
@@ -320,7 +320,7 @@ const DailyTasks: React.FC = () => {
           tasks.map((task) => (
             <div
               key={task._id}
-              className={`rounded-lg shadow-sm border p-4 transition-all duration-200 ${
+              className={` shadow-sm border p-4 transition-all duration-200 ${
                 task.isCompletedToday
                   ? "ring-1 ring-green-200 bg-green-50/30 border-green-200"
                   : task.priority === "high"
@@ -333,7 +333,7 @@ const DailyTasks: React.FC = () => {
               <div className="flex items-start gap-3">
                 <button
                   onClick={() => toggleTaskCompletion(task._id)}
-                  className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
+                  className={`flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
                     task.isCompletedToday
                       ? "bg-green-600 border-green-600 text-white shadow-sm"
                       : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
@@ -400,7 +400,7 @@ const DailyTasks: React.FC = () => {
                       </span>
                     </div>
                     <span
-                      className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      className={`px-2 py-0.5  text-xs font-medium ${
                         task.priority === "high"
                           ? "bg-red-50 text-red-500 border border-red-200"
                           : task.priority === "medium"
@@ -422,7 +422,7 @@ const DailyTasks: React.FC = () => {
                       </div>
                     )}
                     {!task.isActive && (
-                      <div className="text-orange-600 text-xs bg-orange-100 px-2 py-0.5 rounded">
+                      <div className="text-orange-600 text-xs bg-orange-100 px-2 py-0.5 ">
                         Inactive
                       </div>
                     )}

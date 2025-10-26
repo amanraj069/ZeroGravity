@@ -184,14 +184,14 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white  max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">
             {editingTask ? "Edit Daily Task" : "Add Daily Task"}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            className="p-2 hover:bg-gray-100 -md transition-colors"
             disabled={isSubmitting}
           >
             <X className="w-4 h-4" />
@@ -213,7 +213,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm transition-colors ${
+              className={`w-full px-3 py-2 border -md text-sm transition-colors ${
                 errors.title
                   ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                   : "border-gray-300 focus:border-black focus:ring-black"
@@ -240,7 +240,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               rows={3}
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-black focus:ring-black transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 -md text-sm focus:border-black focus:ring-black transition-colors"
               placeholder="Enter task description (optional)"
               disabled={isSubmitting}
             />
@@ -264,7 +264,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                   priority: e.target.value as "low" | "medium" | "high",
                 }))
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:border-black focus:ring-black transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 -md text-sm focus:border-black focus:ring-black transition-colors"
               disabled={isSubmitting}
             >
               <option value="low">Low</option>
@@ -289,7 +289,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dateStarted"
                 value={formData.dateStarted}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm transition-colors ${
+                className={`w-full px-3 py-2 border -md text-sm transition-colors ${
                   errors.dateStarted
                     ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:border-black focus:ring-black"
@@ -317,7 +317,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dateEnded"
                 value={formData.dateEnded}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm transition-colors ${
+                className={`w-full px-3 py-2 border -md text-sm transition-colors ${
                   errors.dateEnded
                     ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:border-black focus:ring-black"
@@ -346,7 +346,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dailyStartTime"
                 value={formData.dailyStartTime}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm transition-colors ${
+                className={`w-full px-3 py-2 border -md text-sm transition-colors ${
                   errors.dailyStartTime
                     ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:border-black focus:ring-black"
@@ -374,7 +374,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dailyEndTime"
                 value={formData.dailyEndTime}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm transition-colors ${
+                className={`w-full px-3 py-2 border -md text-sm transition-colors ${
                   errors.dailyEndTime
                     ? "border-red-300 focus:border-red-500 focus:ring-red-500"
                     : "border-gray-300 focus:border-black focus:ring-black"
@@ -394,14 +394,14 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+              className="px-4 py-2 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 -md transition-colors"
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm text-white bg-black hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50"
+              className="px-4 py-2 text-sm text-white bg-black hover:bg-gray-800 -md transition-colors disabled:opacity-50"
               disabled={isSubmitting}
             >
               {isSubmitting

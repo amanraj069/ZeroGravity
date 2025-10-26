@@ -109,8 +109,10 @@ export default function LeaderboardPage() {
         <LandingNavbar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-600">Loading leaderboard...</p>
+            <div className="w-12 h-12 mx-auto mb-4 border-2 border-gray-300 border-t-black  animate-spin"></div>
+            <p className="text-sm text-gray-600 font-light">
+              Loading leaderboard...
+            </p>
           </div>
         </main>
         <SimpleFooter />
@@ -122,116 +124,161 @@ export default function LeaderboardPage() {
     <div className="min-h-screen flex flex-col bg-white">
       <LandingNavbar />
 
-      <main className="flex-1 px-6 py-8">
-        <div className="max-w-4xl mx-auto">
+      <main className="flex-1 flex flex-col items-center px-4 py-10">
+        <div className="w-full max-w-6xl space-y-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-light text-gray-900 mb-4 tracking-tight">
+          <div className="border-b border-gray-100 pb-8">
+            <h1 className="text-4xl font-light text-black tracking-tight mb-2">
               Leaderboard
             </h1>
-            <p className="text-lg text-gray-600 font-light mb-6">
+            <p className="text-sm text-gray-600 font-light mb-8">
               {quiz?.title || "Quiz Results"}
             </p>
 
-            <div className="flex items-center justify-center space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleBackToHosted}
-                className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors font-light rounded-lg"
+                className="flex-1 px-6 py-3 bg-black hover:bg-gray-800 text-white font-light transition-colors "
               >
-                ← Back to Live Control
+                ← Back to Control
               </button>
               <button
                 onClick={handleBackToPortal}
-                className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 transition-colors font-light rounded-lg"
+                className="flex-1 px-6 py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 font-light transition-colors "
               >
-                Quiz Portal
+                Portal
               </button>
             </div>
           </div>
 
+          {/* Leaderboard - Table Header */}
+          <div className="hidden lg:block border border-gray-200 mb-0">
+            <div className="grid grid-cols-12 gap-0 p-4 bg-white border-b border-gray-200">
+              <div className="col-span-3 text-xs font-medium text-gray-600 uppercase tracking-wide">
+                Name
+              </div>
+              <div className="col-span-4 text-xs font-medium text-gray-600 uppercase tracking-wide">
+                Answer Summary
+              </div>
+              <div className="col-span-2 text-xs font-medium text-gray-600 uppercase tracking-wide text-center">
+                Accuracy
+              </div>
+              <div className="col-span-2 text-xs font-medium text-gray-600 uppercase tracking-wide text-center">
+                Points
+              </div>
+              <div className="col-span-1 text-xs font-medium text-gray-600 uppercase tracking-wide text-right pr-4">
+                Score
+              </div>
+            </div>
+          </div>
+
           {/* Leaderboard */}
-          <div className="space-y-4">
+          <div className="space-y-0 border border-gray-200 border-t-0">
             {board.length > 0 ? (
               board
                 .slice()
                 .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
                 .map((entry, index) => {
                   const rank = index + 1;
-                  const rankIcon = getRankIcon(rank);
-                  const rankColor = getRankColor(rank);
+                  const correctAnswers = entry.correctAnswers || 0;
+                  const incorrectAnswers = entry.incorrectAnswers || 0;
+                  const accuracy = entry.accuracy || 0;
+                  const pointsScored = entry.pointsEarned || 0;
+                  const totalPoints = 92; // This should come from quiz if available
 
                   return (
                     <div
                       key={entry.quizUserId}
-                      className={`bg-gradient-to-r ${rankColor} p-6 rounded-xl border-2 shadow-sm hover:shadow-md transition-all duration-200`}
+                      className={`hidden lg:block border-b border-gray-200 hover:bg-opacity-80 transition-colors last:border-b-0 ${
+                        rank === 1
+                          ? "bg-yellow-50"
+                          : rank === 2
+                          ? "bg-gray-100"
+                          : rank === 3
+                          ? "bg-orange-50"
+                          : "hover:bg-gray-50"
+                      }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          {/* Rank */}
-                          <div className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-sm border border-gray-200">
-                            {rankIcon ? (
-                              <span className="text-2xl">{rankIcon}</span>
-                            ) : (
-                              <span className="text-lg font-bold text-gray-700">
-                                #{rank}
-                              </span>
-                            )}
+                      <div className="grid grid-cols-12 gap-0 p-4 items-center">
+                        {/* Name Column */}
+                        <div className="col-span-3 flex items-center gap-3">
+                          <div className="w-10 h-10 flex items-center justify-center bg-black text-white text-sm font-medium flex-shrink-0">
+                            {rank}
                           </div>
-
-                          {/* Participant Info */}
-                          <div>
-                            <h3 className="text-xl font-medium text-gray-900">
+                          <div className="min-w-0">
+                            <h3 className="text-sm font-light text-gray-900 truncate">
                               {entry.participantName}
                             </h3>
-                            <p className="text-sm text-gray-600">Participant</p>
+                            <p className="text-xs text-gray-500 font-light">
+                              Participant
+                            </p>
                           </div>
                         </div>
 
-                        {/* Score */}
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-gray-900">
-                            {Math.round(entry.totalScore || 0)}
+                        {/* Answer Summary Column */}
+                        <div className="col-span-4 space-y-2">
+                          {/* Visual Blocks */}
+                          <div className="flex gap-0.5">
+                            {Array.from({
+                              length: Math.max(
+                                correctAnswers + incorrectAnswers,
+                                1
+                              ),
+                            }).map((_, i) => {
+                              if (i < correctAnswers)
+                                return (
+                                  <div
+                                    key={i}
+                                    className="w-2 h-3 bg-green-500"
+                                  />
+                                );
+                              return (
+                                <div key={i} className="w-2 h-3 bg-red-500" />
+                              );
+                            })}
                           </div>
-                          <p className="text-sm text-gray-600 font-medium">
-                            points
-                          </p>
+                          {/* Answer Count */}
+                          <div className="flex gap-4 text-xs font-light">
+                            <span className="text-green-700">
+                              ✓{correctAnswers}
+                            </span>
+                            <span className="text-red-700">
+                              ✗{incorrectAnswers}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Accuracy Column */}
+                        <div className="col-span-2 text-center">
+                          <div className="flex items-center justify-center">
+                            <span className="text-sm font-light text-gray-900">
+                              {accuracy}%
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Points Column */}
+                        <div className="col-span-2 text-center">
+                          <span className="text-sm font-light text-gray-900">
+                            {pointsScored}/92
+                          </span>
+                        </div>
+
+                        {/* Score Column */}
+                        <div className="col-span-1 text-right pr-4">
+                          <span className="text-sm font-light text-gray-900">
+                            {Math.round(entry.totalScore || 0)}
+                          </span>
                         </div>
                       </div>
-
-                      {/* Progress Bar for Visual Score Representation */}
-                      {board.length > 0 && (
-                        <div className="mt-4">
-                          <div className="h-2 bg-white bg-opacity-50 rounded-full overflow-hidden">
-                            <div
-                              className={`h-full transition-all duration-1000 ease-out ${
-                                rank === 1
-                                  ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
-                                  : rank === 2
-                                  ? "bg-gradient-to-r from-gray-400 to-gray-600"
-                                  : rank === 3
-                                  ? "bg-gradient-to-r from-orange-400 to-orange-600"
-                                  : "bg-gradient-to-r from-blue-400 to-blue-600"
-                              }`}
-                              style={{
-                                width: `${Math.max(
-                                  10,
-                                  ((entry.totalScore || 0) /
-                                    (board[0]?.totalScore || 1)) *
-                                    100
-                                )}%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
                     </div>
                   );
                 })
             ) : (
-              <div className="text-center py-16 bg-gray-50 rounded-xl border border-gray-200">
-                <div className="w-20 h-20 mx-auto mb-6 bg-gray-200 rounded-full flex items-center justify-center">
+              <div className="text-center py-12 bg-gray-50">
+                <div className="w-12 h-12 mx-auto mb-4 bg-gray-200 flex items-center justify-center">
                   <svg
-                    className="w-8 h-8 text-gray-400"
+                    className="w-6 h-6 text-gray-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -242,10 +289,10 @@ export default function LeaderboardPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-light text-gray-900 mb-2">
+                <h3 className="text-base font-light text-gray-900 mb-2">
                   No scores yet
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm text-gray-600 font-light">
                   Participants need to answer questions to appear on the
                   leaderboard
                 </p>
@@ -253,39 +300,118 @@ export default function LeaderboardPage() {
             )}
           </div>
 
+          {/* Mobile View - Compact Cards */}
+          <div className="lg:hidden space-y-3">
+            {board.length > 0 ? (
+              board
+                .slice()
+                .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
+                .map((entry, index) => {
+                  const rank = index + 1;
+                  const accuracy = entry.accuracy || 0;
+
+                  return (
+                    <div
+                      key={entry.quizUserId}
+                      className={`p-4 border border-gray-200 hover:border-gray-400 transition-colors ${
+                        rank === 1
+                          ? "bg-yellow-50 border-yellow-200"
+                          : rank === 2
+                          ? "bg-gray-100 border-gray-300"
+                          : rank === 3
+                          ? "bg-orange-50 border-orange-200"
+                          : "hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 flex items-center justify-center bg-black text-white text-xs font-medium flex-shrink-0">
+                            {rank}
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-light text-gray-900">
+                              {entry.participantName}
+                            </h3>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-light text-gray-900">
+                            {Math.round(entry.totalScore || 0)}
+                          </div>
+                          <p className="text-xs text-gray-500 font-light">
+                            score
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex gap-0.5">
+                          {Array.from({
+                            length: Math.max(
+                              (entry.correctAnswers || 0) +
+                                (entry.incorrectAnswers || 0),
+                              1
+                            ),
+                          }).map((_, i) => {
+                            if (i < (entry.correctAnswers || 0))
+                              return (
+                                <div
+                                  key={i}
+                                  className="flex-1 h-2 bg-green-500"
+                                />
+                              );
+                            return (
+                              <div key={i} className="flex-1 h-2 bg-red-500" />
+                            );
+                          })}
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="text-gray-600 font-light">
+                            {accuracy}% • ✓{entry.correctAnswers || 0} ✗
+                            {entry.incorrectAnswers || 0}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+            ) : (
+              <div className="text-center py-8 text-gray-600">
+                No scores yet
+              </div>
+            )}
+          </div>
+
           {/* Stats Summary */}
           {board.length > 0 && (
-            <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    {board.length}
-                  </div>
-                  <p className="text-sm text-blue-700 font-medium">
-                    Total Participants
-                  </p>
+            <div className="grid grid-cols-3 gap-4 border-t border-gray-100 pt-8">
+              <div className="p-5 border border-gray-200  text-center">
+                <div className="text-2xl font-light text-gray-900 mb-2">
+                  {board.length}
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    {Math.round(board[0]?.totalScore || 0)}
-                  </div>
-                  <p className="text-sm text-blue-700 font-medium">
-                    Highest Score
-                  </p>
+                <p className="text-xs text-gray-600 font-light uppercase tracking-wide">
+                  Participants
+                </p>
+              </div>
+              <div className="p-5 border border-gray-200  text-center">
+                <div className="text-2xl font-light text-gray-900 mb-2">
+                  {Math.round(board[0]?.totalScore || 0)}
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-blue-900">
-                    {Math.round(
-                      board.reduce(
-                        (sum, entry) => sum + (entry.totalScore || 0),
-                        0
-                      ) / board.length
-                    ) || 0}
-                  </div>
-                  <p className="text-sm text-blue-700 font-medium">
-                    Average Score
-                  </p>
+                <p className="text-xs text-gray-600 font-light uppercase tracking-wide">
+                  High Score
+                </p>
+              </div>
+              <div className="p-5 border border-gray-200  text-center">
+                <div className="text-2xl font-light text-gray-900 mb-2">
+                  {Math.round(
+                    board.reduce(
+                      (sum, entry) => sum + (entry.totalScore || 0),
+                      0
+                    ) / board.length
+                  ) || 0}
                 </div>
+                <p className="text-xs text-gray-600 font-light uppercase tracking-wide">
+                  Average
+                </p>
               </div>
             </div>
           )}

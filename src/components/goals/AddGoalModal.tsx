@@ -144,7 +144,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+      <div className="bg-white  shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium text-gray-900">
@@ -168,7 +168,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
               }
-              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-black focus:border-black text-sm"
+              className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
               placeholder="Goal title"
             />
           </div>
@@ -182,7 +182,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                   description: e.target.value,
                 }))
               }
-              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-black focus:border-black text-sm"
+              className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
               rows={2}
               placeholder="Description (optional)"
             />
@@ -203,7 +203,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       | "yearly",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-black focus:border-black text-sm"
+                className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
               >
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
@@ -222,7 +222,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     priority: e.target.value as "low" | "medium" | "high",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-black focus:border-black text-sm"
+                className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -241,7 +241,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     targetDate: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-black focus:border-black text-sm"
+                className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
               />
             </div>
           </div>
@@ -257,7 +257,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
               {milestones.map((milestone, milestoneIndex) => (
                 <div
                   key={milestoneIndex}
-                  className="p-3 border border-gray-100 rounded-md space-y-3"
+                  className="p-3 border border-gray-100 -md space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <input
@@ -266,7 +266,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       onChange={(e) =>
                         updateMilestone(milestoneIndex, "title", e.target.value)
                       }
-                      className="flex-1 px-2 py-1 border border-gray-200 rounded text-sm mr-2"
+                      className="flex-1 px-2 py-1 border border-gray-200  text-sm mr-2"
                       placeholder="Milestone title"
                     />
                     <button
@@ -287,7 +287,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                         e.target.value
                       )
                     }
-                    className="w-full px-2 py-1 border border-gray-200 rounded text-sm"
+                    className="w-full px-2 py-1 border border-gray-200  text-sm"
                   />
                 </div>
               ))}
@@ -297,7 +297,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
           <button
             type="button"
             onClick={addMilestone}
-            className="w-full py-2 text-sm text-gray-600 border border-dashed border-gray-300 rounded-md hover:border-gray-400 transition-colors"
+            className="w-full py-2 text-sm text-gray-600 border border-dashed border-gray-300 -md hover:border-gray-400 transition-colors"
           >
             + Add Milestone
           </button>
@@ -306,13 +306,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 text-gray-600 -md hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-3 py-2 text-sm bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+              className="flex-1 px-3 py-2 text-sm bg-black text-white -md hover:bg-gray-800 transition-colors"
             >
               {isEditing ? "Update Goal" : "Create Goal"}
             </button>

@@ -293,7 +293,7 @@ const Goals: React.FC = () => {
     return (
       <>
         {/* Mobile-optimized Header */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-white  p-4 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex-1">
               <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
@@ -311,7 +311,7 @@ const Goals: React.FC = () => {
             </div>
             <button
               onClick={() => setShowAddGoal(true)}
-              className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto"
             >
               <Plus className="w-4 h-4" />
               Add Goal
@@ -320,7 +320,7 @@ const Goals: React.FC = () => {
         </div>
 
         {/* Mobile-optimized Filter */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white  shadow-sm overflow-hidden">
           <div className="flex overflow-x-auto scrollbar-hide">
             {(
               [
@@ -349,8 +349,8 @@ const Goals: React.FC = () => {
         {/* Mobile-optimized Goals Display */}
         <div className="space-y-4">
           {filteredGoals.length === 0 ? (
-            <div className="bg-white rounded-lg p-8 text-center shadow-sm">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-white  p-8 text-center shadow-sm">
+              <div className="w-16 h-16 bg-gray-100  flex items-center justify-center mx-auto mb-4">
                 <Target className="w-8 h-8 text-gray-400" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -361,7 +361,7 @@ const Goals: React.FC = () => {
               </p>
               <button
                 onClick={() => setShowAddGoal(true)}
-                className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors"
+                className="bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors"
               >
                 Create Goal
               </button>
@@ -370,7 +370,7 @@ const Goals: React.FC = () => {
             filteredGoals.map((goal) => (
               <div
                 key={goal._id}
-                className={`rounded-lg shadow-sm border overflow-hidden ${
+                className={` shadow-sm border overflow-hidden ${
                   goal.completed
                     ? "bg-gray-50/50 border-gray-200"
                     : goal.priority === "high"
@@ -385,7 +385,7 @@ const Goals: React.FC = () => {
                   <div className="flex items-start gap-3">
                     <button
                       onClick={() => toggleGoalCompletion(goal._id)}
-                      className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                      className={`flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${
                         goal.completed
                           ? "bg-black border-black text-white"
                           : "border-gray-300 hover:border-gray-400"
@@ -407,11 +407,11 @@ const Goals: React.FC = () => {
                             {goal.title}
                           </h3>
                           <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className="text-xs text-gray-500 capitalize bg-gray-100 px-2 py-0.5 rounded">
+                            <span className="text-xs text-gray-500 capitalize bg-gray-100 px-2 py-0.5 ">
                               {goal.category}
                             </span>
                             <span
-                              className={`text-xs px-2 py-0.5 rounded font-medium ${
+                              className={`text-xs px-2 py-0.5  font-medium ${
                                 goal.priority === "high"
                                   ? "bg-red-50 text-red-500 border border-red-200"
                                   : goal.priority === "medium"
@@ -461,9 +461,9 @@ const Goals: React.FC = () => {
                               {calculateProgress(goal)}%
                             </span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-gray-200  h-2">
                             <div
-                              className="bg-black h-2 rounded-full transition-all duration-300"
+                              className="bg-black h-2  transition-all duration-300"
                               style={{ width: `${calculateProgress(goal)}%` }}
                             ></div>
                           </div>
@@ -505,7 +505,7 @@ const Goals: React.FC = () => {
                       {goal.milestones.map((milestone) => (
                         <div
                           key={milestone.id}
-                          className="bg-white rounded-lg p-3 shadow-sm"
+                          className="bg-white  p-3 shadow-sm"
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -516,7 +516,7 @@ const Goals: React.FC = () => {
                                     milestone.id
                                   )
                                 }
-                                className={`flex-shrink-0 w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                className={`flex-shrink-0 w-4 h-4  border flex items-center justify-center transition-colors ${
                                   milestone.completed
                                     ? "bg-gray-600 border-gray-600 text-white"
                                     : "border-gray-300 hover:border-gray-400"
@@ -536,7 +536,7 @@ const Goals: React.FC = () => {
                                 {milestone.title}
                               </span>
                               {milestone.subtasks.length > 0 && (
-                                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+                                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 ">
                                   {
                                     milestone.subtasks.filter(
                                       (s) => s.completed
@@ -554,7 +554,7 @@ const Goals: React.FC = () => {
                                   milestoneId: milestone.id,
                                 })
                               }
-                              className="flex-shrink-0 text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-2 py-1 rounded transition-colors"
+                              className="flex-shrink-0 text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 px-2 py-1  transition-colors"
                             >
                               + Subtasks
                             </button>
@@ -576,14 +576,14 @@ const Goals: React.FC = () => {
                                         subtask.id
                                       )
                                     }
-                                    className={`flex-shrink-0 w-3 h-3 rounded border flex items-center justify-center transition-colors ${
+                                    className={`flex-shrink-0 w-3 h-3  border flex items-center justify-center transition-colors ${
                                       subtask.completed
                                         ? "bg-gray-500 border-gray-500"
                                         : "border-gray-300 hover:border-gray-400"
                                     }`}
                                   >
                                     {subtask.completed && (
-                                      <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                                      <div className="w-1.5 h-1.5 bg-white " />
                                     )}
                                   </button>
                                   <span
@@ -642,7 +642,7 @@ const Goals: React.FC = () => {
       <div className="min-h-screen bg-gray-50 px-4 py-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+            <div className="animate-spin  h-8 w-8 border-b-2 border-black"></div>
             <span className="ml-3 text-gray-600">
               {authLoading ? "Checking authentication..." : "Loading goals..."}
             </span>
@@ -664,14 +664,14 @@ const Goals: React.FC = () => {
               {!isLoggedIn ? (
                 <a
                   href="/login"
-                  className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors inline-block"
+                  className="bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors inline-block"
                 >
                   Go to Login
                 </a>
               ) : (
                 <button
                   onClick={loadGoals}
-                  className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition-colors"
+                  className="bg-black text-white px-4 py-2 -md text-sm hover:bg-gray-800 transition-colors"
                 >
                   Try Again
                 </button>
@@ -687,7 +687,7 @@ const Goals: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         {/* Main Navigation - Always visible */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white  shadow-sm overflow-hidden">
           <div className="flex">
             <button
               onClick={() => handleViewChange("daily-tasks")}

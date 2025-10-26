@@ -94,7 +94,7 @@ export default function WaitlistUsersSection({
                     </td>
                     <td className="px-2 sm:px-6 py-4 text-center">
                       <span
-                        className={`inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full ${
+                        className={`inline-flex px-1 sm:px-2 py-1 text-xs font-semibold  ${
                           user.isNotified
                             ? "bg-green-100 text-green-800"
                             : "bg-yellow-100 text-yellow-800"

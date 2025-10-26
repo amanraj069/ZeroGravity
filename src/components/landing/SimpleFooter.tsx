@@ -27,7 +27,7 @@ export default function SimpleFooter() {
                   href="https://www.linkedin.com/in/amanraj-iiits"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-blue-600/80 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
+                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-blue-600/80  flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
                   title="LinkedIn"
                 >
                   <svg
@@ -42,7 +42,7 @@ export default function SimpleFooter() {
 
                 <a
                   href="mailto:amanraj3567@gmail.com"
-                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-red-600/80 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
+                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-red-600/80  flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
                   title="Email"
                 >
                   <svg
