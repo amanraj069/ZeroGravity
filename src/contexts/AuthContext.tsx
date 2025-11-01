@@ -30,6 +30,9 @@ interface AuthContextType {
   signup: (
     userData: SignupData
   ) => Promise<{ success: boolean; message: string }>;
+  loginWithGoogle: (
+    credential: string
+  ) => Promise<{ success: boolean; message: string }>;
   checkSession: () => Promise<void>;
 }
 
@@ -172,6 +175,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Google OAuth login function
+  const loginWithGoogle = async (
+    credential: string
+  ): Promise<{ success: boolean; message: string }> => {
+    try {
+      console.log("Attempting Google login");
+      const response = await apiCall(API_ENDPOINTS.AUTH.GOOGLE, {
+        method: "POST",
+        body: JSON.stringify({ credential }),
+      });
+
+      const data = await response.json();
+      console.log("Google login response:", data);
+
+      if (data.success) {
+        setUser(data.user);
+        setUserId(data.userId);
+        setIsLoggedIn(true);
+
+        // Store token in localStorage as fallback for cookie issues
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
+
+        console.log("Google login successful, user:", data.user);
+        return { success: true, message: data.message };
+      } else {
+        console.log("Google login failed:", data.message);
+        return { success: false, message: data.message || "Google login failed" };
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      return {
+        success: false,
+        message:
+          "Network error. Please check if the backend server is running.",
+      };
+    }
+  };
+
   // Logout function
   const logout = async () => {
     try {
@@ -211,6 +254,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     login,
     logout,
     signup,
+    loginWithGoogle,
     checkSession,
   };
 

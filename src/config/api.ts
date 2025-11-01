@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     LOGOUT: `${API_BASE_URL}/api/auth/logout`,
     SIGNUP_STATUS: `${API_BASE_URL}/api/auth/signup-status`,
     TOGGLE_SIGNUP: `${API_BASE_URL}/api/auth/toggle-signup`,
+    GOOGLE: `${API_BASE_URL}/api/auth/google`,
     DEBUG: `${API_BASE_URL}/api/auth/debug`,
   },
   // Waitlist endpoints

@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 export default function Login() {
-  const { login, user } = useAuth();
+  const { login, loginWithGoogle, user } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -15,6 +16,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   useEffect(() => {
     // Redirect to home if user is already logged in
@@ -164,13 +166,46 @@ export default function Login() {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-black text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
-          </button>
+          <div className="space-y-3">
+            <button
+              type="submit"
+              disabled={isLoading || isGoogleLoading}
+              className="w-full bg-black text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </button>
+
+            <GoogleSignInButton
+              onSuccess={async (credential) => {
+                setIsGoogleLoading(true);
+                setError("");
+
+                try {
+                  const result = await loginWithGoogle(credential);
+
+                  if (result.success) {
+                    // Redirect to dashboard after successful login
+                    router.push("/dashboard");
+                  } else {
+                    setError(result.message || "Google authentication failed");
+                  }
+                } catch (err) {
+                  console.error("Google login error:", err);
+                  setError(
+                    "An unexpected error occurred during Google authentication"
+                  );
+                } finally {
+                  setIsGoogleLoading(false);
+                }
+              }}
+              onError={() => {
+                setError("Google authentication failed. Please try again.");
+                setIsGoogleLoading(false);
+              }}
+              disabled={isLoading}
+              isLoading={isGoogleLoading}
+            />
+          </div>
         </form>
 
         <div className="mt-6 sm:mt-8 text-center">

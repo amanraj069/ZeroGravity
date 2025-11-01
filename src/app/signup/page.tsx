@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall } from "@/config/api";
-import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+import GoogleSignInButton from "@/components/GoogleSignInButton";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 export default function Signup() {
   const router = useRouter();
-  const { signup, user } = useAuth();
+  const { signup, loginWithGoogle, user } = useAuth();
   const [signupEnabled, setSignupEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -24,6 +23,7 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSignupInProgress, setIsSignupInProgress] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   useEffect(() => {
     // Redirect to home if user is already logged in (but not during signup process)
@@ -149,6 +149,7 @@ export default function Signup() {
       <ZeroGravityLoading
         title="Checking Signup Status"
         subtitle="Verifying registration availability..."
+        showNavigation={false}
       />
     );
   }
@@ -311,39 +312,49 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* Side-by-side buttons container */}
-          <div className="flex gap-3">
+          <div className="space-y-3">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-black text-white py-2 sm:py-2 -sm px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black text-white py-2 sm:py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isSubmitting ? "Creating Account..." : "Create Account"}
             </button>
 
-            <div className="flex-1">
-              <GoogleLogin
-                containerProps={{
-                  style: {
-                    width: "100%",
-                    height: "100%",
-                  },
-                }}
-                onSuccess={(credentialResponse) => {
-                  if (credentialResponse.credential) {
-                    const credentialResponseEncoded = jwtDecode(
-                      credentialResponse.credential
-                    );
-                    console.log(credentialResponseEncoded);
+            <GoogleSignInButton
+              onSuccess={async (credential) => {
+                setIsGoogleLoading(true);
+                setIsSignupInProgress(true);
+                setError("");
+
+                try {
+                  const result = await loginWithGoogle(credential);
+
+                  if (result.success) {
+                    // Redirect to dashboard after successful login
+                    router.push("/dashboard");
                   } else {
-                    console.error("No credential received from Google login.");
+                    setError(result.message || "Google authentication failed");
+                    setIsSignupInProgress(false);
                   }
-                }}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            </div>
+                } catch (err) {
+                  console.error("Google login error:", err);
+                  setError(
+                    "An unexpected error occurred during Google authentication"
+                  );
+                  setIsSignupInProgress(false);
+                } finally {
+                  setIsGoogleLoading(false);
+                }
+              }}
+              onError={() => {
+                setError("Google authentication failed. Please try again.");
+                setIsGoogleLoading(false);
+                setIsSignupInProgress(false);
+              }}
+              disabled={isSubmitting}
+              isLoading={isGoogleLoading}
+            />
           </div>
         </form>
 

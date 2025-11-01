@@ -19,6 +19,15 @@ export const metadata: Metadata = {
   description: "Goals without gravity",
 };
 
+// Get Google Client ID from environment variables
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+if (!googleClientId) {
+  console.error(
+    "WARNING: NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set in environment variables. Google OAuth will not work."
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,11 +38,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GoogleOAuthProvider
-          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
-        >
+        {googleClientId ? (
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <AuthProvider>{children}</AuthProvider>
+          </GoogleOAuthProvider>
+        ) : (
           <AuthProvider>{children}</AuthProvider>
-        </GoogleOAuthProvider>
+        )}
       </body>
     </html>
   );

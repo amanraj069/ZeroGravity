@@ -77,6 +77,32 @@ export default function LeaderboardPage() {
     router.push(`/quizzes/host/${quizId}`);
   };
 
+  const getRankIcon = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return "🥇";
+      case 2:
+        return "🥈";
+      case 3:
+        return "🥉";
+      default:
+        return null;
+    }
+  };
+
+  const getRankColor = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return "from-yellow-100 to-amber-100 border-yellow-300";
+      case 2:
+        return "from-gray-100 to-slate-100 border-gray-300";
+      case 3:
+        return "from-orange-100 to-amber-100 border-orange-300";
+      default:
+        return "from-white to-gray-50 border-gray-200";
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
@@ -158,6 +184,7 @@ export default function LeaderboardPage() {
                   const incorrectAnswers = entry.incorrectAnswers || 0;
                   const accuracy = entry.accuracy || 0;
                   const pointsScored = entry.pointsEarned || 0;
+                  const totalPoints = 92; // This should come from quiz if available
 
                   return (
                     <div
