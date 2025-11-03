@@ -229,12 +229,3 @@ textarea::placeholder {
     @apply bg-background text-foreground;
   }
 }
-
-/* Theme toggle icon colors */
-.dark [class*="theme-toggles"] {
-  color: white !important;
-}
-
-[class*="theme-toggles"] {
-  color: black;
-}
