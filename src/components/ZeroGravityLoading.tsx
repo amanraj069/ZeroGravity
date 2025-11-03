@@ -16,14 +16,18 @@ export default function ZeroGravityLoading({
   showNavigation = true,
 }: ZeroGravityLoadingProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       {showNavigation && <LandingNavbar />}
 
       <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin h-12 w-12 border-b-2 border-black mb-6"></div>
-          <h2 className="text-xl font-light text-black mb-2">{title}</h2>
-          <p className="text-gray-600 font-light">{subtitle}</p>
+          <div className="inline-block animate-spin h-12 w-12 border-b-2 border-black dark:border-white mb-6"></div>
+          <h2 className="text-xl font-light text-black dark:text-white mb-2">
+            {title}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 font-light">
+            {subtitle}
+          </p>
         </div>
       </main>
 
