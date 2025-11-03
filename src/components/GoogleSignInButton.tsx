@@ -9,6 +9,31 @@ interface GoogleSignInButtonProps {
   isLoading?: boolean;
 }
 
+interface GoogleCredentialResponse {
+  credential: string;
+  select_by?: string;
+}
+
+interface GooglePromptNotification {
+  isNotDisplayed: () => boolean;
+  isSkippedMoment: () => boolean;
+  isDismissedMoment: () => boolean;
+  isDisplayed: () => boolean;
+}
+
+interface GoogleIdConfiguration {
+  client_id: string;
+  callback: (response: GoogleCredentialResponse) => void;
+}
+
+interface GoogleButtonConfig {
+  type?: string;
+  theme?: string;
+  size?: string;
+  text?: string;
+  width?: number;
+}
+
 export default function GoogleSignInButton({
   onSuccess,
   onError,
@@ -40,7 +65,7 @@ export default function GoogleSignInButton({
       try {
         window.google.accounts.id.initialize({
           client_id: clientId,
-          callback: (response: any) => {
+          callback: (response: GoogleCredentialResponse) => {
             if (response?.credential) {
               setIsProcessing(false);
               setShowGoogleButton(false);
@@ -105,7 +130,7 @@ export default function GoogleSignInButton({
     setIsProcessing(true);
 
     // Try one-tap prompt first
-    window.google.accounts.id.prompt((notification: any) => {
+    window.google.accounts.id.prompt((notification: GooglePromptNotification) => {
       if (
         notification.isNotDisplayed() ||
         notification.isSkippedMoment() ||
@@ -200,9 +225,9 @@ declare global {
     google?: {
       accounts?: {
         id?: {
-          initialize: (config: any) => void;
-          renderButton: (element: HTMLElement, config: any) => void;
-          prompt: (callback: (notification: any) => void) => void;
+          initialize: (config: GoogleIdConfiguration) => void;
+          renderButton: (element: HTMLElement, config: GoogleButtonConfig) => void;
+          prompt: (callback: (notification: GooglePromptNotification) => void) => void;
         };
       };
     };

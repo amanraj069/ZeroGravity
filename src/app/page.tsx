@@ -8,7 +8,7 @@ import LandingFooter from "@/components/landing/LandingFooter";
 
 export default function Home() {
   return (
-    <div className="bg-white">
+    <div className="bg-white dark:bg-gray-900">
       <LandingNavbar />
 
       <main className="relative">

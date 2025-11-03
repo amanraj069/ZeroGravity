@@ -143,16 +143,16 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4">
-      <div className="bg-white  shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-4 border-b border-gray-100">
+    <div className="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium text-gray-900">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
               {isEditing ? "Edit Goal" : "New Goal"}
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -168,7 +168,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
               }
-              className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
               placeholder="Goal title"
             />
           </div>
@@ -182,7 +182,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                   description: e.target.value,
                 }))
               }
-              className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
               rows={2}
               placeholder="Description (optional)"
             />
@@ -203,7 +203,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       | "yearly",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
               >
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
@@ -222,7 +222,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     priority: e.target.value as "low" | "medium" | "high",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -241,7 +241,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     targetDate: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 -md focus:ring-1 focus:ring-black focus:border-black text-sm"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
               />
             </div>
           </div>
@@ -250,14 +250,14 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
           {milestones.length > 0 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Milestones
                 </span>
               </div>
               {milestones.map((milestone, milestoneIndex) => (
                 <div
                   key={milestoneIndex}
-                  className="p-3 border border-gray-100 -md space-y-3"
+                  className="p-3 border border-gray-100 dark:border-gray-700 -md space-y-3"
                 >
                   <div className="flex items-center justify-between">
                     <input
@@ -266,13 +266,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       onChange={(e) =>
                         updateMilestone(milestoneIndex, "title", e.target.value)
                       }
-                      className="flex-1 px-2 py-1 border border-gray-200  text-sm mr-2"
+                      className="flex-1 px-2 py-1 border border-gray-200 dark:border-gray-700 text-sm mr-2 text-black dark:text-white bg-white dark:bg-gray-900"
                       placeholder="Milestone title"
                     />
                     <button
                       type="button"
                       onClick={() => removeMilestone(milestoneIndex)}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
+                      className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -287,7 +287,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                         e.target.value
                       )
                     }
-                    className="w-full px-2 py-1 border border-gray-200  text-sm"
+                    className="w-full px-2 py-1 border border-gray-200 dark:border-gray-700 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
                   />
                 </div>
               ))}
@@ -297,7 +297,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
           <button
             type="button"
             onClick={addMilestone}
-            className="w-full py-2 text-sm text-gray-600 border border-dashed border-gray-300 -md hover:border-gray-400 transition-colors"
+            className="w-full py-2 text-sm text-gray-600 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-700 -md hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
           >
             + Add Milestone
           </button>
@@ -306,13 +306,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 text-gray-600 -md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 -md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-3 py-2 text-sm bg-black text-white -md hover:bg-gray-800 transition-colors"
+              className="flex-1 px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black -md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
               {isEditing ? "Update Goal" : "Create Goal"}
             </button>

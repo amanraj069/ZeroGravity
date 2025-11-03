@@ -24,12 +24,12 @@ export default function HeroSection() {
 
       <AnimatedHero className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <AnimatedHeroElement>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black mb-4 sm:mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black dark:text-white mb-4 sm:mb-6">
             ZeroGravity
           </h1>
         </AnimatedHeroElement>
         <AnimatedHeroElement>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-8 sm:mb-12 max-w-3xl mx-auto font-light leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 mb-8 sm:mb-12 max-w-3xl mx-auto font-light leading-relaxed">
             Break free from gravity. Reach your goals.
           </p>
         </AnimatedHeroElement>
@@ -40,7 +40,7 @@ export default function HeroSection() {
                 {isLoggedIn ? (
                   <Link
                     href="/dashboard"
-                    className="bg-black text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 transition-colors w-full sm:w-auto text-center"
+                    className="bg-black dark:bg-white text-white dark:text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto text-center"
                   >
                     Dashboard
                   </Link>
@@ -52,13 +52,13 @@ export default function HeroSection() {
                           behavior: "smooth",
                         });
                       }}
-                      className="bg-black text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 transition-colors w-full sm:w-auto text-center"
+                      className="bg-black dark:bg-white text-white dark:text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto text-center"
                     >
                       Get Started
                     </button>
                     <Link
                       href="/login"
-                      className="border border-gray-300 bg-[#ffffff8e] hover:bg-white text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium transition-colors w-full sm:w-auto text-center"
+                      className="border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-black dark:text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium transition-colors w-full sm:w-auto text-center"
                     >
                       Sign In
                     </Link>

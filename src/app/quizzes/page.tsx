@@ -71,13 +71,13 @@ export default function QuizzesPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "draft":
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
       case "published":
-        return "bg-green-100 text-green-700";
+        return "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300";
       case "ended":
-        return "bg-red-100 text-red-700";
+        return "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
     }
   };
 
@@ -168,16 +168,16 @@ export default function QuizzesPage() {
   // Check if user has pro subscription
   if (user?.subscription !== "pro") {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
         <LandingNavbar />
-        <main className="flex-1 px-6 py-10">
-          <div className="max-w-4xl mx-auto">
+        <main className="flex-1 py-10 max-w-6xl mx-auto">
+          <div className="max-w-4xl px-4 mx-auto">
             <div className="text-center py-16">
               <div className="max-w-2xl mx-auto">
                 <div className="mb-8">
-                  <div className="w-20 h-20 mx-auto bg-yellow-100 flex items-center justify-center mb-6">
+                  <div className="w-20 h-20 mx-auto bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mb-6">
                     <svg
-                      className="w-10 h-10 text-yellow-600"
+                      className="w-10 h-10 text-yellow-600 dark:text-yellow-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -190,50 +190,54 @@ export default function QuizzesPage() {
                       />
                     </svg>
                   </div>
-                  <h1 className="text-3xl font-light text-gray-900 mb-4">
+                  <h1 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
                     Pro Subscription Required
                   </h1>
-                  <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
                     Quiz creation and management features are available with a
                     Pro subscription. Upgrade your account to start creating
                     engaging quizzes for your audience.
                   </p>
                 </div>
 
-                <div className="bg-white shadow-sm p-8 border border-gray-100">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                <div className="bg-white dark:bg-gray-800 shadow-sm p-8 border border-gray-100 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     Pro Features Include:
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Create unlimited quizzes
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Real-time participant tracking
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Detailed analytics and insights
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">Custom join codes</span>
+                      <span className="text-gray-700 dark:text-gray-300">
+                        Custom join codes
+                      </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">Live leaderboards</span>
+                      <span className="text-gray-700 dark:text-gray-300">
+                        Live leaderboards
+                      </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Quiz hosting controls
                       </span>
                     </div>
@@ -245,11 +249,11 @@ export default function QuizzesPage() {
                         // TODO: Add upgrade functionality
                         alert("Upgrade functionality coming soon!");
                       }}
-                      className="bg-black text-white px-8 py-3 hover:bg-gray-800 transition-colors text-base font-medium"
+                      className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium"
                     >
                       Upgrade to Pro
                     </button>
-                    <p className="text-sm text-gray-500 mt-3">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
                       Contact support to upgrade your account
                     </p>
                   </div>
@@ -264,39 +268,39 @@ export default function QuizzesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       <LandingNavbar />
-      <main className="flex-1 px-6 py-10">
-        <div className="max-w-6xl mx-auto">
+      <main className="flex-1 py-10">
+        <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-light text-black mb-2">
+                <h1 className="text-3xl font-light text-black dark:text-white mb-2">
                   My Quizzes
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Manage and view all your created quizzes
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => router.push("/joinQuiz")}
-                  className="border border-gray-300 text-gray-700 px-6 py-3 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium cursor-pointer"
+                  className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Join Quiz
                 </button>
                 {user?.subscription === "pro" && (
                   <button
                     onClick={() => router.push("/quizzes/deleted")}
-                    className="border border-gray-300 text-gray-700 px-6 py-3 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium cursor-pointer"
+                    className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
                   >
                     View Deleted
                   </button>
                 )}
                 <button
                   onClick={() => router.push("/createQuiz")}
-                  className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
+                  className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Create New Quiz
                 </button>
@@ -311,11 +315,11 @@ export default function QuizzesPage() {
               placeholder="Search quizzes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+              className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all"
             />
             {searchLoading && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-gray-300 border-t-black  animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-700 border-t-black dark:border-t-white  animate-spin"></div>
               </div>
             )}
           </div>
@@ -348,10 +352,10 @@ export default function QuizzesPage() {
                   {/* Content - Right Side */}
                   <div className="flex-1 lg:w-1/2 text-center lg:text-left">
                     <div className="space-y-6">
-                      <h2 className="text-3xl lg:text-4xl font-light text-gray-900 leading-tight">
+                      <h2 className="text-3xl lg:text-4xl font-light text-gray-900 dark:text-white leading-tight">
                         Ready to create your first quiz?
                       </h2>
-                      <p className="text-gray-600 text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
+                      <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
                         Build engaging quizzes that captivate your audience and
                         make learning interactive and fun
                       </p>
@@ -359,26 +363,26 @@ export default function QuizzesPage() {
                       {/* Feature List - Simple and Clean */}
                       <div className="space-y-3 max-w-md mx-auto lg:mx-0">
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black"></div>
-                          <span className="text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
                             Real-time results and analytics
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black"></div>
-                          <span className="text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
                             Support for multiple participants
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black"></div>
-                          <span className="text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
                             Easy sharing with join codes
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black"></div>
-                          <span className="text-sm text-gray-700">
+                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
                             Detailed performance insights
                           </span>
                         </div>
@@ -388,7 +392,7 @@ export default function QuizzesPage() {
                       <div className="pt-4">
                         <button
                           onClick={() => router.push("/createQuiz")}
-                          className="w-full flex items-center justify-center px-8 py-3 bg-black text-white text-base font-medium hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                          className="w-full flex items-center justify-center px-8 py-3 bg-black dark:bg-white text-white dark:text-black text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                         >
                           Create Your First Quiz
                           <svg
@@ -419,9 +423,9 @@ export default function QuizzesPage() {
               <div className="max-w-md mx-auto text-center">
                 {/* Search Icon */}
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                     <svg
-                      className="w-8 h-8 text-gray-400"
+                      className="w-8 h-8 text-gray-400 dark:text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -438,10 +442,10 @@ export default function QuizzesPage() {
 
                 {/* Content */}
                 <div className="space-y-3">
-                  <h2 className="text-xl font-light text-gray-900">
+                  <h2 className="text-xl font-light text-gray-900 dark:text-white">
                     No quizzes found
                   </h2>
-                  <p className="text-gray-500 text-sm leading-relaxed">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                     Try adjusting your search terms to find what you&apos;re
                     looking for
                   </p>
@@ -451,7 +455,7 @@ export default function QuizzesPage() {
                 <div className="mt-6">
                   <button
                     onClick={() => setSearchTerm("")}
-                    className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 text-gray-700 text-sm font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                   >
                     Clear Search
                   </button>
@@ -467,7 +471,7 @@ export default function QuizzesPage() {
                 <div
                   key={quiz.quizId}
                   onClick={() => handleQuizClick(quiz)}
-                  className="bg-white shadow-sm p-6 hover:shadow-lg transition-all cursor-pointer border border-gray-100 hover:border-gray-200 group"
+                  className="bg-white dark:bg-gray-800 shadow-sm p-6 hover:shadow-lg transition-all cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group"
                 >
                   {/* Header with Status, Date and Actions */}
                   <div className="flex justify-between items-start mb-4">
@@ -479,34 +483,34 @@ export default function QuizzesPage() {
                       >
                         {getStatusText(quiz.status)}
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         Created {new Date(quiz.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       {quiz.joinCode && quiz.status === "published" && (
                         <div className="text-right">
-                          <div className="text-xs text-gray-500 mb-1">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                             Join Code
                           </div>
-                          <span className="text-sm font-mono text-gray-700 bg-gray-100 px-3 py-1">
+                          <span className="text-sm font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-1">
                             {quiz.joinCode}
                           </span>
                         </div>
                       )}
                       {quiz.status === "ended" && (
-                        <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-1">
                           Code Expired
                         </span>
                       )}
                       <button
                         onClick={(e) => handleDeleteQuiz(quiz.quizId, e)}
                         disabled={deletingQuizId === quiz.quizId}
-                        className="text-red-500 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                        className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
                         title="Delete quiz"
                       >
                         {deletingQuizId === quiz.quizId ? (
-                          <div className="w-4 h-4 border-2 border-red-500 border-t-transparent  animate-spin"></div>
+                          <div className="w-4 h-4 border-2 border-red-500 dark:border-red-400 border-t-transparent  animate-spin"></div>
                         ) : (
                           <svg
                             className="w-4 h-4"
@@ -527,30 +531,34 @@ export default function QuizzesPage() {
                   </div>
 
                   {/* Quiz Title */}
-                  <h3 className="text-xl font-semibold text-black mb-3 group-hover:text-gray-700 transition-colors line-clamp-2">
+                  <h3 className="text-xl font-semibold text-black dark:text-white mb-3 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2">
                     {quiz.title}
                   </h3>
 
                   {/* Quiz Description */}
                   {quiz.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
                       {quiz.description}
                     </p>
                   )}
 
                   {/* Quiz Stats */}
-                  <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100">
+                  <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black">
+                      <div className="text-lg font-semibold text-black dark:text-white">
                         {quiz.questions.length}
                       </div>
-                      <div className="text-xs text-gray-500">Questions</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Questions
+                      </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black">
+                      <div className="text-lg font-semibold text-black dark:text-white">
                         {quiz.participants || 0}
                       </div>
-                      <div className="text-xs text-gray-500">Participants</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Participants
+                      </div>
                     </div>
                   </div>
                 </div>

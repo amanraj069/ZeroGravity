@@ -67,20 +67,20 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md p-6 sm:p-8">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-light text-black mb-2">
+          <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
             Login
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Welcome back to ZeroGravity
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {error && (
-            <div className="text-red-600 text-sm text-center bg-red-50 p-3  border border-red-200">
+            <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/30 p-3  border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
@@ -88,7 +88,7 @@ export default function Login() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-black mb-2"
+              className="block text-sm font-medium text-black dark:text-white mb-2"
             >
               Email
             </label>
@@ -99,7 +99,7 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 -none focus:outline-none focus:border-black transition-colors bg-white text-black text-sm sm:text-base"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 -none focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
               placeholder="Enter your email here"
             />
           </div>
@@ -107,7 +107,7 @@ export default function Login() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-black mb-2"
+              className="block text-sm font-medium text-black dark:text-white mb-2"
             >
               Password
             </label>
@@ -119,13 +119,13 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 -none focus:outline-none focus:border-black transition-colors bg-white text-black text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 -none focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-black focus:outline-none"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none"
               >
                 {showPassword ? (
                   <svg
@@ -170,7 +170,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full bg-black text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black dark:bg-white text-white dark:text-black py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </button>
@@ -209,11 +209,11 @@ export default function Login() {
         </form>
 
         <div className="mt-6 sm:mt-8 text-center">
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Don&apos;t have an account?{" "}
             <Link
               href="/signup"
-              className="text-black hover:underline font-medium"
+              className="text-black dark:text-white hover:underline font-medium"
             >
               Sign up
             </Link>
@@ -223,7 +223,7 @@ export default function Login() {
         <div className="mt-4 sm:mt-6 text-center">
           <Link
             href="/"
-            className="text-gray-500 hover:text-black text-xs sm:text-sm"
+            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
           >
             ← Back to home
           </Link>

@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
+import LandingNavbar from "@/components/landing/LandingNavbar";
 import {
-  DashboardHeader,
   DashboardLayout,
   SignupToggleSection,
   WaitlistUsersSection,
@@ -13,7 +13,7 @@ import {
 } from "@/components/dashboard";
 
 export default function Dashboard() {
-  const { user, logout, isLoggedIn, isLoading: authLoading } = useAuth();
+  const { user, isLoggedIn, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [waitlistUsers, setWaitlistUsers] = useState<WaitlistUser[]>([]);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
@@ -65,14 +65,6 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/");
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
-  };
 
   const toggleSignup = async () => {
     setSignupToggleLoading(true);
@@ -103,23 +95,23 @@ export default function Dashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-black">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-black dark:text-white">Loading...</div>
       </div>
     );
   }
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-black">Redirecting to login...</div>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-black dark:text-white">Redirecting to login...</div>
       </div>
     );
   }
 
   return (
     <>
-      <DashboardHeader onLogout={handleLogout} />
+      <LandingNavbar />
       <DashboardLayout>
         {user?.role === "admin" ? (
           <>
@@ -137,8 +129,8 @@ export default function Dashboard() {
           </>
         ) : (
           <div className="mt-4 text-center">
-            <div className="border border-gray-200 p-8">
-              <h1 className="text-3xl font-light text-black mb-4">
+            <div className="border border-gray-200 dark:border-gray-800 p-8 bg-white dark:bg-gray-800 rounded">
+              <h1 className="text-3xl font-light text-black dark:text-white mb-4">
                 Welcome to Dashboard
               </h1>
             </div>

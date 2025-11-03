@@ -32,12 +32,12 @@ export default function LoadingSpinner({
   const spinner = (
     <div className="flex flex-col items-center justify-center">
       <div
-        className={`${sizeClasses[size]} animate-spin border-b-2 border-black`}
+        className={`${sizeClasses[size]} animate-spin border-b-2 border-black dark:border-white`}
         role="status"
         aria-label="Loading"
       />
       {showText && text && (
-        <p className={`mt-3 text-gray-600 font-light ${textSizeClasses[size]}`}>
+        <p className={`mt-3 text-gray-600 dark:text-gray-400 font-light ${textSizeClasses[size]}`}>
           {text}
         </p>
       )}
@@ -46,7 +46,7 @@ export default function LoadingSpinner({
 
   if (fullScreen) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         <div className="flex-1 flex items-center justify-center">{spinner}</div>
       </div>
     );

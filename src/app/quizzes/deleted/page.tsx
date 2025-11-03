@@ -139,16 +139,16 @@ export default function DeletedQuizzesPage() {
   // Check if user has pro subscription
   if (user?.subscription !== "pro") {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
         <LandingNavbar />
         <main className="flex-1 px-6 py-10">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-16">
               <div className="max-w-2xl mx-auto">
                 <div className="mb-8">
-                  <div className="w-20 h-20 mx-auto bg-yellow-100 flex items-center justify-center mb-6">
+                  <div className="w-20 h-20 mx-auto bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mb-6">
                     <svg
-                      className="w-10 h-10 text-yellow-600"
+                      className="w-10 h-10 text-yellow-600 dark:text-yellow-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -161,42 +161,42 @@ export default function DeletedQuizzesPage() {
                       />
                     </svg>
                   </div>
-                  <h1 className="text-3xl font-light text-gray-900 mb-4">
+                  <h1 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
                     Pro Subscription Required
                   </h1>
-                  <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
                     Access to deleted quizzes and restore functionality requires
                     a Pro subscription. Upgrade your account to manage your
                     deleted quizzes.
                   </p>
                 </div>
 
-                <div className="bg-white shadow-sm p-8 border border-gray-100">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                <div className="bg-white dark:bg-gray-800 shadow-sm p-8 border border-gray-100 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     Pro Features for Quiz Management:
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         View deleted quizzes
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Restore deleted quizzes
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Permanent delete option
                       </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700">
+                      <span className="text-gray-700 dark:text-gray-300">
                         Advanced quiz management
                       </span>
                     </div>
@@ -205,7 +205,7 @@ export default function DeletedQuizzesPage() {
                   <div className="text-center">
                     <button
                       onClick={() => router.push("/quizzes")}
-                      className="bg-black text-white px-8 py-3 hover:bg-gray-800 transition-colors text-base font-medium mr-4"
+                      className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium mr-4"
                     >
                       Back to Quizzes
                     </button>
@@ -214,7 +214,7 @@ export default function DeletedQuizzesPage() {
                         // TODO: Add upgrade functionality
                         alert("Upgrade functionality coming soon!");
                       }}
-                      className="border border-gray-300 text-gray-700 px-8 py-3 hover:border-gray-400 hover:bg-gray-50 transition-colors text-base font-medium"
+                      className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-base font-medium"
                     >
                       Upgrade to Pro
                     </button>
@@ -230,7 +230,7 @@ export default function DeletedQuizzesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
       <LandingNavbar />
       <main className="flex-1 px-6 py-10">
         <div className="max-w-6xl mx-auto">
@@ -241,7 +241,7 @@ export default function DeletedQuizzesPage() {
                 <div className="flex items-center gap-3 mb-2">
                   <button
                     onClick={() => router.push("/quizzes")}
-                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                    className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
                   >
                     <svg
                       className="w-5 h-5"
@@ -257,11 +257,11 @@ export default function DeletedQuizzesPage() {
                       />
                     </svg>
                   </button>
-                  <h1 className="text-3xl font-light text-black">
+                  <h1 className="text-3xl font-light text-black dark:text-white">
                     Deleted Quizzes
                   </h1>
                 </div>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   Restore or permanently delete your deleted quizzes
                 </p>
               </div>
@@ -275,11 +275,11 @@ export default function DeletedQuizzesPage() {
               placeholder="Search deleted quizzes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+              className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all"
             />
             {searchLoading && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-gray-300 border-t-black  animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-700 border-t-black dark:border-t-white  animate-spin"></div>
               </div>
             )}
           </div>
@@ -296,9 +296,9 @@ export default function DeletedQuizzesPage() {
             <div className="py-16 px-4 text-center">
               <div className="max-w-md mx-auto">
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                     <svg
-                      className="w-8 h-8 text-gray-400"
+                      className="w-8 h-8 text-gray-400 dark:text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -312,16 +312,16 @@ export default function DeletedQuizzesPage() {
                     </svg>
                   </div>
                 </div>
-                <h2 className="text-xl font-light text-gray-900 mb-3">
+                <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
                   No deleted quizzes
                 </h2>
-                <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
                   Quizzes you delete will appear here. You can restore them or
                   permanently delete them.
                 </p>
                 <button
                   onClick={() => router.push("/quizzes")}
-                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 text-gray-700 text-sm font-medium hover:border-gray-400 hover:bg-gray-50 transition-all"
+                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                 >
                   Back to Quizzes
                 </button>
@@ -334,9 +334,9 @@ export default function DeletedQuizzesPage() {
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="max-w-md mx-auto text-center">
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                     <svg
-                      className="w-8 h-8 text-gray-400"
+                      className="w-8 h-8 text-gray-400 dark:text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -350,15 +350,15 @@ export default function DeletedQuizzesPage() {
                     </svg>
                   </div>
                 </div>
-                <h2 className="text-xl font-light text-gray-900 mb-3">
+                <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
                   No deleted quizzes found
                 </h2>
-                <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
                   Try adjusting your search terms
                 </p>
                 <button
                   onClick={() => setSearchTerm("")}
-                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 text-gray-700 text-sm font-medium hover:border-gray-400 hover:bg-gray-50 transition-all"
+                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                 >
                   Clear Search
                 </button>
@@ -372,15 +372,15 @@ export default function DeletedQuizzesPage() {
               {filteredQuizzes.map((quiz) => (
                 <div
                   key={quiz.quizId}
-                  className="bg-white shadow-sm p-6 border border-gray-100"
+                  className="bg-white dark:bg-gray-800 shadow-sm p-6 border border-gray-100 dark:border-gray-700"
                 >
                   {/* Header with Deleted Date and Actions */}
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="px-3 py-1 text-xs font-medium bg-red-100 text-red-700">
+                      <span className="px-3 py-1 text-xs font-medium bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300">
                         Deleted
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         Deleted{" "}
                         {quiz.deletedAt
                           ? new Date(quiz.deletedAt).toLocaleDateString()
@@ -391,13 +391,13 @@ export default function DeletedQuizzesPage() {
                       <button
                         onClick={(e) => handleRestoreQuiz(quiz.quizId, e)}
                         disabled={processingQuizId === quiz.quizId}
-                        className="border border-green-300 text-green-700 bg-green-50 px-3 py-1 text-xs font-medium hover:border-green-400 hover:bg-green-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                        className="border border-green-300 dark:border-green-700 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-3 py-1 text-xs font-medium hover:border-green-400 dark:hover:border-green-600 hover:bg-green-100 dark:hover:bg-green-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
                         title="Restore quiz"
                       >
                         {processingQuizId === quiz.quizId &&
                         processingAction === "restore" ? (
                           <>
-                            <div className="w-3 h-3 border-2 border-green-700 border-t-transparent  animate-spin"></div>
+                            <div className="w-3 h-3 border-2 border-green-700 dark:border-green-400 border-t-transparent  animate-spin"></div>
                             <span className="text-xs">Restoring...</span>
                           </>
                         ) : (
@@ -423,36 +423,36 @@ export default function DeletedQuizzesPage() {
                   </div>
 
                   {/* Quiz Title */}
-                  <h3 className="text-xl font-semibold text-black mb-3 line-clamp-2">
+                  <h3 className="text-xl font-semibold text-black dark:text-white mb-3 line-clamp-2">
                     {quiz.title}
                   </h3>
 
                   {/* Quiz Description */}
                   {quiz.description && (
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
                       {quiz.description}
                     </p>
                   )}
 
                   {/* Quiz Stats */}
-                  <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100">
+                  <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black">
+                      <div className="text-lg font-semibold text-black dark:text-white">
                         {quiz.questions.length}
                       </div>
-                      <div className="text-xs text-gray-500">Questions</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Questions</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black">
+                      <div className="text-lg font-semibold text-black dark:text-white">
                         {quiz.status}
                       </div>
-                      <div className="text-xs text-gray-500">Status</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Status</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black">
+                      <div className="text-lg font-semibold text-black dark:text-white">
                         {new Date(quiz.createdAt).toLocaleDateString()}
                       </div>
-                      <div className="text-xs text-gray-500">Created</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Created</div>
                     </div>
                   </div>
                 </div>

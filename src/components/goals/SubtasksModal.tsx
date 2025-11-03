@@ -72,21 +72,21 @@ const SubtasksModal: React.FC<SubtasksModalProps> = ({
   if (!isOpen || !milestone) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 p-4">
-      <div className="bg-white  shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-4 border-b border-gray-100">
+    <div className="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-medium text-gray-900">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                 Manage Subtasks
               </h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 For milestone: {milestone.title}
               </p>
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -97,25 +97,25 @@ const SubtasksModal: React.FC<SubtasksModalProps> = ({
           {/* Subtasks list */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Subtasks ({subtasks.length})
               </span>
             </div>
 
             {subtasks.map((subtask, index) => (
               <div key={index} className="flex items-center gap-2">
-                <div className="w-2 h-2  bg-gray-300" />
+                <div className="w-2 h-2 bg-gray-300 dark:bg-gray-600" />
                 <input
                   type="text"
                   value={subtask.title}
                   onChange={(e) => updateSubtask(index, e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-200  text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-700 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
                   placeholder="Subtask title"
                 />
                 <button
                   type="button"
                   onClick={() => removeSubtask(index)}
-                  className="text-gray-400 hover:text-red-500 transition-colors"
+                  className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -123,7 +123,7 @@ const SubtasksModal: React.FC<SubtasksModalProps> = ({
             ))}
 
             {subtasks.length === 0 && (
-              <p className="text-sm text-gray-500 italic text-center py-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">
                 No subtasks yet. Click &quot;Add Subtask&quot; to get started.
               </p>
             )}
@@ -133,7 +133,7 @@ const SubtasksModal: React.FC<SubtasksModalProps> = ({
           <button
             type="button"
             onClick={addSubtask}
-            className="w-full py-2 text-sm text-gray-600 border border-dashed border-gray-300 -md hover:border-gray-400 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2 text-sm text-gray-600 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-700 -md hover:border-gray-400 dark:hover:border-gray-600 transition-colors flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Add Subtask
@@ -144,14 +144,14 @@ const SubtasksModal: React.FC<SubtasksModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 text-gray-600 -md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 -md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="flex-1 px-3 py-2 text-sm bg-black text-white -md hover:bg-gray-800 transition-colors"
+              className="flex-1 px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black -md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
               Save Subtasks
             </button>

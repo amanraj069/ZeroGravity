@@ -157,13 +157,13 @@ export default function Signup() {
   // Show waitlist message when signup is disabled
   if (!signupEnabled) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md p-6 sm:p-8 text-center">
           <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-light text-black mb-2">
+            <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
               Sign Up Currently Unavailable
             </h1>
-            <p className="text-sm sm:text-base text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
               Account creation is temporarily disabled. Please join our waitlist
               to be notified when registration opens.
             </p>
@@ -172,16 +172,16 @@ export default function Signup() {
           <div className="space-y-4">
             <button
               onClick={handleJoinWaitlist}
-              className="w-full bg-black text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 transition-colors text-sm sm:text-base"
+              className="w-full bg-black dark:bg-white text-white dark:text-black py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm sm:text-base"
             >
               Join Waitlist
             </button>
 
-            <p className="text-sm sm:text-base text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
               Are you an Admin?{" "}
               <Link
                 href="/login"
-                className="text-black hover:underline font-medium"
+                className="text-black dark:text-white hover:underline font-medium"
               >
                 Sign in
               </Link>
@@ -191,7 +191,7 @@ export default function Signup() {
           <div className="mt-6 text-center">
             <Link
               href="/"
-              className="text-gray-500 hover:text-black text-xs sm:text-sm"
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
             >
               ← Back to home
             </Link>
@@ -203,19 +203,19 @@ export default function Signup() {
 
   // Show signup form when signup is enabled
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md p-6 sm:p-8">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-light text-black mb-2">
+          <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
             Create Account
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Join ZeroGravity and start your productivity journey
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm">
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -227,8 +227,9 @@ export default function Signup() {
               placeholder="Full Name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 focus:border-black focus:outline-none text-sm sm:text-base"
+              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
               required
+              autoComplete="name"
             />
           </div>
 
@@ -239,8 +240,9 @@ export default function Signup() {
               placeholder="Username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 focus:border-black focus:outline-none text-sm sm:text-base"
+              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
               required
+              autoComplete="username"
             />
           </div>
 
@@ -251,8 +253,9 @@ export default function Signup() {
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 focus:border-black focus:outline-none text-sm sm:text-base"
+              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
               required
+              autoComplete="email"
             />
           </div>
 
@@ -264,14 +267,15 @@ export default function Signup() {
                 placeholder="Setup your Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-3 py-2.5 sm:py-3 pr-10 border border-gray-300 focus:border-black focus:outline-none text-sm sm:text-base"
+                className="w-full px-3 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
                 required
                 minLength={8}
+                autoComplete="new-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-black focus:outline-none"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none"
               >
                 {showPassword ? (
                   <svg
@@ -316,7 +320,7 @@ export default function Signup() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-black text-white py-2 sm:py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black dark:bg-white text-white dark:text-black py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isSubmitting ? "Creating Account..." : "Create Account"}
             </button>
@@ -359,11 +363,11 @@ export default function Signup() {
         </form>
 
         <div className="mt-6 text-center space-y-2">
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-black hover:underline font-medium"
+              className="text-black dark:text-white hover:underline font-medium"
             >
               Sign in
             </Link>
@@ -372,7 +376,7 @@ export default function Signup() {
         <div className="mt-6 text-center space-y-2">
           <Link
             href="/"
-            className="block text-gray-500 hover:text-black text-xs sm:text-sm"
+            className="block text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
           >
             ← Back to home
           </Link>

@@ -435,16 +435,16 @@ function JoinQuizContent() {
 
   if (!joined) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         <LandingNavbar />
 
         {/* Hero-style header */}
-        <div className="text-center py-8 lg:py-12 bg-white">
+        <div className="text-center py-8 lg:py-12 bg-white dark:bg-gray-900">
           <div className="max-w-4xl mx-auto px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black mb-6 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black dark:text-white mb-6 tracking-tight">
               Join Quiz
             </h1>
-            <p className="text-lg sm:text-xl text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
               Enter the cosmic quiz realm and test your knowledge among the
               stars
             </p>
@@ -455,14 +455,14 @@ function JoinQuizContent() {
           <div className="max-w-6xl mx-auto w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
               {/* Form section - First on mobile, Second on desktop */}
-              <div className="bg-white/90 backdrop-blur-sm p-8 lg:p-10 border border-black shadow-lg h-auto lg:h-[60vh] flex flex-col justify-center order-1 lg:order-2">
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60vh] flex flex-col justify-center order-1 lg:order-2">
                 <div className="space-y-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-800 mb-4">
+                    <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-4">
                       Quiz Access Code
                     </label>
                     <input
-                      className="w-full border-2 border-gray-300 px-6 py-4 text-lg font-light focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all placeholder-gray-500 bg-white shadow-sm"
+                      className="w-full border-2 border-gray-300 dark:border-gray-600 px-6 py-4 text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
                       placeholder="Enter 6-letter code"
                       value={joinCode}
                       onChange={(e) =>
@@ -473,11 +473,11 @@ function JoinQuizContent() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-800 mb-4">
+                    <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-4">
                       Your Cosmic Identity
                     </label>
                     <input
-                      className="w-full border-2 border-gray-300 px-6 py-4 text-lg font-light focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 transition-all placeholder-gray-500 bg-white shadow-sm"
+                      className="w-full border-2 border-gray-300 dark:border-gray-600 px-6 py-4 text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
                       placeholder="Enter your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -485,15 +485,15 @@ function JoinQuizContent() {
                   </div>
 
                   {showAvatarError && (
-                    <div className="bg-red-50 border border-red-200 p-3">
-                      <p className="text-sm text-red-600 text-center">
+                    <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3">
+                      <p className="text-sm text-red-600 dark:text-red-400 text-center">
                         Please select an avatar to continue
                       </p>
                     </div>
                   )}
 
                   <button
-                    className="w-full bg-black text-white py-4 px-8 text-lg font-medium hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
+                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 px-8 text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black dark:disabled:hover:bg-white shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
                     onClick={handleJoin}
                     disabled={!joinCode.trim() || !name.trim()}
                   >
@@ -503,12 +503,12 @@ function JoinQuizContent() {
               </div>
 
               {/* Avatar Selection - Second on mobile, First on desktop */}
-              <div className="bg-white/80 backdrop-blur-sm p-6 lg:p-8 border border-black h-[50vh] lg:h-[60vh] flex flex-col order-2 lg:order-1">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 lg:p-8 border border-black dark:border-gray-700 h-[50vh] lg:h-[60vh] flex flex-col order-2 lg:order-1">
                 <div className="mb-6">
-                  <h3 className="text-xl font-light text-gray-900 mb-2">
+                  <h3 className="text-xl font-light text-gray-900 dark:text-white mb-2">
                     Choose Your Avatar
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Select an avatar to represent you in the quiz
                   </p>
                 </div>
@@ -524,10 +524,10 @@ function JoinQuizContent() {
                           e.stopPropagation();
                           setSelectedAvatar(avatar);
                         }}
-                        className={`relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300 ${
+                        className={`relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300 dark:focus:ring-orange-600 ${
                           selectedAvatar === avatar
-                            ? "border-4 border-orange-600 shadow-lg ring-2 ring-orange-200"
-                            : "border-2 border-gray-200 hover:border-gray-300"
+                            ? "border-4 border-orange-600 dark:border-orange-500 shadow-lg ring-2 ring-orange-200 dark:ring-orange-800"
+                            : "border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                         }`}
                       >
                         <NextImage
@@ -552,21 +552,21 @@ function JoinQuizContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <LandingNavbar />
 
       {/* Hero-style header section */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="max-w-4xl mx-auto px-4 pt-8 sm:pt-12">
           {/* Title and Exit Button Row */}
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black dark:text-white tracking-tight">
               Quiz Room
             </h1>
             {!showKickedOut && (
               <button
                 onClick={handleExit}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-sm font-light transition-colors focus:outline-none focus:ring-2 focus:ring-red-300"
+                className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-6 py-3 text-sm font-light transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800"
                 title="Leave Quiz"
               >
                 Exit Quiz
@@ -575,7 +575,7 @@ function JoinQuizContent() {
           </div>
 
           <div className="text-center">
-            <p className="text-base sm:text-lg text-gray-600 font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
               {currentQuestion && !showQuizEnded && !showKickedOut
                 ? "Answer the current question before time runs out"
                 : showQuizEnded
@@ -598,7 +598,7 @@ function JoinQuizContent() {
                             : "bg-green-500"
                         } animate-pulse`}
                       ></div>
-                      <span className="text-sm text-gray-600 font-medium tracking-wide uppercase">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 font-medium tracking-wide uppercase">
                         Time Remaining
                       </span>
                     </div>
@@ -607,10 +607,10 @@ function JoinQuizContent() {
                   <div
                     className={`relative p-6 border transition-all duration-300 ${
                       timeLeft <= 10
-                        ? "bg-red-50 border-red-300"
+                        ? "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700"
                         : timeLeft <= 30
-                        ? "bg-yellow-50 border-yellow-300"
-                        : "bg-white border-gray-300"
+                        ? "bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700"
+                        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
                     }`}
                   >
                     {/* Timer Display */}
@@ -618,10 +618,10 @@ function JoinQuizContent() {
                       <div
                         className={`text-5xl sm:text-6xl font-mono font-bold tracking-wider mb-4 ${
                           timeLeft <= 10
-                            ? "text-red-600"
+                            ? "text-red-600 dark:text-red-400"
                             : timeLeft <= 30
-                            ? "text-amber-600"
-                            : "text-black"
+                            ? "text-amber-600 dark:text-amber-400"
+                            : "text-black dark:text-white"
                         }`}
                       >
                         {Math.floor(timeLeft / 60)}:
@@ -630,14 +630,14 @@ function JoinQuizContent() {
 
                       {/* Progress bar */}
                       <div className="w-full">
-                        <div className="h-1 bg-gray-200">
+                        <div className="h-1 bg-gray-200 dark:bg-gray-700">
                           <div
                             className={`h-full transition-all duration-1000 ease-linear ${
                               timeLeft <= 10
-                                ? "bg-red-600"
+                                ? "bg-red-600 dark:bg-red-500"
                                 : timeLeft <= 30
-                                ? "bg-yellow-600"
-                                : "bg-black"
+                                ? "bg-yellow-600 dark:bg-yellow-500"
+                                : "bg-black dark:bg-white"
                             }`}
                             style={{
                               width: `${Math.max(
@@ -665,21 +665,21 @@ function JoinQuizContent() {
           {showKickedOut ? (
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto mt-12">
-                <h2 className="text-3xl font-light text-red-600 mb-4">
+                <h2 className="text-3xl font-light text-red-600 dark:text-red-400 mb-4">
                   You were removed from the quiz
                 </h2>
-                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
                   The host has removed you from this quiz. You can join another
                   quiz or create your own.
                 </p>
-                <div className="bg-red-50 p-4 mb-6 border border-red-200">
-                  <p className="text-sm text-red-600">
+                <div className="bg-red-50 dark:bg-red-900/30 p-4 mb-6 border border-red-200 dark:border-red-800">
+                  <p className="text-sm text-red-600 dark:text-red-400">
                     You were kicked out by the admin
                   </p>
                 </div>
                 <button
                   onClick={handleExit}
-                  className="bg-black text-white px-6 py-3 font-light hover:bg-gray-800 transition-colors"
+                  className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 font-light hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                 >
                   Return to Quiz Entry
                 </button>
@@ -688,24 +688,24 @@ function JoinQuizContent() {
           ) : showQuizEnded ? (
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto">
-                <div className="w-24 h-24 mx-auto mb-8 bg-green-100 flex items-center justify-center">
+                <div className="w-24 h-24 mx-auto mb-8 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                   <span className="text-4xl">🎉</span>
                 </div>
-                <h2 className="text-3xl font-light text-gray-900 mb-4">
+                <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
                   Quiz Complete!
                 </h2>
-                <p className="text-gray-600 text-lg leading-relaxed mb-6">
+                <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
                   Thanks for participating! Contact the host to learn about the
                   results.
                 </p>
-                <div className="bg-gray-50 p-4 mb-6 border border-gray-200">
-                  <p className="text-sm text-gray-500">
+                <div className="bg-gray-50 dark:bg-gray-800 p-4 mb-6 border border-gray-200 dark:border-gray-700">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     🎉 Great job completing the quiz!
                   </p>
                 </div>
                 <button
                   onClick={handleExit}
-                  className="bg-black text-white px-6 py-3 font-light hover:bg-gray-800 transition-colors"
+                  className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 font-light hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                 >
                   Return to Quiz Entry
                 </button>
@@ -718,8 +718,8 @@ function JoinQuizContent() {
                   <div className="max-w-2xl mx-auto">
                     {/* Success Icon with Animation */}
                     <div className="relative mx-auto mb-8">
-                      <div className="w-32 h-32 mx-auto bg-green-100 flex items-center justify-center border border-green-200">
-                        <div className="w-16 h-16 bg-green-500 flex items-center justify-center animate-pulse">
+                      <div className="w-32 h-32 mx-auto bg-green-100 dark:bg-green-900/30 flex items-center justify-center border border-green-200 dark:border-green-800">
+                        <div className="w-16 h-16 bg-green-500 dark:bg-green-600 flex items-center justify-center animate-pulse">
                           <svg
                             className="w-8 h-8 text-white"
                             fill="currentColor"
@@ -735,35 +735,35 @@ function JoinQuizContent() {
                       </div>
                     </div>
 
-                    <h2 className="text-3xl font-light text-gray-900 mb-6 tracking-tight">
+                    <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-6 tracking-tight">
                       Answer Submitted
                     </h2>
-                    <p className="text-lg text-gray-600 leading-relaxed mb-8">
+                    <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
                       Great job! Waiting for the next question...
                     </p>
 
                     {/* Elegant waiting indicator */}
                     <div className="flex items-center justify-center space-x-3 mb-8">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-green-400 animate-pulse"></div>
+                        <div className="w-2 h-2 bg-green-400 dark:bg-green-500 animate-pulse"></div>
                         <div
-                          className="w-2 h-2 bg-green-400 animate-pulse"
+                          className="w-2 h-2 bg-green-400 dark:bg-green-500 animate-pulse"
                           style={{ animationDelay: "0.2s" }}
                         ></div>
                         <div
-                          className="w-2 h-2 bg-green-400 animate-pulse"
+                          className="w-2 h-2 bg-green-400 dark:bg-green-500 animate-pulse"
                           style={{ animationDelay: "0.4s" }}
                         ></div>
                       </div>
-                      <span className="text-sm text-gray-500 font-light">
+                      <span className="text-sm text-gray-500 dark:text-gray-400 font-light">
                         Processing...
                       </span>
                     </div>
 
                     {/* Progress indicator */}
-                    <div className="bg-gray-50 p-6 border border-gray-200">
+                    <div className="bg-gray-50 dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-center space-x-3">
-                        <div className="w-8 h-8 bg-green-500 flex items-center justify-center">
+                        <div className="w-8 h-8 bg-green-500 dark:bg-green-600 flex items-center justify-center">
                           <svg
                             className="w-4 h-4 text-white"
                             fill="currentColor"
@@ -776,10 +776,10 @@ function JoinQuizContent() {
                             />
                           </svg>
                         </div>
-                        <div className="flex-1 h-2 bg-gray-200 overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse"></div>
+                        <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 dark:from-green-500 dark:to-emerald-600 animate-pulse"></div>
                         </div>
-                        <span className="text-sm text-gray-600 font-medium">
+                        <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                           Submitted
                         </span>
                       </div>
@@ -791,8 +791,8 @@ function JoinQuizContent() {
                   <div className="max-w-2xl mx-auto">
                     {/* Enhanced Time's Up Icon */}
                     <div className="relative mx-auto mb-8">
-                      <div className="w-32 h-32 mx-auto bg-red-100 flex items-center justify-center border border-red-200">
-                        <div className="w-16 h-16 bg-red-500 flex items-center justify-center animate-pulse">
+                      <div className="w-32 h-32 mx-auto bg-red-100 dark:bg-red-900/30 flex items-center justify-center border border-red-200 dark:border-red-800">
+                        <div className="w-16 h-16 bg-red-500 dark:bg-red-600 flex items-center justify-center animate-pulse">
                           <svg
                             className="w-8 h-8 text-white"
                             fill="currentColor"
@@ -808,17 +808,17 @@ function JoinQuizContent() {
                       </div>
                     </div>
 
-                    <h2 className="text-3xl font-light text-red-600 mb-6 tracking-tight">
+                    <h2 className="text-3xl font-light text-red-600 dark:text-red-400 mb-6 tracking-tight">
                       Time&apos;s Up!
                     </h2>
-                    <p className="text-lg text-gray-600 leading-relaxed mb-8">
+                    <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
                       Don&apos;t worry, there&apos;s always the next question.
                     </p>
 
                     {/* Enhanced waiting message */}
-                    <div className="bg-gray-50 p-6 border border-gray-200 mb-8">
+                    <div className="bg-gray-50 dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 mb-8">
                       <div className="flex items-center justify-center space-x-3 mb-4">
-                        <div className="w-8 h-8 bg-gray-400 flex items-center justify-center">
+                        <div className="w-8 h-8 bg-gray-400 dark:bg-gray-600 flex items-center justify-center">
                           <svg
                             className="w-4 h-4 text-white"
                             fill="currentColor"
@@ -831,7 +831,7 @@ function JoinQuizContent() {
                             />
                           </svg>
                         </div>
-                        <span className="text-gray-700 font-medium">
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">
                           Waiting for next question
                         </span>
                       </div>
@@ -839,38 +839,38 @@ function JoinQuizContent() {
                       {/* Animated progress dots */}
                       <div className="flex items-center justify-center space-x-2">
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
                           <div
-                            className="w-2 h-2 bg-gray-400 animate-bounce"
+                            className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"
                             style={{ animationDelay: "0.2s" }}
                           ></div>
                           <div
-                            className="w-2 h-2 bg-gray-400 animate-bounce"
+                            className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"
                             style={{ animationDelay: "0.4s" }}
                           ></div>
                         </div>
-                        <span className="text-sm text-gray-500 ml-3">
+                        <span className="text-sm text-gray-500 dark:text-gray-400 ml-3">
                           Host is preparing...
                         </span>
                       </div>
                     </div>
 
                     {/* Encouragement message */}
-                    <div className="bg-blue-50 p-4 border border-blue-200">
-                      <p className="text-sm text-blue-700 font-medium">
+                    <div className="bg-blue-50 dark:bg-blue-900/30 p-4 border border-blue-200 dark:border-blue-800">
+                      <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
                         🎯 Stay focused! The next question is coming soon.
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="bg-white p-8 lg:p-10 border border-gray-200">
+                <div className="bg-white dark:bg-gray-800 p-8 lg:p-10 border border-gray-200 dark:border-gray-700">
                   {/* Question Header */}
                   <div className="mb-8">
                     <div className="flex items-center justify-center mb-4">
-                      <div className="w-12 h-12 bg-black flex items-center justify-center">
+                      <div className="w-12 h-12 bg-black dark:bg-white flex items-center justify-center">
                         <svg
-                          className="w-6 h-6 text-white"
+                          className="w-6 h-6 text-white dark:text-black"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
@@ -882,32 +882,32 @@ function JoinQuizContent() {
                         </svg>
                       </div>
                     </div>
-                    <h2 className="text-2xl lg:text-3xl font-light text-black leading-relaxed text-center max-w-4xl mx-auto">
+                    <h2 className="text-2xl lg:text-3xl font-light text-black dark:text-white leading-relaxed text-center max-w-4xl mx-auto">
                       {currentQuestion.text}
                     </h2>
                   </div>
 
                   {/* Answer Options */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
-                    {currentQuestion.options.map((o, idx: number) => (
+                    {currentQuestion.options.map((o) => (
                       <button
                         key={o.key}
-                        className="group relative p-5 lg:p-6 text-left transition-all duration-200 border border-gray-200 hover:border-gray-400 hover:bg-gray-50 active:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:bg-white"
+                        className="group relative p-5 lg:p-6 text-left transition-all duration-200 border border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-600 disabled:hover:bg-white dark:disabled:hover:bg-gray-800"
                         onClick={(e) => {
                           const target = e.currentTarget as HTMLButtonElement;
                           target.className =
-                            "group relative p-5 lg:p-6 text-left transition-all duration-200 border border-black bg-black text-white hover:border-black hover:bg-black";
+                            "group relative p-5 lg:p-6 text-left transition-all duration-200 border border-black dark:border-white bg-black dark:bg-white text-white dark:text-black hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white";
                           sendAnswer(o.key);
                         }}
                         disabled={hasAnswered || isTimeUp}
                       >
                         {/* Option Content */}
                         <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-8 h-8 bg-black text-white flex items-center justify-center text-sm font-bold transition-all duration-200 group-hover:shadow-md">
+                          <div className="flex-shrink-0 w-8 h-8 bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm font-bold transition-all duration-200 group-hover:shadow-md">
                             {o.key}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-base font-medium text-gray-900 group-hover:text-gray-700 transition-colors break-words">
+                            <div className="text-base font-medium text-gray-900 dark:text-gray-100 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors break-words">
                               {o.text}
                             </div>
                           </div>
@@ -918,7 +918,7 @@ function JoinQuizContent() {
 
                   {/* Answer Instructions */}
                   <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-500 font-light">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-light">
                       Select your answer by clicking on one of the options above
                     </p>
                   </div>
@@ -937,21 +937,21 @@ function JoinQuizContent() {
                     height={512}
                   />
                 </div>
-                <h2 className="text-2xl font-light text-gray-900 mb-4">
+                <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-4">
                   Waiting for quiz to start
                 </h2>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
                   You&apos;re all set! The host will start pushing questions
                   shortly.
                 </p>
                 <div className="mt-12 flex items-center justify-center space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 animate-pulse"></div>
+                  <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-pulse"></div>
                   <div
-                    className="w-2 h-2 bg-gray-400 animate-pulse"
+                    className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-pulse"
                     style={{ animationDelay: "0.2s" }}
                   ></div>
                   <div
-                    className="w-2 h-2 bg-gray-400 animate-pulse"
+                    className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-pulse"
                     style={{ animationDelay: "0.4s" }}
                   ></div>
                 </div>

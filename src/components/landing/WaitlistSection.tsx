@@ -87,7 +87,7 @@ export default function WaitlistSection() {
   };
 
   return (
-    <AnimatedCTA className="bg-gray-50 py-16 sm:py-20">
+    <AnimatedCTA className="bg-gray-50 dark:bg-gray-800 py-16 sm:py-20">
       <AnimatedSection className="max-w-4xl mx-auto text-center px-8">
         <AnimatedSection className="relative mb-6 sm:mb-8">
           <Image
@@ -95,21 +95,21 @@ export default function WaitlistSection() {
             alt="Join ZeroGravity"
             width={150}
             height={112}
-            className="mx-auto opacity-30 w-32 h-24 sm:w-48 sm:h-36"
+            className="mx-auto opacity-30 dark:opacity-20 w-32 h-24 sm:w-48 sm:h-36"
           />
         </AnimatedSection>
         <AnimatedSection>
-          <h2 className="text-3xl sm:text-4xl font-light text-black mb-4 sm:mb-6">
+          <h2 className="text-3xl sm:text-4xl font-light text-black dark:text-white mb-4 sm:mb-6">
             Transcend Ordinary. Achieve Extraordinary.
           </h2>
         </AnimatedSection>
         <AnimatedSection>
-          <p className="text-gray-600 text-base sm:text-lg mb-2 max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-2 max-w-2xl mx-auto">
             Join our waitlist to be among the first to experience the future.
           </p>
-          <p className="text-gray-500 text-sm mb-8 sm:mb-10">
+          <p className="text-gray-500 dark:text-gray-500 text-sm mb-8 sm:mb-10">
             Includes complimentary{" "}
-            <span className="text-black font-medium">ZeroGravity Pro</span> for
+            <span className="text-black dark:text-white font-medium">ZeroGravity Pro</span> for
             your first month.
           </p>
         </AnimatedSection>
@@ -124,7 +124,7 @@ export default function WaitlistSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="hello@0.email"
-                  className="px-4 py-3 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                  className="px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
                   disabled={isLoading}
                   required
                 />
@@ -134,14 +134,14 @@ export default function WaitlistSection() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
-                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                    className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
                     disabled={isLoading}
                     required
                   />
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-black text-white px-8 py-3 font-medium hover:bg-gray-800 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? "Joining..." : "Join Waitlist"}
                   </button>
@@ -159,7 +159,7 @@ export default function WaitlistSection() {
               )}
             </form>
 
-            <div className="flex items-center justify-center mt-4 text-gray-600">
+            <div className="flex items-center justify-center mt-4 text-gray-600 dark:text-gray-400">
               <div className="w-2 h-2 bg-green-500  mr-2"></div>
               <span className="text-sm">
                 {waitlistCount.toLocaleString()} people already joined
