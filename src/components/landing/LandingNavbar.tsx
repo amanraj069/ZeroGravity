@@ -23,22 +23,16 @@ function LandingNavbar() {
               {isLoggedIn ? (
                 <>
                   <Link
-                    href="/goals"
-                    className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    Goals
-                  </Link>
-                  <Link
-                    href="/quizzes"
-                    className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    Quizzes
-                  </Link>
-                  <Link
                     href="/dashboard"
                     className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     Dashboard
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    Profile
                   </Link>
                   <button
                     onClick={logout}

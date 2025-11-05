@@ -15,8 +15,6 @@ import {
   unhostQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { useAuth } from "@/contexts/AuthContext";
 import { Quiz, QuizParticipant, QuizLeaderboardEntry } from "@/types/quiz";
@@ -366,7 +364,6 @@ export default function HostQuizPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <LandingNavbar />
       <main className="flex-1">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
           <div className="flex flex-col lg:flex-row gap-6">
@@ -886,7 +883,6 @@ export default function HostQuizPage() {
           </div>
         </div>
       </main>
-      <SimpleFooter />
 
       {/* QR Code Popup Modal */}
       {showQRPopup && (

@@ -4,8 +4,6 @@ import { useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Goals from "@/components/goals/Goals";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 function GoalsContent() {
@@ -46,13 +44,11 @@ export default function GoalsPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
-      <LandingNavbar />
       <main className="flex-1">
         <Suspense fallback={<GoalsLoadingFallback />}>
           <GoalsContent />
         </Suspense>
       </main>
-      <SimpleFooter />
     </div>
   );
 }

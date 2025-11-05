@@ -12,8 +12,6 @@ import {
   leaveQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { QuizQuestion } from "@/services/quizzesService";
 
@@ -436,8 +434,6 @@ function JoinQuizContent() {
   if (!joined) {
     return (
       <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-        <LandingNavbar />
-
         {/* Hero-style header */}
         <div className="text-center py-8 lg:py-12 bg-white dark:bg-gray-900">
           <div className="max-w-4xl mx-auto px-4">
@@ -546,15 +542,12 @@ function JoinQuizContent() {
             </div>
           </div>
         </main>
-        <SimpleFooter />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      <LandingNavbar />
-
       {/* Hero-style header section */}
       <div className="bg-white dark:bg-gray-900">
         <div className="max-w-4xl mx-auto px-4 pt-8 sm:pt-12">
@@ -960,7 +953,6 @@ function JoinQuizContent() {
           )}
         </div>
       </main>
-      <SimpleFooter />
     </div>
   );
 }

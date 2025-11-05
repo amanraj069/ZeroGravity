@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { adminQuizDetails } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import {
   AdminQuizDetails,
   QuizParticipant,
@@ -29,18 +29,38 @@ export default function AdminQuizDetailPage() {
 
   if (isLoading)
     return (
-      <LoadingSpinner size="lg" text="Loading admin panel..." fullScreen />
+      <ZeroGravityLoading
+        title="Loading Admin Panel"
+        subtitle="Preparing admin dashboard..."
+        showNavigation={false}
+      />
     );
-  if (!isAdmin) return <div className="p-6">Admin access required.</div>;
+  if (!isAdmin)
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center p-6">
+          <p className="text-lg text-black dark:text-white">
+            Admin access required.
+          </p>
+        </div>
+      </div>
+    );
   if (!details)
-    return <LoadingSpinner size="lg" text="Loading quiz details..." />;
+    return (
+      <ZeroGravityLoading
+        title="Loading Quiz Details"
+        subtitle="Fetching quiz information..."
+        showNavigation={false}
+      />
+    );
 
   const q = details.quiz;
   const participants = details.participants || [];
   const board = details.leaderboard || [];
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <>
+      <div className="max-w-5xl mx-auto p-6 space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Quiz: {q.title}</h1>
         <div className="text-sm text-gray-600">Quiz ID: {q.quizId}</div>
@@ -105,6 +125,7 @@ export default function AdminQuizDetailPage() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

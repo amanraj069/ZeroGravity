@@ -3,9 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
@@ -169,7 +166,6 @@ export default function QuizzesPage() {
   if (user?.subscription !== "pro") {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-        <LandingNavbar />
         <main className="flex-1 py-10 max-w-6xl mx-auto">
           <div className="max-w-4xl px-4 mx-auto">
             <div className="text-center py-16">
@@ -262,14 +258,12 @@ export default function QuizzesPage() {
             </div>
           </div>
         </main>
-        <SimpleFooter />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-      <LandingNavbar />
       <main className="flex-1 py-10">
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
@@ -327,7 +321,12 @@ export default function QuizzesPage() {
           {/* Loading State */}
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <LoadingSpinner text="Loading quizzes..." />
+              <div className="flex flex-col items-center justify-center">
+                <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-black dark:border-t-white rounded-full animate-spin mb-3"></div>
+                <p className="text-gray-600 dark:text-gray-400 font-light">
+                  Loading quizzes...
+                </p>
+              </div>
             </div>
           )}
 
@@ -567,7 +566,6 @@ export default function QuizzesPage() {
           )}
         </div>
       </main>
-      <SimpleFooter />
     </div>
   );
 }

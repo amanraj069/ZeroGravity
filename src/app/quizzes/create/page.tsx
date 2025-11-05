@@ -10,8 +10,7 @@ import {
   getQuiz,
 } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
+import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 const emptyQuestion = (): QuizQuestion => ({
   text: "",
@@ -265,18 +264,28 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
   };
 
   if (isLoading || loadingExisting)
-    return <div className="p-6">Loading...</div>;
+    return (
+      <ZeroGravityLoading
+        title="Loading Quiz Creator"
+        subtitle="Preparing your quiz..."
+        showNavigation={false}
+      />
+    );
   if (!isPro)
     return (
-      <div className="p-6">Pro subscription required to create quizzes.</div>
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center p-6">
+          <p className="text-lg text-black dark:text-white">
+            Pro subscription required to create quizzes.
+          </p>
+        </div>
+      </div>
     );
 
   const q = questions[currentIndex];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
-      <LandingNavbar />
-
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       {/* Full-width header matching website design theme */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4">
@@ -564,15 +573,21 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
           </section>
         </div>
       </main>
-
-      <SimpleFooter />
     </div>
   );
 }
 
 export default function CreateQuizPage({ searchParams }: CreateQuizPageProps) {
   return (
-    <Suspense fallback={<div className="p-6">Loading...</div>}>
+    <Suspense
+      fallback={
+        <ZeroGravityLoading
+          title="Loading Quiz Creator"
+          subtitle="Preparing your quiz..."
+          showNavigation={false}
+        />
+      }
+    >
       <CreateQuizContent searchParams={searchParams} />
     </Suspense>
   );

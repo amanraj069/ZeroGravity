@@ -99,7 +99,8 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 -none focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
+              autoComplete="email"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
               placeholder="Enter your email here"
             />
           </div>
@@ -119,7 +120,8 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 -none focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
+                autoComplete="current-password"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
                 placeholder="••••••••"
               />
               <button
@@ -170,7 +172,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full bg-black dark:bg-white text-white dark:text-black py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </button>

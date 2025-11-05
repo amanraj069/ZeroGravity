@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { adminListPastQuizzes } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminQuizListItem } from "@/types/quiz";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 export default function AdminQuizzesPage() {
   const { user, isLoading } = useAuth();
@@ -29,14 +29,28 @@ export default function AdminQuizzesPage() {
 
   if (isLoading)
     return (
-      <LoadingSpinner size="lg" text="Loading admin panel..." fullScreen />
+      <ZeroGravityLoading
+        title="Loading Admin Panel"
+        subtitle="Preparing admin dashboard..."
+        showNavigation={false}
+      />
     );
-  if (!isAdmin) return <div className="p-6">Admin access required.</div>;
+  if (!isAdmin)
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center p-6">
+          <p className="text-lg text-black dark:text-white">
+            Admin access required.
+          </p>
+        </div>
+      </div>
+    );
 
   const maxPage = Math.max(1, Math.ceil(total / limit));
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <>
+      <div className="max-w-5xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Past Quizzes</h1>
       <div className="flex gap-3 items-center">
         <input
@@ -90,6 +104,7 @@ export default function AdminQuizzesPage() {
           Next
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

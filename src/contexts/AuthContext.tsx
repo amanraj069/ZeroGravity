@@ -13,6 +13,7 @@ interface User {
   role: "student" | "admin";
   subscription: "basic" | "pro";
   isActive: boolean;
+  profilePicture?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -22,6 +23,7 @@ interface AuthContextType {
   userId: string | null;
   isLoggedIn: boolean;
   isLoading: boolean;
+  setUser: (user: User | null) => void;
   login: (
     email: string,
     password: string
@@ -251,6 +253,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     userId,
     isLoggedIn,
     isLoading,
+    setUser,
     login,
     logout,
     signup,

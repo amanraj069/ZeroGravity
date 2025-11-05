@@ -21,7 +21,7 @@ export default function ZeroGravityLoading({
 
       <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin h-12 w-12 border-b-2 border-black dark:border-white mb-6"></div>
+          <div className="inline-block animate-spin h-12 w-12 border-4 border-gray-200 dark:border-gray-700 border-t-black dark:border-t-white rounded-full mb-6"></div>
           <h2 className="text-xl font-light text-black dark:text-white mb-2">
             {title}
           </h2>

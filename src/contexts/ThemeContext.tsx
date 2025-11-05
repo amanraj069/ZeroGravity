@@ -18,23 +18,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
-  // Initialize theme from localStorage or system preference
+  // Initialize theme from localStorage or default to light
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const systemPrefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
 
-    if (savedTheme) {
+    if (savedTheme === "light" || savedTheme === "dark") {
       setThemeState(savedTheme);
       applyTheme(savedTheme);
-    } else if (systemPrefersDark) {
-      setThemeState("dark");
-      applyTheme("dark");
     } else {
+      // Default to light theme if nothing is stored
       setThemeState("light");
       applyTheme("light");
+      localStorage.setItem("theme", "light");
     }
   }, []);
 
@@ -90,4 +86,3 @@ export const useTheme = (): ThemeContextType => {
 };
 
 export default ThemeContext;
-

@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getQuiz, leaderboard } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
+import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 
 export default function LeaderboardPage() {
@@ -79,46 +78,37 @@ export default function LeaderboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
-        <LandingNavbar />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-4 border-2 border-gray-300 border-t-black  animate-spin"></div>
-            <p className="text-sm text-gray-600 font-light">
-              Loading leaderboard...
-            </p>
-          </div>
-        </main>
-        <SimpleFooter />
-      </div>
+      <ZeroGravityLoading
+        title="Loading Leaderboard"
+        subtitle="Fetching quiz results..."
+        showNavigation={true}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <LandingNavbar />
-
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <main className="flex-1 flex flex-col items-center px-4 py-10">
         <div className="w-full max-w-6xl space-y-8">
           {/* Header */}
-          <div className="border-b border-gray-100 pb-8">
-            <h1 className="text-4xl font-light text-black tracking-tight mb-2">
+          <div className="border-b border-gray-100 dark:border-gray-800 pb-8">
+            <h1 className="text-4xl font-light text-black dark:text-white tracking-tight mb-2">
               Leaderboard
             </h1>
-            <p className="text-sm text-gray-600 font-light mb-8">
+            <p className="text-sm text-gray-600 dark:text-gray-400 font-light mb-8">
               {quiz?.title || "Quiz Results"}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleBackToHosted}
-                className="flex-1 px-6 py-3 bg-black hover:bg-gray-800 text-white font-light transition-colors "
+                className="flex-1 px-6 py-3 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-light transition-colors"
               >
                 ← Back to Control
               </button>
               <button
                 onClick={handleBackToPortal}
-                className="flex-1 px-6 py-3 border border-gray-200 hover:bg-gray-50 text-gray-900 font-light transition-colors "
+                className="flex-1 px-6 py-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-white font-light transition-colors"
               >
                 Portal
               </button>
@@ -390,8 +380,6 @@ export default function LeaderboardPage() {
           )}
         </div>
       </main>
-
-      <SimpleFooter />
     </div>
   );
 }

@@ -10,8 +10,6 @@ import {
   endQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import SimpleFooter from "@/components/landing/SimpleFooter";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { useAuth } from "@/contexts/AuthContext";
 import { Quiz, QuizParticipant } from "@/types/quiz";
@@ -245,7 +243,6 @@ export default function HostedQuizPage() {
   if (!quiz) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
-        <LandingNavbar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-light text-gray-900 mb-4">
@@ -259,15 +256,12 @@ export default function HostedQuizPage() {
             </button>
           </div>
         </main>
-        <SimpleFooter />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <LandingNavbar />
-
       <main className="flex-1 flex flex-col items-center px-4 py-10">
         <div className="w-full max-w-6xl space-y-6">
           {/* Header */}
@@ -619,7 +613,6 @@ export default function HostedQuizPage() {
           )}
         </div>
       </main>
-      <SimpleFooter />
     </div>
   );
 }

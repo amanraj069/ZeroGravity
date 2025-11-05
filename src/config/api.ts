@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     SIGNUP_STATUS: `${API_BASE_URL}/api/auth/signup-status`,
     TOGGLE_SIGNUP: `${API_BASE_URL}/api/auth/toggle-signup`,
     GOOGLE: `${API_BASE_URL}/api/auth/google`,
+    UPLOAD_PROFILE_PICTURE: `${API_BASE_URL}/api/auth/upload-profile-picture`,
     DEBUG: `${API_BASE_URL}/api/auth/debug`,
   },
   // Waitlist endpoints

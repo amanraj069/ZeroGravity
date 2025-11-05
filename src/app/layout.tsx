@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import AppLayout from "@/components/AppLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,27 +39,44 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        suppressHydrationWarning
       >
-        <Script
-          id="theme-init"
-          strategy="beforeInteractive"
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  const theme = localStorage.getItem('theme') || 
-                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
+                  const savedTheme = localStorage.getItem('theme');
+                  if (savedTheme === 'light' || savedTheme === 'dark') {
+                    if (savedTheme === 'dark') {
+                      document.documentElement.classList.add('dark');
+                      document.documentElement.style.backgroundColor = '#0a0a0a';
+                      document.body.style.backgroundColor = '#0a0a0a';
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                      document.documentElement.style.backgroundColor = '#ffffff';
+                      document.body.style.backgroundColor = '#ffffff';
+                    }
                   } else {
+                    // Default to light theme if nothing is stored
                     document.documentElement.classList.remove('dark');
+                    document.documentElement.style.backgroundColor = '#ffffff';
+                    document.body.style.backgroundColor = '#ffffff';
+                    localStorage.setItem('theme', 'light');
                   }
-                } catch (e) {}
+                } catch (e) {
+                  // If localStorage fails, default to light
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.style.backgroundColor = '#ffffff';
+                  document.body.style.backgroundColor = '#ffffff';
+                }
               })();
             `,
           }}
         />
-        <Providers googleClientId={googleClientId}>{children}</Providers>
+        <Providers googleClientId={googleClientId}>
+          <AppLayout>{children}</AppLayout>
+        </Providers>
       </body>
     </html>
   );

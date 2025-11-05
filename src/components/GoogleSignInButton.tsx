@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface GoogleSignInButtonProps {
   onSuccess: (credential: string) => void;
@@ -43,6 +44,7 @@ export default function GoogleSignInButton({
   disabled = false,
   isLoading = false,
 }: GoogleSignInButtonProps) {
+  const { theme } = useTheme();
   const [showGoogleButton, setShowGoogleButton] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -113,9 +115,17 @@ export default function GoogleSignInButton({
       return;
     }
 
-    // Don't re-render if button already exists
+    // Re-render if theme changes (clear button)
     if (hasRenderedButton.current && buttonRef.current.innerHTML) {
-      return;
+      // Clear button if theme changed to allow re-render with new theme
+      const currentTheme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+      const storedTheme = buttonRef.current.dataset.theme;
+      if (storedTheme && storedTheme !== currentTheme) {
+        buttonRef.current.innerHTML = "";
+        hasRenderedButton.current = false;
+      } else if (storedTheme === currentTheme) {
+        return;
+      }
     }
 
     const renderButton = () => {
@@ -136,13 +146,19 @@ export default function GoogleSignInButton({
 
         // Render Google button with calculated width
         if (window.google?.accounts?.id) {
+          // Use outline (white) theme for light mode, filled_black for dark mode
+          const currentTheme = document.documentElement.classList.contains("dark") ? "dark" : "light";
           window.google.accounts.id.renderButton(buttonRef.current, {
             type: "standard",
-            theme: "outline",
+            theme: currentTheme === "dark" ? "filled_black" : "outline",
             size: "large",
             text: "signin_with",
             width: containerWidth,
           });
+          // Store current theme to detect changes
+          if (buttonRef.current) {
+            buttonRef.current.dataset.theme = currentTheme;
+          }
           hasRenderedButton.current = true;
         }
 
@@ -264,7 +280,7 @@ export default function GoogleSignInButton({
       window.removeEventListener("resize", handleResize);
       hasRenderedButton.current = false;
     };
-  }, [showGoogleButton, disabled, isLoading, isInitialized]); // Removed onError from dependencies
+  }, [showGoogleButton, disabled, isLoading, isInitialized, theme]); // Added theme to dependencies
 
   // Show disabled button if disabled, loading, or not initialized
   if (!showGoogleButton || disabled || isLoading || !isInitialized) {
@@ -272,7 +288,7 @@ export default function GoogleSignInButton({
       <button
         type="button"
         disabled
-        className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-400 dark:text-gray-500 py-2 sm:py-3 px-4 font-medium cursor-not-allowed text-sm sm:text-base flex items-center justify-center gap-2 opacity-50"
+        className="w-full bg-white dark:bg-red-700 text-gray-800 dark:text-white border border-gray-300 dark:border-none py-2 sm:py-3 px-4 font-medium cursor-not-allowed text-sm sm:text-base flex items-center justify-center gap-2 opacity-50"
       >
         <svg
           width="18"
