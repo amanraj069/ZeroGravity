@@ -45,7 +45,7 @@ export default function GoogleSignInButton({
   isLoading = false,
 }: GoogleSignInButtonProps) {
   const { theme } = useTheme();
-  const [showGoogleButton, setShowGoogleButton] = useState(true);
+  const [showGoogleButton] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -206,7 +206,7 @@ export default function GoogleSignInButton({
 
         // Use MutationObserver to catch dynamically added elements (like iframes)
         // But disconnect it after button is fully rendered to avoid interference
-        const observer = new MutationObserver((mutations) => {
+        const observer = new MutationObserver(() => {
           if (!buttonRef.current) return;
 
           // Only apply styles, don't move elements during observer to avoid breaking handlers
@@ -280,7 +280,7 @@ export default function GoogleSignInButton({
       window.removeEventListener("resize", handleResize);
       hasRenderedButton.current = false;
     };
-  }, [showGoogleButton, disabled, isLoading, isInitialized, theme]); // Added theme to dependencies
+  }, [showGoogleButton, disabled, isLoading, isInitialized, theme, onError]); // Added theme and onError to dependencies
 
   // Show disabled button if disabled, loading, or not initialized
   if (!showGoogleButton || disabled || isLoading || !isInitialized) {

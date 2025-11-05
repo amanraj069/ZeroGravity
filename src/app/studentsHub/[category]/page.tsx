@@ -13,10 +13,11 @@ import { softwareBenefits } from "@/data/benefits/software";
 import { entertainmentBenefits } from "@/data/benefits/entertainment";
 import { fashionBenefits } from "@/data/benefits/fashion";
 import { educationBenefits } from "@/data/benefits/education";
+import { Benefit } from "@/components/studentsHub/BenefitsList";
 
 const categoryData: Record<
   string,
-  { title: string; description: string; benefits: any[] }
+  { title: string; description: string; benefits: Benefit[] }
 > = {
   travel: {
     title: "Travel & Transportation",

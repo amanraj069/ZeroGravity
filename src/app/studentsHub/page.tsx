@@ -71,7 +71,7 @@ export default function StudentsHub() {
       let left = "0%";
       let top = "0%";
       let isLeftRight = false;
-      let randomPosition = Math.random(); // Random position along the side
+      const randomPosition = Math.random(); // Random position along the side
 
       if (i < topBottomParticles) {
         // Top border - random positions

@@ -7,6 +7,7 @@ import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
+import Image from "next/image";
 import { Flame } from "lucide-react";
 
 interface StreakInfo {
@@ -164,9 +165,11 @@ export default function Profile() {
                 <div className="relative group mb-4">
                   <div className="w-40 h-40 rounded overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                     {user.profilePicture ? (
-                      <img
+                      <Image
                         src={user.profilePicture}
                         alt={`${user.firstName} ${user.lastName}`}
+                        width={160}
+                        height={160}
                         className="w-full h-full object-cover"
                       />
                     ) : (

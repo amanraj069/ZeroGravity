@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
@@ -19,14 +19,14 @@ interface NavigationItem {
 }
 
 export default function Dashboard() {
-  const { user, isLoggedIn, isLoading: authLoading, setUser } = useAuth();
+  const { user, isLoggedIn, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [waitlistUsers, setWaitlistUsers] = useState<WaitlistUser[]>([]);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [signupEnabled, setSignupEnabled] = useState(false);
   const [signupToggleLoading, setSignupToggleLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // const [uploading, setUploading] = useState(false);
+  // const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Navigation items array
   const navigationItems: NavigationItem[] = [
@@ -106,63 +106,63 @@ export default function Dashboard() {
     }
   };
 
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
+  // const handleImageClick = () => {
+  //   fileInputRef.current?.click();
+  // };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file");
-      return;
-    }
+  //   // Validate file type
+  //   if (!file.type.startsWith("image/")) {
+  //     alert("Please select an image file");
+  //     return;
+  //   }
 
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert("File size must be less than 5MB");
-      return;
-    }
+  //   // Validate file size (5MB)
+  //   if (file.size > 5 * 1024 * 1024) {
+  //     alert("File size must be less than 5MB");
+  //     return;
+  //   }
 
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("profilePicture", file);
+  //   setUploading(true);
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("profilePicture", file);
 
-      const token = localStorage.getItem("authToken");
-      const response = await fetch(API_ENDPOINTS.AUTH.UPLOAD_PROFILE_PICTURE, {
-        method: "POST",
-        credentials: "include",
-        headers: token
-          ? {
-              Authorization: `Bearer ${token}`,
-            }
-          : {},
-        body: formData,
-      });
+  //     const token = localStorage.getItem("authToken");
+  //     const response = await fetch(API_ENDPOINTS.AUTH.UPLOAD_PROFILE_PICTURE, {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: token
+  //         ? {
+  //             Authorization: `Bearer ${token}`,
+  //           }
+  //         : {},
+  //       body: formData,
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.user) {
-          setUser(data.user);
-        }
-      } else {
-        const error = await response.json();
-        alert(error.message || "Failed to upload profile picture");
-      }
-    } catch (err) {
-      console.error("Error uploading profile picture:", err);
-      alert("Failed to upload profile picture");
-    } finally {
-      setUploading(false);
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  };
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       if (data.success && data.user) {
+  //         setUser(data.user);
+  //       }
+  //     } else {
+  //       const error = await response.json();
+  //       alert(error.message || "Failed to upload profile picture");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error uploading profile picture:", err);
+  //     alert("Failed to upload profile picture");
+  //   } finally {
+  //     setUploading(false);
+  //     // Reset file input
+  //     if (fileInputRef.current) {
+  //       fileInputRef.current.value = "";
+  //     }
+  //   }
+  // };
 
   if (authLoading) {
     return (

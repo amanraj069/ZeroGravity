@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export interface Benefit {
   title: string;
@@ -15,7 +16,7 @@ interface BenefitsListProps {
   categoryTitle: string;
 }
 
-export default function BenefitsList({ benefits, categoryTitle }: BenefitsListProps) {
+export default function BenefitsList({ benefits }: BenefitsListProps) {
   return (
     <div className="flex flex-col gap-6">
       {benefits.map((benefit, index) => (
@@ -49,9 +50,11 @@ export default function BenefitsList({ benefits, categoryTitle }: BenefitsListPr
 
           {/* Right side - Image */}
           <div className="w-24 sm:w-32 md:w-[250px] h-24 sm:h-32 md:h-[250px] flex-shrink-0 relative overflow-hidden flex items-center justify-center z-10">
-            <img
+            <Image
               src={benefit.image}
               alt={benefit.title}
+              width={250}
+              height={250}
               className="w-full h-full object-contain p-2 sm:p-3 md:p-4"
             />
           </div>
