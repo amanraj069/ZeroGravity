@@ -6,7 +6,6 @@ import {
   Plus,
   Edit2,
   Trash2,
-  Clock,
   Calendar,
   AlertCircle,
   Target,
@@ -20,8 +19,312 @@ import {
   UpdateDailyTaskData,
   DailyTasksAnalytics,
 } from "@/services/dailyTasksService";
-import AddDailyTaskModal from "./AddDailyTaskModal";
 import LoadingSpinner from "@/components/LoadingSpinner";
+
+interface AddTaskFormProps {
+  editingTask: DailyTask | null;
+  onAddTask: (taskData: CreateDailyTaskData) => Promise<void>;
+  onUpdateTask?: (
+    taskId: string,
+    updateData: UpdateDailyTaskData
+  ) => Promise<void>;
+  onCancel: () => void;
+}
+
+const AddTaskForm: React.FC<AddTaskFormProps> = ({
+  editingTask,
+  onAddTask,
+  onUpdateTask,
+  onCancel,
+}) => {
+  const [formData, setFormData] = useState<CreateDailyTaskData>({
+    title: "",
+    description: "",
+    priority: "medium",
+    dateStarted: new Date().toISOString().split("T")[0],
+    dateEnded: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof CreateDailyTaskData, string>>
+  >({});
+
+  useEffect(() => {
+    if (editingTask) {
+      setFormData({
+        title: editingTask.title,
+        description: editingTask.description || "",
+        priority: editingTask.priority || "medium",
+        dateStarted: new Date(editingTask.dateStarted)
+          .toISOString()
+          .split("T")[0],
+        dateEnded: new Date(editingTask.dateEnded).toISOString().split("T")[0],
+      });
+    } else {
+      const today = new Date().toISOString().split("T")[0];
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+
+      setFormData({
+        title: "",
+        description: "",
+        priority: "medium",
+        dateStarted: today,
+        dateEnded: nextWeek.toISOString().split("T")[0],
+      });
+    }
+    setErrors({});
+    setIsSubmitting(false);
+  }, [editingTask]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (errors[name as keyof CreateDailyTaskData]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Record<keyof CreateDailyTaskData, string>> = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+    }
+
+    if (!formData.dateStarted) {
+      newErrors.dateStarted = "Start date is required";
+    }
+
+    if (!formData.dateEnded) {
+      newErrors.dateEnded = "End date is required";
+    }
+
+    if (formData.dateStarted && formData.dateEnded) {
+      const startDate = new Date(formData.dateStarted);
+      const endDate = new Date(formData.dateEnded);
+
+      if (startDate >= endDate) {
+        newErrors.dateEnded = "End date must be after start date";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const taskData = {
+        ...formData,
+        title: formData.title.trim(),
+        description: formData.description?.trim(),
+      };
+
+      if (editingTask && onUpdateTask) {
+        await onUpdateTask(editingTask._id, taskData);
+      } else {
+        await onAddTask(taskData);
+      }
+    } catch (error) {
+      console.error("Error saving daily task:", error);
+      setErrors({
+        title: error instanceof Error ? error.message : "Failed to save task",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-4 shadow-sm border-t border-gray-200 dark:border-gray-700">
+      <div className="mb-4">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+          {editingTask ? "Edit Daily Task" : "Add Daily Task"}
+        </h3>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Left side: Title and Priority */}
+          <div className="space-y-4">
+            {/* Title */}
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Title *
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
+                  errors.title
+                    ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
+                    : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                }`}
+                placeholder="Enter task title"
+                disabled={isSubmitting}
+              />
+              {errors.title && (
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  {errors.title}
+                </p>
+              )}
+            </div>
+
+            {/* Priority */}
+            <div>
+              <label
+                htmlFor="priority"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Priority
+              </label>
+              <select
+                id="priority"
+                name="priority"
+                value={formData.priority}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                disabled={isSubmitting}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Right side: Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows={4}
+              value={formData.description}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+              placeholder="Enter task description (optional)"
+              disabled={isSubmitting}
+            />
+          </div>
+        </div>
+
+        {/* Date Range */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label
+              htmlFor="dateStarted"
+              className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              <Calendar className="w-4 h-4 mr-1.5" />
+              Start Date *
+            </label>
+            <input
+              type="date"
+              id="dateStarted"
+              name="dateStarted"
+              value={formData.dateStarted}
+              onChange={handleInputChange}
+              className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                errors.dateStarted
+                  ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
+                  : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+              }`}
+              disabled={isSubmitting}
+            />
+            {errors.dateStarted && (
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                {errors.dateStarted}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="dateEnded"
+              className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              <Calendar className="w-4 h-4 mr-1.5" />
+              End Date *
+            </label>
+            <input
+              type="date"
+              id="dateEnded"
+              name="dateEnded"
+              value={formData.dateEnded}
+              onChange={handleInputChange}
+              className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                errors.dateEnded
+                  ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
+                  : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+              }`}
+              disabled={isSubmitting}
+            />
+            {errors.dateEnded && (
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                {errors.dateEnded}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? "Saving..."
+              : editingTask
+              ? "Update Task"
+              : "Add Task"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 const DailyTasks: React.FC = () => {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -155,14 +458,6 @@ const DailyTasks: React.FC = () => {
     }
   };
 
-  const formatTime = (time: string): string => {
-    const [hours, minutes] = time.split(":");
-    const hour = parseInt(hours, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
-  };
-
   const isToday = (dateString: string): boolean => {
     return dateString === new Date().toISOString().split("T")[0];
   };
@@ -192,7 +487,7 @@ const DailyTasks: React.FC = () => {
               {!isLoggedIn ? (
                 <a
                   href="/login"
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
+                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
                 >
                   Go to Login
                 </a>
@@ -216,7 +511,7 @@ const DailyTasks: React.FC = () => {
                       setIsLoading(false);
                     }
                   }}
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                 >
                   Try Again
                 </button>
@@ -250,13 +545,32 @@ const DailyTasks: React.FC = () => {
           </div>
           <button
             onClick={() => setShowAddTask(true)}
-            className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             Add Task
           </button>
         </div>
       </div>
+
+      {/* Expandable Add/Edit Task Form */}
+      {(showAddTask || editingTask) && (
+        <AddTaskForm
+          editingTask={editingTask}
+          onAddTask={async (taskData) => {
+            await addTask(taskData);
+            setShowAddTask(false);
+          }}
+          onUpdateTask={async (taskId, updateData) => {
+            await updateTask(taskId, updateData);
+            setEditingTask(null);
+          }}
+          onCancel={() => {
+            setShowAddTask(false);
+            setEditingTask(null);
+          }}
+        />
+      )}
 
       {/* Date Selector */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
@@ -276,10 +590,10 @@ const DailyTasks: React.FC = () => {
               id="selectedDate"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 -md text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-md text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors"
             />
             {isToday(selectedDate) ? (
-              <div className="text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-3 py-1 ">
+              <div className="text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-3 py-1 rounded-md">
                 Today
               </div>
             ) : (
@@ -287,7 +601,7 @@ const DailyTasks: React.FC = () => {
                 onClick={() =>
                   setSelectedDate(new Date().toISOString().split("T")[0])
                 }
-                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1  transition-colors"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1 rounded-md transition-colors"
               >
                 Go to Today
               </button>
@@ -311,7 +625,7 @@ const DailyTasks: React.FC = () => {
             </p>
             <button
               onClick={() => setShowAddTask(true)}
-              className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
               Create Task
             </button>
@@ -320,7 +634,7 @@ const DailyTasks: React.FC = () => {
           tasks.map((task) => (
             <div
               key={task._id}
-              className={` shadow-sm border p-4 transition-all duration-200 ${
+              className={`rounded-md shadow-sm border p-4 transition-all duration-200 ${
                 task.isCompletedToday
                   ? "ring-1 ring-green-200 dark:ring-green-800 bg-green-50/30 dark:bg-green-950/20 border-green-200 dark:border-green-800"
                   : task.priority === "high"
@@ -333,7 +647,7 @@ const DailyTasks: React.FC = () => {
               <div className="flex items-start gap-3">
                 <button
                   onClick={() => toggleTaskCompletion(task._id)}
-                  className={`flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
+                  className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
                     task.isCompletedToday
                       ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
                       : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -386,13 +700,6 @@ const DailyTasks: React.FC = () => {
                   {/* Task Details */}
                   <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>
-                        {formatTime(task.dailyStartTime)} -{" "}
-                        {formatTime(task.dailyEndTime)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <span>
                         {new Date(task.dateStarted).toLocaleDateString()} -{" "}
@@ -400,7 +707,7 @@ const DailyTasks: React.FC = () => {
                       </span>
                     </div>
                     <span
-                      className={`px-2 py-0.5  text-xs font-medium ${
+                      className={`px-2 py-0.5 rounded-md text-xs font-medium ${
                         task.priority === "high"
                           ? "bg-red-50 text-red-500 border border-red-200"
                           : task.priority === "medium"
@@ -422,7 +729,7 @@ const DailyTasks: React.FC = () => {
                       </div>
                     )}
                     {!task.isActive && (
-                      <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 ">
+                      <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-md">
                         Inactive
                       </div>
                     )}
@@ -433,18 +740,6 @@ const DailyTasks: React.FC = () => {
           ))
         )}
       </div>
-
-      {/* Add/Edit Task Modal */}
-      <AddDailyTaskModal
-        isOpen={showAddTask || !!editingTask}
-        onClose={() => {
-          setShowAddTask(false);
-          setEditingTask(null);
-        }}
-        onAddTask={addTask}
-        onUpdateTask={updateTask}
-        editingTask={editingTask}
-      />
     </>
   );
 };

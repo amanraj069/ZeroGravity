@@ -8,7 +8,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className=" bg-white dark:bg-gray-900">
       <main className="max-w-6xl mx-auto px-4 py-4">
         {children}
 

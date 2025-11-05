@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
@@ -13,11 +13,6 @@ import {
   type WaitlistUser,
 } from "@/components/dashboard";
 
-interface NavigationItem {
-  name: string;
-  url: string;
-}
-
 export default function Dashboard() {
   const { user, isLoggedIn, isLoading: authLoading } = useAuth();
   const router = useRouter();
@@ -28,10 +23,33 @@ export default function Dashboard() {
   // const [uploading, setUploading] = useState(false);
   // const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Navigation items array
-  const navigationItems: NavigationItem[] = [
-    { name: "Goals", url: "/goals" },
-    { name: "Quizzes", url: "/quizzes" },
+  // Generate random stars for Students Hub background
+  const stars = useMemo(() => {
+    return Array.from({ length: 80 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 3 + 1, // Random size between 1-4px
+      opacity: Math.random() * 0.8 + 0.2, // Random opacity between 0.2-1
+      delay: Math.random() * 3, // Random animation delay for appearing
+      twinkleDuration: 2 + Math.random() * 3, // Random twinkle duration between 2-5s
+      twinkleDelay: Math.random() * 2, // Random delay for twinkling animation
+      moveX: (Math.random() - 0.5) * 40, // Random X movement between -20px to 20px
+      moveY: (Math.random() - 0.5) * 40, // Random Y movement between -20px to 20px
+    }));
+  }, []);
+
+  // Navigation items array with styling
+  const navigationItems = [
+    { 
+      name: "Goals", 
+      url: "/goals",
+      description: "Set and track your goals"
+    },
+    { 
+      name: "Academia", 
+      url: "/academia",
+      description: "Store your academics in encrypted format"
+    },
   ];
 
   useEffect(() => {
@@ -187,47 +205,123 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="mt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {navigationItems.map((item) => (
-            <Link
-              key={item.url}
-              href={item.url}
-              className="border border-gray-200 dark:border-gray-800 p-8 bg-white dark:bg-gray-800 rounded hover:border-gray-300 dark:hover:border-gray-700 transition-colors flex items-center justify-center min-h-[120px]"
-            >
-              <h2 className="text-2xl font-light text-black dark:text-white">
-                {item.name}
-              </h2>
-            </Link>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {navigationItems.map((item) => {
+            return (
+              <Link
+                key={item.url}
+                href={item.url}
+                className="group relative overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:border-black dark:hover:border-white hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-gray-900/50 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+              >
+                {/* Content */}
+                <div className="relative z-10 p-8 flex flex-col items-center justify-center min-h-[140px]">
+                  {/* Title */}
+                  <h2 className="text-2xl font-light text-black dark:text-white mb-2 group-hover:scale-105 transition-transform duration-300">
+                    {item.name}
+                  </h2>
+                  
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
+                    {item.description}
+                  </p>
+                  
+                  {/* Arrow indicator */}
+                  <div className="text-gray-400 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transform group-hover:translate-x-1 transition-all duration-300">
+                    →
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* Students Hub Section */}
-        <Link href="/studentsHub" className="block mb-6 group">
-          <div className="border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-8 hover:border-black dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:scale-[1.02] relative overflow-hidden">
-            {/* Subtle gradient overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <Link href="/studentsHub" className="block mb-6 group w-full" id="students-hub-link">
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              @keyframes starTwinkle {
+                0%, 100% {
+                  opacity: 0.2;
+                }
+                50% {
+                  opacity: 1;
+                }
+              }
+              
+              @keyframes starFadeIn {
+                0% {
+                  opacity: 0;
+                  transform: scale(0);
+                }
+                100% {
+                  opacity: var(--star-opacity);
+                  transform: scale(1);
+                }
+              }
+              
+              .star-base {
+                animation: starFadeIn 0.5s ease-out forwards, starTwinkle var(--twinkle-duration) ease-in-out infinite;
+                animation-delay: var(--appear-delay), var(--twinkle-delay);
+                opacity: 0;
+                transform: scale(1) translate(0, 0);
+                transition: transform 0.3s ease-out;
+              }
+              
+              #students-hub-link:hover .star-base {
+                transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
+              }
+            `
+          }} />
+          <div className="border-2 border-gray-300 dark:border-gray-700 bg-black p-10 md:p-12 lg:p-16 hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:scale-[1.02] relative overflow-hidden">
+            {/* Starfield Background */}
+            <div className="absolute inset-0 bg-black">
+              {stars.map((star, index) => (
+                <div
+                  key={index}
+                  className="star-base absolute rounded-full bg-white"
+                  style={{
+                    left: star.left,
+                    top: star.top,
+                    width: `${star.size}px`,
+                    height: `${star.size}px`,
+                    '--star-opacity': `${star.opacity}`,
+                    '--appear-delay': `${star.delay * 0.1}s`,
+                    '--twinkle-duration': `${star.twinkleDuration}s`,
+                    '--twinkle-delay': `${star.twinkleDelay}s`,
+                    '--move-x': `${star.moveX}px`,
+                    '--move-y': `${star.moveY}px`,
+                  } as React.CSSProperties}
+                />
+              ))}
+            </div>
 
+            {/* Content */}
             <div className="relative z-10">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h2 className="text-3xl font-light text-black dark:text-white mb-2 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors">
-                    Students Hub
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                    Explore all the amazing benefits and features available to
-                    you
-                  </p>
-                </div>
-                <div className="text-4xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+              {/* Rocket - Vertically centered, horizontally on right, hidden on mobile */}
+              <div className="hidden md:flex absolute top-1/2 right-8 lg:right-12 transform -translate-y-1/2 z-0 pointer-events-none">
+                <div className="text-6xl lg:text-7xl xl:text-8xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                   🚀
                 </div>
               </div>
 
-              <div className="flex items-center text-sm text-gray-500 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
-                <span className="mr-2">Discover Benefits</span>
-                <span className="transform group-hover:translate-x-2 transition-transform duration-300">
-                  →
-                </span>
+              {/* Text Content */}
+              <div className="relative z-10">
+                <div className="mb-6">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-white mb-3 group-hover:text-white transition-colors">
+                    Students Hub
+                  </h2>
+                  <p className="text-gray-300 text-base md:text-lg mb-4">
+                    Explore all the amazing benefits and features available to
+                    you
+                  </p>
+                </div>
+
+                <div className="flex items-center text-base md:text-lg text-gray-300 group-hover:text-white transition-colors">
+                  <span className="mr-2">Discover Benefits</span>
+                  <span className="transform group-hover:translate-x-2 transition-transform duration-300">
+                    →
+                  </span>
+                </div>
               </div>
             </div>
           </div>

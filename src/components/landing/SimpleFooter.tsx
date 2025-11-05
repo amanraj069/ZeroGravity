@@ -6,12 +6,12 @@ export default function SimpleFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 dark:from-slate-950 dark:to-black border-t border-gray-200 dark:border-gray-800 mt-2 lg:mt-12">
+    <footer className="relative overflow-hidden bg-gradient-to-br from-slate-950 to-black border-t border-gray-800 mt-2 lg:mt-12">
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-4 lg:py-6">
         <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2 sm:gap-8 mb-2">
           <div className="text-center sm:text-left">
             <div className="mb-2">
-              <h3 className="text-xl sm:text-xl font-semibold text-black dark:text-white">
+              <h3 className="text-xl sm:text-xl font-semibold text-white">
                 ZeroGravity
               </h3>
             </div>
@@ -24,7 +24,7 @@ export default function SimpleFooter() {
                   href="https://www.linkedin.com/in/amanraj-iiits"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-100 dark:bg-gray-800/50 hover:bg-blue-500 dark:hover:bg-blue-600/80 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-white transition-all duration-200"
+                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-blue-600/80 flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
                   title="LinkedIn"
                 >
                   <svg
@@ -39,7 +39,7 @@ export default function SimpleFooter() {
 
                 <a
                   href="mailto:amanraj3567@gmail.com"
-                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-100 dark:bg-gray-800/50 hover:bg-red-500 dark:hover:bg-red-600/80 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-white transition-all duration-200"
+                  className="w-10 h-10 sm:w-8 sm:h-8 bg-gray-800/50 hover:bg-red-600/80 flex items-center justify-center text-gray-300 hover:text-white transition-all duration-200"
                   title="Email"
                 >
                   <svg
@@ -56,10 +56,10 @@ export default function SimpleFooter() {
           </div>
         </div>
 
-        <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent mb-2 sm:mb-4" />
+        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-2 sm:mb-4" />
 
         <div className="text-center">
-          <p className="text-gray-600 dark:text-gray-500 text-xs sm:text-sm px-4 sm:px-0">
+          <p className="text-gray-500 text-xs sm:text-sm px-4 sm:px-0">
             © {currentYear} ZeroGravity.
           </p>
         </div>

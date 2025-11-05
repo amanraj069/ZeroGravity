@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 export interface Benefit {
   title: string;
@@ -16,6 +17,25 @@ interface BenefitsListProps {
   categoryTitle: string;
 }
 
+function BenefitImage({ src, alt }: { src: string; alt: string }) {
+  const [imageError, setImageError] = useState(false);
+  
+  if (!src || imageError) {
+    return null;
+  }
+  
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={250}
+      height={250}
+      className="w-full h-full object-contain p-2 sm:p-3 md:p-4"
+      onError={() => setImageError(true)}
+    />
+  );
+}
+
 export default function BenefitsList({ benefits }: BenefitsListProps) {
   return (
     <div className="flex flex-col gap-6">
@@ -25,16 +45,16 @@ export default function BenefitsList({ benefits }: BenefitsListProps) {
           href={benefit.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full overflow-hidden border border-gray-200/30 dark:border-gray-800/30 hover:border-white/30 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.01] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[250px] flex flex-row rounded-lg"
+          className="w-full overflow-hidden border border-gray-200/30 dark:border-gray-800/30 hover:border-white/30 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.01] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[250px] flex flex-row"
           style={{
             background: benefit.backgroundStyle,
           }}
         >
           {/* Subtle gradient overlay on hover */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
           {/* Border glow effect on hover */}
-          <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-white/20 transition-all duration-300 pointer-events-none" />
+          <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/20 transition-all duration-300 pointer-events-none" />
 
           {/* Left side - Content */}
           <div className="flex-1 p-4 sm:p-6 md:p-12 flex items-center relative z-10 min-w-0">
@@ -50,13 +70,7 @@ export default function BenefitsList({ benefits }: BenefitsListProps) {
 
           {/* Right side - Image */}
           <div className="w-24 sm:w-32 md:w-[250px] h-24 sm:h-32 md:h-[250px] flex-shrink-0 relative overflow-hidden flex items-center justify-center z-10">
-            <Image
-              src={benefit.image}
-              alt={benefit.title}
-              width={250}
-              height={250}
-              className="w-full h-full object-contain p-2 sm:p-3 md:p-4"
-            />
+            <BenefitImage src={benefit.image} alt={benefit.title} />
           </div>
         </Link>
       ))}

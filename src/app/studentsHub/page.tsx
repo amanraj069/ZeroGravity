@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
@@ -59,6 +60,7 @@ const categories: Category[] = [
 
 export default function StudentsHub() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
+  const { theme } = useTheme();
   const router = useRouter();
 
   // Generate random particle data once - fewer particles on left/right sides with random positions
@@ -102,6 +104,35 @@ export default function StudentsHub() {
         opacity: isLeftRight ? 0.6 : 1, // Lower opacity on left/right
       };
     });
+  }, []);
+
+  // Generate random stars for each Verification Platform card
+  const unidaysStars = useMemo(() => {
+    return Array.from({ length: 40 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 3 + 1,
+      opacity: Math.random() * 0.8 + 0.2,
+      delay: Math.random() * 3,
+      twinkleDuration: 2 + Math.random() * 3,
+      twinkleDelay: Math.random() * 2,
+      moveX: (Math.random() - 0.5) * 40,
+      moveY: (Math.random() - 0.5) * 40,
+    }));
+  }, []);
+
+  const studentpeepsStars = useMemo(() => {
+    return Array.from({ length: 40 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 3 + 1,
+      opacity: Math.random() * 0.8 + 0.2,
+      delay: Math.random() * 3,
+      twinkleDuration: 2 + Math.random() * 3,
+      twinkleDelay: Math.random() * 2,
+      moveX: (Math.random() - 0.5) * 40,
+      moveY: (Math.random() - 0.5) * 40,
+    }));
   }, []);
 
   useEffect(() => {
@@ -184,10 +215,10 @@ export default function StudentsHub() {
                 ))}
               </div>
 
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] relative z-10 h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] relative z-10 h-full">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                         alt="GitHub"
@@ -219,10 +250,10 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src="/benifits/gemini.png"
                         alt="Gemini"
@@ -254,10 +285,10 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src="/benifits/perp.png"
                         alt="Perplexity"
@@ -289,12 +320,12 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
-                        src="/benifits/chatgpt.png"
+                        src={theme === "light" ? "/benifits/chatgpt_light.jpeg" : "/benifits/chatgpt.png"}
                         alt="ChatGPT"
                         width={28}
                         height={28}
@@ -324,26 +355,116 @@ export default function StudentsHub() {
           <h2 className="text-2xl font-light text-black dark:text-white mb-4">
             Verification Platforms
           </h2>
+          {/* CSS for star animations */}
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              @keyframes verificationStarTwinkle {
+                0%, 100% {
+                  opacity: 0.2;
+                }
+                50% {
+                  opacity: 1;
+                }
+              }
+              
+              @keyframes verificationStarFadeIn {
+                0% {
+                  opacity: 0;
+                  transform: scale(0);
+                }
+                100% {
+                  opacity: var(--verification-star-opacity);
+                  transform: scale(1);
+                }
+              }
+              
+              .verification-star-base {
+                animation: verificationStarFadeIn 0.5s ease-out forwards, verificationStarTwinkle var(--verification-twinkle-duration) ease-in-out infinite;
+                animation-delay: var(--verification-appear-delay), var(--verification-twinkle-delay);
+                opacity: 0;
+                transform: scale(1) translate(0, 0);
+                transition: transform 0.3s ease-out;
+              }
+              
+              .verification-card:hover .verification-star-base {
+                transform: scale(1) translate(var(--verification-move-x), var(--verification-move-y)) !important;
+              }
+            `
+          }} />
+          
           <div className="flex gap-4">
+            {/* UNiDAYS Card */}
             <Link
               href="https://www.myunidays.com/IN/en-IN"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-1/2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-6 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 hover:shadow-lg flex items-center justify-center min-h-[100px] rounded-lg"
+              className="verification-card group relative w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
             >
-              <span className="text-xl font-light text-black dark:text-white">
-                UNiDAYS
-              </span>
+              {/* Starfield Background */}
+              <div className="absolute inset-0 bg-gray-800 dark:bg-black">
+                {unidaysStars.map((star, index) => (
+                  <div
+                    key={index}
+                    className="verification-star-base absolute rounded-full bg-white"
+                    style={{
+                      left: star.left,
+                      top: star.top,
+                      width: `${star.size}px`,
+                      height: `${star.size}px`,
+                      '--verification-star-opacity': `${star.opacity}`,
+                      '--verification-appear-delay': `${star.delay * 0.1}s`,
+                      '--verification-twinkle-duration': `${star.twinkleDuration}s`,
+                      '--verification-twinkle-delay': `${star.twinkleDelay}s`,
+                      '--verification-move-x': `${star.moveX}px`,
+                      '--verification-move-y': `${star.moveY}px`,
+                    } as React.CSSProperties}
+                  />
+                ))}
+              </div>
+
+              {/* Card Content */}
+              <div className="relative z-10 p-6 flex items-center justify-center min-h-[100px]">
+                <span className="text-xl font-light text-white group-hover:scale-105 transition-transform">
+                  UNiDAYS
+                </span>
+              </div>
             </Link>
+
+            {/* StudentPeeps Card */}
             <Link
               href="https://studentpeeps.club/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-1/2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 p-6 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 hover:shadow-lg flex items-center justify-center min-h-[100px] rounded-lg"
+              className="verification-card group relative w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
             >
-              <span className="text-xl font-light text-black dark:text-white">
-                StudentPeeps
-              </span>
+              {/* Starfield Background */}
+              <div className="absolute inset-0 bg-gray-800 dark:bg-black">
+                {studentpeepsStars.map((star, index) => (
+                  <div
+                    key={index}
+                    className="verification-star-base absolute rounded-full bg-white"
+                    style={{
+                      left: star.left,
+                      top: star.top,
+                      width: `${star.size}px`,
+                      height: `${star.size}px`,
+                      '--verification-star-opacity': `${star.opacity}`,
+                      '--verification-appear-delay': `${star.delay * 0.1}s`,
+                      '--verification-twinkle-duration': `${star.twinkleDuration}s`,
+                      '--verification-twinkle-delay': `${star.twinkleDelay}s`,
+                      '--verification-move-x': `${star.moveX}px`,
+                      '--verification-move-y': `${star.moveY}px`,
+                    } as React.CSSProperties}
+                  />
+                ))}
+              </div>
+
+              {/* Card Content */}
+              <div className="relative z-10 p-6 flex items-center justify-center min-h-[100px]">
+                <span className="text-xl font-light text-white group-hover:scale-105 transition-transform">
+                  StudentPeeps
+                </span>
+              </div>
             </Link>
           </div>
         </div>
@@ -358,16 +479,19 @@ export default function StudentsHub() {
               <Link
                 key={index}
                 href={category.url}
-                className="overflow-hidden border border-gray-200/50 dark:border-gray-800/50 hover:border-white/30 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px] rounded-lg"
+                className="overflow-hidden border border-gray-200/50 dark:border-gray-800/50 hover:border-gray-400/50 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px]"
                 style={{
                   background: category.gradient,
                 }}
               >
+                {/* Light mode overlay to soften dark gradients */}
+                <div className="absolute inset-0 bg-gray-700/40 dark:bg-transparent opacity-100 dark:opacity-0 transition-opacity duration-300" />
+
                 {/* Subtle gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Border glow effect on hover */}
-                <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-white/20 transition-all duration-300 pointer-events-none" />
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/20 dark:group-hover:border-white/20 transition-all duration-300 pointer-events-none" />
 
                 {/* Content */}
                 <div className="p-4 sm:p-10 flex items-center justify-center h-full relative z-10">

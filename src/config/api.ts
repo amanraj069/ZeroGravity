@@ -93,6 +93,24 @@ export const API_ENDPOINTS = {
     ADMIN_DETAILS: (quizId: string) =>
       `${API_BASE_URL}/api/quizzes/admin/${quizId}`,
   },
+  // Academia endpoints
+  ACADEMIA: {
+    LIST: `${API_BASE_URL}/api/academia`,
+    GET_SEMESTER: (semesterId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}`,
+    CREATE_SEMESTER: `${API_BASE_URL}/api/academia/semesters`,
+    UPDATE_SEMESTER: (semesterId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}`,
+    DELETE_SEMESTER: (semesterId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}`,
+    REORDER_SEMESTERS: `${API_BASE_URL}/api/academia/semesters/reorder`,
+    ADD_COURSE: (semesterId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}/courses`,
+    UPDATE_COURSE: (semesterId: string, courseId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}/courses/${courseId}`,
+    DELETE_COURSE: (semesterId: string, courseId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}/courses/${courseId}`,
+  },
 };
 
 // Helper function for making API calls with consistent error handling

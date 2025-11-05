@@ -8,8 +8,8 @@ export interface DailyTask {
   priority: "low" | "medium" | "high";
   dateStarted: string;
   dateEnded: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
+  dailyStartTime?: string;
+  dailyEndTime?: string;
   lastCompletedDate?: string;
   isActive: boolean;
   isCompletedToday?: boolean;
@@ -23,8 +23,8 @@ export interface CreateDailyTaskData {
   priority: "low" | "medium" | "high";
   dateStarted: string;
   dateEnded: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
+  dailyStartTime?: string;
+  dailyEndTime?: string;
 }
 
 export interface UpdateDailyTaskData extends Partial<CreateDailyTaskData> {
