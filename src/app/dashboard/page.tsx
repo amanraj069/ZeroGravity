@@ -38,17 +38,51 @@ export default function Dashboard() {
     }));
   }, []);
 
+  // Generate random stars for Goals card
+  const goalsStars = useMemo(() => {
+    return Array.from({ length: 40 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 2 + 1, // Random size between 1-3px
+      opacity: Math.random() * 0.8 + 0.2, // Random opacity between 0.2-1
+      delay: Math.random() * 2.5,
+      twinkleDuration: 2 + Math.random() * 3,
+      twinkleDelay: Math.random() * 2,
+      moveX: (Math.random() - 0.5) * 30,
+      moveY: (Math.random() - 0.5) * 30,
+    }));
+  }, []);
+
+  // Generate random stars for Academia card
+  const academiaStars = useMemo(() => {
+    return Array.from({ length: 40 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 2 + 1, // Random size between 1-3px
+      opacity: Math.random() * 0.8 + 0.2, // Random opacity between 0.2-1
+      delay: Math.random() * 2.5,
+      twinkleDuration: 2 + Math.random() * 3,
+      twinkleDelay: Math.random() * 2,
+      moveX: (Math.random() - 0.5) * 30,
+      moveY: (Math.random() - 0.5) * 30,
+    }));
+  }, []);
+
   // Navigation items array with styling
   const navigationItems = [
     { 
       name: "Goals", 
       url: "/goals",
-      description: "Set and track your goals"
+      description: "Set and track your goals",
+      stars: goalsStars,
+      id: "goals-card"
     },
     { 
       name: "Academia", 
       url: "/academia",
-      description: "Store your academics in encrypted format"
+      description: "Store your academics in encrypted format",
+      stars: academiaStars,
+      id: "academia-card"
     },
   ];
 
@@ -205,28 +239,87 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="mt-4">
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes starTwinkle {
+              0%, 100% {
+                opacity: 0.2;
+              }
+              50% {
+                opacity: 1;
+              }
+            }
+            
+            @keyframes starFadeIn {
+              0% {
+                opacity: 0;
+                transform: scale(0);
+              }
+              100% {
+                opacity: var(--star-opacity);
+                transform: scale(1);
+              }
+            }
+            
+            .card-star-base {
+              animation: starFadeIn 0.5s ease-out forwards, starTwinkle var(--twinkle-duration) ease-in-out infinite;
+              animation-delay: var(--appear-delay), var(--twinkle-delay);
+              opacity: 0;
+              transform: scale(1) translate(0, 0);
+              transition: transform 0.3s ease-out;
+            }
+            
+            #goals-card:hover .card-star-base,
+            #academia-card:hover .card-star-base {
+              transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
+            }
+          `
+        }} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {navigationItems.map((item) => {
             return (
               <Link
                 key={item.url}
                 href={item.url}
-                className="group relative overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:border-black dark:hover:border-white hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-gray-900/50 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1"
+                id={item.id}
+                className="group relative overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-black hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:scale-[1.02] rounded-lg"
               >
+                {/* Starfield Background */}
+                <div className="absolute inset-0 bg-black">
+                  {item.stars.map((star, index) => (
+                    <div
+                      key={index}
+                      className="card-star-base absolute rounded-full bg-white"
+                      style={{
+                        left: star.left,
+                        top: star.top,
+                        width: `${star.size}px`,
+                        height: `${star.size}px`,
+                        '--star-opacity': `${star.opacity}`,
+                        '--appear-delay': `${star.delay * 0.1}s`,
+                        '--twinkle-duration': `${star.twinkleDuration}s`,
+                        '--twinkle-delay': `${star.twinkleDelay}s`,
+                        '--move-x': `${star.moveX}px`,
+                        '--move-y': `${star.moveY}px`,
+                      } as React.CSSProperties}
+                    />
+                  ))}
+                </div>
+
                 {/* Content */}
-                <div className="relative z-10 p-8 flex flex-col items-center justify-center min-h-[140px]">
+                <div className="relative z-10 p-8 flex flex-col items-center justify-center min-h-[180px]">
                   {/* Title */}
-                  <h2 className="text-2xl font-light text-black dark:text-white mb-2 group-hover:scale-105 transition-transform duration-300">
+                  <h2 className="text-2xl md:text-3xl font-light text-white mb-3 group-hover:scale-105 transition-transform duration-300">
                     {item.name}
                   </h2>
                   
                   {/* Description */}
-                  <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
+                  <p className="text-sm md:text-base text-gray-300 text-center mb-4 group-hover:text-white transition-colors">
                     {item.description}
                   </p>
                   
                   {/* Arrow indicator */}
-                  <div className="text-gray-400 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transform group-hover:translate-x-1 transition-all duration-300">
+                  <div className="text-gray-300 group-hover:text-white transform group-hover:translate-x-2 transition-all duration-300 text-lg">
                     →
                   </div>
                 </div>
