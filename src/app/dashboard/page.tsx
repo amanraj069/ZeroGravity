@@ -70,19 +70,19 @@ export default function Dashboard() {
 
   // Navigation items array with styling
   const navigationItems = [
-    { 
-      name: "Goals", 
+    {
+      name: "Goals",
       url: "/goals",
       description: "Set and track your goals",
       stars: goalsStars,
-      id: "goals-card"
+      id: "goals-card",
     },
-    { 
-      name: "Academia", 
+    {
+      name: "Academia",
       url: "/academia",
       description: "Store your academics in encrypted format",
       stars: academiaStars,
-      id: "academia-card"
+      id: "academia-card",
     },
   ];
 
@@ -239,8 +239,9 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="mt-4">
-        <style dangerouslySetInnerHTML={{
-          __html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
             @keyframes starTwinkle {
               0%, 100% {
                 opacity: 0.2;
@@ -273,8 +274,9 @@ export default function Dashboard() {
             #academia-card:hover .card-star-base {
               transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
             }
-          `
-        }} />
+          `,
+          }}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {navigationItems.map((item) => {
             return (
@@ -290,18 +292,20 @@ export default function Dashboard() {
                     <div
                       key={index}
                       className="card-star-base absolute rounded-full bg-white"
-                      style={{
-                        left: star.left,
-                        top: star.top,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                        '--star-opacity': `${star.opacity}`,
-                        '--appear-delay': `${star.delay * 0.1}s`,
-                        '--twinkle-duration': `${star.twinkleDuration}s`,
-                        '--twinkle-delay': `${star.twinkleDelay}s`,
-                        '--move-x': `${star.moveX}px`,
-                        '--move-y': `${star.moveY}px`,
-                      } as React.CSSProperties}
+                      style={
+                        {
+                          left: star.left,
+                          top: star.top,
+                          width: `${star.size}px`,
+                          height: `${star.size}px`,
+                          "--star-opacity": `${star.opacity}`,
+                          "--appear-delay": `${star.delay * 0.1}s`,
+                          "--twinkle-duration": `${star.twinkleDuration}s`,
+                          "--twinkle-delay": `${star.twinkleDelay}s`,
+                          "--move-x": `${star.moveX}px`,
+                          "--move-y": `${star.moveY}px`,
+                        } as React.CSSProperties
+                      }
                     />
                   ))}
                 </div>
@@ -312,12 +316,12 @@ export default function Dashboard() {
                   <h2 className="text-2xl md:text-3xl font-light text-white mb-3 group-hover:scale-105 transition-transform duration-300">
                     {item.name}
                   </h2>
-                  
+
                   {/* Description */}
                   <p className="text-sm md:text-base text-gray-300 text-center mb-4 group-hover:text-white transition-colors">
                     {item.description}
                   </p>
-                  
+
                   {/* Arrow indicator */}
                   <div className="text-gray-300 group-hover:text-white transform group-hover:translate-x-2 transition-all duration-300 text-lg">
                     →
@@ -329,9 +333,14 @@ export default function Dashboard() {
         </div>
 
         {/* Students Hub Section */}
-        <Link href="/studentsHub" className="block mb-6 group w-full" id="students-hub-link">
-          <style dangerouslySetInnerHTML={{
-            __html: `
+        <Link
+          href="/studentsHub"
+          className="block mb-6 group w-full"
+          id="students-hub-link"
+        >
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
               @keyframes starTwinkle {
                 0%, 100% {
                   opacity: 0.2;
@@ -363,8 +372,9 @@ export default function Dashboard() {
               #students-hub-link:hover .star-base {
                 transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
               }
-            `
-          }} />
+            `,
+            }}
+          />
           <div className="border-2 border-gray-300 dark:border-gray-700 bg-black p-10 md:p-12 lg:p-16 hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:scale-[1.02] relative overflow-hidden">
             {/* Starfield Background */}
             <div className="absolute inset-0 bg-black">
@@ -372,18 +382,20 @@ export default function Dashboard() {
                 <div
                   key={index}
                   className="star-base absolute rounded-full bg-white"
-                  style={{
-                    left: star.left,
-                    top: star.top,
-                    width: `${star.size}px`,
-                    height: `${star.size}px`,
-                    '--star-opacity': `${star.opacity}`,
-                    '--appear-delay': `${star.delay * 0.1}s`,
-                    '--twinkle-duration': `${star.twinkleDuration}s`,
-                    '--twinkle-delay': `${star.twinkleDelay}s`,
-                    '--move-x': `${star.moveX}px`,
-                    '--move-y': `${star.moveY}px`,
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      left: star.left,
+                      top: star.top,
+                      width: `${star.size}px`,
+                      height: `${star.size}px`,
+                      "--star-opacity": `${star.opacity}`,
+                      "--appear-delay": `${star.delay * 0.1}s`,
+                      "--twinkle-duration": `${star.twinkleDuration}s`,
+                      "--twinkle-delay": `${star.twinkleDelay}s`,
+                      "--move-x": `${star.moveX}px`,
+                      "--move-y": `${star.moveY}px`,
+                    } as React.CSSProperties
+                  }
                 />
               ))}
             </div>

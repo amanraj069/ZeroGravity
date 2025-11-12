@@ -709,10 +709,10 @@ const DailyTasks: React.FC = () => {
                     <span
                       className={`px-2 py-0.5 rounded-md text-xs font-medium ${
                         task.priority === "high"
-                          ? "bg-red-50 text-red-500 border border-red-200"
+                          ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                           : task.priority === "medium"
-                          ? "bg-amber-50 text-amber-600 border border-amber-200"
-                          : "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                          ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                          : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
                       }`}
                     >
                       {task.priority} priority

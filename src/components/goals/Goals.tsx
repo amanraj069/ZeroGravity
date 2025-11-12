@@ -411,12 +411,12 @@ const Goals: React.FC = () => {
                               {goal.category}
                             </span>
                             <span
-                              className={`text-xs px-2 py-0.5  font-medium ${
+                              className={`text-xs px-2 py-0.5 rounded-md font-medium ${
                                 goal.priority === "high"
-                                  ? "bg-red-50 text-red-500 border border-red-200"
+                                  ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                                   : goal.priority === "medium"
-                                  ? "bg-amber-50 text-amber-600 border border-amber-200"
-                                  : "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                                  ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                                  : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
                               }`}
                             >
                               {goal.priority}
