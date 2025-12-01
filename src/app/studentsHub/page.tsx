@@ -13,7 +13,8 @@ interface Category {
   title: string;
   description: string;
   url: string;
-  gradient: string;
+  lightGradient: string;
+  darkGradient: string;
 }
 
 const categories: Category[] = [
@@ -21,40 +22,58 @@ const categories: Category[] = [
     title: "Travel & Transportation",
     description: "Airlines, Railways, Bus services, Ride-sharing apps",
     url: "/studentsHub/travel",
-    gradient: "radial-gradient(circle at top left, #172554 0%, #000000 50%)",
+    lightGradient:
+      "linear-gradient(135deg, #f5fbff 0%, #e0f2ff 50%, #fdf7ff 100%)",
+    darkGradient:
+      "radial-gradient(circle at top left, #172554 0%, #000000 50%)",
   },
   {
     title: "Technology & Electronics",
     description:
       "Laptops, phones, tablets, Audio devices, Computer accessories",
     url: "/studentsHub/technology",
-    gradient: "radial-gradient(circle at top left, #1a0033 0%, #000000 50%)",
+    lightGradient:
+      "linear-gradient(135deg, #f3f6ff 0%, #e1e6ff 40%, #f7f3ff 100%)",
+    darkGradient:
+      "radial-gradient(circle at top left, #1a0033 0%, #000000 50%)",
   },
   {
     title: "Software & Digital Tools",
     description:
       "Operating systems, Design software, Productivity tools, Cloud services",
     url: "/studentsHub/software",
-    gradient: "radial-gradient(circle at top left, #172554 0%, #000000 50%)",
+    lightGradient:
+      "linear-gradient(135deg, #f2fbff 0%, #e6f4ff 45%, #f3f0ff 100%)",
+    darkGradient:
+      "radial-gradient(circle at top left, #172554 0%, #000000 50%)",
   },
   {
     title: "Entertainment & Streaming",
     description: "Music streaming, Video streaming, Gaming platforms",
     url: "/studentsHub/entertainment",
-    gradient: "radial-gradient(circle at top left, #1a0033 0%, #000000 50%)",
+    lightGradient:
+      "linear-gradient(135deg, #fff5fb 0%, #ffe9f7 45%, #f4e8ff 100%)",
+    darkGradient:
+      "radial-gradient(circle at top left, #1a0033 0%, #000000 50%)",
   },
   {
     title: "Fashion & Lifestyle",
     description: "Clothing brands, Footwear, Beauty products, Accessories",
     url: "/studentsHub/fashion",
-    gradient: "radial-gradient(circle at top left, #172554 0%, #000000 50%)",
+    lightGradient:
+      "linear-gradient(135deg, #fff8f0 0%, #fdeee2 50%, #f8e8ff 100%)",
+    darkGradient:
+      "radial-gradient(circle at top left, #172554 0%, #000000 50%)",
   },
   {
     title: "Education & Learning",
     description:
       "Online courses, E-learning platforms, Educational software, Books & subscriptions",
     url: "/studentsHub/education",
-    gradient: "radial-gradient(circle at top left, #1a0033 0%, #000000 50%)",
+    lightGradient:
+      "linear-gradient(135deg, #f4fff6 0%, #e6faef 45%, #f2f5ff 100%)",
+    darkGradient:
+      "radial-gradient(circle at top left, #1a0033 0%, #000000 50%)",
   },
 ];
 
@@ -62,6 +81,7 @@ export default function StudentsHub() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
   const { theme } = useTheme();
   const router = useRouter();
+  const isLightTheme = theme === "light";
 
   // Generate random particle data once - fewer particles on left/right sides with random positions
   const particles = useMemo(() => {
@@ -280,7 +300,7 @@ export default function StudentsHub() {
 
             {/* Perplexity */}
             <Link
-              href="https://www.airtel.in/perplexity-pro/"
+              href="https://plex.it/referrals/OGC3S7CZ"
               target="_blank"
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
@@ -325,7 +345,11 @@ export default function StudentsHub() {
                   <div className="flex items-center gap-4 flex-1">
                     <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
-                        src={theme === "light" ? "/benifits/chatgpt_light.jpeg" : "/benifits/chatgpt.png"}
+                        src={
+                          theme === "light"
+                            ? "/benifits/chatgpt_light.jpeg"
+                            : "/benifits/chatgpt.png"
+                        }
                         alt="ChatGPT"
                         width={28}
                         height={28}
@@ -356,8 +380,9 @@ export default function StudentsHub() {
             Verification Platforms
           </h2>
           {/* CSS for star animations */}
-          <style dangerouslySetInnerHTML={{
-            __html: `
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
               @keyframes verificationStarTwinkle {
                 0%, 100% {
                   opacity: 0.2;
@@ -389,9 +414,10 @@ export default function StudentsHub() {
               .verification-card:hover .verification-star-base {
                 transform: scale(1) translate(var(--verification-move-x), var(--verification-move-y)) !important;
               }
-            `
-          }} />
-          
+            `,
+            }}
+          />
+
           <div className="flex gap-4">
             {/* UNiDAYS Card */}
             <Link
@@ -406,18 +432,20 @@ export default function StudentsHub() {
                   <div
                     key={index}
                     className="verification-star-base absolute rounded-full bg-white"
-                    style={{
-                      left: star.left,
-                      top: star.top,
-                      width: `${star.size}px`,
-                      height: `${star.size}px`,
-                      '--verification-star-opacity': `${star.opacity}`,
-                      '--verification-appear-delay': `${star.delay * 0.1}s`,
-                      '--verification-twinkle-duration': `${star.twinkleDuration}s`,
-                      '--verification-twinkle-delay': `${star.twinkleDelay}s`,
-                      '--verification-move-x': `${star.moveX}px`,
-                      '--verification-move-y': `${star.moveY}px`,
-                    } as React.CSSProperties}
+                    style={
+                      {
+                        left: star.left,
+                        top: star.top,
+                        width: `${star.size}px`,
+                        height: `${star.size}px`,
+                        "--verification-star-opacity": `${star.opacity}`,
+                        "--verification-appear-delay": `${star.delay * 0.1}s`,
+                        "--verification-twinkle-duration": `${star.twinkleDuration}s`,
+                        "--verification-twinkle-delay": `${star.twinkleDelay}s`,
+                        "--verification-move-x": `${star.moveX}px`,
+                        "--verification-move-y": `${star.moveY}px`,
+                      } as React.CSSProperties
+                    }
                   />
                 ))}
               </div>
@@ -443,18 +471,20 @@ export default function StudentsHub() {
                   <div
                     key={index}
                     className="verification-star-base absolute rounded-full bg-white"
-                    style={{
-                      left: star.left,
-                      top: star.top,
-                      width: `${star.size}px`,
-                      height: `${star.size}px`,
-                      '--verification-star-opacity': `${star.opacity}`,
-                      '--verification-appear-delay': `${star.delay * 0.1}s`,
-                      '--verification-twinkle-duration': `${star.twinkleDuration}s`,
-                      '--verification-twinkle-delay': `${star.twinkleDelay}s`,
-                      '--verification-move-x': `${star.moveX}px`,
-                      '--verification-move-y': `${star.moveY}px`,
-                    } as React.CSSProperties}
+                    style={
+                      {
+                        left: star.left,
+                        top: star.top,
+                        width: `${star.size}px`,
+                        height: `${star.size}px`,
+                        "--verification-star-opacity": `${star.opacity}`,
+                        "--verification-appear-delay": `${star.delay * 0.1}s`,
+                        "--verification-twinkle-duration": `${star.twinkleDuration}s`,
+                        "--verification-twinkle-delay": `${star.twinkleDelay}s`,
+                        "--verification-move-x": `${star.moveX}px`,
+                        "--verification-move-y": `${star.moveY}px`,
+                      } as React.CSSProperties
+                    }
                   />
                 ))}
               </div>
@@ -479,30 +509,65 @@ export default function StudentsHub() {
               <Link
                 key={index}
                 href={category.url}
-                className="overflow-hidden border border-gray-200/50 dark:border-gray-800/50 hover:border-gray-400/50 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px]"
+                className={`overflow-hidden border-2 hover:border-gray-400/70 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px] ${
+                  isLightTheme
+                    ? "text-gray-900 border-white/80 shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
+                    : "text-white border-gray-800/60"
+                }`}
+                data-testid="students-hub-category-card"
                 style={{
-                  background: category.gradient,
+                  background: isLightTheme
+                    ? category.lightGradient
+                    : category.darkGradient,
                 }}
               >
-                {/* Light mode overlay to soften dark gradients */}
-                <div className="absolute inset-0 bg-gray-700/40 dark:bg-transparent opacity-100 dark:opacity-0 transition-opacity duration-300" />
+                {/* Theme-aware overlay to soften gradients */}
+                <div
+                  className={`absolute inset-0 transition-all duration-300 ${
+                    isLightTheme
+                      ? "bg-white/50 group-hover:bg-white/60"
+                      : "bg-gray-700/40 opacity-100"
+                  }`}
+                />
 
                 {/* Subtle gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                {/* Border glow effect on hover */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/20 dark:group-hover:border-white/20 transition-all duration-300 pointer-events-none" />
+                {/* Distinct border treatment */}
+                <div
+                  className={`absolute inset-0 transition-all duration-300 pointer-events-none ${
+                    isLightTheme
+                      ? "border-[3px] border-white/80"
+                      : "border-2 border-white/10"
+                  }`}
+                />
 
                 {/* Content */}
                 <div className="p-4 sm:p-10 flex items-center justify-center h-full relative z-10">
                   <div className="text-center">
-                    <h3 className="text-xl md:text-2xl font-light text-white transition-all duration-300 group-hover:text-white group-hover:scale-105 tracking-tight">
+                    <h3
+                      className={`text-xl md:text-2xl font-light transition-all duration-300 group-hover:scale-105 tracking-tight ${
+                        isLightTheme
+                          ? "text-gray-900 group-hover:text-gray-900"
+                          : "text-white group-hover:text-white"
+                      }`}
+                    >
                       {category.title}
                     </h3>
                     {/* Arrow indicator on hover - hidden on mobile */}
                     <div className="hidden sm:flex mt-3 items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                      <span className="text-white/80 text-sm">Explore</span>
-                      <span className="ml-2 text-white/80 transform group-hover:translate-x-1 transition-transform duration-300">
+                      <span
+                        className={`text-sm ${
+                          isLightTheme ? "text-gray-900/70" : "text-white/80"
+                        }`}
+                      >
+                        Explore
+                      </span>
+                      <span
+                        className={`ml-2 transform group-hover:translate-x-1 transition-transform duration-300 ${
+                          isLightTheme ? "text-gray-900/80" : "text-white/80"
+                        }`}
+                      >
                         →
                       </span>
                     </div>

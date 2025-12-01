@@ -284,7 +284,7 @@ export default function Dashboard() {
                 key={item.url}
                 href={item.url}
                 id={item.id}
-                className="group relative overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-black hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:scale-[1.02] rounded-lg"
+                className="group relative overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-black hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:scale-[1.02]"
               >
                 {/* Starfield Background */}
                 <div className="absolute inset-0 bg-black">

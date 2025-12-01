@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 import { CreateGoalData, Goal, UpdateGoalData } from "@/services/goalsService";
 
@@ -12,6 +12,19 @@ interface AddGoalModalProps {
   editingGoal?: Goal | null;
 }
 
+const createStarfield = (count = 90) =>
+  Array.from({ length: count }).map(() => ({
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    size: 1 + Math.random() * 2,
+    opacity: 0.2 + Math.random() * 0.6,
+    delay: Math.random() * 5,
+    twinkleDuration: 3 + Math.random() * 4,
+    twinkleDelay: Math.random() * 4,
+    moveX: Math.random() * 8 - 4,
+    moveY: Math.random() * 8 - 4,
+  }));
+
 const AddGoalModal: React.FC<AddGoalModalProps> = ({
   isOpen,
   onClose,
@@ -20,6 +33,8 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
   editingGoal,
 }) => {
   const isEditing = !!editingGoal;
+  const modalStars = useMemo(() => createStarfield(110), []);
+  const buttonStars = useMemo(() => createStarfield(40), []);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -143,35 +158,94 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-              {isEditing ? "Edit Goal" : "New Goal"}
-            </h2>
+    <div className="fixed inset-0 bg-[#020410]/90 backdrop-blur-lg flex items-center justify-center z-50 p-4 transition-all">
+      <div className="goal-modal-shell relative w-full max-w-2xl max-h-[85vh] overflow-y-auto border border-white/20 bg-[#01020a]/95 shadow-[0_0_45px_rgba(26,110,255,0.35)] overflow-hidden">
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              @keyframes goalModalStarTwinkle {
+                0%, 100% { opacity: 0.2; }
+                50% { opacity: 1; }
+              }
+              @keyframes goalModalStarFadeIn {
+                0% { opacity: 0; transform: scale(0); }
+                100% { opacity: var(--goal-star-opacity); transform: scale(1); }
+              }
+              .goal-modal-star {
+                animation: goalModalStarFadeIn 0.6s ease-out forwards, goalModalStarTwinkle var(--goal-star-twinkle-duration) ease-in-out infinite;
+                animation-delay: var(--goal-star-appear-delay), var(--goal-star-twinkle-delay);
+                opacity: 0;
+                transform: translate(0, 0);
+                transition: transform 0.3s ease-out;
+              }
+              .goal-modal-shell:hover .goal-modal-star {
+                transform: translate(var(--goal-star-move-x), var(--goal-star-move-y));
+              }
+              .goal-modal-cta-star {
+                animation: goalModalStarFadeIn 0.5s ease-out forwards, goalModalStarTwinkle var(--goal-star-twinkle-duration) ease-in-out infinite;
+                animation-delay: var(--goal-star-appear-delay), var(--goal-star-twinkle-delay);
+                opacity: 0;
+                transform: translate(0, 0);
+              }
+              .goal-modal-cta:hover .goal-modal-cta-star {
+                transform: translate(var(--goal-star-move-x), var(--goal-star-move-y));
+              }
+            `,
+          }}
+        />
+        <div className="absolute inset-0 bg-black">
+          {modalStars.map((star, index) => (
+            <div
+              key={index}
+              className="goal-modal-star absolute rounded-full bg-white/90"
+              style={
+                {
+                  left: star.left,
+                  top: star.top,
+                  width: `${star.size}px`,
+                  height: `${star.size}px`,
+                  "--goal-star-opacity": `${star.opacity}`,
+                  "--goal-star-appear-delay": `${star.delay * 0.1}s`,
+                  "--goal-star-twinkle-duration": `${star.twinkleDuration}s`,
+                  "--goal-star-twinkle-delay": `${star.twinkleDelay}s`,
+                  "--goal-star-move-x": `${star.moveX}px`,
+                  "--goal-star-move-y": `${star.moveY}px`,
+                } as React.CSSProperties
+              }
+            />
+          ))}
+        </div>
+        <div className="relative z-10 bg-gradient-to-b from-[#050a1b]/95 via-[#040919]/95 to-[#01020b]/95 backdrop-blur-sm p-8 text-white">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-blue-200/70">
+                {isEditing ? "Update your mission" : "Let’s set a new mission"}
+              </p>
+              <h2 className="mt-1 text-2xl font-semibold text-white">
+                {isEditing ? "Edit Goal" : "Create Goal"}
+              </h2>
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="border border-white/15 bg-[#04071c] p-2 text-slate-200 transition hover:scale-105 hover:border-blue-400 hover:text-white"
             >
-              <X className="w-5 h-5" />
+              <X className="h-5 w-5" />
             </button>
           </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, title: e.target.value }))
-              }
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
-              placeholder="Goal title"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+            <div>
+              <input
+                type="text"
+                required
+                value={formData.title}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
+                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                placeholder="Goal title"
+              />
+            </div>
 
           <div>
             <textarea
@@ -182,13 +256,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                   description: e.target.value,
                 }))
               }
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
-              rows={2}
+              className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+              rows={3}
               placeholder="Description (optional)"
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <select
                 required
@@ -203,7 +277,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       | "yearly",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
               >
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
@@ -222,7 +296,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     priority: e.target.value as "low" | "medium" | "high",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -241,23 +315,23 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     targetDate: e.target.value,
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 -md focus:ring-1 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-gray-500 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
               />
             </div>
           </div>
 
           {/* Milestones section - Available for both adding and editing */}
           {milestones.length > 0 && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="space-y-4 rounded-none border border-white/10 bg-[#030a1f]/80 p-4 shadow-inner">
+              <div className="flex items-center justify-between text-sm font-medium text-blue-100">
+                <span>
                   Milestones
                 </span>
               </div>
               {milestones.map((milestone, milestoneIndex) => (
                 <div
                   key={milestoneIndex}
-                  className="p-3 border border-gray-100 dark:border-gray-700 -md space-y-3"
+                  className="rounded-none border border-white/10 bg-[#04102a] p-3 shadow-sm transition hover:border-blue-400"
                 >
                   <div className="flex items-center justify-between">
                     <input
@@ -266,13 +340,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       onChange={(e) =>
                         updateMilestone(milestoneIndex, "title", e.target.value)
                       }
-                      className="flex-1 px-2 py-1 border border-gray-200 dark:border-gray-700 text-sm mr-2 text-black dark:text-white bg-white dark:bg-gray-900"
+                      className="mr-2 flex-1 rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
                       placeholder="Milestone title"
                     />
                     <button
                       type="button"
                       onClick={() => removeMilestone(milestoneIndex)}
-                      className="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                      className="p-2 text-gray-400 transition hover:bg-red-500/10 hover:text-red-400"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -287,7 +361,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                         e.target.value
                       )
                     }
-                    className="w-full px-2 py-1 border border-gray-200 dark:border-gray-700 text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                    className="mt-2 w-full rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
                   />
                 </div>
               ))}
@@ -297,29 +371,54 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
           <button
             type="button"
             onClick={addMilestone}
-            className="w-full py-2 text-sm text-gray-600 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-700 -md hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
+            className="w-full rounded-none border border-dashed border-white/15 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-400 hover:text-blue-200"
           >
             + Add Milestone
           </button>
 
-          <div className="flex gap-2 pt-2">
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 -md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="flex-1 rounded-none border border-white/15 px-4 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-300 hover:text-white"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black -md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="goal-modal-cta relative flex-1 overflow-hidden rounded-none border border-white/20 bg-gradient-to-r from-[#050505] via-[#0b0b12] to-black px-4 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(0,0,0,0.6)] transition hover:brightness-115 hover:shadow-[0_0_35px_rgba(72,94,255,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
             >
-              {isEditing ? "Update Goal" : "Create Goal"}
+              <div className="absolute inset-0 bg-black/40">
+                {buttonStars.map((star, index) => (
+                  <div
+                    key={index}
+                    className="goal-modal-cta-star absolute rounded-full bg-white/90"
+                    style={
+                      {
+                        left: star.left,
+                        top: star.top,
+                        width: `${star.size}px`,
+                        height: `${star.size}px`,
+                        "--goal-star-opacity": `${star.opacity}`,
+                        "--goal-star-appear-delay": `${star.delay * 0.1}s`,
+                        "--goal-star-twinkle-duration": `${star.twinkleDuration}s`,
+                        "--goal-star-twinkle-delay": `${star.twinkleDelay}s`,
+                        "--goal-star-move-x": `${star.moveX}px`,
+                        "--goal-star-move-y": `${star.moveY}px`,
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </div>
+              <span className="relative z-10">
+                {isEditing ? "Update Goal" : "Create Goal"}
+              </span>
             </button>
           </div>
         </form>
       </div>
     </div>
+  </div>
   );
 };
 
