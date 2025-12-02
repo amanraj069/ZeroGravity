@@ -166,8 +166,6 @@ textarea::placeholder {
   opacity: 1;
 }
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -224,8 +222,6 @@ textarea::placeholder {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
@@ -237,12 +233,31 @@ textarea::placeholder {
 
 /* Golden particles fade animations */
 @keyframes sparkle-fade {
-  0%, 100% { 
-    opacity: 0; 
+  0%,
+  100% {
+    opacity: 0;
     transform: scale(0);
   }
-  50% { 
-    opacity: 1; 
+  50% {
+    opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Date picker styling for dark mode */
+input[type="date"] {
+  cursor: pointer;
+}
+
+/* Make calendar icon white in dark mode using color-scheme */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1 !important;
+}
+
+/* Set color-scheme for dark mode - this makes the calendar icon white */
+.dark input[type="date"],
+html.dark input[type="date"] {
+  color-scheme: dark !important;
 }

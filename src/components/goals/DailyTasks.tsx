@@ -8,7 +8,6 @@ import {
   Trash2,
   Calendar,
   AlertCircle,
-  Target,
   TrendingUp,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,6 +19,44 @@ import {
   DailyTasksAnalytics,
 } from "@/services/dailyTasksService";
 import LoadingSpinner from "@/components/LoadingSpinner";
+
+// Helper function to get local date string in YYYY-MM-DD format
+const getLocalDateString = (date: Date = new Date()): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+// Helper function to get upcoming days (today + next 6 days = 1 week)
+const getUpcomingDays = (): {
+  date: string;
+  dayName: string;
+  dayNumber: number;
+  isToday: boolean;
+}[] => {
+  const days: {
+    date: string;
+    dayName: string;
+    dayNumber: number;
+    isToday: boolean;
+  }[] = [];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = new Date();
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    days.push({
+      date: getLocalDateString(date),
+      dayName: dayNames[date.getDay()],
+      dayNumber: date.getDate(),
+      isToday: i === 0,
+    });
+  }
+
+  return days;
+};
 
 interface AddTaskFormProps {
   editingTask: DailyTask | null;
@@ -41,7 +78,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
     title: "",
     description: "",
     priority: "medium",
-    dateStarted: new Date().toISOString().split("T")[0],
+    dateStarted: getLocalDateString(),
     dateEnded: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,13 +92,11 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
         title: editingTask.title,
         description: editingTask.description || "",
         priority: editingTask.priority || "medium",
-        dateStarted: new Date(editingTask.dateStarted)
-          .toISOString()
-          .split("T")[0],
-        dateEnded: new Date(editingTask.dateEnded).toISOString().split("T")[0],
+        dateStarted: getLocalDateString(new Date(editingTask.dateStarted)),
+        dateEnded: getLocalDateString(new Date(editingTask.dateEnded)),
       });
     } else {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getLocalDateString();
       const nextWeek = new Date();
       nextWeek.setDate(nextWeek.getDate() + 7);
 
@@ -70,7 +105,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
         description: "",
         priority: "medium",
         dateStarted: today,
-        dateEnded: nextWeek.toISOString().split("T")[0],
+        dateEnded: getLocalDateString(nextWeek),
       });
     }
     setErrors({});
@@ -156,11 +191,30 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 shadow-sm border-t border-gray-200 dark:border-gray-700">
-      <div className="mb-4">
+    <div
+      className="bg-white dark:bg-gray-800 p-4 shadow-sm border-t border-gray-200 dark:border-gray-700"
+      style={{ borderRadius: 0, position: "relative" }}
+    >
+      <div className="mb-4 flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
           {editingTask ? "Edit Daily Task" : "Add Daily Task"}
         </h3>
+        <button
+          type="button"
+          aria-label="Cancel"
+          className="text-gray-400 hover:text-red-500 text-2xl font-bold"
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            position: "absolute",
+            top: 16,
+            right: 16,
+          }}
+          onClick={onCancel}
+        >
+          &times;
+        </button>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -219,83 +273,88 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
             </div>
           </div>
 
-          {/* Right side: Description */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              rows={4}
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
-              placeholder="Enter task description (optional)"
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
+          {/* Right side: Description (single line) and Date Range */}
+          <div className="space-y-4">
+            {/* Description - single line */}
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Description
+              </label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                placeholder="Enter task description (optional)"
+                disabled={isSubmitting}
+              />
+            </div>
 
-        {/* Date Range */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label
-              htmlFor="dateStarted"
-              className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              <Calendar className="w-4 h-4 mr-1.5" />
-              Start Date *
-            </label>
-            <input
-              type="date"
-              id="dateStarted"
-              name="dateStarted"
-              value={formData.dateStarted}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
-                errors.dateStarted
-                  ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
-                  : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
-              }`}
-              disabled={isSubmitting}
-            />
-            {errors.dateStarted && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                {errors.dateStarted}
-              </p>
-            )}
-          </div>
+            {/* Date Range - side by side */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label
+                  htmlFor="dateStarted"
+                  className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  <Calendar className="w-4 h-4 mr-1.5" />
+                  Start Date *
+                </label>
+                <input
+                  type="date"
+                  id="dateStarted"
+                  name="dateStarted"
+                  value={formData.dateStarted}
+                  onChange={handleInputChange}
+                  onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
+                    errors.dateStarted
+                      ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
+                      : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                  }`}
+                  disabled={isSubmitting}
+                />
+                {errors.dateStarted && (
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                    {errors.dateStarted}
+                  </p>
+                )}
+              </div>
 
-          <div>
-            <label
-              htmlFor="dateEnded"
-              className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-            >
-              <Calendar className="w-4 h-4 mr-1.5" />
-              End Date *
-            </label>
-            <input
-              type="date"
-              id="dateEnded"
-              name="dateEnded"
-              value={formData.dateEnded}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
-                errors.dateEnded
-                  ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
-                  : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
-              }`}
-              disabled={isSubmitting}
-            />
-            {errors.dateEnded && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                {errors.dateEnded}
-              </p>
-            )}
+              <div>
+                <label
+                  htmlFor="dateEnded"
+                  className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
+                  <Calendar className="w-4 h-4 mr-1.5" />
+                  End Date *
+                </label>
+                <input
+                  type="date"
+                  id="dateEnded"
+                  name="dateEnded"
+                  value={formData.dateEnded}
+                  onChange={handleInputChange}
+                  onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
+                    errors.dateEnded
+                      ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
+                      : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                  }`}
+                  disabled={isSubmitting}
+                />
+                {errors.dateEnded && (
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                    {errors.dateEnded}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -304,14 +363,16 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
+            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
+            style={{ borderRadius: 0 }}
             disabled={isSubmitting}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+            style={{ borderRadius: 0 }}
             disabled={isSubmitting}
           >
             {isSubmitting
@@ -330,13 +391,14 @@ const DailyTasks: React.FC = () => {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
+    getLocalDateString()
   );
   const [showAddTask, setShowAddTask] = useState(false);
   const [editingTask, setEditingTask] = useState<DailyTask | null>(null);
   const [analytics, setAnalytics] = useState<DailyTasksAnalytics>({
     currentStreak: 0,
     longestStreak: 0,
+    streakLast: null,
     totalActiveTasks: 0,
     completedToday: 0,
   });
@@ -458,10 +520,6 @@ const DailyTasks: React.FC = () => {
     }
   };
 
-  const isToday = (dateString: string): boolean => {
-    return dateString === new Date().toISOString().split("T")[0];
-  };
-
   // Show loading state
   if (authLoading || isLoading) {
     return (
@@ -545,7 +603,8 @@ const DailyTasks: React.FC = () => {
           </div>
           <button
             onClick={() => setShowAddTask(true)}
-            className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto"
+            style={{ borderRadius: 0 }}
           >
             <Plus className="w-4 h-4" />
             Add Task
@@ -572,40 +631,75 @@ const DailyTasks: React.FC = () => {
         />
       )}
 
-      {/* Date Selector */}
+      {/* Date Selector with Upcoming Days */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            <label
-              htmlFor="selectedDate"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Select Date
-            </label>
-          </div>
-          <div className="flex items-center gap-3">
-            <input
-              type="date"
-              id="selectedDate"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-md text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors"
-            />
-            {isToday(selectedDate) ? (
-              <div className="text-xs text-green-600 dark:text-green-400 font-medium bg-green-50 dark:bg-green-900/30 px-3 py-1 rounded-md">
-                Today
-              </div>
-            ) : (
-              <button
-                onClick={() =>
-                  setSelectedDate(new Date().toISOString().split("T")[0])
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          {/* Date Picker */}
+          <input
+            type="date"
+            id="selectedDate"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+            className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-md text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark]"
+          />
+          {/* Upcoming Days - full width */}
+          <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-1">
+            {getUpcomingDays().map((day) => {
+              const isSelected = selectedDate === day.date;
+              // Format as 'Fri (3rd Dec)'
+              const dateObj = new Date(day.date);
+              const dayName = day.dayName;
+              const dayNumber = dateObj.getDate();
+              const monthName = dateObj.toLocaleString("default", {
+                month: "short",
+              });
+              const suffix = (n: number) => {
+                if (n >= 11 && n <= 13) return "th";
+                switch (n % 10) {
+                  case 1:
+                    return "st";
+                  case 2:
+                    return "nd";
+                  case 3:
+                    return "rd";
+                  default:
+                    return "th";
                 }
-                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1 rounded-md transition-colors"
-              >
-                Go to Today
-              </button>
-            )}
+              };
+              const formatted = `${dayName} (${dayNumber}${suffix(
+                dayNumber
+              )} ${monthName})`;
+              // Border logic: current day always green, other selected days indigo, unselected days no border
+              let borderClass = "";
+              if (day.isToday) {
+                borderClass = "border-b-4 border-green-500";
+              } else if (isSelected) {
+                borderClass =
+                  "border-b-4 border-indigo-500 dark:border-indigo-400";
+              }
+              return (
+                <button
+                  key={day.date}
+                  onClick={() => setSelectedDate(day.date)}
+                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${
+                    isSelected
+                      ? "bg-gray-300 dark:bg-gray-400 text-black dark:text-white "
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 "
+                  }${borderClass}`}
+                >
+                  <span
+                    className={`text-xs font-medium ${
+                      isSelected
+                        ? "text-black dark:text-black"
+                        : "text-gray-500 dark:text-gray-400"
+                    }`}
+                  >
+                    {formatted}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -613,10 +707,13 @@ const DailyTasks: React.FC = () => {
       {/* Tasks Display */}
       <div className="space-y-4">
         {tasks.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm">
-            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-gray-400 dark:text-gray-500" />
-            </div>
+          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100vh-360px)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/goals/dTasks.png"
+              alt="Goals Art"
+              className="w-128 h-72 mx-auto object-contain"
+            />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               No daily tasks for this date
             </h3>
@@ -625,7 +722,7 @@ const DailyTasks: React.FC = () => {
             </p>
             <button
               onClick={() => setShowAddTask(true)}
-              className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
               Create Task
             </button>
@@ -717,14 +814,12 @@ const DailyTasks: React.FC = () => {
                     >
                       {task.priority} priority
                     </span>
-                    {task.lastCompletedDate && (
+                    {analytics.streakLast && (
                       <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                         <CheckCircle className="w-3 h-3" />
                         <span>
                           Last completed:{" "}
-                          {new Date(
-                            task.lastCompletedDate
-                          ).toLocaleDateString()}
+                          {new Date(analytics.streakLast).toLocaleDateString()}
                         </span>
                       </div>
                     )}

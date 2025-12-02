@@ -112,7 +112,6 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
           title: milestone.title,
           description: milestone.description,
           targetDate: milestone.targetDate,
-          subtasks: [], // Start with empty subtasks
         })),
       };
 
@@ -247,178 +246,180 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
               />
             </div>
 
-          <div>
-            <textarea
-              value={formData.description}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
-              rows={3}
-              placeholder="Description (optional)"
-            />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <select
-                required
-                value={formData.category}
+              <textarea
+                value={formData.description}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    category: e.target.value as
-                      | "weekly"
-                      | "monthly"
-                      | "quarterly"
-                      | "yearly",
+                    description: e.target.value,
                   }))
                 }
                 className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-            </div>
-
-            <div>
-              <select
-                required
-                value={formData.priority}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    priority: e.target.value as "low" | "medium" | "high",
-                  }))
-                }
-                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-
-            <div>
-              <input
-                type="date"
-                required
-                value={formData.targetDate}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    targetDate: e.target.value,
-                  }))
-                }
-                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                rows={3}
+                placeholder="Description (optional)"
               />
             </div>
-          </div>
 
-          {/* Milestones section - Available for both adding and editing */}
-          {milestones.length > 0 && (
-            <div className="space-y-4 rounded-none border border-white/10 bg-[#030a1f]/80 p-4 shadow-inner">
-              <div className="flex items-center justify-between text-sm font-medium text-blue-100">
-                <span>
-                  Milestones
-                </span>
-              </div>
-              {milestones.map((milestone, milestoneIndex) => (
-                <div
-                  key={milestoneIndex}
-                  className="rounded-none border border-white/10 bg-[#04102a] p-3 shadow-sm transition hover:border-blue-400"
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div>
+                <select
+                  required
+                  value={formData.category}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: e.target.value as
+                        | "weekly"
+                        | "monthly"
+                        | "quarterly"
+                        | "yearly",
+                    }))
+                  }
+                  className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
                 >
-                  <div className="flex items-center justify-between">
-                    <input
-                      type="text"
-                      value={milestone.title}
-                      onChange={(e) =>
-                        updateMilestone(milestoneIndex, "title", e.target.value)
-                      }
-                      className="mr-2 flex-1 rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
-                      placeholder="Milestone title"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeMilestone(milestoneIndex)}
-                      className="p-2 text-gray-400 transition hover:bg-red-500/10 hover:text-red-400"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <input
-                    type="date"
-                    value={milestone.targetDate}
-                    onChange={(e) =>
-                      updateMilestone(
-                        milestoneIndex,
-                        "targetDate",
-                        e.target.value
-                      )
-                    }
-                    className="mt-2 w-full rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
-                  />
-                </div>
-              ))}
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+
+              <div>
+                <select
+                  required
+                  value={formData.priority}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      priority: e.target.value as "low" | "medium" | "high",
+                    }))
+                  }
+                  className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div>
+                <input
+                  type="date"
+                  required
+                  value={formData.targetDate}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      targetDate: e.target.value,
+                    }))
+                  }
+                  className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                />
+              </div>
             </div>
-          )}
 
-          <button
-            type="button"
-            onClick={addMilestone}
-            className="w-full rounded-none border border-dashed border-white/15 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-400 hover:text-blue-200"
-          >
-            + Add Milestone
-          </button>
-
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-none border border-white/15 px-4 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-300 hover:text-white"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="goal-modal-cta relative flex-1 overflow-hidden rounded-none border border-white/20 bg-gradient-to-r from-[#050505] via-[#0b0b12] to-black px-4 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(0,0,0,0.6)] transition hover:brightness-115 hover:shadow-[0_0_35px_rgba(72,94,255,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-            >
-              <div className="absolute inset-0 bg-black/40">
-                {buttonStars.map((star, index) => (
+            {/* Milestones section - Available for both adding and editing */}
+            {milestones.length > 0 && (
+              <div className="space-y-4 rounded-none border border-white/10 bg-[#030a1f]/80 p-4 shadow-inner">
+                <div className="flex items-center justify-between text-sm font-medium text-blue-100">
+                  <span>Milestones</span>
+                </div>
+                {milestones.map((milestone, milestoneIndex) => (
                   <div
-                    key={index}
-                    className="goal-modal-cta-star absolute rounded-full bg-white/90"
-                    style={
-                      {
-                        left: star.left,
-                        top: star.top,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                        "--goal-star-opacity": `${star.opacity}`,
-                        "--goal-star-appear-delay": `${star.delay * 0.1}s`,
-                        "--goal-star-twinkle-duration": `${star.twinkleDuration}s`,
-                        "--goal-star-twinkle-delay": `${star.twinkleDelay}s`,
-                        "--goal-star-move-x": `${star.moveX}px`,
-                        "--goal-star-move-y": `${star.moveY}px`,
-                      } as React.CSSProperties
-                    }
-                  />
+                    key={milestoneIndex}
+                    className="rounded-none border border-white/10 bg-[#04102a] p-3 shadow-sm transition hover:border-blue-400"
+                  >
+                    <div className="flex items-center justify-between">
+                      <input
+                        type="text"
+                        value={milestone.title}
+                        onChange={(e) =>
+                          updateMilestone(
+                            milestoneIndex,
+                            "title",
+                            e.target.value
+                          )
+                        }
+                        className="mr-2 flex-1 rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
+                        placeholder="Milestone title"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeMilestone(milestoneIndex)}
+                        className="p-2 text-gray-400 transition hover:bg-red-500/10 hover:text-red-400"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <input
+                      type="date"
+                      value={milestone.targetDate}
+                      onChange={(e) =>
+                        updateMilestone(
+                          milestoneIndex,
+                          "targetDate",
+                          e.target.value
+                        )
+                      }
+                      className="mt-2 w-full rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
+                    />
+                  </div>
                 ))}
               </div>
-              <span className="relative z-10">
-                {isEditing ? "Update Goal" : "Create Goal"}
-              </span>
+            )}
+
+            <button
+              type="button"
+              onClick={addMilestone}
+              className="w-full rounded-none border border-dashed border-white/15 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-400 hover:text-blue-200"
+            >
+              + Add Milestone
             </button>
-          </div>
-        </form>
+
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-none border border-white/15 px-4 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-300 hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="goal-modal-cta relative flex-1 overflow-hidden rounded-none border border-white/20 bg-gradient-to-r from-[#050505] via-[#0b0b12] to-black px-4 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(0,0,0,0.6)] transition hover:brightness-115 hover:shadow-[0_0_35px_rgba(72,94,255,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
+                <div className="absolute inset-0 bg-black/40">
+                  {buttonStars.map((star, index) => (
+                    <div
+                      key={index}
+                      className="goal-modal-cta-star absolute rounded-full bg-white/90"
+                      style={
+                        {
+                          left: star.left,
+                          top: star.top,
+                          width: `${star.size}px`,
+                          height: `${star.size}px`,
+                          "--goal-star-opacity": `${star.opacity}`,
+                          "--goal-star-appear-delay": `${star.delay * 0.1}s`,
+                          "--goal-star-twinkle-duration": `${star.twinkleDuration}s`,
+                          "--goal-star-twinkle-delay": `${star.twinkleDelay}s`,
+                          "--goal-star-move-x": `${star.moveX}px`,
+                          "--goal-star-move-y": `${star.moveY}px`,
+                        } as React.CSSProperties
+                      }
+                    />
+                  ))}
+                </div>
+                <span className="relative z-10">
+                  {isEditing ? "Update Goal" : "Create Goal"}
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 

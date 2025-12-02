@@ -34,6 +34,7 @@ export interface UpdateDailyTaskData extends Partial<CreateDailyTaskData> {
 export interface DailyTasksAnalytics {
   currentStreak: number;
   longestStreak: number;
+  streakLast: string | null;
   totalActiveTasks: number;
   completedToday: number;
 }

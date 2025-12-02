@@ -1,19 +1,11 @@
 import { apiCallWithAuth, API_ENDPOINTS } from "@/config/api";
 
-export interface Subtask {
-  id: string;
-  title: string;
-  completed: boolean;
-  createdAt: Date;
-}
-
 export interface Milestone {
   id: string;
   title: string;
   description?: string;
   targetDate: Date;
   completed: boolean;
-  subtasks: Subtask[];
   createdAt: Date;
   progress?: number;
 }
@@ -47,17 +39,11 @@ export interface GoalsResponse {
 }
 
 // API Response interfaces (using string dates instead of Date objects)
-interface ApiSubtask extends Omit<Subtask, "id" | "createdAt"> {
-  _id: string;
-  createdAt: string;
-}
-
 interface ApiMilestone
-  extends Omit<Milestone, "id" | "targetDate" | "createdAt" | "subtasks"> {
+  extends Omit<Milestone, "id" | "targetDate" | "createdAt"> {
   _id: string;
   targetDate: string;
   createdAt: string;
-  subtasks: ApiSubtask[];
 }
 
 interface ApiGoal
@@ -82,9 +68,6 @@ export interface CreateGoalData {
     title: string;
     description?: string;
     targetDate: string | Date;
-    subtasks?: Array<{
-      title: string;
-    }>;
   }>;
 }
 
@@ -128,10 +111,6 @@ export const goalsService = {
         ...milestone,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     }));
 
@@ -164,12 +143,9 @@ export const goalsService = {
       completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
       milestones: goal.milestones.map((milestone: ApiMilestone) => ({
         ...milestone,
+        id: milestone._id,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     };
   },
@@ -199,12 +175,9 @@ export const goalsService = {
       createdAt: new Date(goal.createdAt),
       milestones: goal.milestones.map((milestone: ApiMilestone) => ({
         ...milestone,
+        id: milestone._id,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     };
   },
@@ -235,12 +208,9 @@ export const goalsService = {
       completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
       milestones: goal.milestones.map((milestone: ApiMilestone) => ({
         ...milestone,
+        id: milestone._id,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     };
   },
@@ -292,12 +262,9 @@ export const goalsService = {
       completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
       milestones: goal.milestones.map((milestone: ApiMilestone) => ({
         ...milestone,
+        id: milestone._id,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     };
   },
@@ -335,56 +302,9 @@ export const goalsService = {
       completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
       milestones: goal.milestones.map((milestone: ApiMilestone) => ({
         ...milestone,
+        id: milestone._id,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
-      })),
-    };
-  },
-
-  // Toggle subtask completion
-  async toggleSubtaskCompletion(
-    goalId: string,
-    milestoneId: string,
-    subtaskId: string
-  ): Promise<Goal> {
-    const response = await apiCallWithAuth(
-      API_ENDPOINTS.GOALS.TOGGLE_SUBTASK(goalId, milestoneId, subtaskId),
-      {
-        method: "PATCH",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to toggle subtask completion: ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Failed to toggle subtask completion");
-    }
-
-    const goal = data.data;
-    return {
-      ...goal,
-      id: goal._id,
-      targetDate: new Date(goal.targetDate),
-      createdAt: new Date(goal.createdAt),
-      completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
-      milestones: goal.milestones.map((milestone: ApiMilestone) => ({
-        ...milestone,
-        targetDate: new Date(milestone.targetDate),
-        createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     };
   },
@@ -417,141 +337,10 @@ export const goalsService = {
       completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
       milestones: goal.milestones.map((milestone: ApiMilestone) => ({
         ...milestone,
+        id: milestone._id,
         targetDate: new Date(milestone.targetDate),
         createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
       })),
     }));
-  },
-
-  // Update subtasks for a specific milestone
-  async updateSubtasks(
-    goalId: string,
-    milestoneId: string,
-    subtasks: Array<{ title: string }>
-  ): Promise<Goal> {
-    const response = await apiCallWithAuth(
-      API_ENDPOINTS.GOALS.UPDATE_SUBTASKS(goalId, milestoneId),
-      {
-        method: "PUT",
-        body: JSON.stringify({ subtasks }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to update subtasks: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Failed to update subtasks");
-    }
-
-    const goal = data.data;
-    return {
-      ...goal,
-      id: goal._id,
-      targetDate: new Date(goal.targetDate),
-      createdAt: new Date(goal.createdAt),
-      completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
-      milestones: goal.milestones.map((milestone: ApiMilestone) => ({
-        ...milestone,
-        targetDate: new Date(milestone.targetDate),
-        createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
-      })),
-    };
-  },
-
-  // Add subtasks to a specific milestone
-  async addSubtasks(
-    goalId: string,
-    milestoneId: string,
-    subtasks: Array<{ title: string }>
-  ): Promise<Goal> {
-    const response = await apiCallWithAuth(
-      API_ENDPOINTS.GOALS.ADD_SUBTASKS(goalId, milestoneId),
-      {
-        method: "POST",
-        body: JSON.stringify({ subtasks }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to add subtasks: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Failed to add subtasks");
-    }
-
-    const goal = data.data;
-    return {
-      ...goal,
-      id: goal._id,
-      targetDate: new Date(goal.targetDate),
-      createdAt: new Date(goal.createdAt),
-      completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
-      milestones: goal.milestones.map((milestone: ApiMilestone) => ({
-        ...milestone,
-        targetDate: new Date(milestone.targetDate),
-        createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
-      })),
-    };
-  },
-
-  // Delete a specific subtask
-  async deleteSubtask(
-    goalId: string,
-    milestoneId: string,
-    subtaskId: string
-  ): Promise<Goal> {
-    const response = await apiCallWithAuth(
-      API_ENDPOINTS.GOALS.DELETE_SUBTASK(goalId, milestoneId, subtaskId),
-      {
-        method: "DELETE",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete subtask: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Failed to delete subtask");
-    }
-
-    const goal = data.data;
-    return {
-      ...goal,
-      id: goal._id,
-      targetDate: new Date(goal.targetDate),
-      createdAt: new Date(goal.createdAt),
-      completedAt: goal.completedAt ? new Date(goal.completedAt) : undefined,
-      milestones: goal.milestones.map((milestone: ApiMilestone) => ({
-        ...milestone,
-        targetDate: new Date(milestone.targetDate),
-        createdAt: new Date(milestone.createdAt),
-        subtasks: milestone.subtasks.map((subtask: ApiSubtask) => ({
-          ...subtask,
-          createdAt: new Date(subtask.createdAt),
-        })),
-      })),
-    };
   },
 };

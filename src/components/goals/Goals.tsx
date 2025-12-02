@@ -13,8 +13,7 @@ import {
   ChevronUp,
   Clock,
 } from "lucide-react";
-import AddGoalModal from "./AddGoalModal";
-import SubtasksModal from "./SubtasksModal";
+import AddGoalForm from "./AddGoalForm";
 import DailyTasks from "./DailyTasks";
 import {
   goalsService,
@@ -23,10 +22,7 @@ import {
   CreateGoalData,
   UpdateGoalData,
 } from "@/services/goalsService";
-import {
-  dailyTasksService,
-  DailyTasksAnalytics,
-} from "@/services/dailyTasksService";
+import { dailyTasksService } from "@/services/dailyTasksService";
 import { useAuth } from "@/contexts/AuthContext";
 
 type FilterType = "weekly" | "monthly" | "quarterly" | "yearly" | "all";
@@ -49,17 +45,7 @@ const Goals: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [editingSubtasks, setEditingSubtasks] = useState<{
-    goalId: string;
-    milestoneId: string;
-  } | null>(null);
   const [expandedGoals, setExpandedGoals] = useState<Set<string>>(new Set());
-  const [streakData, setStreakData] = useState<DailyTasksAnalytics>({
-    currentStreak: 0,
-    longestStreak: 0,
-    totalActiveTasks: 0,
-    completedToday: 0,
-  });
   const [goalsAnalytics, setGoalsAnalytics] = useState<GoalsAnalytics>({
     currentStreak: 0,
     longestStreak: 0,
@@ -100,6 +86,11 @@ const Goals: React.FC = () => {
     }
   }, [searchParams, router]);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Load goals from API only when authenticated and viewing goals
   useEffect(() => {
     if (!authLoading && isLoggedIn && activeView === "goals") {
@@ -128,8 +119,7 @@ const Goals: React.FC = () => {
 
   const loadAnalytics = async () => {
     try {
-      const analyticsData = await dailyTasksService.getStreakInfo();
-      setStreakData(analyticsData);
+      await dailyTasksService.getStreakInfo();
     } catch (error) {
       console.error("Error loading analytics:", error);
     }
@@ -223,11 +213,21 @@ const Goals: React.FC = () => {
         const { goals: updatedGoals } = await goalsService.getGoals();
         const updatedGoal = updatedGoals.find((g) => g._id === goalId);
 
-        if (updatedGoal && !updatedGoal.completed) {
+        if (updatedGoal) {
           const allMilestonesCompleted = updatedGoal.milestones.every(
             (m) => m.completed
           );
-          if (allMilestonesCompleted) {
+          const anyMilestoneIncomplete = updatedGoal.milestones.some(
+            (m) => !m.completed
+          );
+
+          // Auto-complete goal when all milestones are completed
+          if (allMilestonesCompleted && !updatedGoal.completed) {
+            await goalsService.toggleGoalCompletion(goalId);
+            await loadGoals();
+          }
+          // Auto-uncomplete goal when any milestone is unchecked
+          else if (anyMilestoneIncomplete && updatedGoal.completed) {
             await goalsService.toggleGoalCompletion(goalId);
             await loadGoals();
           }
@@ -237,48 +237,6 @@ const Goals: React.FC = () => {
       console.error("Error toggling milestone completion:", error);
       setError(
         error instanceof Error ? error.message : "Failed to update milestone"
-      );
-    }
-  };
-
-  const toggleSubtaskCompletion = async (
-    goalId: string,
-    milestoneId: string,
-    subtaskId: string
-  ) => {
-    try {
-      await goalsService.toggleSubtaskCompletion(
-        goalId,
-        milestoneId,
-        subtaskId
-      );
-      await loadGoals();
-
-      const goal = goals.find((g) => g._id === goalId);
-      if (goal) {
-        const milestone = goal.milestones.find((m) => m.id === milestoneId);
-        if (milestone && milestone.subtasks.length > 0) {
-          const { goals: updatedGoals } = await goalsService.getGoals();
-          const updatedGoal = updatedGoals.find((g) => g._id === goalId);
-          const updatedMilestone = updatedGoal?.milestones.find(
-            (m) => m.id === milestoneId
-          );
-
-          if (updatedMilestone && !updatedMilestone.completed) {
-            const allSubtasksCompleted = updatedMilestone.subtasks.every(
-              (s) => s.completed
-            );
-            if (allSubtasksCompleted) {
-              await goalsService.toggleMilestoneCompletion(goalId, milestoneId);
-              await loadGoals();
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error toggling subtask completion:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update subtask"
       );
     }
   };
@@ -302,7 +260,7 @@ const Goals: React.FC = () => {
               <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
                 <span>{goalsAnalytics?.totalCompleted || 0} completed</span>
                 <span>•</span>
-                <span>{streakData.currentStreak} day streak</span>
+                <span>{goals.length} total</span>
                 <span>•</span>
                 <span>
                   {goalsAnalytics?.completionRate || 0}% completion rate
@@ -319,9 +277,28 @@ const Goals: React.FC = () => {
           </div>
         </div>
 
+        {/* Inline Goal Form (like DailyTasks) - before filter */}
+        {(showAddGoal || editingGoal) && (
+          <AddGoalForm
+            editingGoal={editingGoal}
+            onAddGoal={async (goalData) => {
+              await addGoal(goalData);
+              setShowAddGoal(false);
+            }}
+            onUpdateGoal={async (id, updateData) => {
+              await updateGoal(id, updateData);
+              setEditingGoal(null);
+            }}
+            onCancel={() => {
+              setShowAddGoal(false);
+              setEditingGoal(null);
+            }}
+          />
+        )}
+
         {/* Mobile-optimized Filter */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
-          <div className="flex overflow-x-auto scrollbar-hide">
+        <div className="bg-white dark:bg-gray-800 shadow-sm">
+          <div className="grid grid-cols-5 gap-0">
             {(
               [
                 "all",
@@ -334,7 +311,7 @@ const Goals: React.FC = () => {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+                className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 text-center ${
                   activeFilter === filter
                     ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -349,166 +326,202 @@ const Goals: React.FC = () => {
         {/* Mobile-optimized Goals Display */}
         <div className="space-y-4">
           {filteredGoals.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
-                <Target className="w-8 h-8 text-gray-400 dark:text-gray-500" />
-              </div>
+            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100vh-300px)] py-12 px-4 text-center shadow-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/goals/dGoals.png"
+                alt="No goals yet"
+                className="w-128 h-72 object-contain mx-auto mb-2"
+                draggable={false}
+              />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                No goals yet
+                No goals created yet
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create your first goal to get started
+                Create your first Goal to get started
               </p>
-              <button
-                onClick={() => setShowAddGoal(true)}
-                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-              >
-                Create Goal
-              </button>
+              {!showAddGoal && (
+                <button
+                  onClick={() => setShowAddGoal(true)}
+                  className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                >
+                  Create Goal
+                </button>
+              )}
             </div>
           ) : (
-            filteredGoals.map((goal) => (
-              <div
-                key={goal._id}
-                className={` shadow-sm border overflow-hidden ${
-                  goal.completed
-                    ? "bg-gray-50/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                    : goal.priority === "high"
-                    ? "bg-red-50/30 dark:bg-red-950/20 border-red-100 dark:border-red-900/50"
-                    : goal.priority === "medium"
-                    ? "bg-amber-50/30 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/50"
-                    : "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50"
-                }`}
-              >
-                {/* Goal Header - Mobile optimized */}
-                <div className="p-4">
-                  <div className="flex items-start gap-3">
-                    <button
-                      onClick={() => toggleGoalCompletion(goal._id)}
-                      className={`flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${
-                        goal.completed
-                          ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
-                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
-                      }`}
-                    >
-                      {goal.completed && <CheckCircle className="w-4 h-4" />}
-                    </button>
+            [...filteredGoals]
+              .sort((a, b) => {
+                // Unfinished goals come first
+                if (a.completed !== b.completed) {
+                  return a.completed ? 1 : -1;
+                }
+                return 0;
+              })
+              .map((goal) => (
+                <div
+                  key={goal._id}
+                  className={` shadow-sm border overflow-hidden ${
+                    goal.completed
+                      ? "bg-gray-50/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+                      : goal.priority === "high"
+                      ? "bg-red-50/30 dark:bg-red-950/20 border-red-100 dark:border-red-900/50"
+                      : goal.priority === "medium"
+                      ? "bg-amber-50/30 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/50"
+                      : "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50"
+                  }`}
+                >
+                  {/* Goal Header - Mobile optimized */}
+                  <div className="p-4">
+                    <div className="flex items-start gap-4">
+                      <button
+                        onClick={() => toggleGoalCompletion(goal._id)}
+                        className={`flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                          goal.completed
+                            ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
+                            : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                        }`}
+                      >
+                        {goal.completed && <CheckCircle className="w-4 h-4" />}
+                      </button>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1 min-w-0">
-                          <h3
-                            className={`font-medium text-sm sm:text-base ${
-                              goal.completed
-                                ? "line-through text-gray-500 dark:text-gray-400"
-                                : "text-gray-900 dark:text-white"
-                            }`}
-                          >
-                            {goal.title}
-                          </h3>
-                          <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className="text-xs text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-700 px-2 py-0.5 ">
-                              {goal.category}
-                            </span>
-                            <span
-                              className={`text-xs px-2 py-0.5 rounded-md font-medium ${
-                                goal.priority === "high"
-                                  ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
-                                  : goal.priority === "medium"
-                                  ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                                  : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex-1 min-w-0">
+                            <h3
+                              className={`font-medium text-sm sm:text-base ${
+                                goal.completed
+                                  ? "line-through text-gray-500 dark:text-gray-400"
+                                  : "text-gray-900 dark:text-white"
                               }`}
                             >
-                              {goal.priority}
-                            </span>
+                              {goal.title}
+                            </h3>
+                            <div className="flex flex-wrap items-center gap-2 mt-1">
+                              <span className="text-xs text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-700 px-2 py-0.5 ">
+                                {goal.category}
+                              </span>
+                              <span
+                                className={`text-xs px-2 py-0.5 rounded-md font-medium ${
+                                  goal.priority === "high"
+                                    ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
+                                    : goal.priority === "medium"
+                                    ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                                    : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                                }`}
+                              >
+                                {goal.priority}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 ml-2">
+                            <button
+                              onClick={() => setEditingGoal(goal)}
+                              className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteGoal(goal._id)}
+                              className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-1 ml-2">
-                          <button
-                            onClick={() => setEditingGoal(goal)}
-                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteGoal(goal._id)}
-                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-
-                      {goal.description && (
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
-                          {goal.description}
-                        </p>
-                      )}
-
-                      {/* Progress Bar */}
-                      {goal.milestones.length > 0 && (
-                        <div className="mb-3">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {
-                                goal.milestones.filter((m) => m.completed)
-                                  .length
-                              }
-                              /{goal.milestones.length} milestones completed
-                            </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                              {calculateProgress(goal)}%
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 h-2">
-                            <div
-                              className="bg-black dark:bg-white h-2  transition-all duration-300"
-                              style={{ width: `${calculateProgress(goal)}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Due {new Date(goal.targetDate).toLocaleDateString()}
-                        </span>
-
-                        {goal.milestones.length > 0 && (
-                          <button
-                            onClick={() => toggleGoalExpansion(goal._id)}
-                            className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-                          >
-                            {expandedGoals.has(goal._id) ? (
-                              <>
-                                <span>Hide details</span>
-                                <ChevronUp className="w-3 h-3" />
-                              </>
-                            ) : (
-                              <>
-                                <span>Show details</span>
-                                <ChevronDown className="w-3 h-3" />
-                              </>
-                            )}
-                          </button>
+                        {goal.description && (
+                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
+                            {goal.description}
+                          </p>
                         )}
+
+                        {/* Progress Bar */}
+                        {goal.milestones.length > 0 && (
+                          <div className="mb-3 mt-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {
+                                  goal.milestones.filter((m) => m.completed)
+                                    .length
+                                }
+                                /{goal.milestones.length} milestones completed
+                              </span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                {calculateProgress(goal)}%
+                              </span>
+                            </div>
+                            <div className="w-full bg-gray-200 dark:bg-gray-700 h-2">
+                              <div
+                                className="bg-black dark:bg-white h-2  transition-all duration-300"
+                                style={{ width: `${calculateProgress(goal)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            Due {new Date(goal.targetDate).toLocaleDateString()}
+                          </span>
+
+                          {goal.milestones.length > 0 && (
+                            <button
+                              onClick={() => toggleGoalExpansion(goal._id)}
+                              className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                            >
+                              {expandedGoals.has(goal._id) ? (
+                                <>
+                                  <span>Hide details</span>
+                                  <ChevronUp className="w-3 h-3" />
+                                </>
+                              ) : (
+                                <>
+                                  <span>Show details</span>
+                                  <ChevronDown className="w-3 h-3" />
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Milestones - Collapsible on mobile */}
-                {goal.milestones.length > 0 && expandedGoals.has(goal._id) && (
-                  <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-4">
-                    <div className="space-y-4">
-                      {goal.milestones.map((milestone) => (
-                        <div
-                          key={milestone.id}
-                          className="bg-white dark:bg-gray-700 p-3 shadow-sm"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                  {/* Milestones - Collapsible on mobile with animation */}
+                  {goal.milestones.length > 0 &&
+                    expandedGoals.has(goal._id) && (
+                      <div
+                        className="px-4 pb-3 ml-9 animate-slideDown"
+                        style={{
+                          animation: "slideDown 0.3s ease-out forwards",
+                        }}
+                      >
+                        <style jsx>{`
+                          @keyframes slideDown {
+                            from {
+                              opacity: 0;
+                              transform: translateY(-10px);
+                            }
+                            to {
+                              opacity: 1;
+                              transform: translateY(0);
+                            }
+                          }
+                        `}</style>
+                        <div className="divide-y divide-gray-200 dark:divide-gray-600">
+                          {goal.milestones.map((milestone, idx) => (
+                            <div
+                              key={milestone.id}
+                              className="flex items-center gap-3 py-2.5 transition-all"
+                              style={{
+                                animation: `slideDown 0.3s ease-out ${
+                                  idx * 0.05
+                                }s forwards`,
+                                opacity: 0,
+                              }}
+                            >
                               <button
                                 onClick={() =>
                                   toggleMilestoneCompletion(
@@ -516,122 +529,44 @@ const Goals: React.FC = () => {
                                     milestone.id
                                   )
                                 }
-                                className={`flex-shrink-0 w-4 h-4  border flex items-center justify-center transition-colors ${
+                                className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center transition-colors ${
                                   milestone.completed
-                                    ? "bg-gray-600 dark:bg-gray-400 border-gray-600 dark:border-gray-400 text-white dark:text-gray-900"
-                                    : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                                    ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
+                                    : "border-gray-300 dark:border-gray-500 hover:border-gray-400 dark:hover:border-gray-400"
                                 }`}
                               >
                                 {milestone.completed && (
                                   <CheckCircle className="w-3 h-3" />
                                 )}
                               </button>
-                              <span
-                                className={`text-sm font-medium ${
-                                  milestone.completed
-                                    ? "line-through text-gray-400 dark:text-gray-500"
-                                    : "text-gray-700 dark:text-gray-300"
-                                }`}
-                              >
-                                {milestone.title}
-                              </span>
-                              {milestone.subtasks.length > 0 && (
-                                <span className="text-xs text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-600 px-2 py-0.5 ">
-                                  {
-                                    milestone.subtasks.filter(
-                                      (s) => s.completed
-                                    ).length
-                                  }
-                                  /{milestone.subtasks.length}
-                                </span>
-                              )}
-                            </div>
-
-                            <button
-                              onClick={() =>
-                                setEditingSubtasks({
-                                  goalId: goal._id,
-                                  milestoneId: milestone.id,
-                                })
-                              }
-                              className="flex-shrink-0 text-xs bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white px-2 py-1  transition-colors"
-                            >
-                              + Subtasks
-                            </button>
-                          </div>
-
-                          {/* Subtasks */}
-                          {milestone.subtasks.length > 0 && (
-                            <div className="ml-6 space-y-2">
-                              {milestone.subtasks.map((subtask) => (
-                                <div
-                                  key={subtask.id}
-                                  className="flex items-center gap-2"
+                              <div className="flex-1 min-w-0 flex items-center justify-between">
+                                <span
+                                  className={`text-sm font-medium ${
+                                    milestone.completed
+                                      ? "line-through text-gray-400 dark:text-gray-500"
+                                      : "text-gray-800 dark:text-gray-200"
+                                  }`}
                                 >
-                                  <button
-                                    onClick={() =>
-                                      toggleSubtaskCompletion(
-                                        goal._id,
-                                        milestone.id,
-                                        subtask.id
-                                      )
-                                    }
-                                    className={`flex-shrink-0 w-3 h-3  border flex items-center justify-center transition-colors ${
-                                      subtask.completed
-                                        ? "bg-gray-500 dark:bg-gray-400 border-gray-500 dark:border-gray-400"
-                                        : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
-                                    }`}
-                                  >
-                                    {subtask.completed && (
-                                      <div className="w-1.5 h-1.5 bg-white dark:bg-gray-900 " />
-                                    )}
-                                  </button>
-                                  <span
-                                    className={`text-sm ${
-                                      subtask.completed
-                                        ? "line-through text-gray-400 dark:text-gray-500"
-                                        : "text-gray-600 dark:text-gray-300"
-                                    }`}
-                                  >
-                                    {subtask.title}
+                                  {milestone.title}
+                                </span>
+                                {milestone.targetDate && (
+                                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-4 flex-shrink-0">
+                                    Due:{" "}
+                                    {new Date(
+                                      milestone.targetDate
+                                    ).toLocaleDateString()}
                                   </span>
-                                </div>
-                              ))}
+                                )}
+                              </div>
                             </div>
-                          )}
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))
+                      </div>
+                    )}
+                </div>
+              ))
           )}
         </div>
-
-        {/* Modals */}
-        <AddGoalModal
-          isOpen={showAddGoal || !!editingGoal}
-          onClose={() => {
-            setShowAddGoal(false);
-            setEditingGoal(null);
-          }}
-          onAddGoal={addGoal}
-          onUpdateGoal={updateGoal}
-          editingGoal={editingGoal}
-        />
-
-        <SubtasksModal
-          isOpen={!!editingSubtasks}
-          onClose={() => setEditingSubtasks(null)}
-          goal={
-            editingSubtasks
-              ? goals.find((g) => g._id === editingSubtasks.goalId) || null
-              : null
-          }
-          milestoneId={editingSubtasks?.milestoneId || null}
-          onUpdateComplete={loadGoals}
-        />
       </>
     );
   };
