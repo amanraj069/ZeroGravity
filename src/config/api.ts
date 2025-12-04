@@ -95,6 +95,8 @@ export const API_ENDPOINTS = {
     DELETE_SEMESTER: (semesterId: string) =>
       `${API_BASE_URL}/api/academia/semesters/${semesterId}`,
     REORDER_SEMESTERS: `${API_BASE_URL}/api/academia/semesters/reorder`,
+    SET_CURRENT_SEMESTER: (semesterId: string) =>
+      `${API_BASE_URL}/api/academia/semesters/${semesterId}/current`,
     ADD_COURSE: (semesterId: string) =>
       `${API_BASE_URL}/api/academia/semesters/${semesterId}/courses`,
     UPDATE_COURSE: (semesterId: string, courseId: string) =>

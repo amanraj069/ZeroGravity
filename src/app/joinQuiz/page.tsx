@@ -682,7 +682,9 @@ function JoinQuizContent() {
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto">
                 <div className="w-24 h-24 mx-auto mb-8 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <span className="text-4xl">🎉</span>
+                  <svg className="w-12 h-12 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
                 <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
                   Quiz Complete!
@@ -693,7 +695,7 @@ function JoinQuizContent() {
                 </p>
                 <div className="bg-gray-50 dark:bg-gray-800 p-4 mb-6 border border-gray-200 dark:border-gray-700">
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    🎉 Great job completing the quiz!
+                    Great job completing the quiz!
                   </p>
                 </div>
                 <button
@@ -851,7 +853,7 @@ function JoinQuizContent() {
                     {/* Encouragement message */}
                     <div className="bg-blue-50 dark:bg-blue-900/30 p-4 border border-blue-200 dark:border-blue-800">
                       <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
-                        🎯 Stay focused! The next question is coming soon.
+                        Stay focused! The next question is coming soon.
                       </p>
                     </div>
                   </div>

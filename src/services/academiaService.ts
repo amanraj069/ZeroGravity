@@ -13,6 +13,8 @@ export interface Course {
 export interface Semester {
   semesterId: string;
   name: string;
+  order: number;
+  isCurrent: boolean;
   courses: Course[];
   createdAt: string;
   updatedAt: string;
@@ -143,20 +145,9 @@ export function calculateCGPA(semesters: Semester[]): { cgpa: number | null; las
   };
 }
 
-// Helper function to get encryption key from localStorage
-const getEncryptionKey = (): string | null => {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("academiaEncryptionKey");
-};
-
-// Helper function to set encryption key in localStorage
-const setEncryptionKey = (key: string): void => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("academiaEncryptionKey", key);
-};
-
 class AcademiaService {
   // Get all semesters for the current user
+  // Data is decrypted on the backend before being returned
   async getSemesters(): Promise<Semester[]> {
     const response = await apiCallWithAuth(API_ENDPOINTS.ACADEMIA.LIST);
     const data = await response.json();
@@ -171,15 +162,11 @@ class AcademiaService {
       throw new Error(data.message || "Request was not successful");
     }
 
-    // Store encryption key if received
-    if (data.encryptionKey) {
-      setEncryptionKey(data.encryptionKey);
-    }
-
     return data.data;
   }
 
   // Get a specific semester by ID
+  // Data is decrypted on the backend before being returned
   async getSemester(semesterId: string): Promise<Semester> {
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.GET_SEMESTER(semesterId)
@@ -200,20 +187,13 @@ class AcademiaService {
   }
 
   // Create a new semester
+  // Data is encrypted on the backend before being stored
   async createSemester(semesterData: CreateSemesterData): Promise<Semester> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.CREATE_SEMESTER,
       {
         method: "POST",
-        body: JSON.stringify({
-          ...semesterData,
-          encryptionKey,
-        }),
+        body: JSON.stringify(semesterData),
       }
     );
     const data = await response.json();
@@ -232,23 +212,16 @@ class AcademiaService {
   }
 
   // Update a semester
+  // Data is encrypted on the backend before being stored
   async updateSemester(
     semesterId: string,
     semesterData: UpdateSemesterData
   ): Promise<Semester> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.UPDATE_SEMESTER(semesterId),
       {
         method: "PUT",
-        body: JSON.stringify({
-          ...semesterData,
-          encryptionKey,
-        }),
+        body: JSON.stringify(semesterData),
       }
     );
     const data = await response.json();
@@ -268,16 +241,10 @@ class AcademiaService {
 
   // Delete a semester
   async deleteSemester(semesterId: string): Promise<void> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.DELETE_SEMESTER(semesterId),
       {
         method: "DELETE",
-        body: JSON.stringify({ encryptionKey }),
       }
     );
     const data = await response.json();
@@ -295,16 +262,34 @@ class AcademiaService {
 
   // Reorder semesters
   async reorderSemesters(semesterIds: string[]): Promise<Semester[]> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.REORDER_SEMESTERS,
       {
         method: "POST",
-        body: JSON.stringify({ semesterIds, encryptionKey }),
+        body: JSON.stringify({ semesterIds }),
+      }
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `Request failed with status ${response.status}`
+      );
+    }
+
+    if (!data.success) {
+      throw new Error(data.message || "Request was not successful");
+    }
+
+    return data.data;
+  }
+
+  // Set a semester as current
+  async setCurrentSemester(semesterId: string): Promise<Semester> {
+    const response = await apiCallWithAuth(
+      API_ENDPOINTS.ACADEMIA.SET_CURRENT_SEMESTER(semesterId),
+      {
+        method: "PUT",
       }
     );
     const data = await response.json();
@@ -323,23 +308,16 @@ class AcademiaService {
   }
 
   // Add a course to a semester
+  // Data is encrypted on the backend before being stored
   async addCourse(
     semesterId: string,
     courseData: CreateCourseData
   ): Promise<Course> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.ADD_COURSE(semesterId),
       {
         method: "POST",
-        body: JSON.stringify({
-          ...courseData,
-          encryptionKey,
-        }),
+        body: JSON.stringify(courseData),
       }
     );
     const data = await response.json();
@@ -358,24 +336,17 @@ class AcademiaService {
   }
 
   // Update a course
+  // Data is encrypted on the backend before being stored
   async updateCourse(
     semesterId: string,
     courseId: string,
     courseData: UpdateCourseData
   ): Promise<Course> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.UPDATE_COURSE(semesterId, courseId),
       {
         method: "PUT",
-        body: JSON.stringify({
-          ...courseData,
-          encryptionKey,
-        }),
+        body: JSON.stringify(courseData),
       }
     );
     const data = await response.json();
@@ -395,16 +366,10 @@ class AcademiaService {
 
   // Delete a course
   async deleteCourse(semesterId: string, courseId: string): Promise<void> {
-    const encryptionKey = getEncryptionKey();
-    if (!encryptionKey) {
-      throw new Error("Encryption key not found. Please refresh the page.");
-    }
-
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.DELETE_COURSE(semesterId, courseId),
       {
         method: "DELETE",
-        body: JSON.stringify({ encryptionKey }),
       }
     );
     const data = await response.json();
@@ -422,4 +387,3 @@ class AcademiaService {
 }
 
 export const academiaService = new AcademiaService();
-

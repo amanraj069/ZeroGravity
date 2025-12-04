@@ -510,7 +510,7 @@ const DailyTasks: React.FC = () => {
       // Show success message if all tasks are completed
       if (result.allTasksCompleted && result.isCompleted) {
         // You could show a toast notification here
-        console.log("🎉 All daily tasks completed for today!");
+        console.log("All daily tasks completed for today!");
       }
     } catch (error) {
       console.error("Error toggling task completion:", error);

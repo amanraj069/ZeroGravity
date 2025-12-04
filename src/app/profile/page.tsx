@@ -141,112 +141,110 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <div className="mt-4 space-y-6">
+      <div className="mt-2 space-y-3 md:space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-light text-black dark:text-white">
+          <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
             Profile
           </h1>
           <Link
             href="/dashboard"
-            className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-sm transition-colors"
+            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs transition-colors"
           >
             Go to Dashboard
           </Link>
         </div>
 
-        {/* Profile Card */}
-        <div className="border border-gray-200 dark:border-gray-800 p-8 bg-white dark:bg-gray-800 rounded">
-          {/* Profile Header with Stats */}
-          <div className="mb-8 flex items-start gap-8">
-            {/* Left Side: Profile Picture and Name */}
-            <div className="flex flex-col items-start">
-              {/* Profile Picture */}
-              <div className="relative group mb-4">
-                <div className="w-40 h-40 rounded overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                  {user.profilePicture ? (
-                    <Image
-                      src={user.profilePicture}
-                      alt={`${user.firstName} ${user.lastName}`}
-                      width={160}
-                      height={160}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-5xl font-light text-gray-400 dark:text-gray-500">
-                      {user.firstName.charAt(0).toUpperCase()}
-                      {user.lastName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                {/* Edit Button */}
-                <button
-                  onClick={handleImageClick}
-                  disabled={uploading}
-                  className="absolute bottom-0 right-0 w-8 h-8 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
-                  title="Edit profile picture"
-                >
-                  {uploading ? (
-                    <svg
-                      className="animate-spin h-4 w-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
+        {/* Profile Info Card */}
+        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
+          <div className="flex items-center gap-4">
+            {/* Profile Picture */}
+            <div className="relative group flex-shrink-0">
+              <div className="w-16 h-16 md:w-24 md:h-24 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                {user.profilePicture ? (
+                  <Image
+                    src={user.profilePicture}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-xl md:text-3xl font-light text-gray-400 dark:text-gray-500">
+                    {user.firstName.charAt(0).toUpperCase()}
+                    {user.lastName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              {/* Edit Button */}
+              <button
+                onClick={handleImageClick}
+                disabled={uploading}
+                className="absolute bottom-0 right-0 w-5 h-5 md:w-6 md:h-6 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
+                title="Edit profile picture"
+              >
+                {uploading ? (
+                  <svg
+                    className="animate-spin h-2.5 w-2.5 md:h-3 md:w-3"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
                       stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  )}
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-              </div>
-
-              {/* Name and Username */}
-              <div>
-                <h2 className="text-2xl font-light text-black dark:text-white mb-2">
-                  {user.firstName} {user.lastName}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  @{user.username}
-                </p>
-              </div>
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-2.5 w-2.5 md:h-3 md:w-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
             </div>
 
-            {/* Right Side: Stats Grid */}
-            <div className="flex-1 grid grid-cols-2 gap-4">
+            {/* Name and Username */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base md:text-xl font-semibold text-black dark:text-white truncate">
+                {user.firstName} {user.lastName}
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                @{user.username}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 gap-3">
               {/* Current Streak */}
-              <div className="relative border border-orange-200 dark:border-orange-900/50 p-6 rounded-lg bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
+              <div className="relative border border-orange-200 dark:border-orange-900/50 p-3 md:p-6 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
                 {/* Fire effect background */}
                 <div className="absolute inset-0 opacity-10 dark:opacity-5">
                   <div className="absolute top-0 left-1/4 w-16 h-16 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
@@ -261,29 +259,26 @@ export default function Profile() {
                 </div>
 
                 <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Flame className="w-5 h-5 text-orange-500 dark:text-orange-400 animate-pulse" />
-                    <div className="text-sm font-medium text-orange-700 dark:text-orange-400">
+                  <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
+                    <Flame className="w-4 h-4 md:w-5 md:h-5 text-orange-500 dark:text-orange-400 animate-pulse" />
+                    <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
                       Current Streak
                     </div>
                   </div>
                   {streakLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                      <span className="text-2xl font-light text-gray-600 dark:text-gray-400">
-                        Loading...
-                      </span>
+                      <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
                     </div>
                   ) : (
-                    <div className="flex items-baseline gap-2">
-                      <div className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
+                    <div className="flex items-baseline gap-1 md:gap-2 flex-wrap">
+                      <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
                         {streakInfo?.currentStreak ?? 0}
                       </div>
-                      <span className="text-lg text-orange-600 dark:text-orange-400 font-medium">
+                      <span className="text-sm md:text-lg text-orange-600 dark:text-orange-400 font-medium">
                         days
                       </span>
                       {(streakInfo?.currentStreak ?? 0) > 0 && (
-                        <div className="flex gap-1 ml-2">
+                        <div className="hidden md:flex gap-1 ml-2">
                           <Flame className="w-5 h-5 text-orange-500 dark:text-orange-400 animate-pulse" />
                           <Flame
                             className="w-4 h-4 text-red-500 dark:text-red-400 animate-pulse"
@@ -301,7 +296,7 @@ export default function Profile() {
               </div>
 
               {/* Highest Streak */}
-              <div className="relative border border-purple-200 dark:border-purple-900/50 p-6 rounded-lg bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
+              <div className="relative border border-purple-200 dark:border-purple-900/50 p-3 md:p-6 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
                 {/* Fire effect background */}
                 <div className="absolute inset-0 opacity-10 dark:opacity-5">
                   <div className="absolute top-0 right-1/4 w-16 h-16 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
@@ -316,29 +311,26 @@ export default function Profile() {
                 </div>
 
                 <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Flame className="w-5 h-5 text-purple-500 dark:text-purple-400 animate-pulse" />
-                    <div className="text-sm font-medium text-purple-700 dark:text-purple-400">
+                  <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
+                    <Flame className="w-4 h-4 md:w-5 md:h-5 text-purple-500 dark:text-purple-400 animate-pulse" />
+                    <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
                       Highest Streak
                     </div>
                   </div>
                   {streakLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                      <span className="text-2xl font-light text-gray-600 dark:text-gray-400">
-                        Loading...
-                      </span>
+                      <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
                     </div>
                   ) : (
-                    <div className="flex items-baseline gap-2">
-                      <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                    <div className="flex items-baseline gap-1 md:gap-2 flex-wrap">
+                      <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                         {streakInfo?.longestStreak ?? 0}
                       </div>
-                      <span className="text-lg text-purple-600 dark:text-purple-400 font-medium">
+                      <span className="text-sm md:text-lg text-purple-600 dark:text-purple-400 font-medium">
                         days
                       </span>
                       {(streakInfo?.longestStreak ?? 0) > 0 && (
-                        <div className="flex gap-1 ml-2">
+                        <div className="hidden md:flex gap-1 ml-2">
                           <Flame className="w-5 h-5 text-purple-500 dark:text-purple-400 animate-pulse" />
                           <Flame
                             className="w-4 h-4 text-pink-500 dark:text-pink-400 animate-pulse"
@@ -357,11 +349,11 @@ export default function Profile() {
 
               {/* Active Tasks */}
               {streakInfo && (
-                <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded">
-                  <div className="text-2xl font-light text-black dark:text-white mb-1">
+                <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
+                  <div className="text-xl md:text-2xl font-light text-black dark:text-white mb-1">
                     {streakInfo.totalActiveTasks}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                     Active Tasks
                   </div>
                 </div>
@@ -369,11 +361,11 @@ export default function Profile() {
 
               {/* Completed Today */}
               {streakInfo && (
-                <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded">
-                  <div className="text-2xl font-light text-black dark:text-white mb-1">
+                <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
+                  <div className="text-xl md:text-2xl font-light text-black dark:text-white mb-1">
                     {streakInfo.completedToday}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                     Completed Today
                   </div>
                 </div>
@@ -382,88 +374,83 @@ export default function Profile() {
               {/* Placeholder for when streakInfo is not loaded */}
               {!streakInfo && streakLoading && (
                 <>
-                  <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded">
-                    <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-center mb-1">
                       <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                      <span className="text-2xl font-light text-gray-600 dark:text-gray-400">
-                        Loading...
-                      </span>
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                       Active Tasks
                     </div>
                   </div>
-                  <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded">
-                    <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-center mb-1">
                       <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                      <span className="text-2xl font-light text-gray-600 dark:text-gray-400">
-                        Loading...
-                      </span>
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                       Completed Today
                     </div>
                   </div>
                 </>
               )}
             </div>
-          </div>
 
-          {/* Profile Details */}
-          <div className="space-y-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        {/* Profile Details Card */}
+        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
+          <div className="space-y-4">
+            {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                 Email
               </label>
-              <div className="text-base text-black dark:text-white">
+              <div className="text-sm text-black dark:text-white break-all">
                 {user.email}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Role & Subscription Row */}
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Role
                 </label>
-                <div className="text-base text-black dark:text-white capitalize">
+                <div className="text-sm text-black dark:text-white capitalize">
                   {user.role}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Subscription
                 </label>
-                <div className="text-base text-black dark:text-white capitalize">
-                  <span
-                    className={`inline-block px-3 py-1 rounded text-sm ${
-                      user.subscription === "pro"
-                        ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-                    }`}
-                  >
-                    {user.subscription}
-                  </span>
+                <span
+                  className={`inline-block px-2 py-0.5 text-xs ${
+                    user.subscription === "pro"
+                      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
+                  }`}
+                >
+                  {user.subscription}
+                </span>
+              </div>
+            </div>
+
+            {/* Member Since & Status Row */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  Member Since
+                </label>
+                <div className="text-sm text-black dark:text-white">
+                  {formatDate(user.createdAt)}
                 </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-                Member Since
-              </label>
-              <div className="text-base text-black dark:text-white">
-                {formatDate(user.createdAt)}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-                Account Status
-              </label>
               <div>
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  Account Status
+                </label>
                 <span
-                  className={`inline-block px-3 py-1 rounded text-sm ${
+                  className={`inline-block px-2 py-0.5 text-xs ${
                     user.isActive
                       ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
                       : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"

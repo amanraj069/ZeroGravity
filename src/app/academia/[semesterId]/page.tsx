@@ -504,16 +504,16 @@ Assignment: 8/10
                         <h3 className="text-xl font-semibold text-black dark:text-white mb-3">
                           {course.name}
                         </h3>
-                        <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-6 text-sm">
                           {course.grade && (
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-700 border-2 border-gray-400 dark:border-gray-600 shadow-sm">
-                              <span className="text-sm text-gray-600 dark:text-gray-400">Grade</span>
-                              <span className="font-bold text-lg text-black dark:text-white">{course.grade}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">Grade</span>
+                              <span className="text-gray-900 dark:text-gray-100 font-medium">{course.grade}</span>
                             </div>
                           )}
-                          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-700 border-2 border-gray-400 dark:border-gray-600 shadow-sm">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Credits</span>
-                            <span className="font-bold text-lg text-black dark:text-white">{course.credits || 4}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">Credits</span>
+                            <span className="text-gray-900 dark:text-gray-100 font-medium">{course.credits || 4}</span>
                           </div>
                         </div>
                       </div>
