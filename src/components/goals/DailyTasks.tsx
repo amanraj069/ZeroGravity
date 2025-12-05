@@ -153,6 +153,14 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
       if (startDate >= endDate) {
         newErrors.dateEnded = "End date must be after start date";
       }
+
+      // When editing, end date must be after today
+      if (editingTask) {
+        const today = new Date(getLocalDateString());
+        if (endDate <= today) {
+          newErrors.dateEnded = "End date must be after today";
+        }
+      }
     }
 
     setErrors(newErrors);
@@ -311,14 +319,29 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                   name="dateStarted"
                   value={formData.dateStarted}
                   onChange={handleInputChange}
-                  onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
+                  onClick={(e) =>
+                    !editingTask &&
+                    (e.target as HTMLInputElement).showPicker?.()
+                  }
+                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none dark:[color-scheme:dark] ${
                     errors.dateStarted
                       ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                       : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                  } ${
+                    editingTask
+                      ? "opacity-60 cursor-not-allowed bg-gray-100 dark:bg-gray-800"
+                      : "cursor-pointer"
                   }`}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !!editingTask}
+                  title={
+                    editingTask ? "Start date cannot be changed" : undefined
+                  }
                 />
+                {editingTask && (
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Start date cannot be changed
+                  </p>
+                )}
                 {errors.dateStarted && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">
                     {errors.dateStarted}
@@ -341,6 +364,15 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                   value={formData.dateEnded}
                   onChange={handleInputChange}
                   onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                  min={
+                    editingTask
+                      ? (() => {
+                          const tomorrow = new Date();
+                          tomorrow.setDate(tomorrow.getDate() + 1);
+                          return getLocalDateString(tomorrow);
+                        })()
+                      : undefined
+                  }
                   className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
                     errors.dateEnded
                       ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
@@ -348,6 +380,11 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                   }`}
                   disabled={isSubmitting}
                 />
+                {editingTask && (
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    End date must be after today
+                  </p>
+                )}
                 {errors.dateEnded && (
                   <p className="mt-1 text-xs text-red-600 dark:text-red-400">
                     {errors.dateEnded}
@@ -404,6 +441,9 @@ const DailyTasks: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Check if selected date is today
+  const isToday = selectedDate === getLocalDateString();
 
   // Load tasks and analytics
   useEffect(() => {
@@ -704,6 +744,18 @@ const DailyTasks: React.FC = () => {
         </div>
       </div>
 
+      {/* Read-only indicator for non-today dates */}
+      {!isToday && (
+        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            You are viewing tasks for a{" "}
+            {selectedDate < getLocalDateString() ? "past" : "future"} date. You
+            can only mark tasks as complete for today.
+          </p>
+        </div>
+      )}
+
       {/* Tasks Display */}
       <div className="space-y-4">
         {tasks.length === 0 ? (
@@ -743,11 +795,19 @@ const DailyTasks: React.FC = () => {
             >
               <div className="flex items-start gap-3">
                 <button
-                  onClick={() => toggleTaskCompletion(task._id)}
+                  onClick={() => isToday && toggleTaskCompletion(task._id)}
+                  disabled={!isToday}
+                  title={
+                    !isToday ? "You can only mark tasks for today" : undefined
+                  }
                   className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
                     task.isCompletedToday
                       ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
                       : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  } ${
+                    !isToday
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
                   }`}
                 >
                   {task.isCompletedToday && <CheckCircle className="w-4 h-4" />}
@@ -795,38 +855,37 @@ const DailyTasks: React.FC = () => {
                   </div>
 
                   {/* Task Details */}
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>
-                        {new Date(task.dateStarted).toLocaleDateString()} -{" "}
-                        {new Date(task.dateEnded).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <span
-                      className={`px-2 py-0.5 rounded-md text-xs font-medium ${
-                        task.priority === "high"
-                          ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
-                          : task.priority === "medium"
-                          ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                          : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
-                      }`}
-                    >
-                      {task.priority} priority
-                    </span>
-                    {analytics.streakLast && (
-                      <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                        <CheckCircle className="w-3 h-3" />
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex flex-wrap items-center gap-4">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
                         <span>
-                          Last completed:{" "}
-                          {new Date(analytics.streakLast).toLocaleDateString()}
+                          {new Date(task.dateStarted).toLocaleDateString()} -{" "}
+                          {new Date(task.dateEnded).toLocaleDateString()}
                         </span>
                       </div>
-                    )}
-                    {!task.isActive && (
-                      <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-md">
-                        Inactive
-                      </div>
+                      <span
+                        className={`px-2 py-0.5 rounded-md text-xs font-medium ${
+                          task.priority === "high"
+                            ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
+                            : task.priority === "medium"
+                            ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                            : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                        }`}
+                      >
+                        {task.priority} priority
+                      </span>
+                      {!task.isActive && (
+                        <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-md">
+                          Inactive
+                        </div>
+                      )}
+                    </div>
+                    {task.lastCompletedDate && (
+                      <span className="text-green-600 dark:text-green-400">
+                        Last completed:{" "}
+                        {new Date(task.lastCompletedDate).toLocaleDateString()}
+                      </span>
                     )}
                   </div>
                 </div>

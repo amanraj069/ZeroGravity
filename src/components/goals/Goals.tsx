@@ -24,12 +24,70 @@ import {
 } from "@/services/goalsService";
 import { dailyTasksService } from "@/services/dailyTasksService";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
-type FilterType = "weekly" | "monthly" | "quarterly" | "yearly" | "all";
+type FilterType =
+  | "current"
+  | "weekly"
+  | "monthly"
+  | "quarterly"
+  | "yearly"
+  | "all";
 type ViewType = "daily-tasks" | "goals"; // Daily tasks first, as it's now the default
+
+// Helper function to check if a goal is overdue (past target date and not completed)
+const isGoalOverdue = (goal: Goal): boolean => {
+  if (goal.completed) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const targetDate = new Date(goal.targetDate);
+  targetDate.setHours(0, 0, 0, 0);
+  return targetDate < today;
+};
+
+// Helper function to check if a goal is current (within the current period)
+const isGoalCurrent = (goal: Goal): boolean => {
+  const today = new Date();
+  const targetDate = new Date(goal.targetDate);
+
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentQuarter = Math.floor(currentMonth / 3);
+
+  // Get the start of the current week (Monday)
+  const currentWeekStart = new Date(today);
+  const dayOfWeek = today.getDay();
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  currentWeekStart.setDate(today.getDate() + diff);
+  currentWeekStart.setHours(0, 0, 0, 0);
+
+  const currentWeekEnd = new Date(currentWeekStart);
+  currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
+  currentWeekEnd.setHours(23, 59, 59, 999);
+
+  switch (goal.category) {
+    case "weekly":
+      return targetDate >= currentWeekStart && targetDate <= currentWeekEnd;
+    case "monthly":
+      return (
+        targetDate.getFullYear() === currentYear &&
+        targetDate.getMonth() === currentMonth
+      );
+    case "quarterly":
+      return (
+        targetDate.getFullYear() === currentYear &&
+        Math.floor(targetDate.getMonth() / 3) === currentQuarter
+      );
+    case "yearly":
+      return targetDate.getFullYear() === currentYear;
+    default:
+      return false;
+  }
+};
 
 const Goals: React.FC = () => {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
+  const { theme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -42,7 +100,7 @@ const Goals: React.FC = () => {
 
   const [activeView, setActiveView] = useState<ViewType>(getInitialView());
   const [goals, setGoals] = useState<Goal[]>([]);
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("current");
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [expandedGoals, setExpandedGoals] = useState<Set<string>>(new Set());
@@ -135,9 +193,11 @@ const Goals: React.FC = () => {
     return Math.round((completedMilestones / goal.milestones.length) * 100);
   };
 
-  const filteredGoals = goals.filter(
-    (goal) => activeFilter === "all" || goal.category === activeFilter
-  );
+  const filteredGoals = goals.filter((goal) => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "current") return isGoalCurrent(goal);
+    return goal.category === activeFilter;
+  });
 
   const toggleGoalExpansion = (goalId: string) => {
     setExpandedGoals((prev) => {
@@ -298,9 +358,10 @@ const Goals: React.FC = () => {
 
         {/* Mobile-optimized Filter */}
         <div className="bg-white dark:bg-gray-800 shadow-sm">
-          <div className="grid grid-cols-5 gap-0">
+          <div className="grid grid-cols-6 gap-0">
             {(
               [
+                "current",
                 "all",
                 "weekly",
                 "monthly",
@@ -311,7 +372,7 @@ const Goals: React.FC = () => {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 text-center ${
+                className={`px-2 py-3 text-xs sm:text-sm font-medium transition-colors border-b-2 text-center ${
                   activeFilter === filter
                     ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -326,7 +387,14 @@ const Goals: React.FC = () => {
         {/* Mobile-optimized Goals Display */}
         <div className="space-y-4">
           {filteredGoals.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100vh-300px)] py-12 px-4 text-center shadow-sm">
+            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100vh-300px)] py-12 px-4 text-center shadow-sm relative">
+              {/* Dark mode hint - only show in light mode */}
+              {theme === "light" && (
+                <div className="absolute top-4 right-4 text-xs text-gray-400 flex items-center gap-1">
+                  <span>🌙</span>
+                  <span>Turn on dark mode to see the clouds</span>
+                </div>
+              )}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/goals/dGoals.png"
@@ -335,10 +403,14 @@ const Goals: React.FC = () => {
                 draggable={false}
               />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                No goals created yet
+                {activeFilter === "current"
+                  ? "No current goals"
+                  : "No goals created yet"}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create your first Goal to get started
+                {activeFilter === "current"
+                  ? "Create goals for this week, month, quarter, or year"
+                  : "Create your first Goal to get started"}
               </p>
               {!showAddGoal && (
                 <button
@@ -361,14 +433,16 @@ const Goals: React.FC = () => {
               .map((goal) => (
                 <div
                   key={goal._id}
-                  className={` shadow-sm border overflow-hidden ${
+                  className={`shadow-sm overflow-hidden ${
                     goal.completed
-                      ? "bg-gray-50/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
+                      ? "bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700"
+                      : isGoalOverdue(goal)
+                      ? "bg-red-50/40 dark:bg-red-950/30 border-2 border-dashed border-red-400 dark:border-red-600"
                       : goal.priority === "high"
-                      ? "bg-red-50/30 dark:bg-red-950/20 border-red-100 dark:border-red-900/50"
+                      ? "bg-red-50/30 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50"
                       : goal.priority === "medium"
-                      ? "bg-amber-50/30 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/50"
-                      : "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50"
+                      ? "bg-amber-50/30 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50"
+                      : "bg-emerald-50/30 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50"
                   }`}
                 >
                   {/* Goal Header - Mobile optimized */}
@@ -462,8 +536,25 @@ const Goals: React.FC = () => {
                         )}
 
                         <div className="flex items-center justify-between mt-2">
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            Due {new Date(goal.targetDate).toLocaleDateString()}
+                          <span
+                            className={`text-xs ${
+                              isGoalOverdue(goal)
+                                ? "text-red-600 dark:text-red-400 font-medium"
+                                : "text-gray-500 dark:text-gray-400"
+                            }`}
+                          >
+                            {isGoalOverdue(goal) ? (
+                              <>
+                                ⚠️ Overdue (was due{" "}
+                                {new Date(goal.targetDate).toLocaleDateString()}
+                                )
+                              </>
+                            ) : (
+                              <>
+                                Due{" "}
+                                {new Date(goal.targetDate).toLocaleDateString()}
+                              </>
+                            )}
                           </span>
 
                           {goal.milestones.length > 0 && (

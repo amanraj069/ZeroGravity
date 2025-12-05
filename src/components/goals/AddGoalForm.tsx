@@ -8,6 +8,51 @@ interface AddGoalFormProps {
   onCancel: () => void;
 }
 
+// Helper functions for date calculations
+const getWeeksInYear = (year: number) => {
+  const weeks = [];
+  const firstDay = new Date(year, 0, 1);
+  const firstMonday = new Date(firstDay);
+  firstMonday.setDate(firstDay.getDate() + ((8 - firstDay.getDay()) % 7));
+
+  const currentDate = new Date(firstMonday);
+  let weekNum = 1;
+
+  while (currentDate.getFullYear() <= year && weekNum <= 53) {
+    const weekStart = new Date(currentDate);
+    const weekEnd = new Date(currentDate);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+
+    if (weekStart.getFullYear() === year || weekEnd.getFullYear() === year) {
+      weeks.push({
+        weekNum,
+        start: weekStart.toISOString().split("T")[0],
+        end: weekEnd.toISOString().split("T")[0],
+        label: `Week ${weekNum} (${weekStart.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })} - ${weekEnd.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })})`,
+      });
+    }
+
+    currentDate.setDate(currentDate.getDate() + 7);
+    weekNum++;
+  }
+  return weeks;
+};
+
+const getMonthEndDate = (year: number, month: number) => {
+  return new Date(year, month + 1, 0).toISOString().split("T")[0];
+};
+
+const getQuarterEndDate = (year: number, quarter: number) => {
+  const quarterEndMonth = quarter * 3;
+  return new Date(year, quarterEndMonth, 0).toISOString().split("T")[0];
+};
+
 const AddGoalForm: React.FC<AddGoalFormProps> = ({
   editingGoal,
   onAddGoal,
@@ -15,6 +60,10 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
   onCancel,
 }) => {
   const isEditing = !!editingGoal;
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  const currentQuarter = Math.floor(currentMonth / 3) + 1;
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,40 +71,106 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
     priority: "medium" as "low" | "medium" | "high",
     targetDate: "",
   });
+
+  // Category-specific date selection state
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [selectedQuarter, setSelectedQuarter] = useState(currentQuarter);
+
   const [milestones, setMilestones] = useState<
     Array<{ title: string; description: string; targetDate: string }>
   >([]);
+  const [milestoneErrors, setMilestoneErrors] = useState<string[]>([]);
 
   useEffect(() => {
     if (editingGoal) {
+      const targetDate = new Date(editingGoal.targetDate);
       setFormData({
         title: editingGoal.title,
         description: editingGoal.description || "",
         category: editingGoal.category,
         priority: editingGoal.priority,
-        targetDate: editingGoal.targetDate.toISOString().split("T")[0],
+        targetDate: targetDate.toISOString().split("T")[0],
       });
+      setSelectedYear(targetDate.getFullYear());
+      setSelectedMonth(targetDate.getMonth());
+      setSelectedQuarter(Math.floor(targetDate.getMonth() / 3) + 1);
       setMilestones(
         editingGoal.milestones.map((milestone) => ({
           title: milestone.title,
           description: milestone.description || "",
-          targetDate: milestone.targetDate.toISOString().split("T")[0],
+          targetDate: new Date(milestone.targetDate)
+            .toISOString()
+            .split("T")[0],
         }))
       );
     } else {
+      // Set default target date based on category
+      const defaultTargetDate = getMonthEndDate(currentYear, currentMonth);
       setFormData({
         title: "",
         description: "",
         category: "monthly",
         priority: "medium",
-        targetDate: "",
+        targetDate: defaultTargetDate,
       });
       setMilestones([]);
+      setMilestoneErrors([]);
     }
+  }, [editingGoal, currentYear, currentMonth]);
+
+  // Track if user has interacted with date selectors during editing
+  const [hasChangedDateSelectors, setHasChangedDateSelectors] = useState(false);
+
+  // Reset the flag when switching between editing and creating
+  useEffect(() => {
+    setHasChangedDateSelectors(false);
   }, [editingGoal]);
+
+  // Update target date when category or date selection changes
+  useEffect(() => {
+    let newTargetDate = "";
+    switch (formData.category) {
+      case "weekly":
+        const weeks = getWeeksInYear(selectedYear);
+        const selectedWeekData = weeks.find((w) => w.weekNum === selectedWeek);
+        if (selectedWeekData) {
+          newTargetDate = selectedWeekData.end;
+        }
+        break;
+      case "monthly":
+        newTargetDate = getMonthEndDate(selectedYear, selectedMonth);
+        break;
+      case "quarterly":
+        newTargetDate = getQuarterEndDate(selectedYear, selectedQuarter);
+        break;
+      case "yearly":
+        newTargetDate = `${selectedYear}-12-31`;
+        break;
+    }
+    // Update target date if not editing, or if user has explicitly changed selectors
+    if (newTargetDate && (!isEditing || hasChangedDateSelectors)) {
+      setFormData((prev) => ({ ...prev, targetDate: newTargetDate }));
+    }
+  }, [
+    formData.category,
+    selectedYear,
+    selectedMonth,
+    selectedWeek,
+    selectedQuarter,
+    isEditing,
+    hasChangedDateSelectors,
+  ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate milestones before submitting
+    if (!validateMilestones(milestones)) {
+      return;
+    }
+
     if (isEditing && editingGoal && onUpdateGoal) {
       const updateData: UpdateGoalData = {
         title: formData.title,
@@ -88,6 +203,37 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
     onCancel();
   };
 
+  const validateMilestones = (
+    updatedMilestones: Array<{
+      title: string;
+      description: string;
+      targetDate: string;
+    }>
+  ) => {
+    const errors: string[] = [];
+    updatedMilestones.forEach((milestone, index) => {
+      if (milestone.targetDate) {
+        // Check if milestone date is after target date
+        if (formData.targetDate && milestone.targetDate > formData.targetDate) {
+          errors[index] = "Milestone date must be on or before target date";
+        }
+        // Check if milestone date is after previous milestone
+        else if (index > 0) {
+          const prevMilestone = updatedMilestones[index - 1];
+          if (
+            prevMilestone.targetDate &&
+            milestone.targetDate < prevMilestone.targetDate
+          ) {
+            errors[index] =
+              "Milestone date must be after the previous milestone";
+          }
+        }
+      }
+    });
+    setMilestoneErrors(errors);
+    return errors.filter(Boolean).length === 0;
+  };
+
   const addMilestone = () => {
     setMilestones((prev) => [
       ...prev,
@@ -96,15 +242,26 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
   };
 
   const updateMilestone = (index: number, field: string, value: string) => {
-    setMilestones((prev) =>
-      prev.map((milestone, i) =>
-        i === index ? { ...milestone, [field]: value } : milestone
-      )
+    const updatedMilestones = milestones.map((milestone, i) =>
+      i === index ? { ...milestone, [field]: value } : milestone
     );
+    setMilestones(updatedMilestones);
+    if (field === "targetDate") {
+      validateMilestones(updatedMilestones);
+    }
   };
 
   const removeMilestone = (index: number) => {
-    setMilestones((prev) => prev.filter((_, i) => i !== index));
+    const updatedMilestones = milestones.filter((_, i) => i !== index);
+    setMilestones(updatedMilestones);
+    validateMilestones(updatedMilestones);
+  };
+
+  // Get minimum date for a milestone (must be after previous milestone)
+  const getMinDateForMilestone = (index: number): string | undefined => {
+    if (index === 0) return undefined;
+    const prevMilestone = milestones[index - 1];
+    return prevMilestone.targetDate || undefined;
   };
 
   return (
@@ -191,7 +348,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                 id="category"
                 name="category"
                 value={formData.category}
-                onChange={(e) =>
+                onChange={(e) => {
                   setFormData((prev) => ({
                     ...prev,
                     category: e.target.value as
@@ -199,8 +356,9 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                       | "monthly"
                       | "quarterly"
                       | "yearly",
-                  }))
-                }
+                  }));
+                  setHasChangedDateSelectors(true);
+                }}
                 className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               >
                 <option value="weekly">Weekly</option>
@@ -234,26 +392,151 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
               </select>
             </div>
             <div>
-              <label
-                htmlFor="targetDate"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Target Date
               </label>
-              <input
-                type="date"
-                id="targetDate"
-                name="targetDate"
-                value={formData.targetDate}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    targetDate: e.target.value,
-                  }))
-                }
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
-                required
-              />
+              {/* Category-specific date pickers */}
+              <div className="space-y-2">
+                {formData.category === "yearly" && (
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => {
+                      setSelectedYear(parseInt(e.target.value));
+                      setHasChangedDateSelectors(true);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                  >
+                    {Array.from({ length: 5 }, (_, i) => currentYear + i).map(
+                      (year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      )
+                    )}
+                  </select>
+                )}
+
+                {formData.category === "quarterly" && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => {
+                        setSelectedYear(parseInt(e.target.value));
+                        setHasChangedDateSelectors(true);
+                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    >
+                      {Array.from({ length: 5 }, (_, i) => currentYear + i).map(
+                        (year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        )
+                      )}
+                    </select>
+                    <select
+                      value={selectedQuarter}
+                      onChange={(e) => {
+                        setSelectedQuarter(parseInt(e.target.value));
+                        setHasChangedDateSelectors(true);
+                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    >
+                      <option value={1}>Q1 (Jan-Mar)</option>
+                      <option value={2}>Q2 (Apr-Jun)</option>
+                      <option value={3}>Q3 (Jul-Sep)</option>
+                      <option value={4}>Q4 (Oct-Dec)</option>
+                    </select>
+                  </div>
+                )}
+
+                {formData.category === "monthly" && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => {
+                        setSelectedYear(parseInt(e.target.value));
+                        setHasChangedDateSelectors(true);
+                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    >
+                      {Array.from({ length: 5 }, (_, i) => currentYear + i).map(
+                        (year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        )
+                      )}
+                    </select>
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => {
+                        setSelectedMonth(parseInt(e.target.value));
+                        setHasChangedDateSelectors(true);
+                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    >
+                      {[
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December",
+                      ].map((month, idx) => (
+                        <option key={idx} value={idx}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {formData.category === "weekly" && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => {
+                        setSelectedYear(parseInt(e.target.value));
+                        setHasChangedDateSelectors(true);
+                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    >
+                      {Array.from({ length: 3 }, (_, i) => currentYear + i).map(
+                        (year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        )
+                      )}
+                    </select>
+                    <select
+                      value={selectedWeek}
+                      onChange={(e) => {
+                        setSelectedWeek(parseInt(e.target.value));
+                        setHasChangedDateSelectors(true);
+                      }}
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    >
+                      {getWeeksInYear(selectedYear).map((week) => (
+                        <option key={week.weekNum} value={week.weekNum}>
+                          {week.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Target: {new Date(formData.targetDate).toLocaleDateString()}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -264,11 +547,18 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
               <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Milestones
               </div>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                Dates must be sequential and before target date
+              </span>
             </div>
             {milestones.map((milestone, idx) => (
               <div
                 key={idx}
-                className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-3 mb-2 flex flex-col gap-2"
+                className={`border bg-white dark:bg-gray-900 p-3 mb-2 flex flex-col gap-2 ${
+                  milestoneErrors[idx]
+                    ? "border-red-400 dark:border-red-600"
+                    : "border-gray-200 dark:border-gray-700"
+                }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <input
@@ -297,12 +587,22 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                 <input
                   type="date"
                   value={milestone.targetDate}
+                  min={getMinDateForMilestone(idx)}
                   max={formData.targetDate || undefined}
                   onChange={(e) =>
                     updateMilestone(idx, "targetDate", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:ring-1 ${
+                    milestoneErrors[idx]
+                      ? "border-red-400 dark:border-red-600 focus:border-red-500 focus:ring-red-500"
+                      : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-black dark:focus:ring-white"
+                  }`}
                 />
+                {milestoneErrors[idx] && (
+                  <p className="text-xs text-red-500 dark:text-red-400">
+                    {milestoneErrors[idx]}
+                  </p>
+                )}
               </div>
             ))}
           </div>

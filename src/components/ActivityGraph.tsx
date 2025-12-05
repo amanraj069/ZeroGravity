@@ -113,7 +113,7 @@ export default function ActivityGraph({
         endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
       }
 
-      let currentDate = new Date(startDate);
+      const currentDate = new Date(startDate);
 
       while (currentDate <= endDate) {
         const week: ActivityDay[] = [];
@@ -156,7 +156,7 @@ export default function ActivityGraph({
     ? new Date(joinedDate).toISOString().split("T")[0]
     : null;
 
-  // Get color based on count
+  // Get color based on count - fixed levels: 0=none, 1=light, 2, 3, 4+=darkest
   const getColorClass = (count: number, maxCount: number, dateStr: string) => {
     // Check if this is the joined date - only highlight if it belongs to this month (count >= 0)
     if (formattedJoinedDate && dateStr === formattedJoinedDate && count >= 0) {
@@ -164,14 +164,13 @@ export default function ActivityGraph({
     }
 
     if (count < 0) return "bg-transparent"; // Outside month or future
-    if (count === 0) return "bg-gray-200 dark:bg-gray-700";
+    if (count === 0) return "bg-gray-200 dark:bg-gray-700"; // No tasks - gray
 
-    const intensity = count / Math.max(maxCount, 1);
-
-    if (intensity <= 0.25) return "bg-green-300 dark:bg-green-800";
-    if (intensity <= 0.5) return "bg-green-400 dark:bg-green-600";
-    if (intensity <= 0.75) return "bg-green-500 dark:bg-green-500";
-    return "bg-green-600 dark:bg-green-400";
+    // Fixed levels based on task count
+    if (count === 1) return "bg-green-300 dark:bg-green-800"; // 1 task - lightest green
+    if (count === 2) return "bg-green-400 dark:bg-green-600"; // 2 tasks
+    if (count === 3) return "bg-green-500 dark:bg-green-500"; // 3 tasks
+    return "bg-green-600 dark:bg-green-400"; // 4+ tasks - darkest green
   };
 
   const handleMouseEnter = (
