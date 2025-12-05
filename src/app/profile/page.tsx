@@ -9,6 +9,7 @@ import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
 import { Flame } from "lucide-react";
+import ActivityGraph from "@/components/ActivityGraph";
 
 interface StreakInfo {
   currentStreak: number;
@@ -157,20 +158,20 @@ export default function Profile() {
 
         {/* Profile Info Card */}
         <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 md:gap-6">
             {/* Profile Picture */}
             <div className="relative group flex-shrink-0">
-              <div className="w-16 h-16 md:w-24 md:h-24 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+              <div className="w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                 {user.profilePicture ? (
                   <Image
                     src={user.profilePicture}
                     alt={`${user.firstName} ${user.lastName}`}
-                    width={96}
-                    height={96}
+                    width={128}
+                    height={128}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="text-xl md:text-3xl font-light text-gray-400 dark:text-gray-500">
+                  <div className="text-2xl md:text-4xl font-light text-gray-400 dark:text-gray-500">
                     {user.firstName.charAt(0).toUpperCase()}
                     {user.lastName.charAt(0).toUpperCase()}
                   </div>
@@ -180,12 +181,12 @@ export default function Profile() {
               <button
                 onClick={handleImageClick}
                 disabled={uploading}
-                className="absolute bottom-0 right-0 w-5 h-5 md:w-6 md:h-6 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
+                className="absolute bottom-1 right-1 w-6 h-6 md:w-8 md:h-8 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
                 title="Edit profile picture"
               >
                 {uploading ? (
                   <svg
-                    className="animate-spin h-2.5 w-2.5 md:h-3 md:w-3"
+                    className="animate-spin h-3 w-3 md:h-4 md:w-4"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -206,7 +207,7 @@ export default function Profile() {
                   </svg>
                 ) : (
                   <svg
-                    className="h-2.5 w-2.5 md:h-3 md:w-3"
+                    className="h-3 w-3 md:h-4 md:w-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -229,170 +230,138 @@ export default function Profile() {
               />
             </div>
 
-            {/* Name and Username */}
-            <div className="flex-1 min-w-0">
-              <h2 className="text-base md:text-xl font-semibold text-black dark:text-white truncate">
+            {/* Name and Username - grows to fill space */}
+            <div className="flex-1 min-w-0 text-right md:text-left">
+              <h2 className="text-lg md:text-2xl font-semibold text-black dark:text-white truncate">
                 {user.firstName} {user.lastName}
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm md:text-base text-gray-500 dark:text-gray-400">
                 @{user.username}
               </p>
+              {/* Mobile: Show stats below username */}
+              <div className="flex items-center gap-4 mt-2 md:hidden justify-end">
+                <div className="flex items-center gap-1.5">
+                  {streakLoading ? (
+                    <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <span className="text-base font-semibold text-black dark:text-white">
+                      {streakInfo?.totalActiveTasks ?? 0}
+                    </span>
+                  )}
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    Active
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {streakLoading ? (
+                    <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <span className="text-base font-semibold text-black dark:text-white">
+                      {streakInfo?.completedToday ?? 0}
+                    </span>
+                  )}
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    Today
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop: Active Tasks & Completed Today on far right */}
+            <div className="hidden md:flex gap-6 pr-4">
+              <div className="text-center">
+                {streakLoading ? (
+                  <div className="flex items-center justify-center h-10">
+                    <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                  </div>
+                ) : (
+                  <div className="text-3xl font-light text-black dark:text-white">
+                    {streakInfo?.totalActiveTasks ?? 0}
+                  </div>
+                )}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Active Tasks
+                </div>
+              </div>
+              <div className="text-center">
+                {streakLoading ? (
+                  <div className="flex items-center justify-center h-10">
+                    <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                  </div>
+                ) : (
+                  <div className="text-3xl font-light text-black dark:text-white">
+                    {streakInfo?.completedToday ?? 0}
+                  </div>
+                )}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Completed Today
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Activity Graph */}
+        <ActivityGraph joinedDate={user.createdAt} />
+
+        {/* Streak Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
-              {/* Current Streak */}
-              <div className="relative border border-orange-200 dark:border-orange-900/50 p-3 md:p-6 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
-                {/* Fire effect background */}
-                <div className="absolute inset-0 opacity-10 dark:opacity-5">
-                  <div className="absolute top-0 left-1/4 w-16 h-16 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
-                  <div
-                    className="absolute bottom-0 right-1/4 w-20 h-20 bg-red-400 rounded-full blur-3xl animate-pulse"
-                    style={{ animationDelay: "0.5s" }}
-                  ></div>
-                  <div
-                    className="absolute top-1/2 right-0 w-12 h-12 bg-yellow-400 rounded-full blur-xl animate-pulse"
-                    style={{ animationDelay: "1s" }}
-                  ></div>
-                </div>
+          {/* Current Streak */}
+          <div className="relative border border-orange-200 dark:border-orange-900/50 p-3 md:p-4 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
+            {/* Fire effect background */}
+            <div className="absolute inset-0 opacity-10 dark:opacity-5">
+              <div className="absolute top-0 left-1/4 w-16 h-16 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
+              <div
+                className="absolute bottom-0 right-1/4 w-20 h-20 bg-red-400 rounded-full blur-3xl animate-pulse"
+                style={{ animationDelay: "0.5s" }}
+              ></div>
+            </div>
 
-                <div className="relative z-10">
-                  <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-                    <Flame className="w-4 h-4 md:w-5 md:h-5 text-orange-500 dark:text-orange-400 animate-pulse" />
-                    <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
-                      Current Streak
-                    </div>
-                  </div>
-                  {streakLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                    </div>
-                  ) : (
-                    <div className="flex items-baseline gap-1 md:gap-2 flex-wrap">
-                      <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
-                        {streakInfo?.currentStreak ?? 0}
-                      </div>
-                      <span className="text-sm md:text-lg text-orange-600 dark:text-orange-400 font-medium">
-                        days
-                      </span>
-                      {(streakInfo?.currentStreak ?? 0) > 0 && (
-                        <div className="hidden md:flex gap-1 ml-2">
-                          <Flame className="w-5 h-5 text-orange-500 dark:text-orange-400 animate-pulse" />
-                          <Flame
-                            className="w-4 h-4 text-red-500 dark:text-red-400 animate-pulse"
-                            style={{ animationDelay: "0.2s" }}
-                          />
-                          <Flame
-                            className="w-3 h-3 text-yellow-500 dark:text-yellow-400 animate-pulse"
-                            style={{ animationDelay: "0.4s" }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="text-sm md:text-base font-medium text-orange-700 dark:text-orange-400">
+                Current Streak
               </div>
-
-              {/* Highest Streak */}
-              <div className="relative border border-purple-200 dark:border-purple-900/50 p-3 md:p-6 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
-                {/* Fire effect background */}
-                <div className="absolute inset-0 opacity-10 dark:opacity-5">
-                  <div className="absolute top-0 right-1/4 w-16 h-16 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
-                  <div
-                    className="absolute bottom-0 left-1/4 w-20 h-20 bg-pink-400 rounded-full blur-3xl animate-pulse"
-                    style={{ animationDelay: "0.5s" }}
-                  ></div>
-                  <div
-                    className="absolute top-1/2 left-0 w-12 h-12 bg-orange-400 rounded-full blur-xl animate-pulse"
-                    style={{ animationDelay: "1s" }}
-                  ></div>
+              {streakLoading ? (
+                <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <div className="flex items-center gap-1 md:gap-2">
+                  <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
+                    {streakInfo?.currentStreak ?? 0}
+                  </div>
+                  <Flame className="w-5 h-5 md:w-6 md:h-6 text-orange-500 dark:text-orange-400 animate-pulse" />
                 </div>
-
-                <div className="relative z-10">
-                  <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
-                    <Flame className="w-4 h-4 md:w-5 md:h-5 text-purple-500 dark:text-purple-400 animate-pulse" />
-                    <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
-                      Highest Streak
-                    </div>
-                  </div>
-                  {streakLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                    </div>
-                  ) : (
-                    <div className="flex items-baseline gap-1 md:gap-2 flex-wrap">
-                      <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-                        {streakInfo?.longestStreak ?? 0}
-                      </div>
-                      <span className="text-sm md:text-lg text-purple-600 dark:text-purple-400 font-medium">
-                        days
-                      </span>
-                      {(streakInfo?.longestStreak ?? 0) > 0 && (
-                        <div className="hidden md:flex gap-1 ml-2">
-                          <Flame className="w-5 h-5 text-purple-500 dark:text-purple-400 animate-pulse" />
-                          <Flame
-                            className="w-4 h-4 text-pink-500 dark:text-pink-400 animate-pulse"
-                            style={{ animationDelay: "0.2s" }}
-                          />
-                          <Flame
-                            className="w-3 h-3 text-orange-500 dark:text-orange-400 animate-pulse"
-                            style={{ animationDelay: "0.4s" }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Active Tasks */}
-              {streakInfo && (
-                <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
-                  <div className="text-xl md:text-2xl font-light text-black dark:text-white mb-1">
-                    {streakInfo.totalActiveTasks}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                    Active Tasks
-                  </div>
-                </div>
-              )}
-
-              {/* Completed Today */}
-              {streakInfo && (
-                <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
-                  <div className="text-xl md:text-2xl font-light text-black dark:text-white mb-1">
-                    {streakInfo.completedToday}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                    Completed Today
-                  </div>
-                </div>
-              )}
-
-              {/* Placeholder for when streakInfo is not loaded */}
-              {!streakInfo && streakLoading && (
-                <>
-                  <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center justify-center mb-1">
-                      <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                    </div>
-                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                      Active Tasks
-                    </div>
-                  </div>
-                  <div className="text-center p-3 md:p-4 border border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center justify-center mb-1">
-                      <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                    </div>
-                    <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
-                      Completed Today
-                    </div>
-                  </div>
-                </>
               )}
             </div>
+          </div>
+
+          {/* Highest Streak */}
+          <div className="relative border border-purple-200 dark:border-purple-900/50 p-3 md:p-4 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
+            {/* Fire effect background */}
+            <div className="absolute inset-0 opacity-10 dark:opacity-5">
+              <div className="absolute top-0 right-1/4 w-16 h-16 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
+              <div
+                className="absolute bottom-0 left-1/4 w-20 h-20 bg-pink-400 rounded-full blur-3xl animate-pulse"
+                style={{ animationDelay: "0.5s" }}
+              ></div>
+            </div>
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="text-sm md:text-base font-medium text-purple-700 dark:text-purple-400">
+                Highest Streak
+              </div>
+              {streakLoading ? (
+                <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <div className="flex items-center gap-1 md:gap-2">
+                  <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                    {streakInfo?.longestStreak ?? 0}
+                  </div>
+                  <Flame className="w-5 h-5 md:w-6 md:h-6 text-purple-500 dark:text-purple-400 animate-pulse" />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Profile Details Card */}
         <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">

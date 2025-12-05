@@ -49,6 +49,7 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/api/daily-tasks/${id}/toggle-completion`,
     STREAK_INFO: `${API_BASE_URL}/api/daily-tasks/streak/info`,
     COMPLETION_HISTORY: `${API_BASE_URL}/api/daily-tasks/stats/history`,
+    ACTIVITY_GRAPH: `${API_BASE_URL}/api/daily-tasks/activity/graph`,
   },
   // Quiz endpoints
   QUIZZES: {
