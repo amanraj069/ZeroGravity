@@ -17,6 +17,9 @@ export const API_ENDPOINTS = {
     GOOGLE: `${API_BASE_URL}/api/auth/google`,
     UPLOAD_PROFILE_PICTURE: `${API_BASE_URL}/api/auth/upload-profile-picture`,
     DEBUG: `${API_BASE_URL}/api/auth/debug`,
+    SEND_OTP: `${API_BASE_URL}/api/auth/send-otp`,
+    VERIFY_OTP: `${API_BASE_URL}/api/auth/verify-otp`,
+    RESEND_OTP: `${API_BASE_URL}/api/auth/resend-otp`,
   },
   // Waitlist endpoints
   WAITLIST: {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall } from "@/config/api";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
@@ -10,7 +10,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 export default function Signup() {
   const router = useRouter();
-  const { signup, loginWithGoogle, user } = useAuth();
+  const { sendOtp, verifyOtp, resendOtp, loginWithGoogle, user } = useAuth();
   const [signupEnabled, setSignupEnabled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -25,6 +25,17 @@ export default function Signup() {
   const [isSignupInProgress, setIsSignupInProgress] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
+  // OTP verification state
+  const [showOtpScreen, setShowOtpScreen] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [otpError, setOtpError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
   useEffect(() => {
     // Redirect to home if user is already logged in (but not during signup process)
     if (user && !isSignupInProgress) {
@@ -35,6 +46,17 @@ export default function Signup() {
       checkSignupStatus();
     }
   }, [user, router, isSignupInProgress]);
+
+  // Resend cooldown timer
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(
+        () => setResendCooldown(resendCooldown - 1),
+        1000
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [resendCooldown]);
 
   const checkSignupStatus = async () => {
     try {
@@ -79,11 +101,13 @@ export default function Signup() {
     }
 
     try {
-      const result = await signup(formData);
+      const result = await sendOtp(formData);
 
       if (result.success) {
-        // Redirect to dashboard after successful signup
-        router.push("/dashboard");
+        // Show OTP verification screen
+        setVerificationEmail(result.email || formData.email);
+        setShowOtpScreen(true);
+        setResendCooldown(60); // 60 seconds cooldown
       } else {
         setError(result.message);
         setIsSignupInProgress(false);
@@ -137,6 +161,106 @@ export default function Signup() {
         });
       }
     }, 100);
+  };
+
+  // OTP input handlers
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) {
+      // Handle paste
+      const digits = value.replace(/\D/g, "").slice(0, 6);
+      const newOtp = [...otp];
+      digits.split("").forEach((digit, i) => {
+        if (index + i < 6) {
+          newOtp[index + i] = digit;
+        }
+      });
+      setOtp(newOtp);
+      // Focus on the next empty input or the last one
+      const nextIndex = Math.min(index + digits.length, 5);
+      otpInputRefs.current[nextIndex]?.focus();
+    } else {
+      // Handle single digit input
+      const newOtp = [...otp];
+      newOtp[index] = value.replace(/\D/g, "");
+      setOtp(newOtp);
+
+      // Auto-focus next input
+      if (value && index < 5) {
+        otpInputRefs.current[index + 1]?.focus();
+      }
+    }
+    setOtpError("");
+  };
+
+  const handleOtpKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpInputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const otpCode = otp.join("");
+    if (otpCode.length !== 6) {
+      setOtpError("Please enter the complete 6-digit OTP");
+      return;
+    }
+
+    setIsVerifying(true);
+    setOtpError("");
+
+    try {
+      const result = await verifyOtp(verificationEmail, otpCode);
+
+      if (result.success) {
+        setSuccessMessage("Email verified successfully! Redirecting...");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1500);
+      } else {
+        setOtpError(result.message);
+      }
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setOtpError("An unexpected error occurred");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+
+    setIsResending(true);
+    setOtpError("");
+
+    try {
+      const result = await resendOtp(verificationEmail);
+
+      if (result.success) {
+        setSuccessMessage("OTP resent successfully!");
+        setResendCooldown(60);
+        setOtp(["", "", "", "", "", ""]);
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else {
+        setOtpError(result.message);
+      }
+    } catch (err) {
+      console.error("Resend OTP error:", err);
+      setOtpError("Failed to resend OTP");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  const handleBackToSignup = () => {
+    setShowOtpScreen(false);
+    setOtp(["", "", "", "", "", ""]);
+    setOtpError("");
+    setSuccessMessage("");
+    setIsSignupInProgress(false);
   };
 
   // Don't render anything if user is logged in and not during signup (will redirect)
@@ -195,6 +319,113 @@ export default function Signup() {
             >
               ← Back to home
             </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show OTP verification screen
+  if (showOtpScreen) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md p-6 sm:p-8">
+          <div className="text-center mb-6 sm:mb-8">
+            {/* Email icon */}
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-green-600 dark:text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
+              Verify Your Email
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              We&apos;ve sent a 6-digit verification code to
+            </p>
+            <p className="text-sm sm:text-base font-medium text-black dark:text-white mt-1">
+              {verificationEmail}
+            </p>
+          </div>
+
+          {otpError && (
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm text-center">
+              {otpError}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm text-center">
+              {successMessage}
+            </div>
+          )}
+
+          {/* OTP Input */}
+          <div className="flex justify-center gap-2 sm:gap-3 mb-6">
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                ref={(el) => {
+                  otpInputRefs.current[index] = el;
+                }}
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={digit}
+                onChange={(e) => handleOtpChange(index, e.target.value)}
+                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
+                autoFocus={index === 0}
+              />
+            ))}
+          </div>
+
+          <div className="space-y-3">
+            <button
+              onClick={handleVerifyOtp}
+              disabled={isVerifying || otp.join("").length !== 6}
+              className="w-full bg-black dark:bg-green-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+            >
+              {isVerifying ? "Verifying..." : "Verify Email"}
+            </button>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Didn&apos;t receive the code?{" "}
+                {resendCooldown > 0 ? (
+                  <span className="text-gray-500">
+                    Resend in {resendCooldown}s
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleResendOtp}
+                    disabled={isResending}
+                    className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
+                  >
+                    {isResending ? "Sending..." : "Resend OTP"}
+                  </button>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={handleBackToSignup}
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
+            >
+              ← Back to signup
+            </button>
           </div>
         </div>
       </div>
@@ -322,7 +553,7 @@ export default function Signup() {
               disabled={isSubmitting}
               className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
-              {isSubmitting ? "Creating Account..." : "Create Account"}
+              {isSubmitting ? "Sending OTP..." : "Create Account"}
             </button>
 
             <GoogleSignInButton

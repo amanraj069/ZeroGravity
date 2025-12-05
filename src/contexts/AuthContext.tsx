@@ -13,6 +13,7 @@ interface User {
   role: "student" | "admin";
   subscription: "basic" | "pro";
   isActive: boolean;
+  isVerified: boolean;
   profilePicture?: string;
   createdAt: string;
   updatedAt: string;
@@ -27,7 +28,12 @@ interface AuthContextType {
   login: (
     email: string,
     password: string
-  ) => Promise<{ success: boolean; message: string }>;
+  ) => Promise<{
+    success: boolean;
+    message: string;
+    requiresVerification?: boolean;
+    email?: string;
+  }>;
   logout: () => Promise<void>;
   signup: (
     userData: SignupData
@@ -36,6 +42,14 @@ interface AuthContextType {
     credential: string
   ) => Promise<{ success: boolean; message: string }>;
   checkSession: () => Promise<void>;
+  sendOtp: (
+    userData: SignupData
+  ) => Promise<{ success: boolean; message: string; email?: string }>;
+  verifyOtp: (
+    email: string,
+    otp: string
+  ) => Promise<{ success: boolean; message: string }>;
+  resendOtp: (email: string) => Promise<{ success: boolean; message: string }>;
 }
 
 interface SignupData {
@@ -109,7 +123,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (
     email: string,
     password: string
-  ): Promise<{ success: boolean; message: string }> => {
+  ): Promise<{
+    success: boolean;
+    message: string;
+    requiresVerification?: boolean;
+    email?: string;
+  }> => {
     try {
       console.log("Attempting login for:", email);
       const response = await apiCall(API_ENDPOINTS.AUTH.LOGIN, {
@@ -135,7 +154,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return { success: true, message: data.message };
       } else {
         console.log("Login failed:", data.message);
-        return { success: false, message: data.message || "Login failed" };
+        return {
+          success: false,
+          message: data.message || "Login failed",
+          requiresVerification: data.requiresVerification,
+          email: data.email,
+        };
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -177,6 +201,106 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Send OTP function
+  const sendOtp = async (
+    userData: SignupData
+  ): Promise<{ success: boolean; message: string; email?: string }> => {
+    try {
+      const response = await apiCall(API_ENDPOINTS.AUTH.SEND_OTP, {
+        method: "POST",
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        return { success: true, message: data.message, email: data.email };
+      } else {
+        return {
+          success: false,
+          message: data.message || "Failed to send OTP",
+        };
+      }
+    } catch (error) {
+      console.error("Send OTP error:", error);
+      return {
+        success: false,
+        message:
+          "Network error. Please check if the backend server is running.",
+      };
+    }
+  };
+
+  // Verify OTP function
+  const verifyOtp = async (
+    email: string,
+    otp: string
+  ): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await apiCall(API_ENDPOINTS.AUTH.VERIFY_OTP, {
+        method: "POST",
+        body: JSON.stringify({ email, otp }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setUser(data.user);
+        setUserId(data.userId);
+        setIsLoggedIn(true);
+
+        // Store token in localStorage as fallback for cookie issues
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
+
+        return { success: true, message: data.message };
+      } else {
+        return {
+          success: false,
+          message: data.message || "OTP verification failed",
+        };
+      }
+    } catch (error) {
+      console.error("Verify OTP error:", error);
+      return {
+        success: false,
+        message:
+          "Network error. Please check if the backend server is running.",
+      };
+    }
+  };
+
+  // Resend OTP function
+  const resendOtp = async (
+    email: string
+  ): Promise<{ success: boolean; message: string }> => {
+    try {
+      const response = await apiCall(API_ENDPOINTS.AUTH.RESEND_OTP, {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        return { success: true, message: data.message };
+      } else {
+        return {
+          success: false,
+          message: data.message || "Failed to resend OTP",
+        };
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      return {
+        success: false,
+        message:
+          "Network error. Please check if the backend server is running.",
+      };
+    }
+  };
+
   // Google OAuth login function
   const loginWithGoogle = async (
     credential: string
@@ -205,7 +329,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return { success: true, message: data.message };
       } else {
         console.log("Google login failed:", data.message);
-        return { success: false, message: data.message || "Google login failed" };
+        return {
+          success: false,
+          message: data.message || "Google login failed",
+        };
       }
     } catch (error) {
       console.error("Google login error:", error);
@@ -259,6 +386,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signup,
     loginWithGoogle,
     checkSession,
+    sendOtp,
+    verifyOtp,
+    resendOtp,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
