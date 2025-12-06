@@ -20,6 +20,11 @@ export const API_ENDPOINTS = {
     SEND_OTP: `${API_BASE_URL}/api/auth/send-otp`,
     VERIFY_OTP: `${API_BASE_URL}/api/auth/verify-otp`,
     RESEND_OTP: `${API_BASE_URL}/api/auth/resend-otp`,
+    UPDATE_PROFILE: `${API_BASE_URL}/api/auth/update-profile`,
+    SEND_EMAIL_CHANGE_OTP: `${API_BASE_URL}/api/auth/send-email-change-otp`,
+    VERIFY_EMAIL_CHANGE: `${API_BASE_URL}/api/auth/verify-email-change`,
+    SEND_PASSWORD_CHANGE_OTP: `${API_BASE_URL}/api/auth/send-password-change-otp`,
+    VERIFY_PASSWORD_CHANGE: `${API_BASE_URL}/api/auth/verify-password-change`,
   },
   // Waitlist endpoints
   WAITLIST: {

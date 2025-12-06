@@ -15,6 +15,7 @@ interface User {
   isActive: boolean;
   isVerified: boolean;
   profilePicture?: string;
+  phoneNumber?: string;
   createdAt: string;
   updatedAt: string;
 }

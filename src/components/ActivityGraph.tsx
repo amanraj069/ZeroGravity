@@ -166,11 +166,11 @@ export default function ActivityGraph({
     if (count < 0) return "bg-transparent"; // Outside month or future
     if (count === 0) return "bg-gray-200 dark:bg-gray-700"; // No tasks - gray
 
-    // Fixed levels based on task count
-    if (count === 1) return "bg-green-300 dark:bg-green-800"; // 1 task - lightest green
-    if (count === 2) return "bg-green-400 dark:bg-green-600"; // 2 tasks
-    if (count === 3) return "bg-green-500 dark:bg-green-500"; // 3 tasks
-    return "bg-green-600 dark:bg-green-400"; // 4+ tasks - darkest green
+    // Fixed levels based on task count - stronger contrast
+    if (count === 1) return "bg-green-200 dark:bg-green-900"; // 1 task - lightest green
+    if (count === 2) return "bg-green-400 dark:bg-green-700"; // 2 tasks
+    if (count === 3) return "bg-green-600 dark:bg-green-500"; // 3 tasks
+    return "bg-green-800 dark:bg-green-300"; // 4+ tasks - darkest green
   };
 
   const handleMouseEnter = (
@@ -247,10 +247,10 @@ export default function ActivityGraph({
         <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
           <span>Less</span>
           <div className="w-[10px] h-[10px] bg-gray-200 dark:bg-gray-700"></div>
-          <div className="w-[10px] h-[10px] bg-green-300 dark:bg-green-800"></div>
-          <div className="w-[10px] h-[10px] bg-green-400 dark:bg-green-600"></div>
-          <div className="w-[10px] h-[10px] bg-green-500 dark:bg-green-500"></div>
-          <div className="w-[10px] h-[10px] bg-green-600 dark:bg-green-400"></div>
+          <div className="w-[10px] h-[10px] bg-green-200 dark:bg-green-900"></div>
+          <div className="w-[10px] h-[10px] bg-green-400 dark:bg-green-700"></div>
+          <div className="w-[10px] h-[10px] bg-green-600 dark:bg-green-500"></div>
+          <div className="w-[10px] h-[10px] bg-green-800 dark:bg-green-300"></div>
           <span>More</span>
         </div>
       </div>

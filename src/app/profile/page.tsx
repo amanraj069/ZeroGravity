@@ -8,7 +8,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
-import { Flame } from "lucide-react";
+import { Flame, Pencil } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 
 interface StreakInfo {
@@ -149,10 +149,11 @@ export default function Profile() {
             Profile
           </h1>
           <Link
-            href="/dashboard"
-            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs transition-colors"
+            href="/profile/edit"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
-            Go to Dashboard
+            <Pencil className="w-3.5 h-3.5" />
+            Edit Profile
           </Link>
         </div>
 
