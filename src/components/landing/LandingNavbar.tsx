@@ -7,6 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 function LandingNavbar() {
   const { isLoggedIn, isLoading, logout } = useAuth();
+
   return (
     <header className="sticky top-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-20">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">

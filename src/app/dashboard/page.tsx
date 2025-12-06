@@ -245,6 +245,24 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="mt-2">
+        {/* Header with Points */}
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-xl md:text-2xl font-light text-black dark:text-white">
+            Dashboard
+          </h1>
+          <Link
+            href="/shop"
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            <span className="text-sm font-semibold text-black dark:text-white">
+              {(user?.points || 0).toLocaleString()}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              points
+            </span>
+          </Link>
+        </div>
+
         <style
           dangerouslySetInnerHTML={{
             __html: `

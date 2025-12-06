@@ -20,6 +20,12 @@ import {
 } from "@/services/dailyTasksService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
+interface PointsAnimation {
+  points: number;
+  isDeduction: boolean;
+  taskId: string;
+}
+
 // Helper function to get local date string in YYYY-MM-DD format
 const getLocalDateString = (date: Date = new Date()): string => {
   const year = date.getFullYear();
@@ -425,7 +431,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
 };
 
 const DailyTasks: React.FC = () => {
-  const { isLoggedIn, isLoading: authLoading } = useAuth();
+  const { isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
     getLocalDateString()
@@ -441,6 +447,9 @@ const DailyTasks: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pointsAnimation, setPointsAnimation] =
+    useState<PointsAnimation | null>(null);
+  const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
 
   // Check if selected date is today
   const isToday = selectedDate === getLocalDateString();
@@ -536,6 +545,7 @@ const DailyTasks: React.FC = () => {
   };
 
   const toggleTaskCompletion = async (taskId: string) => {
+    setTogglingTaskId(taskId);
     try {
       const result = await dailyTasksService.toggleTaskCompletion(
         taskId,
@@ -547,9 +557,33 @@ const DailyTasks: React.FC = () => {
       const analyticsData = await dailyTasksService.getStreakInfo();
       setAnalytics(analyticsData);
 
+      // Show points animation if points were awarded
+      if (result.pointsAwarded && result.pointsAwarded > 0) {
+        setPointsAnimation({
+          points: result.pointsAwarded,
+          isDeduction: false,
+          taskId,
+        });
+        // Clear animation after 2 seconds (matches CSS animation)
+        setTimeout(() => setPointsAnimation(null), 2000);
+      }
+
+      // Show points deduction animation if points were deducted
+      if (result.pointsDeducted && result.pointsDeducted > 0) {
+        setPointsAnimation({
+          points: result.pointsDeducted,
+          isDeduction: true,
+          taskId,
+        });
+        // Clear animation after 2 seconds (matches CSS animation)
+        setTimeout(() => setPointsAnimation(null), 2000);
+      }
+
+      // Refresh user points in context
+      await refreshPoints();
+
       // Show success message if all tasks are completed
       if (result.allTasksCompleted && result.isCompleted) {
-        // You could show a toast notification here
         console.log("All daily tasks completed for today!");
       }
     } catch (error) {
@@ -557,6 +591,8 @@ const DailyTasks: React.FC = () => {
       setError(
         error instanceof Error ? error.message : "Failed to update task"
       );
+    } finally {
+      setTogglingTaskId(null);
     }
   };
 
@@ -623,6 +659,27 @@ const DailyTasks: React.FC = () => {
 
   return (
     <>
+      {/* Points Animation - Top Center Popup */}
+      {pointsAnimation && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-fade-in-down">
+          <div
+            className={`px-6 py-3 shadow-lg ${
+              pointsAnimation.isDeduction
+                ? "bg-red-600 text-white"
+                : "bg-black dark:bg-white text-white dark:text-black"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold">
+                {pointsAnimation.isDeduction ? "-" : "+"}
+                {pointsAnimation.points}
+              </span>
+              <span className="text-sm">points</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header with Analytics */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -795,22 +852,30 @@ const DailyTasks: React.FC = () => {
             >
               <div className="flex items-start gap-3">
                 <button
-                  onClick={() => isToday && toggleTaskCompletion(task._id)}
-                  disabled={!isToday}
+                  onClick={() =>
+                    isToday && !togglingTaskId && toggleTaskCompletion(task._id)
+                  }
+                  disabled={!isToday || togglingTaskId === task._id}
                   title={
                     !isToday ? "You can only mark tasks for today" : undefined
                   }
                   className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
-                    task.isCompletedToday
+                    togglingTaskId === task._id
+                      ? "border-gray-400 dark:border-gray-500 bg-gray-100 dark:bg-gray-700"
+                      : task.isCompletedToday
                       ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
                       : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
                   } ${
-                    !isToday
+                    !isToday || togglingTaskId
                       ? "opacity-50 cursor-not-allowed"
                       : "cursor-pointer"
                   }`}
                 >
-                  {task.isCompletedToday && <CheckCircle className="w-4 h-4" />}
+                  {togglingTaskId === task._id ? (
+                    <div className="w-3 h-3 border-2 border-gray-400 dark:border-gray-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    task.isCompletedToday && <CheckCircle className="w-4 h-4" />
+                  )}
                 </button>
 
                 <div className="flex-1 min-w-0">

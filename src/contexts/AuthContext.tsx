@@ -18,6 +18,18 @@ interface User {
   phoneNumber?: string;
   createdAt: string;
   updatedAt: string;
+  // Gamification fields
+  points?: number;
+  totalPointsEarned?: number;
+  unlockedBorders?: string[];
+  equippedBorder?: string;
+  consecutiveLoginDays?: number;
+}
+
+interface LoginReward {
+  pointsAwarded: number;
+  pointsBreakdown: { reason: string; points: number }[];
+  consecutiveLoginDays: number;
 }
 
 interface AuthContextType {
@@ -34,6 +46,7 @@ interface AuthContextType {
     message: string;
     requiresVerification?: boolean;
     email?: string;
+    loginReward?: LoginReward;
   }>;
   logout: () => Promise<void>;
   signup: (
@@ -51,6 +64,8 @@ interface AuthContextType {
     otp: string
   ) => Promise<{ success: boolean; message: string }>;
   resendOtp: (email: string) => Promise<{ success: boolean; message: string }>;
+  refreshPoints: () => Promise<void>;
+  updateUserPoints: (newPoints: number) => void;
 }
 
 interface SignupData {
@@ -129,6 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     message: string;
     requiresVerification?: boolean;
     email?: string;
+    loginReward?: LoginReward;
   }> => {
     try {
       console.log("Attempting login for:", email);
@@ -152,7 +168,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         console.log("Login successful, user:", data.user);
         console.log("UserId:", data.userId);
-        return { success: true, message: data.message };
+        return {
+          success: true,
+          message: data.message,
+          loginReward: data.loginReward,
+        };
       } else {
         console.log("Login failed:", data.message);
         return {
@@ -363,6 +383,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Refresh points from server
+  const refreshPoints = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await apiCall(API_ENDPOINTS.SHOP.POINTS, {
+        method: "GET",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+
+      const data = await response.json();
+      if (data.success && user) {
+        setUser({
+          ...user,
+          points: data.data.points,
+          totalPointsEarned: data.data.totalPointsEarned,
+          equippedBorder: data.data.equippedBorder,
+        });
+      }
+    } catch (error) {
+      console.error("Error refreshing points:", error);
+    }
+  };
+
+  // Update user points locally (for optimistic updates)
+  const updateUserPoints = (newPoints: number) => {
+    if (user) {
+      setUser({
+        ...user,
+        points: newPoints,
+      });
+    }
+  };
+
   // Check session on mount
   useEffect(() => {
     checkSession();
@@ -390,6 +443,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     sendOtp,
     verifyOtp,
     resendOtp,
+    refreshPoints,
+    updateUserPoints,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

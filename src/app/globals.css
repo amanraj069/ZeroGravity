@@ -271,6 +271,46 @@ textarea::placeholder {
   }
 }
 
+/* Points popup animation */
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 2s ease-out forwards;
+}
+
+/* Titan border pulsating glow animation */
+@keyframes titan-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 9px #ff4500, 0 0 15px #ff4500, 0 0 21px #ff4500;
+  }
+  50% {
+    box-shadow: 0 0 12px #ff4500, 0 0 21px #ff4500, 0 0 30px #ff6347,
+      0 0 42px #ff4500;
+  }
+}
+
+.animate-titan-glow {
+  animation: titan-glow 2s ease-in-out infinite;
+}
+
 /* Date picker styling for dark mode */
 input[type="date"] {
   cursor: pointer;

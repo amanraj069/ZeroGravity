@@ -149,6 +149,10 @@ class DailyTasksService {
     taskId: string;
     isCompleted: boolean;
     allTasksCompleted: boolean;
+    pointsAwarded?: number;
+    pointsDeducted?: number;
+    pointsBreakdown?: { reason: string; points: number }[];
+    totalPoints?: number;
   }> {
     const body = date ? JSON.stringify({ date }) : JSON.stringify({});
     const response = await apiCallWithAuth(

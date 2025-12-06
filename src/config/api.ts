@@ -113,6 +113,14 @@ export const API_ENDPOINTS = {
     DELETE_COURSE: (semesterId: string, courseId: string) =>
       `${API_BASE_URL}/api/academia/semesters/${semesterId}/courses/${courseId}`,
   },
+  // Shop endpoints
+  SHOP: {
+    ITEMS: `${API_BASE_URL}/api/shop/items`,
+    PURCHASE: `${API_BASE_URL}/api/shop/purchase`,
+    EQUIP: `${API_BASE_URL}/api/shop/equip`,
+    MY_BORDERS: `${API_BASE_URL}/api/shop/my-borders`,
+    POINTS: `${API_BASE_URL}/api/shop/points`,
+  },
 };
 
 // Helper function for making API calls with consistent error handling
