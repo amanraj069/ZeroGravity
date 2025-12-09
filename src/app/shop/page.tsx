@@ -93,6 +93,8 @@ export default function ShopPage() {
           }))
         );
         await refreshPoints();
+        // Navigate to profile page after equipping
+        router.push("/profile");
       } else {
         setMessage({ type: "error", text: result?.message || "Equip failed" });
       }
@@ -170,24 +172,24 @@ export default function ShopPage() {
             {borders.map((border) => (
               <div
                 key={border.id}
-                className={`relative border p-6 bg-white dark:bg-gray-800 transition-all hover:shadow-md ${
+                className={`relative border rounded-lg p-8 bg-white dark:bg-gray-800 transition-all hover:shadow-lg hover:scale-[1.02] flex flex-col min-h-[420px] ${
                   border.equipped
-                    ? "border-green-500 dark:border-green-400"
+                    ? "border-green-500 dark:border-green-400 shadow-md shadow-green-500/20"
                     : "border-gray-200 dark:border-gray-700"
                 }`}
               >
-                {/* Equipped Badge */}
-                {border.equipped && (
-                  <div className="absolute top-3 left-3 flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
-                    <Check className="w-3 h-3" />
-                    <span>Equipped</span>
+                {/* Status Badge */}
+                {border.owned && (
+                  <div className="absolute top-4 left-4 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-600 dark:text-green-400">
+                    {border.equipped && <Check className="w-3.5 h-3.5" />}
+                    <span>{border.equipped ? "Equipped" : "Owned"}</span>
                   </div>
                 )}
 
                 {/* Preview */}
-                <div className="flex justify-center mb-5 mt-2">
+                <div className="flex justify-center mb-6 mt-8">
                   <div
-                    className={`w-24 h-24 overflow-hidden ${
+                    className={`w-36 h-36 overflow-hidden ${
                       border.animated ? getAnimationClass(border.id) : ""
                     }`}
                     style={getBorderStyle(border.id)}
@@ -196,13 +198,13 @@ export default function ShopPage() {
                       <Image
                         src={user.profilePicture}
                         alt={`${user.firstName} ${user.lastName}`}
-                        width={96}
-                        height={96}
+                        width={144}
+                        height={144}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
-                        <span className="text-2xl font-bold text-gray-500 dark:text-gray-400">
+                        <span className="text-4xl font-bold text-gray-500 dark:text-gray-400">
                           {user.firstName.charAt(0)}
                           {user.lastName.charAt(0)}
                         </span>
@@ -212,23 +214,32 @@ export default function ShopPage() {
                 </div>
 
                 {/* Info */}
-                <div className="text-center mb-5">
-                  <h3 className="text-base font-medium text-black dark:text-white">
+                <div className="text-center mb-6 flex-grow flex flex-col justify-center">
+                  <h3 className="text-lg font-semibold text-black dark:text-white mb-3">
                     {border.name}
                   </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap overflow-hidden px-2">
                     {border.description}
                   </p>
                 </div>
 
                 {/* Price & Action */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium text-black dark:text-white">
+                      {border.price.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      points
+                    </span>
+                  </div>
                   {border.owned ? (
                     <>
-                      <span className="text-sm text-green-600 dark:text-green-400">
-                        Owned
-                      </span>
-                      {!border.equipped && (
+                      {border.equipped ? (
+                        <span className="text-sm text-green-600 dark:text-green-400">
+                          ✓ Equipped
+                        </span>
+                      ) : (
                         <button
                           onClick={() => handleEquip(border.id)}
                           disabled={equipping === border.id}
@@ -239,33 +250,23 @@ export default function ShopPage() {
                       )}
                     </>
                   ) : (
-                    <>
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium text-black dark:text-white">
-                          {border.price.toLocaleString()}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          points
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => handlePurchase(border.id)}
-                        disabled={
-                          purchasing === border.id || userPoints < border.price
-                        }
-                        className={`px-4 py-1.5 text-sm transition-colors disabled:opacity-50 ${
-                          userPoints >= border.price
-                            ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
-                            : "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                        }`}
-                      >
-                        {purchasing === border.id
-                          ? "..."
-                          : userPoints < border.price
-                          ? "Insufficient"
-                          : "Purchase"}
-                      </button>
-                    </>
+                    <button
+                      onClick={() => handlePurchase(border.id)}
+                      disabled={
+                        purchasing === border.id || userPoints < border.price
+                      }
+                      className={`px-4 py-1.5 text-sm transition-colors disabled:opacity-50 ${
+                        userPoints >= border.price
+                          ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
+                          : "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      {purchasing === border.id
+                        ? "..."
+                        : userPoints < border.price
+                        ? "Insufficient"
+                        : "Purchase"}
+                    </button>
                   )}
                 </div>
               </div>

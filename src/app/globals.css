@@ -115,6 +115,13 @@ html.dark {
 }
 
 /* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -324,26 +331,260 @@ textarea::placeholder {
   border: 3px solid #00ff88 !important;
 }
 
-/* Neon border - Cyberpunk pulsing effect */
-@keyframes neon-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff,
-      0 0 20px rgba(255, 0, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.3),
-      inset 0 0 10px rgba(255, 0, 255, 0.2);
-    border-color: #ff00ff;
+/* Quantum border - Ultimate quantum field with dense particle effects */
+@keyframes quantum-field {
+  0% {
+    box-shadow: 0 0 8px #001f3f, 0 0 15px #003d7a,
+      0 0 25px rgba(0, 61, 122, 0.8), 0 0 40px rgba(0, 100, 200, 0.6),
+      0 0 60px rgba(0, 150, 255, 0.4), 0 0 80px rgba(64, 180, 255, 0.3),
+      inset 0 0 20px rgba(0, 31, 63, 0.3);
+    border-color: #001f3f;
   }
-  50% {
-    box-shadow: 0 0 5px #00ffff, 0 0 12px #00ffff,
-      0 0 25px rgba(0, 255, 255, 0.7), 0 0 35px rgba(255, 0, 255, 0.4),
-      inset 0 0 12px rgba(0, 255, 255, 0.25);
-    border-color: #00ffff;
+  20% {
+    box-shadow: 0 0 8px #003366, 0 0 16px #004d99,
+      0 0 28px rgba(0, 77, 153, 0.8), 0 0 45px rgba(0, 100, 200, 0.6),
+      0 0 65px rgba(0, 150, 255, 0.4), 0 0 85px rgba(64, 180, 255, 0.3),
+      inset 0 0 22px rgba(0, 51, 102, 0.3);
+    border-color: #003366;
+  }
+  40% {
+    box-shadow: 0 0 8px #004080, 0 0 17px #0066cc,
+      0 0 30px rgba(0, 102, 204, 0.8), 0 0 48px rgba(0, 150, 255, 0.6),
+      0 0 68px rgba(64, 180, 255, 0.4), 0 0 88px rgba(100, 200, 255, 0.3),
+      inset 0 0 24px rgba(0, 64, 128, 0.3);
+    border-color: #004080;
+  }
+  60% {
+    box-shadow: 0 0 8px #003366, 0 0 16px #004d99,
+      0 0 28px rgba(0, 77, 153, 0.8), 0 0 45px rgba(0, 100, 200, 0.6),
+      0 0 65px rgba(0, 150, 255, 0.4), 0 0 85px rgba(64, 180, 255, 0.3),
+      inset 0 0 22px rgba(0, 51, 102, 0.3);
+    border-color: #003366;
+  }
+  80% {
+    box-shadow: 0 0 8px #001f3f, 0 0 15px #003d7a,
+      0 0 25px rgba(0, 61, 122, 0.8), 0 0 40px rgba(0, 100, 200, 0.6),
+      0 0 60px rgba(0, 150, 255, 0.4), 0 0 80px rgba(64, 180, 255, 0.3),
+      inset 0 0 20px rgba(0, 31, 63, 0.3);
+    border-color: #001f3f;
+  }
+  100% {
+    box-shadow: 0 0 8px #001f3f, 0 0 15px #003d7a,
+      0 0 25px rgba(0, 61, 122, 0.8), 0 0 40px rgba(0, 100, 200, 0.6),
+      0 0 60px rgba(0, 150, 255, 0.4), 0 0 80px rgba(64, 180, 255, 0.3),
+      inset 0 0 20px rgba(0, 31, 63, 0.3);
+    border-color: #001f3f;
   }
 }
 
-.animate-neon-glow {
-  animation: neon-pulse 2s ease-in-out infinite;
-  border: 3px solid #ff00ff !important;
+/* Quantum particles layer 1 - dense field */
+@keyframes quantum-particles-1 {
+  0%,
+  100% {
+    box-shadow: -65px -25px 2px 1px rgba(0, 31, 63, 0),
+      48px -68px 3px 1px rgba(0, 77, 153, 0),
+      -28px 72px 2px 1px rgba(0, 100, 200, 0),
+      75px 32px 2px 1px rgba(0, 150, 255, 0),
+      -72px 50px 3px 1px rgba(0, 31, 63, 0),
+      18px -70px 2px 1px rgba(0, 77, 153, 0),
+      68px -45px 2px 1px rgba(0, 100, 200, 0),
+      -55px -58px 3px 1px rgba(0, 150, 255, 0),
+      8px 74px 2px 1px rgba(0, 31, 63, 0),
+      -78px -8px 2px 1px rgba(0, 77, 153, 0),
+      52px 58px 2px 1px rgba(0, 100, 200, 0),
+      -42px 65px 2px 1px rgba(0, 150, 255, 0);
+  }
+  15% {
+    box-shadow: -72px -28px 2px 1px rgba(0, 31, 63, 0.95),
+      52px -75px 3px 1px rgba(0, 77, 153, 0.9),
+      -32px 78px 2px 1px rgba(0, 100, 200, 0.95),
+      82px 35px 2px 1px rgba(0, 150, 255, 0.9),
+      -78px 55px 3px 1px rgba(0, 31, 63, 0.95),
+      22px -77px 2px 1px rgba(0, 77, 153, 0.9),
+      75px -50px 2px 1px rgba(0, 100, 200, 0.95),
+      -60px -63px 3px 1px rgba(0, 150, 255, 0.9),
+      12px 80px 2px 1px rgba(0, 31, 63, 0.95),
+      -85px -12px 2px 1px rgba(0, 77, 153, 0.9),
+      58px 63px 2px 1px rgba(0, 100, 200, 0.95),
+      -48px 72px 2px 1px rgba(0, 150, 255, 0.9);
+  }
+  50% {
+    box-shadow: -95px -38px 2px 1px rgba(0, 31, 63, 0.5),
+      68px -98px 3px 1px rgba(0, 77, 153, 0.45),
+      -42px 102px 2px 1px rgba(0, 100, 200, 0.5),
+      108px 48px 2px 1px rgba(0, 150, 255, 0.45),
+      -102px 72px 3px 1px rgba(0, 31, 63, 0.5),
+      32px -100px 2px 1px rgba(0, 77, 153, 0.45),
+      98px -68px 2px 1px rgba(0, 100, 200, 0.5),
+      -78px -82px 3px 1px rgba(0, 150, 255, 0.45),
+      18px 108px 2px 1px rgba(0, 31, 63, 0.5),
+      -112px -20px 2px 1px rgba(0, 77, 153, 0.45),
+      75px 85px 2px 1px rgba(0, 100, 200, 0.5),
+      -62px 95px 2px 1px rgba(0, 150, 255, 0.45);
+  }
+  100% {
+    box-shadow: -125px -50px 2px 1px rgba(0, 31, 63, 0),
+      88px -128px 3px 1px rgba(0, 77, 153, 0),
+      -55px 132px 2px 1px rgba(0, 100, 200, 0),
+      142px 62px 2px 1px rgba(0, 150, 255, 0),
+      -135px 95px 3px 1px rgba(0, 31, 63, 0),
+      42px -132px 2px 1px rgba(0, 77, 153, 0),
+      128px -88px 2px 1px rgba(0, 100, 200, 0),
+      -102px -108px 3px 1px rgba(0, 150, 255, 0),
+      25px 142px 2px 1px rgba(0, 31, 63, 0),
+      -148px -28px 2px 1px rgba(0, 77, 153, 0),
+      98px 112px 2px 1px rgba(0, 100, 200, 0),
+      -80px 125px 2px 1px rgba(0, 150, 255, 0);
+  }
+}
+
+/* Quantum particles layer 2 - offset positions */
+@keyframes quantum-particles-2 {
+  0%,
+  100% {
+    box-shadow: -45px -70px 2px 1px rgba(0, 100, 200, 0),
+      70px -15px 3px 1px rgba(0, 150, 255, 0),
+      -70px 38px 2px 1px rgba(0, 31, 63, 0),
+      38px 72px 2px 1px rgba(0, 77, 153, 0),
+      62px -60px 3px 1px rgba(0, 100, 200, 0),
+      -75px -38px 2px 1px rgba(0, 150, 255, 0),
+      15px 70px 2px 1px rgba(0, 31, 63, 0),
+      -12px -74px 3px 1px rgba(0, 77, 153, 0),
+      68px 48px 2px 1px rgba(0, 100, 200, 0),
+      -25px 72px 2px 1px rgba(0, 150, 255, 0);
+  }
+  18% {
+    box-shadow: -52px -80px 2px 1px rgba(0, 100, 200, 0.9),
+      80px -18px 3px 1px rgba(0, 150, 255, 0.85),
+      -80px 42px 2px 1px rgba(0, 31, 63, 0.9),
+      42px 82px 2px 1px rgba(0, 77, 153, 0.85),
+      72px -68px 3px 1px rgba(0, 100, 200, 0.9),
+      -85px -42px 2px 1px rgba(0, 150, 255, 0.85),
+      18px 80px 2px 1px rgba(0, 31, 63, 0.9),
+      -15px -84px 3px 1px rgba(0, 77, 153, 0.85),
+      78px 55px 2px 1px rgba(0, 100, 200, 0.9),
+      -30px 82px 2px 1px rgba(0, 150, 255, 0.85);
+  }
+  55% {
+    box-shadow: -72px -108px 2px 1px rgba(0, 100, 200, 0.4),
+      108px -25px 3px 1px rgba(0, 150, 255, 0.35),
+      -108px 58px 2px 1px rgba(0, 31, 63, 0.4),
+      58px 112px 2px 1px rgba(0, 77, 153, 0.35),
+      98px -92px 3px 1px rgba(0, 100, 200, 0.4),
+      -115px -58px 2px 1px rgba(0, 150, 255, 0.35),
+      25px 110px 2px 1px rgba(0, 31, 63, 0.4),
+      -22px -114px 3px 1px rgba(0, 77, 153, 0.35),
+      108px 75px 2px 1px rgba(0, 100, 200, 0.4),
+      -42px 112px 2px 1px rgba(0, 150, 255, 0.35);
+  }
+  100% {
+    box-shadow: -95px -142px 2px 1px rgba(0, 100, 200, 0),
+      142px -35px 3px 1px rgba(0, 150, 255, 0),
+      -142px 78px 2px 1px rgba(0, 31, 63, 0),
+      78px 148px 2px 1px rgba(0, 77, 153, 0),
+      128px -120px 3px 1px rgba(0, 100, 200, 0),
+      -152px -78px 2px 1px rgba(0, 150, 255, 0),
+      35px 146px 2px 1px rgba(0, 31, 63, 0),
+      -30px -150px 3px 1px rgba(0, 77, 153, 0),
+      142px 98px 2px 1px rgba(0, 100, 200, 0),
+      -58px 148px 2px 1px rgba(0, 150, 255, 0);
+  }
+}
+
+/* Quantum particles layer 3 - more scattered */
+@keyframes quantum-particles-3 {
+  0%,
+  100% {
+    box-shadow: -58px -52px 3px 1px rgba(0, 150, 255, 0),
+      52px -65px 2px 1px rgba(0, 31, 63, 0),
+      75px 5px 2px 1px rgba(0, 100, 200, 0),
+      -12px 75px 3px 1px rgba(0, 77, 153, 0),
+      -72px 15px 2px 1px rgba(0, 150, 255, 0),
+      42px 68px 2px 1px rgba(0, 100, 200, 0),
+      -38px -72px 3px 1px rgba(0, 31, 63, 0),
+      72px -32px 2px 1px rgba(0, 77, 153, 0);
+  }
+  22% {
+    box-shadow: -68px -60px 3px 1px rgba(0, 150, 255, 0.85),
+      60px -75px 2px 1px rgba(0, 31, 63, 0.9),
+      88px 8px 2px 1px rgba(0, 100, 200, 0.85),
+      -15px 88px 3px 1px rgba(0, 77, 153, 0.9),
+      -85px 18px 2px 1px rgba(0, 150, 255, 0.85),
+      50px 78px 2px 1px rgba(0, 100, 200, 0.9),
+      -45px -85px 3px 1px rgba(0, 31, 63, 0.85),
+      85px -38px 2px 1px rgba(0, 77, 153, 0.9);
+  }
+  60% {
+    box-shadow: -92px -82px 3px 1px rgba(0, 150, 255, 0.4),
+      82px -102px 2px 1px rgba(0, 31, 63, 0.35),
+      118px 12px 2px 1px rgba(0, 100, 200, 0.4),
+      -20px 118px 3px 1px rgba(0, 77, 153, 0.35),
+      -115px 25px 2px 1px rgba(0, 150, 255, 0.4),
+      68px 108px 2px 1px rgba(0, 100, 200, 0.35),
+      -62px -118px 3px 1px rgba(0, 31, 63, 0.4),
+      115px -52px 2px 1px rgba(0, 77, 153, 0.35);
+  }
+  100% {
+    box-shadow: -120px -108px 3px 1px rgba(0, 150, 255, 0),
+      108px -135px 2px 1px rgba(0, 31, 63, 0),
+      152px 18px 2px 1px rgba(0, 100, 200, 0),
+      -28px 152px 3px 1px rgba(0, 77, 153, 0),
+      -150px 35px 2px 1px rgba(0, 150, 255, 0),
+      92px 142px 2px 1px rgba(0, 100, 200, 0),
+      -82px -155px 3px 1px rgba(0, 31, 63, 0),
+      150px -70px 2px 1px rgba(0, 77, 153, 0);
+  }
+}
+
+@keyframes quantum-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-quantum-glow {
+  position: relative;
+  animation: quantum-field 5s ease-in-out infinite;
+  border: 4px solid #001f3f !important;
+  overflow: visible !important;
+}
+
+/* Multiple quantum particle layers for dense field effect */
+.animate-quantum-glow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: quantum-particles-1 7s linear infinite,
+    quantum-particles-3 9s linear infinite 2s,
+    quantum-twinkle 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.animate-quantum-glow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: quantum-particles-2 8s linear infinite 1s,
+    quantum-twinkle 2.5s ease-in-out infinite 0.5s;
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* Galaxy border - Ultimate mythic cosmic frame */

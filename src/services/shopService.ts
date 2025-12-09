@@ -138,7 +138,7 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
     sakura: "#FFB7C5",
     diamond: "#B9F2FF",
     aurora: "#00ff88",
-    neon: "#ff00ff",
+    quantum: "#001f3f",
     titan: "#dcc8ff",
   };
 
@@ -155,10 +155,10 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
     };
   }
 
-  if (borderId === "neon") {
-    // Neon cyberpunk frame
+  if (borderId === "quantum") {
+    // Quantum frame - ultimate quantum field effects
     return {
-      border: `3px solid #ff00ff`,
+      border: `4px solid #001f3f`,
     };
   }
 
@@ -214,7 +214,7 @@ export const getAnimationClass = (borderId: string): string => {
   const animationClasses: Record<string, string> = {
     titan: "animate-titan-glow",
     aurora: "animate-aurora-glow",
-    neon: "animate-neon-glow",
+    quantum: "animate-quantum-glow",
   };
   return animationClasses[borderId] || "";
 };

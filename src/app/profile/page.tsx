@@ -519,9 +519,9 @@ export default function Profile() {
       {/* Border Picker Modal */}
       {showBorderPicker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-xl max-h-[85vh] overflow-hidden">
-            <div className="p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
-              <h2 className="text-lg font-medium text-black dark:text-white">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <h2 className="text-xl font-medium text-black dark:text-white">
                 Choose Border
               </h2>
               <button
@@ -529,7 +529,7 @@ export default function Profile() {
                 className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -543,7 +543,7 @@ export default function Profile() {
                 </svg>
               </button>
             </div>
-            <div className="p-5 overflow-y-auto max-h-[60vh]">
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
               {userBorders.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -557,21 +557,21 @@ export default function Profile() {
                   </Link>
                 </div>
               ) : (
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-6">
                   {userBorders.map((border) => (
                     <button
                       key={border.id}
                       onClick={() => handleEquipBorder(border.id)}
                       disabled={equipping || border.equipped}
-                      className={`p-4 border transition-all ${
+                      className={`p-6 border transition-all ${
                         border.equipped
                           ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
                           : "border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600"
                       }`}
                     >
-                      <div className="flex flex-col items-center gap-3">
+                      <div className="flex flex-col items-center gap-4">
                         <div
-                          className={`w-20 h-20 overflow-hidden ${
+                          className={`w-28 h-28 overflow-hidden ${
                             border.animated ? getAnimationClass(border.id) : ""
                           }`}
                           style={getBorderStyle(border.id)}
@@ -580,13 +580,13 @@ export default function Profile() {
                             <Image
                               src={user.profilePicture}
                               alt={user.firstName}
-                              width={80}
-                              height={80}
+                              width={112}
+                              height={112}
                               className="w-full h-full object-cover"
                             />
                           ) : (
                             <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                              <span className="text-xl font-medium text-gray-500 dark:text-gray-400">
+                              <span className="text-3xl font-medium text-gray-500 dark:text-gray-400">
                                 {user.firstName.charAt(0)}
                               </span>
                             </div>
@@ -601,7 +601,7 @@ export default function Profile() {
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+            <div className="p-5 border-t border-gray-200 dark:border-gray-800">
               <Link
                 href="/shop"
                 onClick={() => setShowBorderPicker(false)}
