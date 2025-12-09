@@ -125,15 +125,18 @@ export const API_ENDPOINTS = {
 
 // Helper function for making API calls with consistent error handling
 export const apiCall = async (url: string, options: RequestInit = {}) => {
+  // Extract headers separately to ensure they're properly merged
+  const { headers: optionHeaders, ...restOptions } = options;
+
   const defaultOptions: RequestInit = {
     credentials: "include", // This is crucial for sending cookies cross-origin
     mode: "cors", // Explicitly set CORS mode
+    ...restOptions,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      ...options.headers,
+      ...(optionHeaders as Record<string, string>),
     },
-    ...options,
   };
 
   try {
