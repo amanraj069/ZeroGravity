@@ -12,6 +12,7 @@ import {
   purchaseBorder,
   equipBorder,
   getBorderStyle,
+  getAnimationClass,
 } from "@/services/shopService";
 import { Check } from "lucide-react";
 
@@ -187,7 +188,7 @@ export default function ShopPage() {
                 <div className="flex justify-center mb-5 mt-2">
                   <div
                     className={`w-24 h-24 overflow-hidden ${
-                      border.animated ? "animate-titan-glow" : ""
+                      border.animated ? getAnimationClass(border.id) : ""
                     }`}
                     style={getBorderStyle(border.id)}
                   >

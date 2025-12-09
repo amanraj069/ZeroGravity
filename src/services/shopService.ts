@@ -132,9 +132,14 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
     bronze: "#CD7F32",
     silver: "#C0C0C0",
     gold: "#FFD700",
+    crimson: "#DC143C",
     purple: "#9B59B6",
+    emerald: "#50C878",
+    sakura: "#FFB7C5",
     diamond: "#B9F2FF",
-    titan: "#FF4500",
+    aurora: "#00ff88",
+    neon: "#ff00ff",
+    titan: "#dcc8ff",
   };
 
   const color = borderColors[borderId] || "transparent";
@@ -144,9 +149,23 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
   }
 
   if (borderId === "titan") {
+    // Galaxy frame - ultimate mythic cosmic border
     return {
-      boxShadow: `0 0 9px ${color}, 0 0 15px ${color}`,
-      border: `4px solid ${color}`,
+      border: `4px solid #c4b5fd`,
+    };
+  }
+
+  if (borderId === "neon") {
+    // Neon cyberpunk frame
+    return {
+      border: `3px solid #ff00ff`,
+    };
+  }
+
+  if (borderId === "aurora") {
+    // Aurora northern lights frame
+    return {
+      border: `3px solid #00ff88`,
     };
   }
 
@@ -154,6 +173,27 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
     return {
       boxShadow: `0 0 12px ${color}`,
       border: `4px solid ${color}`,
+    };
+  }
+
+  if (borderId === "sakura") {
+    return {
+      border: `4px solid ${color}`,
+      boxShadow: `0 0 10px ${color}`,
+    };
+  }
+
+  if (borderId === "emerald") {
+    return {
+      border: `4px solid ${color}`,
+      boxShadow: `0 0 8px ${color}`,
+    };
+  }
+
+  if (borderId === "crimson") {
+    return {
+      border: `4px solid ${color}`,
+      boxShadow: `0 0 6px ${color}`,
     };
   }
 
@@ -167,6 +207,16 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
   return {
     border: `3px solid ${color}`,
   };
+};
+
+// Get animation class for animated borders
+export const getAnimationClass = (borderId: string): string => {
+  const animationClasses: Record<string, string> = {
+    titan: "animate-titan-glow",
+    aurora: "animate-aurora-glow",
+    neon: "animate-neon-glow",
+  };
+  return animationClasses[borderId] || "";
 };
 
 // Tier colors for badges

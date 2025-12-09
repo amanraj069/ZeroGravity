@@ -12,6 +12,7 @@ import { Flame, Pencil, ShoppingBag, Palette } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
   getBorderStyle,
+  getAnimationClass,
   getUserBorders,
   equipBorder,
   Border,
@@ -239,9 +240,9 @@ export default function Profile() {
             {/* Profile Picture */}
             <div className="relative group flex-shrink-0">
               <div
-                className={`w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${
-                  user.equippedBorder === "titan" ? "animate-titan-glow" : ""
-                }`}
+                className={`w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${getAnimationClass(
+                  user.equippedBorder || ""
+                )}`}
                 style={getBorderStyle(user.equippedBorder || "default")}
               >
                 {user.profilePicture ? (
@@ -571,7 +572,7 @@ export default function Profile() {
                       <div className="flex flex-col items-center gap-3">
                         <div
                           className={`w-20 h-20 overflow-hidden ${
-                            border.animated ? "animate-titan-glow" : ""
+                            border.animated ? getAnimationClass(border.id) : ""
                           }`}
                           style={getBorderStyle(border.id)}
                         >

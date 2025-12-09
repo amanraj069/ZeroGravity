@@ -295,20 +295,224 @@ textarea::placeholder {
   animation: fade-in-down 2s ease-out forwards;
 }
 
-/* Titan border pulsating glow animation */
-@keyframes titan-glow {
+/* Aurora border - Northern lights shifting effect */
+@keyframes aurora-glow {
+  0% {
+    box-shadow: 0 0 8px #00ff88, 0 0 15px rgba(0, 255, 136, 0.6),
+      0 0 25px rgba(0, 200, 255, 0.4), 0 0 35px rgba(100, 255, 150, 0.2);
+    border-color: #00ff88;
+  }
+  33% {
+    box-shadow: 0 0 8px #00d4ff, 0 0 15px rgba(0, 212, 255, 0.6),
+      0 0 25px rgba(0, 255, 136, 0.4), 0 0 35px rgba(138, 43, 226, 0.2);
+    border-color: #00d4ff;
+  }
+  66% {
+    box-shadow: 0 0 8px #7b68ee, 0 0 15px rgba(123, 104, 238, 0.6),
+      0 0 25px rgba(0, 212, 255, 0.4), 0 0 35px rgba(0, 255, 136, 0.2);
+    border-color: #7b68ee;
+  }
+  100% {
+    box-shadow: 0 0 8px #00ff88, 0 0 15px rgba(0, 255, 136, 0.6),
+      0 0 25px rgba(0, 200, 255, 0.4), 0 0 35px rgba(100, 255, 150, 0.2);
+    border-color: #00ff88;
+  }
+}
+
+.animate-aurora-glow {
+  animation: aurora-glow 5s ease-in-out infinite;
+  border: 3px solid #00ff88 !important;
+}
+
+/* Neon border - Cyberpunk pulsing effect */
+@keyframes neon-pulse {
   0%,
   100% {
-    box-shadow: 0 0 9px #ff4500, 0 0 15px #ff4500, 0 0 21px #ff4500;
+    box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff,
+      0 0 20px rgba(255, 0, 255, 0.6), 0 0 30px rgba(0, 255, 255, 0.3),
+      inset 0 0 10px rgba(255, 0, 255, 0.2);
+    border-color: #ff00ff;
   }
   50% {
-    box-shadow: 0 0 12px #ff4500, 0 0 21px #ff4500, 0 0 30px #ff6347,
-      0 0 42px #ff4500;
+    box-shadow: 0 0 5px #00ffff, 0 0 12px #00ffff,
+      0 0 25px rgba(0, 255, 255, 0.7), 0 0 35px rgba(255, 0, 255, 0.4),
+      inset 0 0 12px rgba(0, 255, 255, 0.25);
+    border-color: #00ffff;
+  }
+}
+
+.animate-neon-glow {
+  animation: neon-pulse 2s ease-in-out infinite;
+  border: 3px solid #ff00ff !important;
+}
+
+/* Galaxy border - Ultimate mythic cosmic frame */
+@keyframes galaxy-nebula {
+  0% {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #a855f7, 0 0 35px #7c3aed,
+      0 0 50px rgba(139, 92, 246, 0.7), 0 0 70px rgba(236, 72, 153, 0.4),
+      0 0 90px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    border-color: #c4b5fd;
+  }
+  25% {
+    box-shadow: 0 0 5px #fff, 0 0 12px #fff, 0 0 22px #ec4899, 0 0 38px #a855f7,
+      0 0 55px rgba(236, 72, 153, 0.7), 0 0 75px rgba(139, 92, 246, 0.4),
+      0 0 95px rgba(59, 130, 246, 0.3), inset 0 0 22px rgba(236, 72, 153, 0.3);
+    border-color: #f0abfc;
+  }
+  50% {
+    box-shadow: 0 0 5px #fff, 0 0 11px #fff, 0 0 21px #3b82f6, 0 0 36px #8b5cf6,
+      0 0 52px rgba(59, 130, 246, 0.7), 0 0 72px rgba(139, 92, 246, 0.4),
+      0 0 92px rgba(236, 72, 153, 0.3), inset 0 0 21px rgba(59, 130, 246, 0.3);
+    border-color: #a5b4fc;
+  }
+  75% {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #8b5cf6, 0 0 35px #ec4899,
+      0 0 50px rgba(139, 92, 246, 0.7), 0 0 70px rgba(59, 130, 246, 0.4),
+      0 0 90px rgba(236, 72, 153, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    border-color: #ddd6fe;
+  }
+  100% {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #a855f7, 0 0 35px #7c3aed,
+      0 0 50px rgba(139, 92, 246, 0.7), 0 0 70px rgba(236, 72, 153, 0.4),
+      0 0 90px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    border-color: #c4b5fd;
+  }
+}
+
+/* Continuous star stream - Layer 1 */
+@keyframes galaxy-stars-1 {
+  0%,
+  100% {
+    box-shadow: -72px -20px 2px 1px rgba(255, 255, 255, 0.95),
+      45px -70px 3px 1px rgba(199, 210, 254, 0.9),
+      -30px 72px 2px 1px rgba(251, 207, 232, 0.95),
+      78px 28px 2px 1px rgba(255, 255, 255, 0.9),
+      -65px 52px 3px 1px rgba(196, 181, 253, 0.95),
+      20px -75px 2px 1px rgba(255, 255, 255, 0.9),
+      70px -45px 2px 1px rgba(199, 210, 254, 0.95),
+      -55px -60px 3px 1px rgba(251, 207, 232, 0.9),
+      5px 74px 2px 1px rgba(255, 255, 255, 0.95),
+      -78px -5px 2px 1px rgba(196, 181, 253, 0.9);
+  }
+  50% {
+    box-shadow: -105px -30px 2px 1px rgba(255, 255, 255, 0.4),
+      65px -102px 3px 1px rgba(199, 210, 254, 0.35),
+      -44px 105px 2px 1px rgba(251, 207, 232, 0.4),
+      114px 41px 2px 1px rgba(255, 255, 255, 0.35),
+      -95px 76px 3px 1px rgba(196, 181, 253, 0.4),
+      29px -110px 2px 1px rgba(255, 255, 255, 0.35),
+      102px -66px 2px 1px rgba(199, 210, 254, 0.4),
+      -80px -88px 3px 1px rgba(251, 207, 232, 0.35),
+      7px 108px 2px 1px rgba(255, 255, 255, 0.4),
+      -114px -7px 2px 1px rgba(196, 181, 253, 0.35);
+  }
+}
+
+/* Continuous star stream - Layer 2 (offset positions) */
+@keyframes galaxy-stars-2 {
+  0%,
+  100% {
+    box-shadow: -48px -68px 2px 1px rgba(255, 255, 255, 0.9),
+      72px -15px 3px 1px rgba(196, 181, 253, 0.95),
+      -70px 35px 2px 1px rgba(255, 255, 255, 0.9),
+      38px 70px 2px 1px rgba(199, 210, 254, 0.95),
+      60px -58px 3px 1px rgba(251, 207, 232, 0.9),
+      -75px -40px 2px 1px rgba(255, 255, 255, 0.95),
+      15px 72px 2px 1px rgba(196, 181, 253, 0.9),
+      68px 48px 3px 1px rgba(255, 255, 255, 0.95),
+      -25px -72px 2px 1px rgba(199, 210, 254, 0.9),
+      -68px 62px 2px 1px rgba(251, 207, 232, 0.95);
+  }
+  50% {
+    box-shadow: -70px -99px 2px 1px rgba(255, 255, 255, 0.35),
+      105px -22px 3px 1px rgba(196, 181, 253, 0.4),
+      -102px 51px 2px 1px rgba(255, 255, 255, 0.35),
+      55px 102px 2px 1px rgba(199, 210, 254, 0.4),
+      88px -85px 3px 1px rgba(251, 207, 232, 0.35),
+      -110px -58px 2px 1px rgba(255, 255, 255, 0.4),
+      22px 105px 2px 1px rgba(196, 181, 253, 0.35),
+      99px 70px 3px 1px rgba(255, 255, 255, 0.4),
+      -36px -105px 2px 1px rgba(199, 210, 254, 0.35),
+      -99px 91px 2px 1px rgba(251, 207, 232, 0.4);
+  }
+}
+
+/* Continuous star stream - Layer 3 (more offset) */
+@keyframes galaxy-stars-3 {
+  0%,
+  100% {
+    box-shadow: -58px -52px 3px 1px rgba(199, 210, 254, 0.95),
+      52px -65px 2px 1px rgba(255, 255, 255, 0.9),
+      75px 5px 2px 1px rgba(251, 207, 232, 0.95),
+      -12px 75px 3px 1px rgba(255, 255, 255, 0.9),
+      -72px 15px 2px 1px rgba(196, 181, 253, 0.95),
+      42px 68px 2px 1px rgba(255, 255, 255, 0.9),
+      -38px -72px 3px 1px rgba(199, 210, 254, 0.95),
+      72px -32px 2px 1px rgba(251, 207, 232, 0.9);
+  }
+  50% {
+    box-shadow: -85px -76px 3px 1px rgba(199, 210, 254, 0.4),
+      76px -95px 2px 1px rgba(255, 255, 255, 0.35),
+      110px 7px 2px 1px rgba(251, 207, 232, 0.4),
+      -18px 110px 3px 1px rgba(255, 255, 255, 0.35),
+      -105px 22px 2px 1px rgba(196, 181, 253, 0.4),
+      61px 99px 2px 1px rgba(255, 255, 255, 0.35),
+      -55px -105px 3px 1px rgba(199, 210, 254, 0.4),
+      105px -47px 2px 1px rgba(251, 207, 232, 0.35);
+  }
+}
+
+/* Twinkling effect */
+@keyframes galaxy-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 
 .animate-titan-glow {
-  animation: titan-glow 2s ease-in-out infinite;
+  position: relative;
+  animation: galaxy-nebula 8s ease-in-out infinite;
+  border: 4px solid #c4b5fd !important;
+  overflow: visible !important;
+}
+
+/* Multiple star layers for dense, continuous starfield */
+.animate-titan-glow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: galaxy-stars-1 8s ease-in-out infinite,
+    galaxy-stars-3 10s ease-in-out infinite 2s,
+    galaxy-twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.animate-titan-glow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: galaxy-stars-2 9s ease-in-out infinite 1s,
+    galaxy-twinkle 2.5s ease-in-out infinite 0.5s;
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* Date picker styling for dark mode */
