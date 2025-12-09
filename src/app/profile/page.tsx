@@ -8,8 +8,15 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, Pencil } from "lucide-react";
+import { Flame, Pencil, ShoppingBag, Palette } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
+import {
+  getBorderStyle,
+  getAnimationClass,
+  getUserBorders,
+  equipBorder,
+  Border,
+} from "@/services/shopService";
 
 interface StreakInfo {
   currentStreak: number;
@@ -19,12 +26,21 @@ interface StreakInfo {
 }
 
 export default function Profile() {
-  const { user, isLoggedIn, isLoading: authLoading, setUser } = useAuth();
+  const {
+    user,
+    isLoggedIn,
+    isLoading: authLoading,
+    setUser,
+    refreshPoints,
+  } = useAuth();
   const router = useRouter();
   const [streakInfo, setStreakInfo] = useState<StreakInfo | null>(null);
   const [streakLoading, setStreakLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showBorderPicker, setShowBorderPicker] = useState(false);
+  const [userBorders, setUserBorders] = useState<Border[]>([]);
+  const [equipping, setEquipping] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -111,6 +127,40 @@ export default function Profile() {
     }
   };
 
+  const handleOpenBorderPicker = async () => {
+    try {
+      const data = await getUserBorders();
+      if (data?.success) {
+        setUserBorders(data.data.borders);
+      }
+    } catch (error) {
+      console.error("Error fetching borders:", error);
+    }
+    setShowBorderPicker(true);
+  };
+
+  const handleEquipBorder = async (borderId: string) => {
+    setEquipping(true);
+    try {
+      const result = await equipBorder(borderId);
+      if (result?.success) {
+        setUserBorders((prev) =>
+          prev.map((b) => ({
+            ...b,
+            equipped: b.id === borderId,
+          }))
+        );
+        // Refresh user data to get updated equippedBorder
+        await refreshPoints();
+        setShowBorderPicker(false);
+      }
+    } catch (error) {
+      console.error("Error equipping border:", error);
+    } finally {
+      setEquipping(false);
+    }
+  };
+
   if (authLoading) {
     return (
       <ZeroGravityLoading
@@ -144,17 +194,44 @@ export default function Profile() {
     <DashboardLayout>
       <div className="mt-2 space-y-3 md:space-y-4">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
-            Profile
-          </h1>
-          <Link
-            href="/profile/edit"
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <Pencil className="w-3.5 h-3.5" />
-            Edit Profile
-          </Link>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
+              Profile
+            </h1>
+            {/* Points Display */}
+            <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <span className="text-sm font-semibold text-black dark:text-white">
+                {(user.points || 0).toLocaleString()}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                points
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/shop"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              Shop
+            </Link>
+            <button
+              onClick={handleOpenBorderPicker}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <Palette className="w-3.5 h-3.5" />
+              Edit Card
+            </button>
+            <Link
+              href="/profile/edit"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Edit Profile
+            </Link>
+          </div>
         </div>
 
         {/* Profile Info Card */}
@@ -162,7 +239,12 @@ export default function Profile() {
           <div className="flex items-center gap-4 md:gap-6">
             {/* Profile Picture */}
             <div className="relative group flex-shrink-0">
-              <div className="w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+              <div
+                className={`w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${getAnimationClass(
+                  user.equippedBorder || ""
+                )}`}
+                style={getBorderStyle(user.equippedBorder || "default")}
+              >
                 {user.profilePicture ? (
                   <Image
                     src={user.profilePicture}
@@ -433,6 +515,104 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Border Picker Modal */}
+      {showBorderPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-xl max-h-[85vh] overflow-hidden">
+            <div className="p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <h2 className="text-lg font-medium text-black dark:text-white">
+                Choose Border
+              </h2>
+              <button
+                onClick={() => setShowBorderPicker(false)}
+                className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="p-5 overflow-y-auto max-h-[60vh]">
+              {userBorders.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    No borders yet
+                  </p>
+                  <Link
+                    href="/shop"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  >
+                    Visit Shop
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-4 gap-4">
+                  {userBorders.map((border) => (
+                    <button
+                      key={border.id}
+                      onClick={() => handleEquipBorder(border.id)}
+                      disabled={equipping || border.equipped}
+                      className={`p-4 border transition-all ${
+                        border.equipped
+                          ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
+                          : "border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600"
+                      }`}
+                    >
+                      <div className="flex flex-col items-center gap-3">
+                        <div
+                          className={`w-20 h-20 overflow-hidden ${
+                            border.animated ? getAnimationClass(border.id) : ""
+                          }`}
+                          style={getBorderStyle(border.id)}
+                        >
+                          {user.profilePicture ? (
+                            <Image
+                              src={user.profilePicture}
+                              alt={user.firstName}
+                              width={80}
+                              height={80}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                              <span className="text-xl font-medium text-gray-500 dark:text-gray-400">
+                                {user.firstName.charAt(0)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                          {border.name}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+              <Link
+                href="/shop"
+                onClick={() => setShowBorderPicker(false)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+              >
+                Get More Borders
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
