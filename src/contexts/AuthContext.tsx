@@ -24,12 +24,23 @@ interface User {
   unlockedBorders?: string[];
   equippedBorder?: string;
   consecutiveLoginDays?: number;
+  // 7-day login streak fields
+  loginStreakDay?: number;
+  loginStreakCompleted?: boolean;
+  loginStreakClaimed?: boolean;
 }
 
 interface LoginReward {
   pointsAwarded: number;
   pointsBreakdown: { reason: string; points: number }[];
   consecutiveLoginDays: number;
+}
+
+interface StreakInfo {
+  currentDay: number;
+  completed: boolean;
+  claimed: boolean;
+  isWelcomeBack?: boolean;
 }
 
 interface AuthContextType {
@@ -47,6 +58,7 @@ interface AuthContextType {
     requiresVerification?: boolean;
     email?: string;
     loginReward?: LoginReward;
+    streakInfo?: StreakInfo;
   }>;
   logout: () => Promise<void>;
   signup: (
@@ -54,7 +66,7 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; message: string }>;
   loginWithGoogle: (
     credential: string
-  ) => Promise<{ success: boolean; message: string }>;
+  ) => Promise<{ success: boolean; message: string; streakInfo?: StreakInfo }>;
   checkSession: () => Promise<void>;
   sendOtp: (
     userData: SignupData
@@ -145,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     requiresVerification?: boolean;
     email?: string;
     loginReward?: LoginReward;
+    streakInfo?: StreakInfo;
   }> => {
     try {
       console.log("Attempting login for:", email);
@@ -166,12 +179,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           localStorage.setItem("authToken", data.token);
         }
 
+        // Store streak info in localStorage if available (for immediate popup on redirect)
+        if (
+          data.streakInfo &&
+          data.streakInfo.currentDay > 0 &&
+          !data.streakInfo.claimed
+        ) {
+          localStorage.setItem(
+            "pendingStreakInfo",
+            JSON.stringify(data.streakInfo)
+          );
+        }
+
         console.log("Login successful, user:", data.user);
         console.log("UserId:", data.userId);
         return {
           success: true,
           message: data.message,
           loginReward: data.loginReward,
+          streakInfo: data.streakInfo,
         };
       } else {
         console.log("Login failed:", data.message);
@@ -325,7 +351,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Google OAuth login function
   const loginWithGoogle = async (
     credential: string
-  ): Promise<{ success: boolean; message: string }> => {
+  ): Promise<{
+    success: boolean;
+    message: string;
+    streakInfo?: StreakInfo;
+  }> => {
     try {
       console.log("Attempting Google login");
       const response = await apiCall(API_ENDPOINTS.AUTH.GOOGLE, {
@@ -346,8 +376,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           localStorage.setItem("authToken", data.token);
         }
 
+        // Store streak info in localStorage if available (for immediate popup on redirect)
+        if (
+          data.streakInfo &&
+          data.streakInfo.currentDay > 0 &&
+          !data.streakInfo.claimed
+        ) {
+          localStorage.setItem(
+            "pendingStreakInfo",
+            JSON.stringify(data.streakInfo)
+          );
+        }
+
         console.log("Google login successful, user:", data.user);
-        return { success: true, message: data.message };
+        return {
+          success: true,
+          message: data.message,
+          streakInfo: data.streakInfo,
+        };
       } else {
         console.log("Google login failed:", data.message);
         return {

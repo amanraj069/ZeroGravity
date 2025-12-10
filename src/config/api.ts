@@ -25,6 +25,7 @@ export const API_ENDPOINTS = {
     VERIFY_EMAIL_CHANGE: `${API_BASE_URL}/api/auth/verify-email-change`,
     SEND_PASSWORD_CHANGE_OTP: `${API_BASE_URL}/api/auth/send-password-change-otp`,
     VERIFY_PASSWORD_CHANGE: `${API_BASE_URL}/api/auth/verify-password-change`,
+    CLAIM_STREAK_BONUS: `${API_BASE_URL}/api/auth/claim-streak-bonus`,
   },
   // Waitlist endpoints
   WAITLIST: {

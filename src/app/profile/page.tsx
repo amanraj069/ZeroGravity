@@ -11,12 +11,13 @@ import Image from "next/image";
 import { Flame, Pencil, ShoppingBag, Palette } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
-  getBorderStyle,
-  getAnimationClass,
   getUserBorders,
   equipBorder,
   Border,
+  getBorderStyle,
+  getAnimationClass,
 } from "@/services/shopService";
+import { BorderPreview } from "@/components/borders";
 
 interface StreakInfo {
   currentStreak: number;
@@ -570,28 +571,13 @@ export default function Profile() {
                       }`}
                     >
                       <div className="flex flex-col items-center gap-4">
-                        <div
-                          className={`w-28 h-28 overflow-hidden ${
-                            border.animated ? getAnimationClass(border.id) : ""
-                          }`}
-                          style={getBorderStyle(border.id)}
-                        >
-                          {user.profilePicture ? (
-                            <Image
-                              src={user.profilePicture}
-                              alt={user.firstName}
-                              width={112}
-                              height={112}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                              <span className="text-3xl font-medium text-gray-500 dark:text-gray-400">
-                                {user.firstName.charAt(0)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                        <BorderPreview
+                          border={border}
+                          profilePicture={user.profilePicture}
+                          firstName={user.firstName}
+                          lastName={user.lastName || ""}
+                          size="sm"
+                        />
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                           {border.name}
                         </span>

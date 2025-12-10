@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import LoginStreakBonus from "@/components/LoginStreakBonus";
 import {
   DashboardLayout,
   SignupToggleSection,
@@ -14,12 +15,19 @@ import {
 } from "@/components/dashboard";
 
 export default function Dashboard() {
-  const { user, isLoggedIn, isLoading: authLoading } = useAuth();
+  const {
+    user,
+    isLoggedIn,
+    isLoading: authLoading,
+    refreshPoints,
+    checkSession,
+  } = useAuth();
   const router = useRouter();
   const [waitlistUsers, setWaitlistUsers] = useState<WaitlistUser[]>([]);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [signupEnabled, setSignupEnabled] = useState(false);
   const [signupToggleLoading, setSignupToggleLoading] = useState(false);
+  const [showStreakBonus, setShowStreakBonus] = useState(false);
   // const [uploading, setUploading] = useState(false);
   // const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -101,8 +109,45 @@ export default function Dashboard() {
         fetchWaitlistUsers();
         fetchSignupStatus();
       }
+
+      // Check if we should show streak bonus immediately
+      // Check both user object and localStorage for streak info from login
+      const checkStreakInfo = () => {
+        if (
+          user.loginStreakDay !== undefined &&
+          user.loginStreakDay > 0 &&
+          user.loginStreakClaimed === false
+        ) {
+          setShowStreakBonus(true);
+        } else {
+          // Also check localStorage for streak info from recent login
+          const storedStreakInfo = localStorage.getItem("pendingStreakInfo");
+          if (storedStreakInfo) {
+            try {
+              const streakInfo = JSON.parse(storedStreakInfo);
+              if (streakInfo.currentDay > 0 && streakInfo.claimed === false) {
+                setShowStreakBonus(true);
+                // Clear stored info after showing
+                localStorage.removeItem("pendingStreakInfo");
+              }
+            } catch {
+              // Invalid JSON, clear it
+              localStorage.removeItem("pendingStreakInfo");
+            }
+          }
+        }
+      };
+
+      // Check immediately
+      checkStreakInfo();
     }
   }, [isLoggedIn, authLoading, user, router]);
+
+  const handleClaimSuccess = async () => {
+    // Refresh user data to get updated points and streak status
+    await refreshPoints();
+    await checkSession();
+  };
 
   const fetchWaitlistUsers = async () => {
     setWaitlistLoading(true);
@@ -244,6 +289,20 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
+      {/* Login Streak Bonus Modal */}
+      {showStreakBonus && user && (
+        <LoginStreakBonus
+          streakInfo={{
+            currentDay: user.loginStreakDay || 0,
+            completed: user.loginStreakCompleted || false,
+            claimed: user.loginStreakClaimed || false,
+          }}
+          userName={user.firstName}
+          onClose={() => setShowStreakBonus(false)}
+          onClaimSuccess={handleClaimSuccess}
+        />
+      )}
+
       <div className="mt-2">
         {/* Header with Points */}
         <div className="flex items-center justify-between mb-4">

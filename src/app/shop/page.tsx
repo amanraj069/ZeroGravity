@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
@@ -11,9 +10,8 @@ import {
   getShopItems,
   purchaseBorder,
   equipBorder,
-  getBorderStyle,
-  getAnimationClass,
 } from "@/services/shopService";
+import { BorderPreview } from "@/components/borders";
 import { Check } from "lucide-react";
 
 export default function ShopPage() {
@@ -188,29 +186,13 @@ export default function ShopPage() {
 
                 {/* Preview */}
                 <div className="flex justify-center mb-6 mt-8">
-                  <div
-                    className={`w-36 h-36 overflow-hidden ${
-                      border.animated ? getAnimationClass(border.id) : ""
-                    }`}
-                    style={getBorderStyle(border.id)}
-                  >
-                    {user.profilePicture ? (
-                      <Image
-                        src={user.profilePicture}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        width={144}
-                        height={144}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
-                        <span className="text-4xl font-bold text-gray-500 dark:text-gray-400">
-                          {user.firstName.charAt(0)}
-                          {user.lastName.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  <BorderPreview
+                    border={border}
+                    profilePicture={user.profilePicture}
+                    firstName={user.firstName}
+                    lastName={user.lastName}
+                    size="md"
+                  />
                 </div>
 
                 {/* Info */}

@@ -13,6 +13,85 @@ export interface Border {
   equipped?: boolean;
 }
 
+// Border style configuration - defines how each border should be rendered
+export interface BorderStyleConfig {
+  width: number; // Border width in pixels
+  color: string; // Border color
+  glowIntensity?: number; // Box shadow blur radius (0 = no glow)
+  glowColor?: string; // Custom glow color (defaults to border color)
+  customStyle?: CSSProperties; // Override for special cases
+}
+
+// Border configuration map - centralized definition of all border styles
+const BORDER_STYLES: Record<string, BorderStyleConfig> = {
+  default: {
+    width: 0,
+    color: "transparent",
+  },
+  bronze: {
+    width: 3,
+    color: "#CD7F32",
+  },
+  silver: {
+    width: 3,
+    color: "#C0C0C0",
+  },
+  gold: {
+    width: 4,
+    color: "#FFD700",
+    glowIntensity: 8,
+  },
+  crimson: {
+    width: 4,
+    color: "#DC143C",
+    glowIntensity: 6,
+  },
+  purple: {
+    width: 4,
+    color: "#9B59B6",
+    glowIntensity: 8,
+  },
+  emerald: {
+    width: 4,
+    color: "#50C878",
+    glowIntensity: 8,
+  },
+  sakura: {
+    width: 4,
+    color: "#FFB7C5",
+    glowIntensity: 10,
+  },
+  diamond: {
+    width: 4,
+    color: "#B9F2FF",
+    glowIntensity: 12,
+  },
+  aurora: {
+    width: 3,
+    color: "#00ff88",
+    // Aurora uses CSS animation, so minimal inline style
+    customStyle: {
+      border: "3px solid #00ff88",
+    },
+  },
+  quantum: {
+    width: 4,
+    color: "#001f3f",
+    // Quantum uses CSS animation with pseudo-elements
+    customStyle: {
+      border: "4px solid #001f3f",
+    },
+  },
+  titan: {
+    width: 4,
+    color: "#c4b5fd",
+    // Galaxy border uses CSS animation
+    customStyle: {
+      border: "4px solid #c4b5fd",
+    },
+  },
+};
+
 export interface ShopItemsResponse {
   success: boolean;
   data: {
@@ -125,98 +204,62 @@ export const getUserPoints = async (): Promise<PointsResponse | null> => {
   }
 };
 
-// Border color mapping for CSS (square borders)
-export const getBorderStyle = (borderId: string): CSSProperties => {
-  const borderColors: Record<string, string> = {
-    default: "transparent",
-    bronze: "#CD7F32",
-    silver: "#C0C0C0",
-    gold: "#FFD700",
-    crimson: "#DC143C",
-    purple: "#9B59B6",
-    emerald: "#50C878",
-    sakura: "#FFB7C5",
-    diamond: "#B9F2FF",
-    aurora: "#00ff88",
-    quantum: "#001f3f",
-    titan: "#dcc8ff",
-  };
-
-  const color = borderColors[borderId] || "transparent";
-
-  if (borderId === "default") {
-    return {};
-  }
-
-  if (borderId === "titan") {
-    // Galaxy frame - ultimate mythic cosmic border
-    return {
-      border: `4px solid #c4b5fd`,
-    };
-  }
-
-  if (borderId === "quantum") {
-    // Quantum frame - ultimate quantum field effects
-    return {
-      border: `4px solid #001f3f`,
-    };
-  }
-
-  if (borderId === "aurora") {
-    // Aurora northern lights frame
-    return {
-      border: `3px solid #00ff88`,
-    };
-  }
-
-  if (borderId === "diamond") {
-    return {
-      boxShadow: `0 0 12px ${color}`,
-      border: `4px solid ${color}`,
-    };
-  }
-
-  if (borderId === "sakura") {
-    return {
-      border: `4px solid ${color}`,
-      boxShadow: `0 0 10px ${color}`,
-    };
-  }
-
-  if (borderId === "emerald") {
-    return {
-      border: `4px solid ${color}`,
-      boxShadow: `0 0 8px ${color}`,
-    };
-  }
-
-  if (borderId === "crimson") {
-    return {
-      border: `4px solid ${color}`,
-      boxShadow: `0 0 6px ${color}`,
-    };
-  }
-
-  if (borderId === "purple" || borderId === "gold") {
-    return {
-      border: `4px solid ${color}`,
-      boxShadow: `0 0 8px ${color}`,
-    };
-  }
-
-  return {
-    border: `3px solid ${color}`,
-  };
+/**
+ * Get border style configuration for a given border ID
+ * Uses a configuration-driven approach for maintainability
+ */
+export const getBorderStyleConfig = (
+  borderId: string
+): BorderStyleConfig | null => {
+  return BORDER_STYLES[borderId] || null;
 };
 
-// Get animation class for animated borders
-export const getAnimationClass = (borderId: string): string => {
-  const animationClasses: Record<string, string> = {
-    titan: "animate-titan-glow",
-    aurora: "animate-aurora-glow",
-    quantum: "animate-quantum-glow",
+/**
+ * Generate CSS properties for a border based on its configuration
+ * This replaces the old getBorderStyle function with a cleaner, data-driven approach
+ */
+export const getBorderStyle = (borderId: string): CSSProperties => {
+  const config = getBorderStyleConfig(borderId);
+
+  if (!config) {
+    // Fallback for unknown borders
+    return {
+      border: "3px solid transparent",
+    };
+  }
+
+  // If custom style is provided, use it (for animated borders)
+  if (config.customStyle) {
+    return config.customStyle;
+  }
+
+  // Build style from configuration
+  const style: CSSProperties = {
+    border: `${config.width}px solid ${config.color}`,
   };
-  return animationClasses[borderId] || "";
+
+  // Add glow effect if specified
+  if (config.glowIntensity && config.glowIntensity > 0) {
+    const glowColor = config.glowColor || config.color;
+    style.boxShadow = `0 0 ${config.glowIntensity}px ${glowColor}`;
+  }
+
+  return style;
+};
+
+// Animation class mapping for animated borders
+const ANIMATION_CLASSES: Record<string, string> = {
+  titan: "animate-titan-glow",
+  aurora: "animate-aurora-glow",
+  quantum: "animate-quantum-glow",
+};
+
+/**
+ * Get animation class for animated borders
+ * Returns empty string if border doesn't have animation
+ */
+export const getAnimationClass = (borderId: string): string => {
+  return ANIMATION_CLASSES[borderId] || "";
 };
 
 // Tier colors for badges
