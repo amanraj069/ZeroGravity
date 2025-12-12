@@ -122,6 +122,10 @@ export const API_ENDPOINTS = {
     MY_BORDERS: `${API_BASE_URL}/api/shop/my-borders`,
     POINTS: `${API_BASE_URL}/api/shop/points`,
   },
+  // Contact endpoints
+  CONTACT: {
+    SUBMIT: `${API_BASE_URL}/api/contact/submit`,
+  },
 };
 
 // Helper function for making API calls with consistent error handling
