@@ -351,21 +351,35 @@ export default function Dashboard() {
 
       <div className="mt-2">
         {/* Header with Points */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl md:text-2xl font-light text-black dark:text-white">
-            Dashboard
-          </h1>
-          <Link
-            href="/shop"
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          >
-            <span className="text-sm font-semibold text-black dark:text-white">
-              {(user?.points || 0).toLocaleString()}
+        <div className="mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <h1 className="text-xl md:text-2xl font-light text-black dark:text-white">
+                Dashboard
+              </h1>
+              {/* Light mode hint - same row on desktop only */}
+              <span className="hidden sm:inline text-sm text-gray-400 dark:hidden">
+                Turn off the light to see the stars
+              </span>
+            </div>
+            <Link
+              href="/shop"
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <span className="text-sm font-semibold text-black dark:text-white">
+                {(user?.points || 0).toLocaleString()}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                points
+              </span>
+            </Link>
+          </div>
+          {/* Light mode hint - below on mobile only */}
+          <div className="sm:hidden">
+            <span className="text-[12px] text-gray-400 dark:hidden">
+              Turn off the light to see the stars
             </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              points
-            </span>
-          </Link>
+          </div>
         </div>
 
         <style
@@ -432,13 +446,6 @@ export default function Dashboard() {
           `,
           }}
         />
-
-        {/* Light mode hint - shown at top */}
-        <div className="text-center mb-4 dark:hidden">
-          <span className="text-sm text-gray-400">
-            Turn off the light to see the stars
-          </span>
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-6">
           {navigationItems.map((item) => {
