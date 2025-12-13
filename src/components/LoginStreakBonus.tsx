@@ -149,7 +149,16 @@ export default function LoginStreakBonus({
                         size={16}
                       />
                     )}
-                    <div className="text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-400 whitespace-nowrap">
+                    <div
+                      className={`
+                        text-xs md:text-sm font-semibold whitespace-nowrap
+                        ${
+                          isCurrentDayCard && !streakInfo.claimed
+                            ? "text-white dark:text-gray-200"
+                            : "text-gray-700 dark:text-gray-400"
+                        }
+                      `}
+                    >
                       Day {dayNumber}
                     </div>
                   </div>
