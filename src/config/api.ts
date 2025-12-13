@@ -14,6 +14,10 @@ export const API_ENDPOINTS = {
     LOGOUT: `${API_BASE_URL}/api/auth/logout`,
     SIGNUP_STATUS: `${API_BASE_URL}/api/auth/signup-status`,
     TOGGLE_SIGNUP: `${API_BASE_URL}/api/auth/toggle-signup`,
+    CHECK_USER: (email: string) =>
+      `${API_BASE_URL}/api/auth/check-user/${encodeURIComponent(email)}`,
+    SIGNIN_STATUS: `${API_BASE_URL}/api/auth/signin-status`,
+    TOGGLE_SIGNIN: `${API_BASE_URL}/api/auth/toggle-signin`,
     GOOGLE: `${API_BASE_URL}/api/auth/google`,
     UPLOAD_PROFILE_PICTURE: `${API_BASE_URL}/api/auth/upload-profile-picture`,
     DEBUG: `${API_BASE_URL}/api/auth/debug`,

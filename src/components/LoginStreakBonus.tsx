@@ -87,7 +87,7 @@ export default function LoginStreakBonus({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
       <div
-        className="relative w-full max-w-4xl mx-4 bg-light-card dark:bg-dark-surface border-2 border-black dark:border-dark-border shadow-2xl"
+        className="relative w-[90%] max-w-4xl mx-4 bg-light-card dark:bg-dark-surface border-2 border-black dark:border-dark-border shadow-2xl"
         style={{ borderRadius: 0 }}
       >
         {/* Close button */}
@@ -130,10 +130,10 @@ export default function LoginStreakBonus({
                       : undefined
                   }
                   className={`
-                    border-2 p-2 md:p-4 transition-all duration-200 flex items-center justify-between md:flex-col md:justify-between md:min-h-[180px] overflow-hidden
+                    border-2 p-1.5 md:p-4 transition-all duration-200 flex items-center justify-between md:flex-col md:justify-between md:min-h-[180px] overflow-hidden
                     ${
                       isCurrentDayCard && !streakInfo.claimed
-                        ? "border-black dark:border-dark-border bg-black dark:bg-dark-card text-white dark:text-white cursor-pointer hover:bg-gray-800 dark:hover:bg-dark-hover"
+                        ? "border-black dark:border-dark-border bg-black dark:bg-black text-white dark:text-white cursor-pointer hover:bg-gray-800 dark:hover:bg-gray-900"
                         : isPastDay
                         ? "border-green-600 dark:border-green-400 bg-green-50 dark:bg-green-900/20"
                         : "border-light-border dark:border-dark-border bg-light-surface dark:bg-dark-card"
@@ -183,9 +183,9 @@ export default function LoginStreakBonus({
             })}
           </div>
 
-          {/* Current Day Info - Smaller */}
+          {/* Current Day Info - Hidden on mobile, shown on desktop */}
           <div
-            className="border-2 border-black dark:border-dark-border bg-light-card dark:bg-dark-surface p-4 mb-6"
+            className="hidden md:block border-2 border-black dark:border-dark-border bg-light-card dark:bg-dark-surface p-4 mb-6"
             style={{ borderRadius: 0 }}
           >
             <div className="flex items-center justify-between">

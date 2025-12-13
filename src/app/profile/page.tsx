@@ -195,12 +195,15 @@ export default function Profile() {
     <DashboardLayout>
       <div className="mt-2 space-y-3 md:space-y-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+        {/* Mobile: Stacked layout with points on right, buttons full width */}
+        {/* Desktop: Original horizontal layout preserved */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Mobile: Profile and Points in separate row, Desktop: Together on left */}
+          <div className="flex items-center justify-between sm:justify-start sm:gap-3">
             <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
               Profile
             </h1>
-            {/* Points Display */}
+            {/* Points Display - Right on mobile, next to Profile on desktop */}
             <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <span className="text-sm font-semibold text-black dark:text-white">
                 {(user.points || 0).toLocaleString()}
@@ -210,24 +213,25 @@ export default function Profile() {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          {/* Shop, Edit Card, Edit Profile - Full width on mobile, original on desktop */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Link
               href="/shop"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="flex-[0.8] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap"
             >
               <ShoppingBag className="w-3.5 h-3.5" />
               Shop
             </Link>
             <button
               onClick={handleOpenBorderPicker}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex-[0.9] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
             >
               <Palette className="w-3.5 h-3.5" />
               Edit Card
             </button>
             <Link
               href="/profile/edit"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex-[1.3] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
             >
               <Pencil className="w-3.5 h-3.5" />
               Edit Profile

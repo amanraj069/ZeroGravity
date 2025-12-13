@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 
 interface ActivityDay {
@@ -50,10 +50,28 @@ export default function ActivityGraph({
   const [loading, setLoading] = useState(true);
   const [hoveredDay, setHoveredDay] = useState<ActivityDay | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchActivityData();
   }, []);
+
+  // Scroll to end on mobile when data loads
+  useEffect(() => {
+    if (!loading && activityData && scrollContainerRef.current) {
+      // Only scroll on mobile (screen width < 640px)
+      const isMobile = window.innerWidth < 640;
+      if (isMobile) {
+        // Small delay to ensure DOM is fully rendered
+        setTimeout(() => {
+          if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollLeft =
+              scrollContainerRef.current.scrollWidth;
+          }
+        }, 100);
+      }
+    }
+  }, [loading, activityData]);
 
   const fetchActivityData = async () => {
     setLoading(true);
@@ -256,7 +274,10 @@ export default function ActivityGraph({
       </div>
 
       {/* Graph Container */}
-      <div className="w-full overflow-x-auto pb-2 scrollbar-thin">
+      <div
+        ref={scrollContainerRef}
+        className="w-full overflow-x-auto pb-2 scrollbar-thin"
+      >
         <div className="flex min-w-fit w-full">
           {/* Day Labels Column */}
           <div className="flex flex-col gap-[3px] pr-4 lg:pr-8 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 pt-0">

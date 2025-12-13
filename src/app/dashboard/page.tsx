@@ -10,6 +10,7 @@ import LoginStreakBonus from "@/components/LoginStreakBonus";
 import {
   DashboardLayout,
   SignupToggleSection,
+  SigninToggleSection,
   WaitlistUsersSection,
   type WaitlistUser,
 } from "@/components/dashboard";
@@ -27,6 +28,8 @@ export default function Dashboard() {
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [signupEnabled, setSignupEnabled] = useState(false);
   const [signupToggleLoading, setSignupToggleLoading] = useState(false);
+  const [signinEnabled, setSigninEnabled] = useState(true);
+  const [signinToggleLoading, setSigninToggleLoading] = useState(false);
   const [showStreakBonus, setShowStreakBonus] = useState(false);
   // const [uploading, setUploading] = useState(false);
   // const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,6 +111,7 @@ export default function Dashboard() {
       if (user.role === "admin") {
         fetchWaitlistUsers();
         fetchSignupStatus();
+        fetchSigninStatus();
       }
 
       // Check if we should show streak bonus immediately
@@ -182,6 +186,21 @@ export default function Dashboard() {
     }
   };
 
+  const fetchSigninStatus = async () => {
+    try {
+      const response = await apiCall(API_ENDPOINTS.AUTH.SIGNIN_STATUS);
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setSigninEnabled(data.enabled);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch signin status:", err);
+    }
+  };
+
   const toggleSignup = async () => {
     setSignupToggleLoading(true);
     try {
@@ -206,6 +225,33 @@ export default function Dashboard() {
       console.error("Failed to toggle signup:", err);
     } finally {
       setSignupToggleLoading(false);
+    }
+  };
+
+  const toggleSignin = async () => {
+    setSigninToggleLoading(true);
+    try {
+      const response = await apiCallWithAuth(API_ENDPOINTS.AUTH.TOGGLE_SIGNIN, {
+        method: "POST",
+        body: JSON.stringify({ enabled: !signinEnabled }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setSigninEnabled(!signinEnabled);
+        }
+      } else {
+        console.error(
+          "Toggle signin failed:",
+          response.status,
+          response.statusText
+        );
+      }
+    } catch (err) {
+      console.error("Failed to toggle signin:", err);
+    } finally {
+      setSigninToggleLoading(false);
     }
   };
 
@@ -581,6 +627,12 @@ export default function Dashboard() {
 
         {user?.role === "admin" && (
           <>
+            <SigninToggleSection
+              signinEnabled={signinEnabled}
+              signinToggleLoading={signinToggleLoading}
+              onToggleSignin={toggleSignin}
+            />
+
             <SignupToggleSection
               signupEnabled={signupEnabled}
               signupToggleLoading={signupToggleLoading}

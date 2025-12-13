@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { API_ENDPOINTS, apiCall } from "@/config/api";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 export default function Login() {
@@ -38,13 +39,51 @@ export default function Login() {
     }
 
     try {
-      const result = await login(formData.email, formData.password);
+      // First, check if signin is enabled
+      const signinStatusResponse = await apiCall(
+        API_ENDPOINTS.AUTH.SIGNIN_STATUS
+      );
+      const signinStatusData = await signinStatusResponse.json();
 
-      if (result.success) {
-        // Redirect to dashboard
-        router.push("/dashboard");
+      if (!signinStatusData.success || !signinStatusData.enabled) {
+        setError("Signin is currently disabled");
+        setIsLoading(false);
+        return;
+      }
+
+      // Then, check if user exists
+      const checkUserResponse = await apiCall(
+        API_ENDPOINTS.AUTH.CHECK_USER(formData.email)
+      );
+      const checkUserData = await checkUserResponse.json();
+
+      if (checkUserData.success && checkUserData.exists) {
+        // User exists, proceed with login (no signup check needed)
+        const result = await login(formData.email, formData.password);
+
+        if (result.success) {
+          // Redirect to dashboard
+          router.push("/dashboard");
+        } else {
+          setError(result.message);
+        }
       } else {
-        setError(result.message);
+        // User doesn't exist, check signup status before allowing signup
+        const signupStatusResponse = await apiCall(
+          API_ENDPOINTS.AUTH.SIGNUP_STATUS
+        );
+        const signupStatusData = await signupStatusResponse.json();
+
+        if (signupStatusData.success && signupStatusData.enabled) {
+          // Signup is enabled, redirect to signup page
+          setError("User not found. Please sign up first.");
+          setTimeout(() => {
+            router.push("/signup");
+          }, 2000);
+        } else {
+          // Signup is disabled
+          setError("User not found and signup is currently disabled.");
+        }
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -183,6 +222,18 @@ export default function Login() {
                 setError("");
 
                 try {
+                  // Check signin status first
+                  const signinStatusResponse = await apiCall(
+                    API_ENDPOINTS.AUTH.SIGNIN_STATUS
+                  );
+                  const signinStatusData = await signinStatusResponse.json();
+
+                  if (!signinStatusData.success || !signinStatusData.enabled) {
+                    setError("Signin is currently disabled");
+                    setIsGoogleLoading(false);
+                    return;
+                  }
+
                   const result = await loginWithGoogle(credential);
 
                   if (result.success) {
