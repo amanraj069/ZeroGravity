@@ -462,7 +462,9 @@ export default function Dashboard() {
                     <div
                       key={index}
                       className={`card-star-base absolute rounded-full bg-blue-500 dark:bg-white ${
-                        !star.showOnMobile ? "hidden md:block" : ""
+                        !star.showOnMobile
+                          ? "hidden md:dark:block"
+                          : "hidden dark:block"
                       }`}
                       style={
                         {
@@ -580,7 +582,9 @@ export default function Dashboard() {
                 <div
                   key={index}
                   className={`star-base absolute rounded-full bg-blue-500 dark:bg-white ${
-                    !star.showOnMobile ? "hidden md:block" : ""
+                    !star.showOnMobile
+                      ? "hidden md:dark:block"
+                      : "hidden dark:block"
                   }`}
                   style={
                     {

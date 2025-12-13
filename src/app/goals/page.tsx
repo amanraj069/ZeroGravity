@@ -34,6 +34,7 @@ export default function GoalsPage() {
       <ZeroGravityLoading
         title="Authenticating"
         subtitle="Verifying your cosmic credentials..."
+        showNavigation={false}
       />
     );
   }

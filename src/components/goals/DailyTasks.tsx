@@ -450,9 +450,20 @@ const DailyTasks: React.FC = () => {
   const [pointsAnimation, setPointsAnimation] =
     useState<PointsAnimation | null>(null);
   const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Check if selected date is today
   const isToday = selectedDate === getLocalDateString();
+
+  // Check if mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Load tasks and analytics
   useEffect(() => {
@@ -682,30 +693,32 @@ const DailyTasks: React.FC = () => {
 
       {/* Header with Analytics */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex-1">
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-              Daily Tasks
-            </h1>
-            <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-              <span className="flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" />
-                {analytics.currentStreak} day streak
-              </span>
-              <span>•</span>
-              <span>{analytics.completedToday} completed today</span>
-              <span>•</span>
-              <span>{analytics.totalActiveTasks} active tasks</span>
-            </div>
-          </div>
+        <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+            Daily Tasks
+          </h1>
           <button
             onClick={() => setShowAddTask(true)}
-            className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto"
+            className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0"
             style={{ borderRadius: 0 }}
           >
-            <Plus className="w-4 h-4" />
-            Add Task
+            <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span>Add Task</span>
           </button>
+        </div>
+        <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full">
+          <span className="flex items-center gap-1 whitespace-nowrap">
+            <TrendingUp className="w-3 h-3 flex-shrink-0" />
+            {analytics.currentStreak} day streak
+          </span>
+          <span className="flex-shrink-0">•</span>
+          <span className="whitespace-nowrap">
+            {analytics.completedToday} completed today
+          </span>
+          <span className="flex-shrink-0">•</span>
+          <span className="whitespace-nowrap">
+            {analytics.totalActiveTasks} active tasks
+          </span>
         </div>
       </div>
 
@@ -729,7 +742,7 @@ const DailyTasks: React.FC = () => {
       )}
 
       {/* Date Selector with Upcoming Days */}
-      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           {/* Date Picker */}
           <input
@@ -764,9 +777,10 @@ const DailyTasks: React.FC = () => {
                     return "th";
                 }
               };
-              const formatted = `${dayName} (${dayNumber}${suffix(
-                dayNumber
-              )} ${monthName})`;
+              // Mobile format: "Sat (13D)", Desktop format: "Sat (13th Dec)"
+              const formatted = isMobile
+                ? `${dayName} (${dayNumber}D)`
+                : `${dayName} (${dayNumber}${suffix(dayNumber)} ${monthName})`;
               // Border logic: current day always green, other selected days indigo, unselected days no border
               let borderClass = "";
               if (day.isToday) {
@@ -803,7 +817,7 @@ const DailyTasks: React.FC = () => {
 
       {/* Read-only indicator for non-today dates */}
       {!isToday && (
-        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2">
+        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2 mt-2 sm:mt-4">
           <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
           <p className="text-sm text-amber-700 dark:text-amber-300">
             You are viewing tasks for a{" "}
@@ -814,7 +828,7 @@ const DailyTasks: React.FC = () => {
       )}
 
       {/* Tasks Display */}
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4 mt-2 sm:mt-4">
         {tasks.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100vh-360px)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}

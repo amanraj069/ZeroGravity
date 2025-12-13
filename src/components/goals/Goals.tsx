@@ -711,7 +711,7 @@ const Goals: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-3 sm:py-6 space-y-2 sm:space-y-6">
         {/* Main Navigation - Always visible */}
         <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
           <div className="flex">

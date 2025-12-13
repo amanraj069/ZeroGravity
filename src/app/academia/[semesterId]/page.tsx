@@ -50,7 +50,8 @@ export default function SemesterDetailPage() {
       setSemester(data);
     } catch (err: unknown) {
       console.error("Error fetching semester:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to load semester";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to load semester";
       setError(errorMessage);
       if (errorMessage.includes("not found")) {
         router.push("/academia");
@@ -263,45 +264,47 @@ export default function SemesterDetailPage() {
 
   return (
     <DashboardLayout>
-      <div className="mt-4">
+      <div className="mt-2 sm:mt-4">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <Link
             href="/academia"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mb-4"
+            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mb-2 sm:mb-4 text-sm sm:text-base"
           >
             <span className="mr-2">←</span>
             Back to Academia
           </Link>
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h1 className="text-4xl font-light text-black dark:text-white mb-2">
+          <div className="flex items-start sm:items-center justify-between gap-2 sm:gap-4 mb-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2">
                 {semester.name}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 Manage your courses and grades
               </p>
             </div>
             <button
               onClick={handleAddCourseClick}
               disabled={addingCourse || showAddCoursePrompt}
-              className="border-2 border-dotted border-gray-300 dark:border-gray-600 px-6 py-3 bg-white dark:bg-gray-800 hover:border-black dark:hover:border-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-black dark:text-white font-medium"
+              className="flex items-center justify-center gap-1 sm:gap-1.5 border-2 border-dotted border-gray-300 dark:border-gray-600 px-3 sm:px-6 py-2 sm:py-3 bg-white dark:bg-gray-800 hover:border-black dark:hover:border-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-black dark:text-white font-medium text-xs sm:text-base whitespace-nowrap flex-shrink-0"
             >
-              {addingCourse ? "Adding..." : "+ Add Course"}
+              <span className="text-lg sm:text-xl">+</span>
+              <span className="hidden sm:inline">Add Course</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
         </div>
 
         {/* Add Course Prompt Modal */}
         {showAddCoursePrompt && (
-          <div className="mb-6 border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md p-6">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
+          <div className="mb-3 sm:mb-6 border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white mb-3 sm:mb-4">
               Add New Course
             </h3>
-            <div className="space-y-4">
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                <div className="sm:col-span-5">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                     Course Name
                   </label>
                   <input
@@ -309,33 +312,39 @@ export default function SemesterDetailPage() {
                     value={newCourseName}
                     onChange={(e) => setNewCourseName(e.target.value)}
                     placeholder="Enter course name"
-                    className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
                     autoFocus
                   />
                 </div>
-                <div className="col-span-5">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <div className="sm:col-span-5">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                     Grade
                   </label>
                   <select
                     value={newCourseGrade}
                     onChange={(e) => setNewCourseGrade(e.target.value)}
-                    className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
-                    style={{ 
-                      paddingRight: '2rem',
-                      minHeight: '2.5rem'
+                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                    style={{
+                      paddingRight: "2rem",
+                      minHeight: "2.5rem",
                     }}
                   >
-                    <option value="">Select Grade</option>
+                    <option value="" className="text-sm sm:text-base">
+                      Select Grade
+                    </option>
                     {GRADE_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
+                      <option
+                        key={option.value}
+                        value={option.value}
+                        className="text-sm sm:text-base"
+                      >
                         {option.label}
                       </option>
                     ))}
                   </select>
                 </div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                     Credits
                   </label>
                   <input
@@ -343,13 +352,15 @@ export default function SemesterDetailPage() {
                     min="0"
                     max="20"
                     value={newCourseCredits}
-                    onChange={(e) => setNewCourseCredits(Number(e.target.value))}
-                    className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
+                    onChange={(e) =>
+                      setNewCourseCredits(Number(e.target.value))
+                    }
+                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                   Additional Info
                 </label>
                 <textarea
@@ -360,23 +371,24 @@ Mid1 Evaluation: 13/15
 Assignment: 8/10
 ...`}
                   rows={4}
-                  className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent font-mono text-sm"
+                  className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent font-mono text-xs sm:text-sm"
                 />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Write additional information like evaluations, assignments, etc.
+                <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                  Write additional information like evaluations, assignments,
+                  etc.
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2 sm:gap-3">
                 <button
                   onClick={handleAddCourse}
                   disabled={addingCourse}
-                  className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 sm:px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
                 >
                   {addingCourse ? "Adding..." : "Add"}
                 </button>
                 <button
                   onClick={handleCancelAddCourse}
-                  className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  className="px-4 sm:px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-xs sm:text-sm"
                 >
                   Cancel
                 </button>
@@ -387,63 +399,71 @@ Assignment: 8/10
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+          <div className="mb-3 sm:mb-6 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+            <p className="text-red-600 dark:text-red-400 text-xs sm:text-sm">
+              {error}
+            </p>
           </div>
         )}
 
         {/* Courses List */}
         {semester.courses.length === 0 ? (
-          <div className="text-center py-12 border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md">
-            <p className="text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 sm:py-12 border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md">
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">
               No courses yet. Click &quot;Add Course&quot; to get started.
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {semester.courses.map((course) => (
               <div
                 key={course.courseId}
-                className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 shadow-md hover:shadow-lg transition-all duration-200 p-6"
+                className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 shadow-md hover:shadow-lg transition-all duration-200 p-4 sm:p-6"
               >
                 {editingCourse === course.courseId ? (
                   /* Edit Mode */
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-12 gap-4">
-                      <div className="col-span-5">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                      <div className="sm:col-span-5">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Course Name
                         </label>
                         <input
                           type="text"
                           value={editCourseName}
                           onChange={(e) => setEditCourseName(e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
                         />
                       </div>
-                      <div className="col-span-5">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <div className="sm:col-span-5">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Grade
                         </label>
                         <select
                           value={editCourseGrade}
                           onChange={(e) => setEditCourseGrade(e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
-                          style={{ 
-                            paddingRight: '2rem',
-                            minHeight: '2.5rem'
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                          style={{
+                            paddingRight: "2rem",
+                            minHeight: "2.5rem",
                           }}
                         >
-                          <option value="">Select Grade</option>
+                          <option value="" className="text-sm sm:text-base">
+                            Select Grade
+                          </option>
                           {GRADE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
+                            <option
+                              key={option.value}
+                              value={option.value}
+                              className="text-sm sm:text-base"
+                            >
                               {option.label}
                             </option>
                           ))}
                         </select>
                       </div>
-                      <div className="col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                           Credits
                         </label>
                         <input
@@ -454,12 +474,12 @@ Assignment: 8/10
                           onChange={(e) =>
                             setEditCourseCredits(Number(e.target.value))
                           }
-                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent"
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                         Additional Info
                       </label>
                       <textarea
@@ -472,22 +492,23 @@ Mid1 Evaluation: 13/15
 Assignment: 8/10
 ...`}
                         rows={6}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent font-mono text-sm"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent font-mono text-xs sm:text-sm"
                       />
-                      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Write additional information like evaluations, assignments, etc.
+                      <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                        Write additional information like evaluations,
+                        assignments, etc.
                       </p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3">
                       <button
                         onClick={() => handleUpdateCourse(course.courseId)}
-                        className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                        className="px-3 sm:px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-xs sm:text-sm"
                       >
                         Save
                       </button>
                       <button
                         onClick={cancelEditing}
-                        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                        className="px-3 sm:px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-xs sm:text-sm"
                       >
                         Cancel
                       </button>
@@ -496,24 +517,32 @@ Assignment: 8/10
                 ) : (
                   /* View Mode */
                   <>
-                    <div 
-                      className="flex items-start justify-between mb-4 cursor-pointer"
+                    <div
+                      className="flex items-start justify-between mb-3 sm:mb-4 cursor-pointer"
                       onClick={() => toggleCourseExpand(course.courseId)}
                     >
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-black dark:text-white mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-2 sm:mb-3">
                           {course.name}
                         </h3>
-                        <div className="flex items-center gap-6 text-sm">
+                        <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm flex-wrap">
                           {course.grade && (
                             <div className="flex items-center gap-2">
-                              <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">Grade</span>
-                              <span className="text-gray-900 dark:text-gray-100 font-medium">{course.grade}</span>
+                              <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
+                                Grade
+                              </span>
+                              <span className="text-gray-900 dark:text-gray-100 font-medium">
+                                {course.grade}
+                              </span>
                             </div>
                           )}
                           <div className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">Credits</span>
-                            <span className="text-gray-900 dark:text-gray-100 font-medium">{course.credits || 4}</span>
+                            <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
+                              Credits
+                            </span>
+                            <span className="text-gray-900 dark:text-gray-100 font-medium">
+                              {course.credits || 4}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -605,20 +634,20 @@ Assignment: 8/10
 
                     {/* Expanded Additional Info */}
                     {expandedCourses.has(course.courseId) && (
-                      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <h4 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Additional Information
                         </h4>
                         {course.additionalInfo ? (
-                          <div className="p-4 bg-gray-100 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-700 shadow-sm">
-                            <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200 font-mono">
+                          <div className="p-3 sm:p-4 bg-gray-100 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-700 shadow-sm">
+                            <pre className="whitespace-pre-wrap text-xs sm:text-sm text-gray-800 dark:text-gray-200 font-mono">
                               {course.additionalInfo}
                             </pre>
                           </div>
                         ) : (
-                          <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-                            No additional information added yet. Click edit to add
-                            details like evaluations, assignments, etc.
+                          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 italic">
+                            No additional information added yet. Click edit to
+                            add details like evaluations, assignments, etc.
                           </p>
                         )}
                       </div>
@@ -633,4 +662,3 @@ Assignment: 8/10
     </DashboardLayout>
   );
 }
-
