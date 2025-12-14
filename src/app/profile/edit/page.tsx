@@ -35,7 +35,6 @@ export default function EditProfile() {
 
   // OTP state
   const [editMode, setEditMode] = useState<EditMode>("none");
-  const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [otpError, setOtpError] = useState("");
   const [sendingOtp, setSendingOtp] = useState(false);
@@ -172,20 +171,41 @@ export default function EditProfile() {
         }
       );
 
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        // Try to parse error response
+        let errorMessage = "Failed to send OTP";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        setError(errorMessage);
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
         setEditMode("email");
-        setShowOtpModal(true);
         setResendCooldown(60);
         setOtp(["", "", "", "", "", ""]);
         setOtpError("");
+        setError(""); // Clear any previous errors
+        setSuccess("OTP sent to your new email address");
+        setTimeout(() => setSuccess(""), 3000);
       } else {
         setError(data.message || "Failed to send OTP");
       }
     } catch (err) {
       console.error("Error sending email OTP:", err);
-      setError("Failed to send OTP");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send OTP. Please check your connection and try again."
+      );
     } finally {
       setSendingOtp(false);
     }
@@ -218,20 +238,41 @@ export default function EditProfile() {
         }
       );
 
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        // Try to parse error response
+        let errorMessage = "Failed to send OTP";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If JSON parsing fails, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        setError(errorMessage);
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
         setEditMode("password");
-        setShowOtpModal(true);
         setResendCooldown(60);
         setOtp(["", "", "", "", "", ""]);
         setOtpError("");
+        setError(""); // Clear any previous errors
+        setSuccess("OTP sent to your current email address");
+        setTimeout(() => setSuccess(""), 3000);
       } else {
         setError(data.message || "Failed to send OTP");
       }
     } catch (err) {
       console.error("Error sending password OTP:", err);
-      setError("Failed to send OTP");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send OTP. Please check your connection and try again."
+      );
     } finally {
       setSendingOtp(false);
     }
@@ -279,6 +320,7 @@ export default function EditProfile() {
 
     setVerifyingOtp(true);
     setOtpError("");
+    setError(""); // Clear general error state
 
     try {
       let response;
@@ -301,18 +343,35 @@ export default function EditProfile() {
         );
       }
 
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        let errorMessage = "Verification failed";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = response.statusText || errorMessage;
+        }
+        if (editMode === "email") {
+          setOtpError(errorMessage);
+        } else {
+          setOtpError(errorMessage);
+        }
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
         if (editMode === "email" && data.user) {
           setUser(data.user);
         }
-        setShowOtpModal(false);
         setEditMode("none");
         setNewEmail("");
         setNewPassword("");
         setConfirmPassword("");
         setOtp(["", "", "", "", "", ""]);
+        setOtpError("");
         setSuccess(
           editMode === "email"
             ? "Email updated successfully"
@@ -335,6 +394,7 @@ export default function EditProfile() {
 
     setSendingOtp(true);
     setOtpError("");
+    setError("");
 
     try {
       let response;
@@ -356,27 +416,51 @@ export default function EditProfile() {
         );
       }
 
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        let errorMessage = "Failed to resend OTP";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = response.statusText || errorMessage;
+        }
+        if (editMode === "email") {
+          setError(errorMessage);
+        } else {
+          setOtpError(errorMessage);
+        }
+        return;
+      }
+
       const data = await response.json();
 
       if (data.success) {
         setResendCooldown(60);
         setOtp(["", "", "", "", "", ""]);
+        if (editMode === "email") {
+          setSuccess("OTP resent to your new email address");
+        } else {
+          setSuccess("OTP resent to your current email address");
+        }
+        setTimeout(() => setSuccess(""), 3000);
       } else {
-        setOtpError(data.message || "Failed to resend OTP");
+        if (editMode === "email") {
+          setError(data.message || "Failed to resend OTP");
+        } else {
+          setOtpError(data.message || "Failed to resend OTP");
+        }
       }
     } catch (err) {
       console.error("Resend OTP error:", err);
-      setOtpError("Failed to resend OTP");
+      if (editMode === "email") {
+        setError("Failed to resend OTP. Please try again.");
+      } else {
+        setOtpError("Failed to resend OTP");
+      }
     } finally {
       setSendingOtp(false);
     }
-  };
-
-  const closeOtpModal = () => {
-    setShowOtpModal(false);
-    setEditMode("none");
-    setOtp(["", "", "", "", "", ""]);
-    setOtpError("");
   };
 
   if (authLoading) {
@@ -619,18 +703,19 @@ export default function EditProfile() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-col md:flex-row gap-3">
                   <input
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="Enter new email"
-                    className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
+                    disabled={editMode === "email"}
+                    className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <button
                     onClick={handleSendEmailOtp}
-                    disabled={sendingOtp || !newEmail}
-                    className="px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    disabled={sendingOtp || !newEmail || editMode === "email"}
+                    className="w-full md:w-auto px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                   >
                     {sendingOtp ? "Sending..." : "Change Email"}
                   </button>
@@ -638,6 +723,91 @@ export default function EditProfile() {
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
                   OTP will be sent to your new email for verification
                 </p>
+
+                {/* OTP Input Section - Shown when OTP is sent for email change */}
+                {editMode === "email" && (
+                  <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium text-black dark:text-white mb-2">
+                        Enter OTP
+                      </h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Enter the 6-digit code sent to {newEmail}
+                      </p>
+                    </div>
+
+                    {otpError && (
+                      <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+                        {otpError}
+                      </div>
+                    )}
+
+                    {/* OTP Input */}
+                    <div className="flex justify-center gap-2 mb-4">
+                      {otp.map((digit, index) => (
+                        <input
+                          key={index}
+                          ref={(el) => {
+                            otpInputRefs.current[index] = el;
+                          }}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={6}
+                          value={digit}
+                          onChange={(e) =>
+                            handleOtpChange(index, e.target.value)
+                          }
+                          onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                          className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
+                          autoFocus={index === 0 && otp.join("") === ""}
+                        />
+                      ))}
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={handleVerifyOtp}
+                        disabled={verifyingOtp || otp.join("").length !== 6}
+                        className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                      >
+                        {verifyingOtp
+                          ? "Verifying..."
+                          : "Verify & Update Email"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditMode("none");
+                          setOtp(["", "", "", "", "", ""]);
+                          setOtpError("");
+                          setNewEmail("");
+                        }}
+                        disabled={verifyingOtp}
+                        className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+
+                    <div className="text-center mt-4">
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Didn&apos;t receive the code?{" "}
+                        {resendCooldown > 0 ? (
+                          <span className="text-gray-500">
+                            Resend in {resendCooldown}s
+                          </span>
+                        ) : (
+                          <button
+                            onClick={handleResendOtp}
+                            disabled={sendingOtp}
+                            className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
+                          >
+                            {sendingOtp ? "Sending..." : "Resend OTP"}
+                          </button>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Change Password */}
@@ -663,7 +833,8 @@ export default function EditProfile() {
                           value={newPassword}
                           onChange={(e) => setNewPassword(e.target.value)}
                           placeholder="Enter new password"
-                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
+                          disabled={editMode === "password"}
+                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <button
                           type="button"
@@ -718,7 +889,8 @@ export default function EditProfile() {
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm new password"
-                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
+                          disabled={editMode === "password"}
+                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <button
                           type="button"
@@ -768,112 +940,111 @@ export default function EditProfile() {
                   </div>
                   <button
                     onClick={handleSendPasswordOtp}
-                    disabled={sendingOtp || !newPassword || !confirmPassword}
+                    disabled={
+                      sendingOtp ||
+                      !newPassword ||
+                      !confirmPassword ||
+                      editMode === "password"
+                    }
                     className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                   >
-                    {sendingOtp ? "Sending OTP..." : "Update Password"}
+                    {sendingOtp ? "Sending..." : "Send OTP"}
                   </button>
                   <p className="text-xs text-gray-400 dark:text-gray-500">
                     OTP will be sent to your current email for verification
                   </p>
+
+                  {/* OTP Input Section - Shown when OTP is sent for password change */}
+                  {editMode === "password" && (
+                    <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                      <div className="mb-4">
+                        <h4 className="text-sm font-medium text-black dark:text-white mb-2">
+                          Enter OTP
+                        </h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Enter the 6-digit code sent to {user.email}
+                        </p>
+                      </div>
+
+                      {otpError && (
+                        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+                          {otpError}
+                        </div>
+                      )}
+
+                      {/* OTP Input */}
+                      <div className="flex justify-center gap-2 mb-4">
+                        {otp.map((digit, index) => (
+                          <input
+                            key={index}
+                            ref={(el) => {
+                              otpInputRefs.current[index] = el;
+                            }}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            value={digit}
+                            onChange={(e) =>
+                              handleOtpChange(index, e.target.value)
+                            }
+                            onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                            className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
+                            autoFocus={index === 0 && otp.join("") === ""}
+                          />
+                        ))}
+                      </div>
+
+                      <div className="flex gap-3">
+                        <button
+                          onClick={handleVerifyOtp}
+                          disabled={verifyingOtp || otp.join("").length !== 6}
+                          className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                        >
+                          {verifyingOtp
+                            ? "Verifying..."
+                            : "Verify & Update Password"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditMode("none");
+                            setOtp(["", "", "", "", "", ""]);
+                            setOtpError("");
+                            setNewPassword("");
+                            setConfirmPassword("");
+                          }}
+                          disabled={verifyingOtp}
+                          className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+
+                      <div className="text-center mt-4">
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          Didn&apos;t receive the code?{" "}
+                          {resendCooldown > 0 ? (
+                            <span className="text-gray-500">
+                              Resend in {resendCooldown}s
+                            </span>
+                          ) : (
+                            <button
+                              onClick={handleResendOtp}
+                              disabled={sendingOtp}
+                              className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
+                            >
+                              {sendingOtp ? "Sending..." : "Resend OTP"}
+                            </button>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* OTP Modal */}
-      {showOtpModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-md p-6 sm:p-8 relative border border-gray-200 dark:border-gray-800">
-            <button
-              onClick={closeOtpModal}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-light text-black dark:text-white mb-2">
-                Verify Your {editMode === "email" ? "Email" : "Identity"}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Enter the 6-digit code sent to
-              </p>
-              <p className="text-sm font-medium text-black dark:text-white mt-1">
-                {editMode === "email" ? newEmail : user.email}
-              </p>
-            </div>
-
-            {otpError && (
-              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm text-center">
-                {otpError}
-              </div>
-            )}
-
-            {/* OTP Input */}
-            <div className="flex justify-center gap-2 sm:gap-3 mb-6">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  ref={(el) => {
-                    otpInputRefs.current[index] = el;
-                  }}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={6}
-                  value={digit}
-                  onChange={(e) => handleOtpChange(index, e.target.value)}
-                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
-                  autoFocus={index === 0}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={handleVerifyOtp}
-              disabled={verifyingOtp || otp.join("").length !== 6}
-              className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base mb-4"
-            >
-              {verifyingOtp ? "Verifying..." : "Verify & Update"}
-            </button>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Didn&apos;t receive the code?{" "}
-                {resendCooldown > 0 ? (
-                  <span className="text-gray-500">
-                    Resend in {resendCooldown}s
-                  </span>
-                ) : (
-                  <button
-                    onClick={handleResendOtp}
-                    disabled={sendingOtp}
-                    className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
-                  >
-                    {sendingOtp ? "Sending..." : "Resend OTP"}
-                  </button>
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
     </DashboardLayout>
   );
 }
-
