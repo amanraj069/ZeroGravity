@@ -3,38 +3,47 @@ import { Benefit } from "@/components/studentsHub/BenefitsList";
 export const entertainmentBenefits: Benefit[] = [
   {
     title: "Spotify Premium Student",
-    description: "50% off (₹69/month instead of ₹139/month). Up to 4 years. Verification through SheerID. Ad-free music, offline downloads, unlimited skips, 70M+ songs.",
+    description:
+      "50% off (₹69/month instead of ₹139/month). Up to 4 years. Verification through SheerID. Ad-free music, offline downloads, unlimited skips, 70M+ songs.",
     image: "/benifits/spotify.png",
     url: "https://www.spotify.com/in-en/student/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #172554 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #0d1833 40%, #000000 100%)",
   },
   {
     title: "Apple Music Student",
-    description: "Student pricing available. Free Apple TV+ included. Access millions of songs and exclusive content.",
+    description:
+      "Student pricing available. Free Apple TV+ included. Access millions of songs and exclusive content.",
     image: "/benifits/apple-music.png",
     url: "https://www.apple.com/in/apple-music/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
   },
   {
     title: "Gaana Plus Student Pack",
-    description: "Discounted student pricing. Ad-free streaming, free downloads. Access to Indian and international music.",
+    description:
+      "Discounted student pricing. Ad-free streaming, free downloads. Access to Indian and international music.",
     image: "/benifits/gaana.png",
     url: "https://gaana.com/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #172554 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #0a0014 40%, #000000 100%)",
   },
   {
     title: "Tidal",
-    description: "50% off Premium and HiFi plans. High-fidelity music streaming at student prices. Verified students only.",
+    description:
+      "50% off Premium and HiFi plans. High-fidelity music streaming at student prices. Verified students only.",
     image: "/benifits/tidal.png",
     url: "https://tidal.com/student",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #0d1833 40%, #000000 100%)",
   },
   {
     title: "Amazon Prime Youth Offer",
-    description: "50% cashback on membership (Effective price: ₹499/year). Age 18-24. Prime Video, Prime Music, free fast delivery, Prime Reading. Available only via Amazon mobile app.",
+    description:
+      "50% cashback on membership (Effective price: ₹499/year). Age 18-24. Prime Video, Prime Music, free fast delivery, Prime Reading. Available only via Amazon mobile app.",
     image: "/benifits/amazon-prime.png",
     url: "https://www.amazon.in/prime",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #172554 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
   },
 ];
-

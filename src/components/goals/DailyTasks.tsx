@@ -781,33 +781,22 @@ const DailyTasks: React.FC = () => {
               const formatted = isMobile
                 ? `${dayName} (${dayNumber}D)`
                 : `${dayName} (${dayNumber}${suffix(dayNumber)} ${monthName})`;
-              // Border logic: current day always green, other selected days indigo, unselected days no border
-              let borderClass = "";
-              if (day.isToday) {
-                borderClass = "border-b-4 border-green-500";
-              } else if (isSelected) {
-                borderClass =
-                  "border-b-4 border-indigo-500 dark:border-indigo-400";
-              }
+              // Border logic: match the Daily Tasks/Goals toggle style
+              // Selected days get white bottom border, unselected days have transparent border
+              const borderClass = isSelected
+                ? "border-b-2 border-black dark:border-white"
+                : "border-b-2 border-transparent";
               return (
                 <button
                   key={day.date}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${
+                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-colors ${borderClass} ${
                     isSelected
-                      ? "bg-gray-300 dark:bg-gray-400 text-black dark:text-white "
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 "
-                  }${borderClass}`}
+                      ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  }`}
                 >
-                  <span
-                    className={`text-xs font-medium ${
-                      isSelected
-                        ? "text-black dark:text-black"
-                        : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
-                    {formatted}
-                  </span>
+                  <span className="text-xs font-medium">{formatted}</span>
                 </button>
               );
             })}

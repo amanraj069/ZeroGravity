@@ -183,8 +183,8 @@ export default function StudentsHub() {
 
   return (
     <DashboardLayout>
-      <div className="mt-4">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="mt-2 sm:mt-4">
+        <div className="mb-4 sm:mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-4">
           <Link
             href="/dashboard"
             className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
@@ -193,18 +193,18 @@ export default function StudentsHub() {
             Back to Dashboard
           </Link>
           <div className="text-left md:text-right">
-            <h1 className="text-4xl font-light text-black dark:text-white mb-2">
+            <h1 className="text-3xl sm:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2">
               Students Hub
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
               Discover all the amazing benefits available to you
             </p>
           </div>
         </div>
 
         {/* Premium Tools Section - 2x2 Grid */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-6 sm:mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {/* GitHub Student Dev Pack */}
             <Link
               href="https://education.github.com/pack"
@@ -235,20 +235,20 @@ export default function StudentsHub() {
                 ))}
               </div>
 
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] relative z-10 h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] relative z-10 h-full">
                 <div className="flex items-center justify-between h-full">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                         alt="GitHub"
                         width={28}
                         height={28}
-                        className="w-7 h-7 object-contain"
+                        className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-1">
+                      <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
                         GitHub Student Dev Pack
                       </h3>
                       <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
@@ -256,7 +256,7 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -270,20 +270,20 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
                 <div className="flex items-center justify-between h-full">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src="/benifits/gemini.png"
                         alt="Gemini"
                         width={28}
                         height={28}
-                        className="w-7 h-7 object-contain"
+                        className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-1">
+                      <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
                         Gemini Pro for Students
                       </h3>
                       <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
@@ -291,7 +291,7 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -305,20 +305,20 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
                 <div className="flex items-center justify-between h-full">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src="/benifits/perp.png"
                         alt="Perplexity"
                         width={28}
                         height={28}
-                        className="w-7 h-7 object-contain"
+                        className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-1">
+                      <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
                         Perplexity Pro
                       </h3>
                       <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
@@ -326,7 +326,7 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -340,10 +340,10 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
                 <div className="flex items-center justify-between h-full">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
                       <Image
                         src={
                           theme === "light"
@@ -353,11 +353,11 @@ export default function StudentsHub() {
                         alt="ChatGPT"
                         width={28}
                         height={28}
-                        className="w-7 h-7 object-contain"
+                        className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-1">
+                      <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
                         ChatGPT Go
                       </h3>
                       <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
@@ -365,7 +365,7 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -375,8 +375,8 @@ export default function StudentsHub() {
         </div>
 
         {/* Verification Platforms Section */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-light text-black dark:text-white mb-4">
+        <div className="mb-6 sm:mb-10">
+          <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-3 sm:mb-4">
             Verification Platforms
           </h2>
           {/* CSS for star animations */}
@@ -418,13 +418,13 @@ export default function StudentsHub() {
             }}
           />
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             {/* UNiDAYS Card */}
             <Link
               href="https://www.myunidays.com/IN/en-IN"
               target="_blank"
               rel="noopener noreferrer"
-              className="verification-card group relative w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
+              className="verification-card group relative w-full sm:w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
@@ -451,8 +451,8 @@ export default function StudentsHub() {
               </div>
 
               {/* Card Content */}
-              <div className="relative z-10 p-6 flex items-center justify-center min-h-[100px]">
-                <span className="text-xl font-light text-white group-hover:scale-105 transition-transform">
+              <div className="relative z-10 p-4 sm:p-6 flex items-center justify-center min-h-[80px] sm:min-h-[100px]">
+                <span className="text-lg sm:text-xl font-light text-white group-hover:scale-105 transition-transform">
                   UNiDAYS
                 </span>
               </div>
@@ -463,7 +463,7 @@ export default function StudentsHub() {
               href="https://studentpeeps.club/"
               target="_blank"
               rel="noopener noreferrer"
-              className="verification-card group relative w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
+              className="verification-card group relative w-full sm:w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
@@ -490,8 +490,8 @@ export default function StudentsHub() {
               </div>
 
               {/* Card Content */}
-              <div className="relative z-10 p-6 flex items-center justify-center min-h-[100px]">
-                <span className="text-xl font-light text-white group-hover:scale-105 transition-transform">
+              <div className="relative z-10 p-4 sm:p-6 flex items-center justify-center min-h-[80px] sm:min-h-[100px]">
+                <span className="text-lg sm:text-xl font-light text-white group-hover:scale-105 transition-transform">
                   StudentPeeps
                 </span>
               </div>
@@ -501,10 +501,10 @@ export default function StudentsHub() {
 
         {/* Categories Section */}
         <div>
-          <h2 className="text-3xl font-light text-black dark:text-white mb-8">
+          <h2 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-4 sm:mb-8">
             Categories
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {categories.map((category, index) => (
               <Link
                 key={index}
@@ -543,10 +543,10 @@ export default function StudentsHub() {
                 />
 
                 {/* Content */}
-                <div className="p-4 sm:p-10 flex items-center justify-center h-full relative z-10">
+                <div className="p-4 sm:p-6 md:p-10 flex items-center justify-center h-full relative z-10">
                   <div className="text-center">
                     <h3
-                      className={`text-xl md:text-2xl font-light transition-all duration-300 group-hover:scale-105 tracking-tight ${
+                      className={`text-lg sm:text-xl md:text-2xl font-light transition-all duration-300 group-hover:scale-105 tracking-tight ${
                         isLightTheme
                           ? "text-gray-900 group-hover:text-gray-900"
                           : "text-white group-hover:text-white"

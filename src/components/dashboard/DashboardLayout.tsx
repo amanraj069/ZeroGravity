@@ -9,7 +9,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
-      <main className="max-w-6xl mx-auto lg:px-4 px-6 py-4">
+      <main className="max-w-6xl mx-auto lg:px-4 px-4 sm:px-6 py-2 sm:py-4">
         {children}
 
         {/* <div className="mt-12 text-center">

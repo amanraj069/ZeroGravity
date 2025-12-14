@@ -56,41 +56,61 @@ html.dark {
   background-color: #0a0a0a; /* Dark theme background */
 }
 
-/* Custom scrollbar for webkit browsers - Light theme */
+/* Custom scrollbar for webkit browsers - ZeroGravity Theme */
+/* Thin, minimal scrollbar that matches the dark theme */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 3px;
+  height: 3px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  background: rgba(156, 163, 175, 0.3); /* gray-400 with opacity */
+  border-radius: 3px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(156, 163, 175, 0.5); /* slightly more visible on hover */
 }
 
-/* Custom scrollbar for webkit browsers - Dark theme */
+/* Dark theme scrollbar - matches ZeroGravity dark background */
 .dark ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: transparent;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #444;
+  background: rgba(
+    75,
+    85,
+    99,
+    0.4
+  ); /* gray-600 with opacity - subtle but visible */
+  border-radius: 3px;
+  transition: background 0.2s ease;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #666;
+  background: rgba(107, 114, 128, 0.6); /* gray-500 on hover */
 }
 
-/* Thin scrollbar utility class */
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.dark * {
+  scrollbar-color: rgba(75, 85, 99, 0.4) transparent;
+}
+
+/* Thin scrollbar utility class - matches global scrollbar style */
 .scrollbar-thin::-webkit-scrollbar {
-  height: 4px;
-  width: 4px;
+  height: 3px;
+  width: 3px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
@@ -98,20 +118,21 @@ html.dark {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #9ca3af;
-  border-radius: 2px;
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+  transition: background 0.2s ease;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: rgba(156, 163, 175, 0.5);
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: rgba(75, 85, 99, 0.4);
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: rgba(107, 114, 128, 0.6);
 }
 
 /* Line clamp utilities */

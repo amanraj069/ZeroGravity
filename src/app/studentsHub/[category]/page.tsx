@@ -146,14 +146,14 @@ export default function CategoryPage() {
         </div>
 
         {/* Search Bar - Desktop version */}
-        <div className="hidden sm:block sticky top-[64px] z-20 bg-white dark:bg-gray-900 -mx-4 px-4 py-4 border-b border-gray-200 dark:border-gray-800 mb-6 shadow-sm">
+        <div className="hidden sm:block sticky top-[64px] z-20 bg-gray-100 dark:bg-gray-900 -mx-4 px-4 py-4 border-b border-gray-200 dark:border-gray-800 mb-6 shadow-sm">
           <div className="relative w-full max-w-6xl mx-auto">
             <input
               type="text"
               placeholder="Search benefits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-5 py-4 pl-14 pr-12 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-light text-base shadow-lg hover:shadow-xl focus:shadow-xl"
+              className="w-full px-5 py-4 pl-14 pr-12 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-none text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-light text-base shadow-lg hover:shadow-xl focus:shadow-xl"
             />
             <svg
               className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"
@@ -192,14 +192,14 @@ export default function CategoryPage() {
         </div>
 
         {/* Search Bar - Mobile version */}
-        <div className="sm:hidden sticky top-[53px] z-20 bg-white dark:bg-gray-900 -mx-4 px-4 py-3 border-b border-gray-200 dark:border-gray-800 mb-6 shadow-sm">
+        <div className="sm:hidden sticky top-[53px] z-20 bg-gray-100 dark:bg-gray-900 -mx-4 px-4 py-3 border-b border-gray-200 dark:border-gray-800 mb-6 shadow-sm">
           <div className="relative w-full">
             <input
               type="text"
               placeholder="Search benefits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2.5 pl-11 pr-10 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-light text-sm shadow-lg hover:shadow-xl focus:shadow-xl"
+              className="w-full px-4 py-2.5 pl-11 pr-10 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-none text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-light text-sm shadow-lg hover:shadow-xl focus:shadow-xl"
             />
             <svg
               className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500"

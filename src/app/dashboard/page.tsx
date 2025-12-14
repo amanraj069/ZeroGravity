@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
+import { ShoppingBag } from "lucide-react";
 import {
   DashboardLayout,
   WaitlistUsersSection,
@@ -270,17 +271,25 @@ export default function Dashboard() {
                 Turn off the light to see the stars
               </span>
             </div>
-            <Link
-              href="/shop"
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              <span className="text-sm font-semibold text-black dark:text-white">
-                {(user?.points || 0).toLocaleString()}
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                points
-              </span>
-            </Link>
+            <div className="flex items-center gap-2">
+              {/* Points Display - Left */}
+              <div className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <span className="text-sm font-semibold text-black dark:text-white">
+                  {(user?.points || 0).toLocaleString()}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  points
+                </span>
+              </div>
+              {/* Shop Button - Right */}
+              <Link
+                href="/shop"
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:border-black dark:hover:border-gray-500 transition-colors whitespace-nowrap"
+              >
+                <ShoppingBag className="w-3.5 h-3.5" />
+                Shop
+              </Link>
+            </div>
           </div>
           {/* Light mode hint - below on mobile only */}
           <div className="sm:hidden">

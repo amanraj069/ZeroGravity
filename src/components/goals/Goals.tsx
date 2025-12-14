@@ -358,7 +358,7 @@ const Goals: React.FC = () => {
 
         {/* Mobile-optimized Filter */}
         <div className="bg-white dark:bg-gray-800 shadow-sm">
-          <div className="grid grid-cols-6 gap-0">
+          <div className="flex overflow-x-auto sm:overflow-visible">
             {(
               [
                 "current",
@@ -372,7 +372,7 @@ const Goals: React.FC = () => {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-2 py-3 text-xs sm:text-sm font-medium transition-colors border-b-2 text-center ${
+                className={`px-4 py-3 text-xs sm:text-sm font-medium transition-colors border-b-2 whitespace-nowrap flex-shrink-0 sm:flex-1 sm:flex-shrink ${
                   activeFilter === filter
                     ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"

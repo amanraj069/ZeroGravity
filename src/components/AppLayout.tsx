@@ -24,6 +24,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     "/shop",
     "/quizzes",
     "/academia",
+    "/studentsHub",
   ];
   const hasGrayBackground = grayBackgroundPages.some((page) =>
     pathname?.startsWith(page)

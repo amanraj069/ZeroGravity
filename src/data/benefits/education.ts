@@ -3,31 +3,38 @@ import { Benefit } from "@/components/studentsHub/BenefitsList";
 export const educationBenefits: Benefit[] = [
   {
     title: "Udemy",
-    description: "Student discounts on courses. Thousands of online courses across various subjects at discounted rates for students.",
+    description:
+      "Student discounts on courses. Thousands of online courses across various subjects at discounted rates for students.",
     image: "/benifits/udemy.png",
     url: "https://www.udemy.com/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #172554 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #0d1833 40%, #000000 100%)",
   },
   {
     title: "Bitclass",
-    description: "Student discounts available on online courses. Learn new skills with expert instructors at affordable prices.",
+    description:
+      "Student discounts available on online courses. Learn new skills with expert instructors at affordable prices.",
     image: "/benifits/bitclass.png",
     url: "https://bitclass.com/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
   },
   {
     title: "Coursera",
-    description: "Financial aid available for students. Access courses from top universities and companies worldwide.",
+    description:
+      "Financial aid available for students. Access courses from top universities and companies worldwide.",
     image: "/benifits/coursera.png",
     url: "https://www.coursera.org/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #172554 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #0a0014 40%, #000000 100%)",
   },
   {
     title: "Khan Academy",
-    description: "Completely free educational resources. No cost, no ads - just world-class education for everyone, everywhere.",
+    description:
+      "Completely free educational resources. No cost, no ads - just world-class education for everyone, everywhere.",
     image: "/benifits/khan-academy.png",
     url: "https://www.khanacademy.org/",
-    backgroundStyle: "radial-gradient(ellipse at top left, #000000 0%, #1a0033 40%, #000000 100%)",
+    backgroundStyle:
+      "radial-gradient(ellipse at top left, #000000 0%, #0d1833 40%, #000000 100%)",
   },
 ];
-
