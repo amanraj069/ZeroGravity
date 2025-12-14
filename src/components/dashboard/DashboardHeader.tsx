@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
+import NotificationBell from "@/components/NotificationBell";
 // import { useAuth } from "@/contexts/AuthContext"; // Currently not used, keeping for future use
 
 interface DashboardHeaderProps {
@@ -22,6 +23,7 @@ export default function DashboardHeader({ onLogout }: DashboardHeaderProps) {
         </Link>
         <div className="flex items-center space-x-4">
           <ThemeToggle />
+          <NotificationBell />
           <Link
             href="/"
             className="text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 text-sm border border-gray-300 dark:border-gray-700 px-4 py-2 hover:border-black dark:hover:border-gray-500 transition-colors"

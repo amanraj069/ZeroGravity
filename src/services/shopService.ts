@@ -217,8 +217,13 @@ export const getBorderStyleConfig = (
 /**
  * Generate CSS properties for a border based on its configuration
  * This replaces the old getBorderStyle function with a cleaner, data-driven approach
+ * @param borderId - The border ID
+ * @param size - Optional size in pixels (default: 128px for standard profile pictures)
  */
-export const getBorderStyle = (borderId: string): CSSProperties => {
+export const getBorderStyle = (
+  borderId: string,
+  size: number = 128
+): CSSProperties => {
   const config = getBorderStyleConfig(borderId);
 
   if (!config) {
@@ -228,8 +233,19 @@ export const getBorderStyle = (borderId: string): CSSProperties => {
     };
   }
 
+  // Calculate star scale for galaxy border based on size
+  // Reference size is 128px (standard profile picture size)
+  const starScale = size / 128;
+
   // If custom style is provided, use it (for animated borders)
   if (config.customStyle) {
+    // For titan (galaxy) border, add star scale variable
+    if (borderId === "titan") {
+      return {
+        ...config.customStyle,
+        ["--star-scale" as string]: starScale,
+      };
+    }
     return config.customStyle;
   }
 

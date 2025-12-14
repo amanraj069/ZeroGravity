@@ -4,6 +4,7 @@ import Link from "next/link";
 import { memo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
+import NotificationBell from "@/components/NotificationBell";
 import { Menu, X } from "lucide-react";
 
 function LandingNavbar() {
@@ -22,11 +23,18 @@ function LandingNavbar() {
           </Link>
           <div className="flex items-center space-x-2 sm:space-x-4">
             <ThemeToggle />
+            {!isLoading && isLoggedIn && <NotificationBell />}
             {!isLoading && (
               <>
                 {isLoggedIn ? (
                   <>
-                    {/* Desktop: Show Dashboard and Profile links */}
+                    {/* Desktop: Show Leaderboard, Dashboard and Profile links */}
+                    <Link
+                      href="/leaderboard"
+                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      Leaderboard
+                    </Link>
                     <Link
                       href="/dashboard"
                       className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -49,7 +57,7 @@ function LandingNavbar() {
                     </button>
                     <button
                       onClick={logout}
-                      className="bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                      className="hidden sm:inline-block bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                     >
                       Logout
                     </button>
@@ -113,7 +121,7 @@ function LandingNavbar() {
               </div>
 
               {/* Menu Items */}
-              <nav className="flex-1 p-4">
+              <nav className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-2">
                   <Link
                     href="/dashboard"
@@ -121,6 +129,34 @@ function LandingNavbar() {
                     className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
                     Dashboard
+                  </Link>
+                  <Link
+                    href="/leaderboard"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    Leaderboard
+                  </Link>
+                  <Link
+                    href="/goals"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    Goals
+                  </Link>
+                  <Link
+                    href="/academia"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    Academia
+                  </Link>
+                  <Link
+                    href="/shop"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    Shop
                   </Link>
                   <Link
                     href="/profile"
@@ -131,6 +167,19 @@ function LandingNavbar() {
                   </Link>
                 </div>
               </nav>
+
+              {/* Logout Button at Bottom */}
+              <div className="border-t border-gray-200 dark:border-gray-800 p-4">
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full px-4 py-3 text-left text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
         </>

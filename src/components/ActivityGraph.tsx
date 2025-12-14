@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 
 interface ActivityDay {
@@ -25,6 +25,7 @@ interface MonthData {
 interface ActivityGraphProps {
   className?: string;
   joinedDate?: string;
+  userId?: string; // Optional userId for viewing other users' activity
 }
 
 const MONTHS = [
@@ -45,6 +46,7 @@ const MONTHS = [
 export default function ActivityGraph({
   className = "",
   joinedDate,
+  userId,
 }: ActivityGraphProps) {
   const [activityData, setActivityData] = useState<ActivityData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,9 +54,31 @@ export default function ActivityGraph({
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  const fetchActivityData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const url = userId
+        ? `${
+            API_ENDPOINTS.DAILY_TASKS.ACTIVITY_GRAPH
+          }?userId=${encodeURIComponent(userId)}`
+        : API_ENDPOINTS.DAILY_TASKS.ACTIVITY_GRAPH;
+      const response = await apiCallWithAuth(url);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setActivityData(data.data);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch activity data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
   useEffect(() => {
     fetchActivityData();
-  }, []);
+  }, [fetchActivityData]);
 
   // Scroll to end on mobile when data loads
   useEffect(() => {
@@ -72,25 +96,6 @@ export default function ActivityGraph({
       }
     }
   }, [loading, activityData]);
-
-  const fetchActivityData = async () => {
-    setLoading(true);
-    try {
-      const response = await apiCallWithAuth(
-        API_ENDPOINTS.DAILY_TASKS.ACTIVITY_GRAPH
-      );
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setActivityData(data.data);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch activity data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Generate months data - each month contains its weeks
   const generateMonthsData = (): MonthData[] => {

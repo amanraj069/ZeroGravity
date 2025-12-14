@@ -109,8 +109,10 @@ export default function WaitlistSection() {
           </p>
           <p className="text-gray-500 dark:text-gray-500 text-sm mb-8 sm:mb-10">
             Includes complimentary{" "}
-            <span className="text-black dark:text-white font-medium">ZeroGravity Pro</span> for
-            your first month.
+            <span className="text-black dark:text-white font-medium">
+              ZeroGravity Pro
+            </span>{" "}
+            for your first month.
           </p>
         </AnimatedSection>
 
@@ -123,7 +125,7 @@ export default function WaitlistSection() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="hello@0.email"
+                  placeholder="yourEmail@gmail.com"
                   className="px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
                   disabled={isLoading}
                   required

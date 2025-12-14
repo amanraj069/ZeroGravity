@@ -156,8 +156,8 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
       const startDate = new Date(formData.dateStarted);
       const endDate = new Date(formData.dateEnded);
 
-      if (startDate >= endDate) {
-        newErrors.dateEnded = "End date must be after start date";
+      if (startDate > endDate) {
+        newErrors.dateEnded = "End date must be on or after start date";
       }
 
       // When editing, end date must be after today
@@ -843,7 +843,7 @@ const DailyTasks: React.FC = () => {
           tasks.map((task) => (
             <div
               key={task._id}
-              className={`rounded-md shadow-sm border p-4 transition-all duration-200 ${
+              className={`shadow-sm border p-4 transition-all duration-200 ${
                 task.isCompletedToday
                   ? "ring-1 ring-green-200 dark:ring-green-800 bg-green-50/30 dark:bg-green-950/20 border-green-200 dark:border-green-800"
                   : task.priority === "high"

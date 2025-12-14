@@ -116,8 +116,8 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
       const startDate = new Date(formData.dateStarted);
       const endDate = new Date(formData.dateEnded);
 
-      if (startDate >= endDate) {
-        newErrors.dateEnded = "End date must be after start date";
+      if (startDate > endDate) {
+        newErrors.dateEnded = "End date must be on or after start date";
       }
     }
 
@@ -224,7 +224,9 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               disabled={isSubmitting}
             />
             {errors.title && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.title}</p>
+              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                {errors.title}
+              </p>
             )}
           </div>
 
@@ -327,7 +329,9 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 disabled={isSubmitting}
               />
               {errors.dateEnded && (
-                <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.dateEnded}</p>
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                  {errors.dateEnded}
+                </p>
               )}
             </div>
           </div>

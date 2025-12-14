@@ -30,6 +30,8 @@ export const API_ENDPOINTS = {
     SEND_PASSWORD_CHANGE_OTP: `${API_BASE_URL}/api/auth/send-password-change-otp`,
     VERIFY_PASSWORD_CHANGE: `${API_BASE_URL}/api/auth/verify-password-change`,
     CLAIM_STREAK_BONUS: `${API_BASE_URL}/api/auth/claim-streak-bonus`,
+    GET_PUBLIC_PROFILE: (userId: string) =>
+      `${API_BASE_URL}/api/auth/profile/${encodeURIComponent(userId)}`,
   },
   // Waitlist endpoints
   WAITLIST: {
@@ -129,6 +131,19 @@ export const API_ENDPOINTS = {
   // Contact endpoints
   CONTACT: {
     SUBMIT: `${API_BASE_URL}/api/contact/submit`,
+  },
+  // Leaderboard endpoints
+  LEADERBOARD: {
+    GET: `${API_BASE_URL}/api/leaderboard`,
+    CALCULATE: `${API_BASE_URL}/api/leaderboard/calculate`,
+  },
+  // Notification endpoints
+  NOTIFICATIONS: {
+    GET: `${API_BASE_URL}/api/notifications`,
+    COUNT: `${API_BASE_URL}/api/notifications/count`,
+    MARK_READ: (id: string) => `${API_BASE_URL}/api/notifications/${id}/read`,
+    MARK_ALL_READ: `${API_BASE_URL}/api/notifications/read-all`,
+    CLAIM: (id: string) => `${API_BASE_URL}/api/notifications/${id}/claim`,
   },
 };
 

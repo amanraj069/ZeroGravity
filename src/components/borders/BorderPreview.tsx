@@ -29,7 +29,9 @@ export default function BorderPreview({
   size = "md",
   className = "",
 }: BorderPreviewProps) {
-  const borderStyle = getBorderStyle(border.id);
+  // Calculate size in pixels for star scaling
+  const sizeInPx = size === "sm" ? 112 : size === "md" ? 144 : 192;
+  const borderStyle = getBorderStyle(border.id, sizeInPx);
   const animationClass = border.animated ? getAnimationClass(border.id) : "";
   // Only use sizeClass if className doesn't contain width/height overrides
   const hasSizeOverride = className.includes("w-") || className.includes("h-");

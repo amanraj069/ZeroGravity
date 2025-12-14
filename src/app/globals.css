@@ -690,28 +690,68 @@ textarea::placeholder {
 @keyframes galaxy-stars-1 {
   0%,
   100% {
-    box-shadow: -72px -20px 2px 1px rgba(255, 255, 255, 0.95),
-      45px -70px 3px 1px rgba(199, 210, 254, 0.9),
-      -30px 72px 2px 1px rgba(251, 207, 232, 0.95),
-      78px 28px 2px 1px rgba(255, 255, 255, 0.9),
-      -65px 52px 3px 1px rgba(196, 181, 253, 0.95),
-      20px -75px 2px 1px rgba(255, 255, 255, 0.9),
-      70px -45px 2px 1px rgba(199, 210, 254, 0.95),
-      -55px -60px 3px 1px rgba(251, 207, 232, 0.9),
-      5px 74px 2px 1px rgba(255, 255, 255, 0.95),
-      -78px -5px 2px 1px rgba(196, 181, 253, 0.9);
+    box-shadow: calc(-72px * var(--star-scale, 1))
+        calc(-20px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
+        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.95),
+      calc(45px * var(--star-scale, 1)) calc(-70px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.9),
+      calc(-30px * var(--star-scale, 1)) calc(72px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.95),
+      calc(78px * var(--star-scale, 1)) calc(28px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(-65px * var(--star-scale, 1)) calc(52px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.95),
+      calc(20px * var(--star-scale, 1)) calc(-75px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(70px * var(--star-scale, 1)) calc(-45px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(-55px * var(--star-scale, 1)) calc(-60px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.9),
+      calc(5px * var(--star-scale, 1)) calc(74px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(-78px * var(--star-scale, 1)) calc(-5px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.9);
   }
   50% {
-    box-shadow: -105px -30px 2px 1px rgba(255, 255, 255, 0.4),
-      65px -102px 3px 1px rgba(199, 210, 254, 0.35),
-      -44px 105px 2px 1px rgba(251, 207, 232, 0.4),
-      114px 41px 2px 1px rgba(255, 255, 255, 0.35),
-      -95px 76px 3px 1px rgba(196, 181, 253, 0.4),
-      29px -110px 2px 1px rgba(255, 255, 255, 0.35),
-      102px -66px 2px 1px rgba(199, 210, 254, 0.4),
-      -80px -88px 3px 1px rgba(251, 207, 232, 0.35),
-      7px 108px 2px 1px rgba(255, 255, 255, 0.4),
-      -114px -7px 2px 1px rgba(196, 181, 253, 0.35);
+    box-shadow: calc(-105px * var(--star-scale, 1))
+        calc(-30px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
+        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.4),
+      calc(65px * var(--star-scale, 1)) calc(-102px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.35),
+      calc(-44px * var(--star-scale, 1)) calc(105px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.4),
+      calc(114px * var(--star-scale, 1)) calc(41px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(-95px * var(--star-scale, 1)) calc(76px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.4),
+      calc(29px * var(--star-scale, 1)) calc(-110px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(102px * var(--star-scale, 1)) calc(-66px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(-80px * var(--star-scale, 1)) calc(-88px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.35),
+      calc(7px * var(--star-scale, 1)) calc(108px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(-114px * var(--star-scale, 1)) calc(-7px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.35);
   }
 }
 
@@ -719,28 +759,68 @@ textarea::placeholder {
 @keyframes galaxy-stars-2 {
   0%,
   100% {
-    box-shadow: -48px -68px 2px 1px rgba(255, 255, 255, 0.9),
-      72px -15px 3px 1px rgba(196, 181, 253, 0.95),
-      -70px 35px 2px 1px rgba(255, 255, 255, 0.9),
-      38px 70px 2px 1px rgba(199, 210, 254, 0.95),
-      60px -58px 3px 1px rgba(251, 207, 232, 0.9),
-      -75px -40px 2px 1px rgba(255, 255, 255, 0.95),
-      15px 72px 2px 1px rgba(196, 181, 253, 0.9),
-      68px 48px 3px 1px rgba(255, 255, 255, 0.95),
-      -25px -72px 2px 1px rgba(199, 210, 254, 0.9),
-      -68px 62px 2px 1px rgba(251, 207, 232, 0.95);
+    box-shadow: calc(-48px * var(--star-scale, 1))
+        calc(-68px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
+        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
+      calc(72px * var(--star-scale, 1)) calc(-15px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.95),
+      calc(-70px * var(--star-scale, 1)) calc(35px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(38px * var(--star-scale, 1)) calc(70px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(60px * var(--star-scale, 1)) calc(-58px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.9),
+      calc(-75px * var(--star-scale, 1)) calc(-40px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(15px * var(--star-scale, 1)) calc(72px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.9),
+      calc(68px * var(--star-scale, 1)) calc(48px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(-25px * var(--star-scale, 1)) calc(-72px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.9),
+      calc(-68px * var(--star-scale, 1)) calc(62px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.95);
   }
   50% {
-    box-shadow: -70px -99px 2px 1px rgba(255, 255, 255, 0.35),
-      105px -22px 3px 1px rgba(196, 181, 253, 0.4),
-      -102px 51px 2px 1px rgba(255, 255, 255, 0.35),
-      55px 102px 2px 1px rgba(199, 210, 254, 0.4),
-      88px -85px 3px 1px rgba(251, 207, 232, 0.35),
-      -110px -58px 2px 1px rgba(255, 255, 255, 0.4),
-      22px 105px 2px 1px rgba(196, 181, 253, 0.35),
-      99px 70px 3px 1px rgba(255, 255, 255, 0.4),
-      -36px -105px 2px 1px rgba(199, 210, 254, 0.35),
-      -99px 91px 2px 1px rgba(251, 207, 232, 0.4);
+    box-shadow: calc(-70px * var(--star-scale, 1))
+        calc(-99px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
+        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
+      calc(105px * var(--star-scale, 1)) calc(-22px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.4),
+      calc(-102px * var(--star-scale, 1)) calc(51px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(55px * var(--star-scale, 1)) calc(102px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(88px * var(--star-scale, 1)) calc(-85px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.35),
+      calc(-110px * var(--star-scale, 1)) calc(-58px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(22px * var(--star-scale, 1)) calc(105px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.35),
+      calc(99px * var(--star-scale, 1)) calc(70px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(-36px * var(--star-scale, 1)) calc(-105px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.35),
+      calc(-99px * var(--star-scale, 1)) calc(91px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.4);
   }
 }
 
@@ -748,24 +828,56 @@ textarea::placeholder {
 @keyframes galaxy-stars-3 {
   0%,
   100% {
-    box-shadow: -58px -52px 3px 1px rgba(199, 210, 254, 0.95),
-      52px -65px 2px 1px rgba(255, 255, 255, 0.9),
-      75px 5px 2px 1px rgba(251, 207, 232, 0.95),
-      -12px 75px 3px 1px rgba(255, 255, 255, 0.9),
-      -72px 15px 2px 1px rgba(196, 181, 253, 0.95),
-      42px 68px 2px 1px rgba(255, 255, 255, 0.9),
-      -38px -72px 3px 1px rgba(199, 210, 254, 0.95),
-      72px -32px 2px 1px rgba(251, 207, 232, 0.9);
+    box-shadow: calc(-58px * var(--star-scale, 1))
+        calc(-52px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1))
+        calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.95),
+      calc(52px * var(--star-scale, 1)) calc(-65px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(75px * var(--star-scale, 1)) calc(5px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.95),
+      calc(-12px * var(--star-scale, 1)) calc(75px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(-72px * var(--star-scale, 1)) calc(15px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.95),
+      calc(42px * var(--star-scale, 1)) calc(68px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(-38px * var(--star-scale, 1)) calc(-72px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(72px * var(--star-scale, 1)) calc(-32px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.9);
   }
   50% {
-    box-shadow: -85px -76px 3px 1px rgba(199, 210, 254, 0.4),
-      76px -95px 2px 1px rgba(255, 255, 255, 0.35),
-      110px 7px 2px 1px rgba(251, 207, 232, 0.4),
-      -18px 110px 3px 1px rgba(255, 255, 255, 0.35),
-      -105px 22px 2px 1px rgba(196, 181, 253, 0.4),
-      61px 99px 2px 1px rgba(255, 255, 255, 0.35),
-      -55px -105px 3px 1px rgba(199, 210, 254, 0.4),
-      105px -47px 2px 1px rgba(251, 207, 232, 0.35);
+    box-shadow: calc(-85px * var(--star-scale, 1))
+        calc(-76px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1))
+        calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.4),
+      calc(76px * var(--star-scale, 1)) calc(-95px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(110px * var(--star-scale, 1)) calc(7px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.4),
+      calc(-18px * var(--star-scale, 1)) calc(110px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(-105px * var(--star-scale, 1)) calc(22px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.4),
+      calc(61px * var(--star-scale, 1)) calc(99px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(-55px * var(--star-scale, 1)) calc(-105px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(105px * var(--star-scale, 1)) calc(-47px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.35);
   }
 }
 
@@ -785,6 +897,8 @@ textarea::placeholder {
   animation: galaxy-nebula 8s ease-in-out infinite;
   border: 4px solid #c4b5fd !important;
   overflow: visible !important;
+  /* Default scale for standard size (128px) - will be overridden by inline style */
+  --star-scale: 1;
 }
 
 /* Multiple star layers for dense, continuous starfield */
@@ -793,8 +907,8 @@ textarea::placeholder {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  height: 2px;
+  width: calc(2px * var(--star-scale, 1));
+  height: calc(2px * var(--star-scale, 1));
   background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -810,8 +924,8 @@ textarea::placeholder {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  height: 2px;
+  width: calc(2px * var(--star-scale, 1));
+  height: calc(2px * var(--star-scale, 1));
   background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
