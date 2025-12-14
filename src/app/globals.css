@@ -773,3 +773,25 @@ html.dark input[type="date"]::-webkit-calendar-picker-indicator {
 html.dark input[type="date"] {
   color-scheme: dark !important;
 }
+
+/* Marquee animation for scrolling text */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+  will-change: transform;
+}
+
+/* Faster animation on mobile to match desktop speed */
+@media (max-width: 640px) {
+  .animate-marquee {
+    animation: marquee 6s linear infinite;
+  }
+}

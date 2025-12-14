@@ -4,13 +4,11 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
+import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
 import {
   DashboardLayout,
-  SignupToggleSection,
-  SigninToggleSection,
   WaitlistUsersSection,
   type WaitlistUser,
 } from "@/components/dashboard";
@@ -26,10 +24,6 @@ export default function Dashboard() {
   const router = useRouter();
   const [waitlistUsers, setWaitlistUsers] = useState<WaitlistUser[]>([]);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
-  const [signupEnabled, setSignupEnabled] = useState(false);
-  const [signupToggleLoading, setSignupToggleLoading] = useState(false);
-  const [signinEnabled, setSigninEnabled] = useState(true);
-  const [signinToggleLoading, setSigninToggleLoading] = useState(false);
   const [showStreakBonus, setShowStreakBonus] = useState(false);
   // const [uploading, setUploading] = useState(false);
   // const fileInputRef = useRef<HTMLInputElement>(null);
@@ -110,8 +104,6 @@ export default function Dashboard() {
       // Only fetch admin-specific data if user is admin
       if (user.role === "admin") {
         fetchWaitlistUsers();
-        fetchSignupStatus();
-        fetchSigninStatus();
       }
 
       // Check if we should show streak bonus immediately
@@ -168,90 +160,6 @@ export default function Dashboard() {
       console.error("Failed to fetch waitlist users:", err);
     } finally {
       setWaitlistLoading(false);
-    }
-  };
-
-  const fetchSignupStatus = async () => {
-    try {
-      const response = await apiCall(API_ENDPOINTS.AUTH.SIGNUP_STATUS);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSignupEnabled(data.enabled);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch signup status:", err);
-    }
-  };
-
-  const fetchSigninStatus = async () => {
-    try {
-      const response = await apiCall(API_ENDPOINTS.AUTH.SIGNIN_STATUS);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSigninEnabled(data.enabled);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch signin status:", err);
-    }
-  };
-
-  const toggleSignup = async () => {
-    setSignupToggleLoading(true);
-    try {
-      const response = await apiCallWithAuth(API_ENDPOINTS.AUTH.TOGGLE_SIGNUP, {
-        method: "POST",
-        body: JSON.stringify({ enabled: !signupEnabled }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSignupEnabled(!signupEnabled);
-        }
-      } else {
-        console.error(
-          "Toggle signup failed:",
-          response.status,
-          response.statusText
-        );
-      }
-    } catch (err) {
-      console.error("Failed to toggle signup:", err);
-    } finally {
-      setSignupToggleLoading(false);
-    }
-  };
-
-  const toggleSignin = async () => {
-    setSigninToggleLoading(true);
-    try {
-      const response = await apiCallWithAuth(API_ENDPOINTS.AUTH.TOGGLE_SIGNIN, {
-        method: "POST",
-        body: JSON.stringify({ enabled: !signinEnabled }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSigninEnabled(!signinEnabled);
-        }
-      } else {
-        console.error(
-          "Toggle signin failed:",
-          response.status,
-          response.statusText
-        );
-      }
-    } catch (err) {
-      console.error("Failed to toggle signin:", err);
-    } finally {
-      setSigninToggleLoading(false);
     }
   };
 
@@ -637,25 +545,11 @@ export default function Dashboard() {
         </Link>
 
         {user?.role === "admin" && (
-          <>
-            <SigninToggleSection
-              signinEnabled={signinEnabled}
-              signinToggleLoading={signinToggleLoading}
-              onToggleSignin={toggleSignin}
-            />
-
-            <SignupToggleSection
-              signupEnabled={signupEnabled}
-              signupToggleLoading={signupToggleLoading}
-              onToggleSignup={toggleSignup}
-            />
-
-            <WaitlistUsersSection
-              waitlistUsers={waitlistUsers}
-              waitlistLoading={waitlistLoading}
-              onRefresh={fetchWaitlistUsers}
-            />
-          </>
+          <WaitlistUsersSection
+            waitlistUsers={waitlistUsers}
+            waitlistLoading={waitlistLoading}
+            onRefresh={fetchWaitlistUsers}
+          />
         )}
       </div>
     </DashboardLayout>

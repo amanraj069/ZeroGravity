@@ -9,7 +9,7 @@ export default function SimpleFooter() {
   return (
     <footer className="relative overflow-hidden bg-gradient-to-br from-slate-950 to-black border-t border-gray-800 mt-2 lg:mt-12">
       <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 py-4 lg:py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_0.5fr] mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_0.5fr] mb-2 lg:mb-6">
           <div className="text-center md:text-left mb-4 md:mb-0">
             <div className="mb-2">
               <h3 className="text-xl sm:text-xl font-semibold text-white">
