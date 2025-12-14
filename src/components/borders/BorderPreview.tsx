@@ -31,11 +31,13 @@ export default function BorderPreview({
 }: BorderPreviewProps) {
   const borderStyle = getBorderStyle(border.id);
   const animationClass = border.animated ? getAnimationClass(border.id) : "";
-  const sizeClass = sizeClasses[size];
+  // Only use sizeClass if className doesn't contain width/height overrides
+  const hasSizeOverride = className.includes("w-") || className.includes("h-");
+  const sizeClass = hasSizeOverride ? "" : sizeClasses[size];
 
   return (
     <div
-      className={`${sizeClass} overflow-hidden ${animationClass} ${className}`}
+      className={`${sizeClass} aspect-square overflow-hidden ${animationClass} ${className}`}
       style={borderStyle}
     >
       {profilePicture ? (

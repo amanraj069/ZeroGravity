@@ -562,19 +562,19 @@ export default function Profile() {
                   </Link>
                 </div>
               ) : (
-                <div className="grid grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
                   {userBorders.map((border) => (
                     <button
                       key={border.id}
                       onClick={() => handleEquipBorder(border.id)}
                       disabled={equipping || border.equipped}
-                      className={`p-6 border transition-all ${
+                      className={`p-3 md:p-6 border transition-all ${
                         border.equipped
                           ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
                           : "border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600"
                       }`}
                     >
-                      <div className="flex flex-col items-center gap-4">
+                      <div className="flex flex-col items-center gap-2 md:gap-4">
                         <BorderPreview
                           border={border}
                           profilePicture={user.profilePicture}
@@ -582,7 +582,7 @@ export default function Profile() {
                           lastName={user.lastName || ""}
                           size="sm"
                         />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
                           {border.name}
                         </span>
                       </div>
