@@ -81,7 +81,7 @@ export default function Leaderboard() {
       month: "short",
       day: "numeric",
       year: "numeric",
-      timeZone: "UTC",
+      timeZone: "Asia/Kolkata", // Use IST to match the week start date
     };
     return startDate.toLocaleDateString("en-US", options);
   };
@@ -138,7 +138,7 @@ export default function Leaderboard() {
             <h1 className="text-base sm:text-xl md:text-3xl font-light text-black dark:text-white">
               Weekly Leaderboard ({formatStartingDate(leaderboard.weekStart)})
             </h1>
-            <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-1 mb-6">
               {formatDateRange(leaderboard.weekStart, leaderboard.weekEnd)}
             </p>
           </div>
@@ -147,7 +147,7 @@ export default function Leaderboard() {
         {/* Leaderboard Table */}
         <div className="mt-12 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full ">
               <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                 <tr>
                   <th className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -303,7 +303,7 @@ export default function Leaderboard() {
         {leaderboard.notEligibleEntries &&
           leaderboard.notEligibleEntries.length > 0 && (
             <div className="mt-8">
-              <h2 className="text-base sm:text-lg md:text-xl font-light text-black dark:text-white mb-3">
+              <h2 className="mt-8 text-base sm:text-lg md:text-xl font-light text-black dark:text-white mb-3">
                 Not Eligible
               </h2>
               <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 overflow-hidden">

@@ -109,8 +109,9 @@ export default function ContactPage() {
             Contact Us
           </h1>
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
-            We&apos;d love to hear from you. Send us a message and we&apos;ll
-            respond as soon as possible.
+            Share your ideas for new features or report any issues you&apos;re
+            facing. We&apos;d love to hear from you and we&apos;ll respond as
+            soon as possible.
           </p>
         </AnimatedSection>
 
@@ -118,7 +119,7 @@ export default function ContactPage() {
         <AnimatedSection>
           <div className="bg-white dark:bg-gray-900 mb-12">
             <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-8 sm:mb-10">
-              Send us a Message
+              Share Your Ideas or Report Issues
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
@@ -220,7 +221,7 @@ export default function ContactPage() {
                   required
                   rows={6}
                   className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors resize-none"
-                  placeholder="Enter your message (minimum 10 characters)"
+                  placeholder="Share your ideas for new features or describe any issues you're experiencing (minimum 10 characters)"
                 />
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                   {formData.message.length} / 5000 characters

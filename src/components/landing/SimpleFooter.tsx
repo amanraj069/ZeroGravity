@@ -161,10 +161,26 @@ export default function SimpleFooter() {
               </li>
               <li>
                 <Link
+                  href="/leaderboard"
+                  className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
+                >
+                  Leaderboard
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/profile"
                   className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
                 >
                   Profile
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
+                >
+                  About
                 </Link>
               </li>
             </ul>
@@ -218,9 +234,9 @@ export default function SimpleFooter() {
           </div>
 
           {/* Desktop: Connect */}
-          <div className="hidden md:block text-center md:text-right lg:ml-0">
+          <div className="hidden md:block text-center lg:ml-0">
             <h4 className="text-sm font-semibold text-white mb-3">Connect</h4>
-            <div className="flex justify-center md:justify-end space-x-4 items-center">
+            <div className="flex justify-center space-x-4 items-center">
               <a
                 href="https://www.linkedin.com/in/amanraj-iiits"
                 target="_blank"
