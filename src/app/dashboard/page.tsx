@@ -86,9 +86,9 @@ export default function Dashboard() {
   // Navigation items array with styling
   const navigationItems = [
     {
-      name: "Goals",
+      name: "Daily Tasks & Goals",
       url: "/goals",
-      description: "Set and track your goals",
+      description: "Set and track your daily tasks and goals",
       stars: goalsStars,
       id: "goals-card",
     },

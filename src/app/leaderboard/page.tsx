@@ -606,7 +606,7 @@ export default function Leaderboard() {
         {/* Not Eligible Section */}
         {leaderboard.notEligibleEntries &&
           leaderboard.notEligibleEntries.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-8 pb-12">
               <h2 className="mt-8 text-base sm:text-lg md:text-xl font-light text-black dark:text-white mb-3">
                 Not Eligible
               </h2>

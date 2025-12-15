@@ -28,12 +28,18 @@ function LandingNavbar() {
               <>
                 {isLoggedIn ? (
                   <>
-                    {/* Desktop: Show Leaderboard, Dashboard and Profile links */}
+                    {/* Desktop: Show Leaderboard, Goals, Dashboard and Profile links */}
                     <Link
                       href="/leaderboard"
                       className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
                       Leaderboard
+                    </Link>
+                    <Link
+                      href="/goals"
+                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      Goals
                     </Link>
                     <Link
                       href="/dashboard"
