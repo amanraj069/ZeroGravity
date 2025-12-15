@@ -4,21 +4,21 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 
 export default function CancellationAndRefundsPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 sm:py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-gray-900 pt-2 sm:pt-4 md:pt-8 pb-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <AnimatedSection className="mb-6 mt-8">
-          <h1 className="text-4xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-4 sm:mb-6">
+        <AnimatedSection className="mb-6 mt-2 sm:mt-4 md:mt-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
             Cancellation and Refunds
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
             Last updated on December 12, 2025
           </p>
         </AnimatedSection>
 
         {/* Content Section */}
         <AnimatedSection>
-          <div className="space-y-6 text-base text-gray-700 dark:text-gray-300">
+          <div className="space-y-6 text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300">
             <p>
               We understand that circumstances may change, and you may need to
               cancel your subscription or request a refund. This policy outlines
@@ -27,7 +27,7 @@ export default function CancellationAndRefundsPage() {
             </p>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Cancellation Policy
               </h2>
               <p className="mb-4">
@@ -67,7 +67,7 @@ export default function CancellationAndRefundsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Refund Policy
               </h2>
               <p className="mb-4">
@@ -99,7 +99,7 @@ export default function CancellationAndRefundsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Non-Refundable Items
               </h2>
               <p className="mb-4">
@@ -125,7 +125,7 @@ export default function CancellationAndRefundsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Processing Time
               </h2>
               <p className="mb-4">
@@ -144,7 +144,7 @@ export default function CancellationAndRefundsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Policy Changes
               </h2>
               <p>

@@ -15,7 +15,7 @@ interface LoginStreakBonusProps {
   streakInfo: StreakInfo | null;
   userName: string;
   onClose: () => void;
-  onClaimSuccess: () => void;
+  onClaimSuccess: (pointsAwarded?: number) => void;
 }
 
 // Progressive points: 50, 70, 95, 130, 170, 220, 265 = 1000 total
@@ -52,7 +52,13 @@ export default function LoginStreakBonus({
       const data = await response.json();
 
       if (data.success) {
-        onClaimSuccess();
+        // Calculate points to award for animation
+        const currentDayIndex = streakInfo.currentDay - 1;
+        const pointsToAward = STREAK_POINTS_BY_DAY[currentDayIndex] || 0;
+
+        // Trigger animation in parent component
+        onClaimSuccess(pointsToAward);
+
         // Close after a short delay to show success
         setTimeout(() => {
           onClose();

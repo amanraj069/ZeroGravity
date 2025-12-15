@@ -8,7 +8,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, Pencil, ShoppingBag, Palette } from "lucide-react";
+import { Flame, Pencil, ShoppingBag, Palette, Share2, Eye } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
   getUserBorders,
@@ -45,6 +45,7 @@ export default function Profile() {
   const [equipping, setEquipping] = useState(false);
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -180,6 +181,36 @@ export default function Profile() {
     }
   };
 
+  const handleShareProfile = async () => {
+    if (!user) return;
+
+    const profileUrl = `${window.location.origin}/profile/${user.userId}`;
+
+    try {
+      await navigator.clipboard.writeText(profileUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy profile link:", err);
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = profileUrl;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (fallbackErr) {
+        console.error("Fallback copy failed:", fallbackErr);
+        alert(`Profile link: ${profileUrl}`);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   if (authLoading) {
     return (
       <ZeroGravityLoading
@@ -211,11 +242,11 @@ export default function Profile() {
 
   return (
     <DashboardLayout>
-      <div className="mt-2 space-y-3 md:space-y-4">
+      <div className=" space-y-3 md:space-y-4 pb-12 pt-2 lg:pt-4">
         {/* Header */}
         {/* Mobile: Stacked layout with points on right, buttons full width */}
         {/* Desktop: Original horizontal layout preserved */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2 lg:mb-6">
           {/* Mobile: Profile and Points in separate row, Desktop: Together on left */}
           <div className="flex items-center justify-between sm:justify-start sm:gap-3">
             <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
@@ -231,8 +262,17 @@ export default function Profile() {
               </span>
             </div>
           </div>
-          {/* Shop, Edit Card, Edit Profile - Full width on mobile, original on desktop */}
+          {/* History, Shop, Edit Card, Edit Profile - Full width on mobile, original on desktop */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
+            {user?.subscription === "pro" && (
+              <Link
+                href="/profileVisitors"
+                className="flex-[1.1] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                History
+              </Link>
+            )}
             <Link
               href="/shop"
               className="flex-[0.8] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap"
@@ -258,10 +298,36 @@ export default function Profile() {
         </div>
 
         {/* Profile Info Card */}
-        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
+        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 relative">
+          {/* Share Icon - Top Right on Desktop */}
+          <button
+            onClick={handleShareProfile}
+            className="hidden md:flex absolute top-3 right-3 w-8 h-8 items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group p-0"
+            title="Share profile link"
+          >
+            <Share2 className="w-4 h-4 m-0" />
+            {copied && (
+              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded whitespace-nowrap z-20">
+                Copied!
+              </span>
+            )}
+          </button>
           <div className="flex items-center gap-4 md:gap-6">
             {/* Profile Picture */}
             <div className="relative group flex-shrink-0">
+              {/* Share Icon - Bottom Right, beside Profile Picture on Mobile */}
+              <button
+                onClick={handleShareProfile}
+                className="md:hidden absolute bottom-0 -right-9 w-7 h-7 flex items-center justify-center bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group shadow-sm p-0"
+                title="Share profile link"
+              >
+                <Share2 className="w-3.5 h-3.5 m-0" />
+                {copied && (
+                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded whitespace-nowrap z-20">
+                    Copied!
+                  </span>
+                )}
+              </button>
               <div
                 className={`w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${getAnimationClass(
                   user.equippedBorder || ""

@@ -6,6 +6,7 @@ interface AddGoalFormProps {
   onAddGoal: (goal: CreateGoalData) => void;
   onUpdateGoal?: (id: string, goal: UpdateGoalData) => void;
   onCancel: () => void;
+  initialCategory?: "weekly" | "monthly" | "quarterly" | "yearly";
 }
 
 // Helper functions for date calculations
@@ -58,6 +59,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
   onAddGoal,
   onUpdateGoal,
   onCancel,
+  initialCategory,
 }) => {
   const isEditing = !!editingGoal;
   const currentYear = new Date().getFullYear();
@@ -67,7 +69,11 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "monthly" as "weekly" | "monthly" | "quarterly" | "yearly",
+    category: (initialCategory || "monthly") as
+      | "weekly"
+      | "monthly"
+      | "quarterly"
+      | "yearly",
     priority: "medium" as "low" | "medium" | "high",
     targetDate: "",
   });
@@ -107,18 +113,19 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
       );
     } else {
       // Set default target date based on category
+      const category = initialCategory || "monthly";
       const defaultTargetDate = getMonthEndDate(currentYear, currentMonth);
       setFormData({
         title: "",
         description: "",
-        category: "monthly",
+        category: category,
         priority: "medium",
         targetDate: defaultTargetDate,
       });
       setMilestones([]);
       setMilestoneErrors([]);
     }
-  }, [editingGoal, currentYear, currentMonth]);
+  }, [editingGoal, currentYear, currentMonth, initialCategory]);
 
   // Track if user has interacted with date selectors during editing
   const [hasChangedDateSelectors, setHasChangedDateSelectors] = useState(false);

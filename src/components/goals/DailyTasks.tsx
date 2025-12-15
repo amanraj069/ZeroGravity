@@ -249,7 +249,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
                   errors.title
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -277,7 +277,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                 name="priority"
                 value={formData.priority}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                 disabled={isSubmitting}
               >
                 <option value="low">Low</option>
@@ -303,7 +303,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                 placeholder="Enter task description (optional)"
                 disabled={isSubmitting}
               />
@@ -329,7 +329,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                     !editingTask &&
                     (e.target as HTMLInputElement).showPicker?.()
                   }
-                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none dark:[color-scheme:dark] ${
+                  className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none dark:[color-scheme:dark] ${
                     errors.dateStarted
                       ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                       : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -379,7 +379,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                         })()
                       : undefined
                   }
-                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
+                  className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
                     errors.dateEnded
                       ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                       : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -632,7 +632,7 @@ const DailyTasks: React.FC = () => {
               {!isLoggedIn ? (
                 <a
                   href="/login"
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
+                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
                 >
                   Go to Login
                 </a>
@@ -656,7 +656,7 @@ const DailyTasks: React.FC = () => {
                       setIsLoading(false);
                     }
                   }}
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                 >
                   Try Again
                 </button>
@@ -751,7 +751,7 @@ const DailyTasks: React.FC = () => {
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-md text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark]"
+            className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark]"
           />
           {/* Upcoming Days - full width */}
           <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-1">
@@ -858,9 +858,9 @@ const DailyTasks: React.FC = () => {
               }`}
             >
               {togglingTaskId === task._id && (
-                <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10 rounded">
+                <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-6 h-6 border-2 border-blue-500 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-blue-500 dark:border-blue-400 border-t-transparent  animate-spin" />
                     <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
                       Updating...
                     </span>
@@ -884,7 +884,7 @@ const DailyTasks: React.FC = () => {
                       ? "Please wait for the current update to complete"
                       : undefined
                   }
-                  className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
+                  className={`flex-shrink-0 w-6 h-6 border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
                     togglingTaskId === task._id
                       ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/30"
                       : task.isCompletedToday
@@ -897,7 +897,7 @@ const DailyTasks: React.FC = () => {
                   }`}
                 >
                   {togglingTaskId === task._id ? (
-                    <div className="w-4 h-4 border-2 border-blue-500 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-blue-500 dark:border-blue-400 border-t-transparent animate-spin" />
                   ) : (
                     task.isCompletedToday && <CheckCircle className="w-4 h-4" />
                   )}
@@ -954,8 +954,9 @@ const DailyTasks: React.FC = () => {
                           {new Date(task.dateEnded).toLocaleDateString()}
                         </span>
                       </div>
+                      {/* Desktop priority tag - original position and text */}
                       <span
-                        className={`px-2 py-0.5 rounded-md text-xs font-medium ${
+                        className={`hidden md:inline-block px-2 py-0.5 text-xs font-medium ${
                           task.priority === "high"
                             ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                             : task.priority === "medium"
@@ -966,7 +967,7 @@ const DailyTasks: React.FC = () => {
                         {task.priority} priority
                       </span>
                       {!task.isActive && (
-                        <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-md">
+                        <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5">
                           Inactive
                         </div>
                       )}
@@ -978,6 +979,20 @@ const DailyTasks: React.FC = () => {
                       </span>
                     )}
                   </div>
+
+                  {/* Mobile priority tag - bottom right, no rounded corners */}
+                  <span
+                    className={`md:hidden absolute bottom-4 right-4 px-2 py-0.5 text-xs font-medium ${
+                      task.priority === "high"
+                        ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
+                        : task.priority === "medium"
+                        ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                        : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                    }`}
+                  >
+                    {task.priority.charAt(0).toUpperCase() +
+                      task.priority.slice(1)}
+                  </span>
                 </div>
               </div>
             </div>

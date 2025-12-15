@@ -4,21 +4,21 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 
 export default function TermsAndConditionsPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 sm:py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-gray-900 pt-2 sm:pt-4 md:pt-8 pb-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <AnimatedSection className="mb-6 mt-8">
-          <h1 className="text-4xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-4 sm:mb-6">
+        <AnimatedSection className="mb-6 mt-2 sm:mt-4 md:mt-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
             Terms and Conditions
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
             Last updated on December 12, 2025
           </p>
         </AnimatedSection>
 
         {/* Content Section */}
         <AnimatedSection>
-          <div className="space-y-6 text-base text-gray-700 dark:text-gray-300">
+          <div className="space-y-6 text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300">
             <p>
               Please read these Terms and Conditions carefully before using our
               service. By accessing or using ZeroGravity, you agree to be bound
@@ -26,7 +26,7 @@ export default function TermsAndConditionsPage() {
             </p>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Acceptance of Terms
               </h2>
               <p className="mb-4">
@@ -37,7 +37,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Use License
               </h2>
               <p className="mb-4">
@@ -68,7 +68,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 User Accounts
               </h2>
               <p className="mb-4">
@@ -85,7 +85,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Prohibited Uses
               </h2>
               <p className="mb-4">You may not use our service:</p>
@@ -114,7 +114,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Intellectual Property Rights
               </h2>
               <p className="mb-4">
@@ -130,7 +130,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Subscription and Payment
               </h2>
               <p className="mb-4">
@@ -147,7 +147,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Limitation of Liability
               </h2>
               <p className="mb-4">
@@ -161,7 +161,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Disclaimer
               </h2>
               <p className="mb-4">
@@ -174,7 +174,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Changes to Terms
               </h2>
               <p>
@@ -187,7 +187,7 @@ export default function TermsAndConditionsPage() {
             </section>
 
             <section className="mt-8">
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 sm:mb-8">
+              <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-black dark:text-white mb-3 sm:mb-4 md:mb-6">
                 Contact Information
               </h2>
               <p>

@@ -38,12 +38,20 @@ export default function HeroSection() {
             {!isLoading && (
               <>
                 {isLoggedIn ? (
-                  <Link
-                    href="/dashboard"
-                    className="bg-black dark:bg-white text-white dark:text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto text-center"
-                  >
-                    Dashboard
-                  </Link>
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className="bg-black dark:bg-white text-white dark:text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto text-center"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/profile"
+                      className="border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-black dark:text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium transition-colors w-full sm:w-auto text-center"
+                    >
+                      Profile
+                    </Link>
+                  </>
                 ) : (
                   <>
                     <button
@@ -60,7 +68,7 @@ export default function HeroSection() {
                       href="/login"
                       className="border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-black dark:text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium transition-colors w-full sm:w-auto text-center"
                     >
-                      Sign In
+                      Log In
                     </Link>
                   </>
                 )}

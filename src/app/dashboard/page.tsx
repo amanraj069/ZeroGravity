@@ -26,6 +26,9 @@ export default function Dashboard() {
   const [waitlistUsers, setWaitlistUsers] = useState<WaitlistUser[]>([]);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
   const [showStreakBonus, setShowStreakBonus] = useState(false);
+  const [pointsAnimation, setPointsAnimation] = useState<{
+    points: number;
+  } | null>(null);
   // const [uploading, setUploading] = useState(false);
   // const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -140,7 +143,12 @@ export default function Dashboard() {
     }
   }, [isLoggedIn, authLoading, user, router]);
 
-  const handleClaimSuccess = async () => {
+  const handleClaimSuccess = async (pointsAwarded?: number) => {
+    // Show points animation if points were awarded
+    if (pointsAwarded && pointsAwarded > 0) {
+      setPointsAnimation({ points: pointsAwarded });
+      setTimeout(() => setPointsAnimation(null), 2000);
+    }
     // Refresh user data to get updated points and streak status
     await refreshPoints();
     await checkSession();
@@ -244,6 +252,23 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
+      {/* Points Animation - Top Center Popup */}
+      {pointsAnimation && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none animate-fade-in-down">
+          <div
+            className="px-6 py-3 shadow-lg bg-black dark:bg-white text-white dark:text-black"
+            style={{ borderRadius: 0 }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold">
+                +{pointsAnimation.points}
+              </span>
+              <span className="text-sm">points</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Login Streak Bonus Modal */}
       {showStreakBonus && user && (
         <LoginStreakBonus
@@ -258,12 +283,12 @@ export default function Dashboard() {
         />
       )}
 
-      <div className="mt-2">
+      <div className="my-2 lg:my-4 mb-24">
         {/* Header with Points */}
-        <div className="mb-4">
+        <div className="mb-4 lg:mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-xl md:text-2xl font-light text-black dark:text-white">
+              <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
                 Dashboard
               </h1>
               {/* Light mode hint - same row on desktop only */}
@@ -492,7 +517,7 @@ export default function Dashboard() {
             `,
             }}
           />
-          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:p-12 lg:p-16 hover:border-blue-400 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-white/20 hover:scale-[1.02] relative overflow-hidden">
+          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-blue-400 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-white/20 hover:scale-[1.02] relative overflow-hidden">
             {/* Starfield Background */}
             <div className="absolute inset-0 bg-white dark:bg-black">
               {stars.map((star, index) => (
@@ -531,7 +556,7 @@ export default function Dashboard() {
               </div>
 
               {/* Text Content */}
-              <div className="relative z-10 pr-12 md:pr-0">
+              <div className="relative z-10 pr-16 md:pr-0">
                 <div className="mb-3 md:mb-6">
                   <h2 className="text-2xl md:text-5xl lg:text-6xl font-light text-gray-900 dark:text-white mb-1 md:mb-3 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     Students Hub
@@ -544,6 +569,273 @@ export default function Dashboard() {
 
                 <div className="flex items-center text-xs md:text-lg text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                   <span className="mr-2">Discover Benefits</span>
+                  <span className="transform group-hover:translate-x-2 transition-transform duration-300">
+                    →
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* Leaderboard Section */}
+        <Link
+          href="/leaderboard"
+          className="block mb-6 group w-full"
+          id="leaderboard-link"
+        >
+          <div className="border-2 border-yellow-400/60 dark:border-yellow-400/50 bg-gradient-to-br from-white via-yellow-50/30 to-amber-50/40 dark:from-gray-900 dark:via-yellow-950/30 dark:to-amber-950/20 px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-yellow-500 dark:hover:border-yellow-300 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/30 dark:hover:shadow-yellow-400/30 hover:scale-[1.02] relative overflow-hidden ring-1 ring-yellow-300/20 dark:ring-yellow-500/10 mb-24">
+            {/* Golden gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-amber-400/10 dark:from-yellow-500/5 dark:via-transparent dark:to-amber-500/5"></div>
+
+            {/* Content */}
+            <div className="relative z-10">
+              {/* Detailed Trophy Icon - Vertically centered, horizontally aligned with rocket */}
+              <div className="flex absolute top-1/2 right-2 md:right-8 lg:right-12 transform -translate-y-1/2 z-0 pointer-events-none">
+                <div className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 relative">
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-yellow-400/30 dark:bg-yellow-500/20 rounded-full blur-xl group-hover:bg-yellow-400/50 dark:group-hover:bg-yellow-500/30 transition-all duration-300"></div>
+
+                  {/* Detailed Trophy SVG */}
+                  <svg
+                    viewBox="0 0 200 250"
+                    className="w-full h-full relative z-10"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    {/* Defs for gradients and filters */}
+                    <defs>
+                      {/* Golden gradient */}
+                      <linearGradient
+                        id="trophyGold"
+                        x1="0%"
+                        y1="0%"
+                        x2="0%"
+                        y2="100%"
+                      >
+                        <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
+                        <stop
+                          offset="30%"
+                          stopColor="#FFA500"
+                          stopOpacity="1"
+                        />
+                        <stop
+                          offset="60%"
+                          stopColor="#FFD700"
+                          stopOpacity="1"
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="#B8860B"
+                          stopOpacity="1"
+                        />
+                      </linearGradient>
+
+                      {/* Highlight gradient */}
+                      <linearGradient
+                        id="trophyHighlight"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor="#FFF8DC"
+                          stopOpacity="0.8"
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="#FFD700"
+                          stopOpacity="0.3"
+                        />
+                      </linearGradient>
+
+                      {/* Shadow gradient */}
+                      <linearGradient
+                        id="trophyShadow"
+                        x1="0%"
+                        y1="0%"
+                        x2="0%"
+                        y2="100%"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor="#000000"
+                          stopOpacity="0.3"
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="#000000"
+                          stopOpacity="0.1"
+                        />
+                      </linearGradient>
+
+                      {/* Glow filter */}
+                      <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                        <feMerge>
+                          <feMergeNode in="coloredBlur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    {/* Base/Pedestal */}
+                    <ellipse
+                      cx="100"
+                      cy="240"
+                      rx="70"
+                      ry="15"
+                      fill="url(#trophyShadow)"
+                      opacity="0.4"
+                    />
+                    <rect
+                      x="60"
+                      y="200"
+                      width="80"
+                      height="40"
+                      rx="5"
+                      fill="url(#trophyGold)"
+                    />
+                    <rect
+                      x="65"
+                      y="205"
+                      width="70"
+                      height="30"
+                      rx="3"
+                      fill="url(#trophyHighlight)"
+                      opacity="0.4"
+                    />
+
+                    {/* Cup body */}
+                    <path
+                      d="M 80 60 Q 80 40 100 40 Q 120 40 120 60 L 120 180 Q 120 200 100 200 Q 80 200 80 180 Z"
+                      fill="url(#trophyGold)"
+                      filter="url(#glow)"
+                    />
+
+                    {/* Cup highlight */}
+                    <path
+                      d="M 85 65 Q 85 50 100 50 Q 115 50 115 65 L 115 175 Q 115 190 100 190 Q 85 190 85 175 Z"
+                      fill="url(#trophyHighlight)"
+                      opacity="0.6"
+                    />
+
+                    {/* Left handle */}
+                    <path
+                      d="M 80 80 Q 50 80 50 120 Q 50 160 80 160"
+                      fill="none"
+                      stroke="url(#trophyGold)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M 75 85 Q 55 85 55 120 Q 55 155 75 155"
+                      fill="none"
+                      stroke="url(#trophyHighlight)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      opacity="0.7"
+                    />
+
+                    {/* Right handle */}
+                    <path
+                      d="M 120 80 Q 150 80 150 120 Q 150 160 120 160"
+                      fill="none"
+                      stroke="url(#trophyGold)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M 125 85 Q 145 85 145 120 Q 145 155 125 155"
+                      fill="none"
+                      stroke="url(#trophyHighlight)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      opacity="0.7"
+                    />
+
+                    {/* Crown/Star on top */}
+                    <g transform="translate(100, 30)">
+                      {/* Center star */}
+                      <path
+                        d="M 0 -15 L 4 -4 L 15 -4 L 6 2 L 9 13 L 0 7 L -9 13 L -6 2 L -15 -4 L -4 -4 Z"
+                        fill="#FFD700"
+                        stroke="#FFA500"
+                        strokeWidth="1"
+                      />
+                      {/* Left small star */}
+                      <path
+                        d="M -20 -5 L -18 0 L -13 0 L -16 3 L -15 8 L -20 5 L -25 8 L -24 3 L -27 0 L -22 0 Z"
+                        fill="#FFD700"
+                        opacity="0.8"
+                      />
+                      {/* Right small star */}
+                      <path
+                        d="M 20 -5 L 22 0 L 27 0 L 24 3 L 25 8 L 20 5 L 15 8 L 16 3 L 13 0 L 18 0 Z"
+                        fill="#FFD700"
+                        opacity="0.8"
+                      />
+                    </g>
+
+                    {/* Sparkles/Shine effects */}
+                    <circle cx="90" cy="100" r="3" fill="#FFF8DC" opacity="0.9">
+                      <animate
+                        attributeName="opacity"
+                        values="0.3;1;0.3"
+                        dur="2s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle
+                      cx="110"
+                      cy="120"
+                      r="2.5"
+                      fill="#FFF8DC"
+                      opacity="0.8"
+                    >
+                      <animate
+                        attributeName="opacity"
+                        values="0.3;1;0.3"
+                        dur="2.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle cx="95" cy="140" r="2" fill="#FFF8DC" opacity="0.7">
+                      <animate
+                        attributeName="opacity"
+                        values="0.3;1;0.3"
+                        dur="1.8s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+
+                    {/* Rim highlight */}
+                    <ellipse
+                      cx="100"
+                      cy="60"
+                      rx="20"
+                      ry="3"
+                      fill="url(#trophyHighlight)"
+                      opacity="0.8"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Text Content */}
+              <div className="relative z-10 pr-16 md:pr-0">
+                <div className="mb-3 md:mb-6">
+                  <h2 className="text-2xl md:text-5xl lg:text-6xl font-light text-yellow-900 dark:text-yellow-200 mb-1 md:mb-3 group-hover:text-yellow-800 dark:group-hover:text-yellow-100 transition-colors">
+                    Leaderboard
+                  </h2>
+                  <p className="text-yellow-700 dark:text-yellow-300 text-xs md:text-lg mb-2 md:mb-4">
+                    Compete with others and see who&apos;s on top this week
+                  </p>
+                </div>
+
+                <div className="flex items-center text-xs md:text-lg text-yellow-700 dark:text-yellow-300 group-hover:text-yellow-800 dark:group-hover:text-yellow-200 transition-colors">
+                  <span className="mr-2">View Rankings</span>
                   <span className="transform group-hover:translate-x-2 transition-transform duration-300">
                     →
                   </span>

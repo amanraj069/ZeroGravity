@@ -86,6 +86,306 @@ export default function Leaderboard() {
     return startDate.toLocaleDateString("en-US", options);
   };
 
+  // Trophy component for top 3 ranks
+  const TrophyIcon = ({ rank, userId }: { rank: number; userId: string }) => {
+    const isGold = rank === 1;
+    const isSilver = rank === 2;
+
+    // Color schemes for different ranks
+    const trophyColor = isGold
+      ? {
+          main: "#FFD700",
+          secondary: "#FFA500",
+          dark: "#B8860B",
+          highlight: "#FFF8DC",
+          glow: "#FFD700", // Golden glow
+        }
+      : isSilver
+      ? {
+          main: "#C0C0C0",
+          secondary: "#A8A8A8",
+          dark: "#808080",
+          highlight: "#E8E8E8",
+          glow: "#E8E8E8", // Silver glow
+        }
+      : {
+          main: "#CD7F32",
+          secondary: "#B87333",
+          dark: "#8B4513",
+          highlight: "#E6C19A",
+          glow: "#CD7F32", // Bronze glow
+        };
+
+    const trophyId = `trophy-${rank}-${userId}`;
+
+    return (
+      <span className="inline-flex items-center flex-shrink-0">
+        <svg
+          viewBox="0 0 200 250"
+          className="w-10 h-10 sm:w-14 sm:h-14"
+          xmlns="http://www.w3.org/2000/svg"
+          filter={`url(#glowOuter-${trophyId})`}
+        >
+          <defs>
+            <linearGradient
+              id={`trophyMain-${trophyId}`}
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor={trophyColor.main} stopOpacity="1" />
+              <stop
+                offset="30%"
+                stopColor={trophyColor.secondary}
+                stopOpacity="1"
+              />
+              <stop offset="60%" stopColor={trophyColor.main} stopOpacity="1" />
+              <stop
+                offset="100%"
+                stopColor={trophyColor.dark}
+                stopOpacity="1"
+              />
+            </linearGradient>
+            <linearGradient
+              id={`trophyHighlight-${trophyId}`}
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop
+                offset="0%"
+                stopColor={trophyColor.highlight}
+                stopOpacity="0.8"
+              />
+              <stop
+                offset="100%"
+                stopColor={trophyColor.main}
+                stopOpacity="0.3"
+              />
+            </linearGradient>
+            <linearGradient
+              id={`trophyShadow-${trophyId}`}
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#000000" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0.1" />
+            </linearGradient>
+            <filter
+              id={`glow-${trophyId}`}
+              x="-50%"
+              y="-50%"
+              width="200%"
+              height="200%"
+            >
+              <feGaussianBlur stdDeviation="4" in="SourceAlpha" result="blur" />
+              <feFlood
+                floodColor={trophyColor.glow}
+                floodOpacity="0.8"
+                result="glowColor"
+              />
+              <feComposite
+                in="glowColor"
+                in2="blur"
+                operator="in"
+                result="coloredBlur"
+              />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter
+              id={`glowStrong-${trophyId}`}
+              x="-50%"
+              y="-50%"
+              width="200%"
+              height="200%"
+            >
+              <feGaussianBlur stdDeviation="8" in="SourceAlpha" result="blur" />
+              <feFlood
+                floodColor={trophyColor.glow}
+                floodOpacity="0.9"
+                result="glowColor"
+              />
+              <feComposite
+                in="glowColor"
+                in2="blur"
+                operator="in"
+                result="coloredBlur"
+              />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter
+              id={`glowOuter-${trophyId}`}
+              x="-100%"
+              y="-100%"
+              width="300%"
+              height="300%"
+            >
+              <feGaussianBlur
+                stdDeviation="12"
+                in="SourceAlpha"
+                result="blur"
+              />
+              <feFlood
+                floodColor={trophyColor.glow}
+                floodOpacity="0.7"
+                result="glowColor"
+              />
+              <feComposite
+                in="glowColor"
+                in2="blur"
+                operator="in"
+                result="coloredBlur"
+              />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          {/* Base/Pedestal */}
+          <ellipse
+            cx="100"
+            cy="240"
+            rx="70"
+            ry="15"
+            fill={`url(#trophyShadow-${trophyId})`}
+            opacity="0.4"
+          />
+          <rect
+            x="60"
+            y="200"
+            width="80"
+            height="40"
+            rx="5"
+            fill={`url(#trophyMain-${trophyId})`}
+          />
+          <rect
+            x="65"
+            y="205"
+            width="70"
+            height="30"
+            rx="3"
+            fill={`url(#trophyHighlight-${trophyId})`}
+            opacity="0.4"
+          />
+          {/* Cup body */}
+          <path
+            d="M 80 60 Q 80 40 100 40 Q 120 40 120 60 L 120 180 Q 120 200 100 200 Q 80 200 80 180 Z"
+            fill={`url(#trophyMain-${trophyId})`}
+            filter={`url(#glowStrong-${trophyId})`}
+          />
+          {/* Cup highlight */}
+          <path
+            d="M 85 65 Q 85 50 100 50 Q 115 50 115 65 L 115 175 Q 115 190 100 190 Q 85 190 85 175 Z"
+            fill={`url(#trophyHighlight-${trophyId})`}
+            opacity="0.6"
+          />
+          {/* Left handle */}
+          <path
+            d="M 80 80 Q 50 80 50 120 Q 50 160 80 160"
+            fill="none"
+            stroke={`url(#trophyMain-${trophyId})`}
+            strokeWidth="8"
+            strokeLinecap="round"
+            filter={`url(#glow-${trophyId})`}
+          />
+          <path
+            d="M 75 85 Q 55 85 55 120 Q 55 155 75 155"
+            fill="none"
+            stroke={`url(#trophyHighlight-${trophyId})`}
+            strokeWidth="4"
+            strokeLinecap="round"
+            opacity="0.7"
+          />
+          {/* Right handle */}
+          <path
+            d="M 120 80 Q 150 80 150 120 Q 150 160 120 160"
+            fill="none"
+            stroke={`url(#trophyMain-${trophyId})`}
+            strokeWidth="8"
+            strokeLinecap="round"
+            filter={`url(#glow-${trophyId})`}
+          />
+          <path
+            d="M 125 85 Q 145 85 145 120 Q 145 155 125 155"
+            fill="none"
+            stroke={`url(#trophyHighlight-${trophyId})`}
+            strokeWidth="4"
+            strokeLinecap="round"
+            opacity="0.7"
+          />
+          {/* Crown/Star on top */}
+          <g transform="translate(100, 30)" filter={`url(#glow-${trophyId})`}>
+            <path
+              d="M 0 -15 L 4 -4 L 15 -4 L 6 2 L 9 13 L 0 7 L -9 13 L -6 2 L -15 -4 L -4 -4 Z"
+              fill={trophyColor.main}
+              stroke={trophyColor.secondary}
+              strokeWidth="1"
+            />
+            <path
+              d="M -20 -5 L -18 0 L -13 0 L -16 3 L -15 8 L -20 5 L -25 8 L -24 3 L -27 0 L -22 0 Z"
+              fill={trophyColor.main}
+              opacity="0.8"
+            />
+            <path
+              d="M 20 -5 L 22 0 L 27 0 L 24 3 L 25 8 L 20 5 L 15 8 L 16 3 L 13 0 L 18 0 Z"
+              fill={trophyColor.main}
+              opacity="0.8"
+            />
+          </g>
+          {/* Sparkles */}
+          <circle
+            cx="90"
+            cy="100"
+            r="2"
+            fill={trophyColor.highlight}
+            opacity="0.9"
+          >
+            <animate
+              attributeName="opacity"
+              values="0.3;1;0.3"
+              dur="2s"
+              repeatCount="indefinite"
+            />
+          </circle>
+          <circle
+            cx="110"
+            cy="120"
+            r="1.5"
+            fill={trophyColor.highlight}
+            opacity="0.8"
+          >
+            <animate
+              attributeName="opacity"
+              values="0.3;1;0.3"
+              dur="2.5s"
+              repeatCount="indefinite"
+            />
+          </circle>
+          {/* Rim highlight */}
+          <ellipse
+            cx="100"
+            cy="60"
+            rx="20"
+            ry="3"
+            fill={`url(#trophyHighlight-${trophyId})`}
+            opacity="0.8"
+          />
+        </svg>
+      </span>
+    );
+  };
+
   if (authLoading || loading) {
     return (
       <ZeroGravityLoading
@@ -150,22 +450,19 @@ export default function Leaderboard() {
             <table className="w-full ">
               <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                 <tr>
-                  <th className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Rank
                   </th>
-                  <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-2 sm:px-16 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     User
                   </th>
-                  <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-2 sm:px-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Streak
                   </th>
-                  <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-2 sm:px-6 py-2 sm:py-3 text-right text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="px-2 sm:px-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Points
                   </th>
-                  <th className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-2 sm:py-3 text-right text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  <th className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Reward
                   </th>
                 </tr>
@@ -174,7 +471,7 @@ export default function Leaderboard() {
                 {leaderboard.entries.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={5}
                       className="px-4 py-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400"
                     >
                       No entries yet for this week
@@ -213,50 +510,62 @@ export default function Leaderboard() {
                           }
                         }}
                       >
-                        <td className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-3 sm:py-6 whitespace-nowrap">
+                        <td className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-3 sm:py-6 whitespace-nowrap text-center">
                           <div className="text-xs sm:text-sm font-semibold text-black dark:text-white">
                             #{entry.rank}
                           </div>
                         </td>
-                        <td className="px-2 sm:px-6 py-3 sm:py-6">
+                        <td className="px-2 sm:px-6 py-3 sm:py-6 text-left">
                           {entry.user ? (
-                            <div className="flex items-center gap-6 sm:gap-8">
-                              <div
-                                className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
-                                  entry.user.equippedBorder || ""
-                                )}`}
-                                style={getBorderStyle(
-                                  entry.user.equippedBorder || "default",
-                                  56
-                                )}
-                              >
-                                {entry.user.profilePicture ? (
-                                  <Image
-                                    src={entry.user.profilePicture}
-                                    alt={`${entry.user.firstName} ${entry.user.lastName}`}
-                                    width={56}
-                                    height={56}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
-                                    {entry.user.firstName
-                                      .charAt(0)
-                                      .toUpperCase()}
-                                    {entry.user.lastName
-                                      .charAt(0)
-                                      .toUpperCase()}
+                            <div className="flex items-center justify-around gap-8 sm:gap-0">
+                              <div className="flex items-center gap-6 sm:gap-8 flex-shrink-0">
+                                <div
+                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
+                                    entry.user.equippedBorder || ""
+                                  )}`}
+                                  style={getBorderStyle(
+                                    entry.user.equippedBorder || "default",
+                                    56
+                                  )}
+                                >
+                                  {entry.user.profilePicture ? (
+                                    <Image
+                                      src={entry.user.profilePicture}
+                                      alt={`${entry.user.firstName} ${entry.user.lastName}`}
+                                      width={56}
+                                      height={56}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
+                                      {entry.user.firstName
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                      {entry.user.lastName
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
+                                    {entry.user.firstName} {entry.user.lastName}
                                   </div>
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
-                                  {entry.user.firstName} {entry.user.lastName}
-                                </div>
-                                <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
-                                  @{entry.user.username}
+                                  <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
+                                    @{entry.user.username}
+                                  </div>
                                 </div>
                               </div>
+                              {(entry.rank === 1 ||
+                                entry.rank === 2 ||
+                                entry.rank === 3) && (
+                                <div className="flex-shrink-0">
+                                  <TrophyIcon
+                                    rank={entry.rank}
+                                    userId={entry.userId}
+                                  />
+                                </div>
+                              )}
                             </div>
                           ) : (
                             <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
@@ -264,22 +573,17 @@ export default function Leaderboard() {
                             </div>
                           )}
                         </td>
-                        <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap">
+                        <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
                           <div className="text-xs sm:text-sm text-black dark:text-white">
                             {entry.user?.currentStreak || 0} days
                           </div>
                         </td>
-                        <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap">
-                          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
-                            {entry.user?.email || "N/A"}
-                          </div>
-                        </td>
-                        <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-right">
+                        <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
                           <div className="text-xs sm:text-sm font-semibold text-black dark:text-white">
                             {(entry.points || 0).toLocaleString()}
                           </div>
                         </td>
-                        <td className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-3 sm:py-6 whitespace-nowrap text-right">
+                        <td className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-3 sm:py-6 whitespace-nowrap text-center">
                           {rewardPoints ? (
                             <div className="text-xs sm:text-sm font-semibold text-green-600 dark:text-green-400">
                               +{rewardPoints.toLocaleString()}
@@ -311,22 +615,19 @@ export default function Leaderboard() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
                       <tr>
-                        <th className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Rank
                         </th>
                         <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           User
                         </th>
-                        <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th className="px-2 sm:px-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Streak
                         </th>
-                        <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                          Email
-                        </th>
-                        <th className="px-2 sm:px-6 py-2 sm:py-3 text-right text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th className="px-2 sm:px-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Points
                         </th>
-                        <th className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-2 sm:py-3 text-right text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <th className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Reward
                         </th>
                       </tr>
@@ -335,19 +636,19 @@ export default function Leaderboard() {
                       {leaderboard.notEligibleEntries.map((entry) => (
                         <tr
                           key={entry.userId}
-                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer opacity-60"
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
                           onClick={() => {
                             if (entry.user) {
                               router.push(`/profile/${entry.user.userId}`);
                             }
                           }}
                         >
-                          <td className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-3 sm:py-6 whitespace-nowrap">
+                          <td className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-3 sm:py-6 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm font-semibold text-black dark:text-white">
                               XX
                             </div>
                           </td>
-                          <td className="px-2 sm:px-6 py-3 sm:py-6">
+                          <td className="px-2 sm:px-6 py-3 sm:py-6 text-left">
                             {entry.user ? (
                               <div className="flex items-center gap-6 sm:gap-8">
                                 <div
@@ -393,22 +694,17 @@ export default function Leaderboard() {
                               </div>
                             )}
                           </td>
-                          <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap">
+                          <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm text-black dark:text-white">
                               {entry.user?.currentStreak || 0} days
                             </div>
                           </td>
-                          <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap">
-                            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
-                              {entry.user?.email || "N/A"}
-                            </div>
-                          </td>
-                          <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-right">
+                          <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm font-semibold text-black dark:text-white">
                               {(entry.points || 0).toLocaleString()}
                             </div>
                           </td>
-                          <td className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-3 sm:py-6 whitespace-nowrap text-right">
+                          <td className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-3 sm:py-6 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm font-semibold text-gray-400 dark:text-gray-600">
                               0
                             </div>

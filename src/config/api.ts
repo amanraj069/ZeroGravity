@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
     CLAIM_STREAK_BONUS: `${API_BASE_URL}/api/auth/claim-streak-bonus`,
     GET_PUBLIC_PROFILE: (userId: string) =>
       `${API_BASE_URL}/api/auth/profile/${encodeURIComponent(userId)}`,
+    GET_PROFILE_VISITORS: `${API_BASE_URL}/api/auth/profile-visitors`,
   },
   // Waitlist endpoints
   WAITLIST: {

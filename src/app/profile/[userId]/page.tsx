@@ -100,7 +100,7 @@ export default function PublicProfile() {
 
   return (
     <DashboardLayout>
-      <div className="mt-2 space-y-3 md:space-y-4">
+      <div className="mt-2 space-y-3 md:space-y-4 mt-6">
         {/* Profile Info Card */}
         <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
           <div className="flex items-center gap-4 md:gap-6">

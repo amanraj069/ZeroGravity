@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { API_ENDPOINTS, apiCall } from "@/config/api";
+import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
 
 interface User {
   _id: string;
@@ -119,9 +119,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsLoading(true);
       console.log("Checking session...");
 
-      const response = await apiCall(API_ENDPOINTS.AUTH.SESSION_STATUS, {
-        method: "GET",
-      });
+      // Use apiCallWithAuth to support both cookies and token-based auth
+      const response = await apiCallWithAuth(
+        API_ENDPOINTS.AUTH.SESSION_STATUS,
+        {
+          method: "GET",
+        }
+      );
 
       const data = await response.json();
       console.log("Session check response:", data);
@@ -131,6 +135,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUserId(data.userId);
         setIsLoggedIn(true);
         console.log("User logged in:", data.user);
+
+        // Ensure token is stored if available (in case it wasn't stored before)
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
       } else {
         setUser(null);
         setUserId(null);
