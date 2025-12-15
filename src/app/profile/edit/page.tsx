@@ -8,6 +8,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
+import PhotoEditor from "@/components/PhotoEditor";
 
 type EditMode = "none" | "email" | "password";
 
@@ -32,6 +33,8 @@ export default function EditProfile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPhotoEditor, setShowPhotoEditor] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
   // OTP state
   const [editMode, setEditMode] = useState<EditMode>("none");
@@ -82,11 +85,25 @@ export default function EditProfile() {
       return;
     }
 
+    // Show photo editor
+    setSelectedImageFile(file);
+    setShowPhotoEditor(true);
+    setError("");
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handlePhotoEditorSave = async (croppedFile: File) => {
+    setShowPhotoEditor(false);
     setUploading(true);
     setError("");
+
     try {
       const formData = new FormData();
-      formData.append("profilePicture", file);
+      formData.append("profilePicture", croppedFile);
 
       const token = localStorage.getItem("authToken");
       const response = await fetch(API_ENDPOINTS.AUTH.UPLOAD_PROFILE_PICTURE, {
@@ -112,10 +129,13 @@ export default function EditProfile() {
       setError("Failed to upload profile picture");
     } finally {
       setUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      setSelectedImageFile(null);
     }
+  };
+
+  const handlePhotoEditorCancel = () => {
+    setShowPhotoEditor(false);
+    setSelectedImageFile(null);
   };
 
   const handleSaveProfile = async () => {
@@ -485,6 +505,15 @@ export default function EditProfile() {
 
   return (
     <DashboardLayout>
+      {/* Photo Editor Modal */}
+      {showPhotoEditor && selectedImageFile && (
+        <PhotoEditor
+          imageFile={selectedImageFile}
+          onSave={handlePhotoEditorSave}
+          onCancel={handlePhotoEditorCancel}
+        />
+      )}
+
       <div className="mt-2 min-h-[calc(100vh-12rem)]">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">

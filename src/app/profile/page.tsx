@@ -18,6 +18,7 @@ import {
   getAnimationClass,
 } from "@/services/shopService";
 import { BorderPreview } from "@/components/borders";
+import PhotoEditor from "@/components/PhotoEditor";
 
 interface StreakInfo {
   currentStreak: number;
@@ -42,6 +43,8 @@ export default function Profile() {
   const [showBorderPicker, setShowBorderPicker] = useState(false);
   const [userBorders, setUserBorders] = useState<Border[]>([]);
   const [equipping, setEquipping] = useState(false);
+  const [showPhotoEditor, setShowPhotoEditor] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -90,10 +93,23 @@ export default function Profile() {
       return;
     }
 
+    // Show photo editor
+    setSelectedImageFile(file);
+    setShowPhotoEditor(true);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handlePhotoEditorSave = async (croppedFile: File) => {
+    setShowPhotoEditor(false);
     setUploading(true);
+
     try {
       const formData = new FormData();
-      formData.append("profilePicture", file);
+      formData.append("profilePicture", croppedFile);
 
       const token = localStorage.getItem("authToken");
       const response = await fetch(API_ENDPOINTS.AUTH.UPLOAD_PROFILE_PICTURE, {
@@ -121,11 +137,13 @@ export default function Profile() {
       alert("Failed to upload profile picture");
     } finally {
       setUploading(false);
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      setSelectedImageFile(null);
     }
+  };
+
+  const handlePhotoEditorCancel = () => {
+    setShowPhotoEditor(false);
+    setSelectedImageFile(null);
   };
 
   const handleOpenBorderPicker = async () => {
@@ -520,6 +538,15 @@ export default function Profile() {
           </div>
         </div>
       </div>
+
+      {/* Photo Editor Modal */}
+      {showPhotoEditor && selectedImageFile && (
+        <PhotoEditor
+          imageFile={selectedImageFile}
+          onSave={handlePhotoEditorSave}
+          onCancel={handlePhotoEditorCancel}
+        />
+      )}
 
       {/* Border Picker Modal */}
       {showBorderPicker && (

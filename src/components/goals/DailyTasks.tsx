@@ -843,7 +843,11 @@ const DailyTasks: React.FC = () => {
           tasks.map((task) => (
             <div
               key={task._id}
-              className={`shadow-sm border p-4 transition-all duration-200 ${
+              className={`shadow-sm border p-4 transition-all duration-200 relative ${
+                togglingTaskId === task._id
+                  ? "opacity-75 pointer-events-none"
+                  : ""
+              } ${
                 task.isCompletedToday
                   ? "ring-1 ring-green-200 dark:ring-green-800 bg-green-50/30 dark:bg-green-950/20 border-green-200 dark:border-green-800"
                   : task.priority === "high"
@@ -853,29 +857,47 @@ const DailyTasks: React.FC = () => {
                   : "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 hover:shadow-md"
               }`}
             >
+              {togglingTaskId === task._id && (
+                <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10 rounded">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-6 h-6 border-2 border-blue-500 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                      Updating...
+                    </span>
+                  </div>
+                </div>
+              )}
               <div className="flex items-start gap-3">
                 <button
                   onClick={() =>
                     isToday && !togglingTaskId && toggleTaskCompletion(task._id)
                   }
-                  disabled={!isToday || togglingTaskId === task._id}
-                  title={
-                    !isToday ? "You can only mark tasks for today" : undefined
+                  disabled={
+                    !isToday || togglingTaskId === task._id || !!togglingTaskId
                   }
-                  className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center mt-0.5 transition-all duration-200 ${
+                  title={
+                    !isToday
+                      ? "You can only mark tasks for today"
+                      : togglingTaskId === task._id
+                      ? "Updating task..."
+                      : togglingTaskId
+                      ? "Please wait for the current update to complete"
+                      : undefined
+                  }
+                  className={`flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
                     togglingTaskId === task._id
-                      ? "border-gray-400 dark:border-gray-500 bg-gray-100 dark:bg-gray-700"
+                      ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/30"
                       : task.isCompletedToday
                       ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
                       : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
                   } ${
                     !isToday || togglingTaskId
-                      ? "opacity-50 cursor-not-allowed"
+                      ? "opacity-70 cursor-not-allowed"
                       : "cursor-pointer"
                   }`}
                 >
                   {togglingTaskId === task._id ? (
-                    <div className="w-3 h-3 border-2 border-gray-400 dark:border-gray-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-blue-500 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
                   ) : (
                     task.isCompletedToday && <CheckCircle className="w-4 h-4" />
                   )}
