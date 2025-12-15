@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { AnimatedCTA, AnimatedSection } from "@/components/AnimatedSection";
 import { API_ENDPOINTS, apiCall } from "@/config/api";
@@ -104,16 +105,24 @@ export default function WaitlistSection() {
           </h2>
         </AnimatedSection>
         <AnimatedSection>
-          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-2 max-w-2xl mx-auto">
-            Join our waitlist to get notified when we launch the Spaceship.
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
+            You can already{" "}
+            <Link
+              href="/login"
+              className="text-red-500 font-medium hover:text-red-600 transition-colors"
+            >
+              Sign in
+            </Link>{" "}
+            and try the Beta version of ZeroGravity. Join waitlist if you want
+            to be notified of Final Launch.
           </p>
-          <p className="text-gray-500 dark:text-gray-500 text-sm mb-8 sm:mb-10">
+          {/* <p className="text-gray-500 dark:text-gray-500 text-sm mb-8 sm:mb-10">
             Includes complimentary{" "}
             <span className="text-black dark:text-white font-medium">
               ZeroGravity Pro
             </span>{" "}
             for your first 3 months.
-          </p>
+          </p> */}
         </AnimatedSection>
 
         {/* Waitlist Section */}

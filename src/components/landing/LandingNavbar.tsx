@@ -76,16 +76,12 @@ function LandingNavbar() {
                     >
                       Login
                     </Link>
-                    <button
-                      onClick={() => {
-                        document.getElementById("waitlist")?.scrollIntoView({
-                          behavior: "smooth",
-                        });
-                      }}
+                    <Link
+                      href="/about"
                       className="bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                     >
-                      Join Waitlist
-                    </button>
+                      About
+                    </Link>
                   </>
                 )}
               </>
