@@ -263,35 +263,35 @@ export default function Profile() {
             </div>
           </div>
           {/* History, Shop, Edit Card, Edit Profile - Full width on mobile, original on desktop */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
             {user?.subscription === "pro" && (
               <Link
                 href="/profileVisitors"
-                className="flex-[1.1] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0"
               >
-                <Eye className="w-3.5 h-3.5" />
+                <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
                 History
               </Link>
             )}
             <Link
               href="/shop"
-              className="flex-[0.8] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap min-w-0"
             >
-              <ShoppingBag className="w-3.5 h-3.5" />
+              <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Shop
             </Link>
             <button
               onClick={handleOpenBorderPicker}
-              className="flex-[0.9] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0"
             >
-              <Palette className="w-3.5 h-3.5" />
+              <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Edit Card
             </button>
             <Link
               href="/profile/edit"
-              className="flex-[1.3] sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0"
             >
-              <Pencil className="w-3.5 h-3.5" />
+              <Pencil className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Edit Profile
             </Link>
           </div>

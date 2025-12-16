@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function HeroSection() {
   const { isLoggedIn, isLoading } = useAuth();
   return (
-    <div className="relative h-[87vh] flex items-center justify-center overflow-hidden">
+    <div className="relative h-[88vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
           src="/landing/zerogravity_bg.webp"
