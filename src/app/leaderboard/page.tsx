@@ -122,7 +122,7 @@ export default function Leaderboard() {
       <span className="inline-flex items-center flex-shrink-0">
         <svg
           viewBox="0 0 200 250"
-          className="w-10 h-10 sm:w-14 sm:h-14"
+          className="w-10 h-10 sm:w-14 sm:h-14 pr-3"
           xmlns="http://www.w3.org/2000/svg"
           filter={`url(#glowOuter-${trophyId})`}
         >
@@ -456,6 +456,7 @@ export default function Leaderboard() {
                   <th className="px-2 sm:px-16 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     User
                   </th>
+                  <th className="w-12 sm:w-14 p-0"></th>
                   <th className="px-2 sm:px-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Streak
                   </th>
@@ -471,7 +472,7 @@ export default function Leaderboard() {
                 {leaderboard.entries.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={6}
                       className="px-4 py-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400"
                     >
                       No entries yet for this week
@@ -515,57 +516,45 @@ export default function Leaderboard() {
                             #{entry.rank}
                           </div>
                         </td>
-                        <td className="px-2 sm:px-6 py-3 sm:py-6 text-left">
+                        <td className="pl-2 pr-4 sm:pl-6 sm:pr-0 py-3 sm:py-6 text-left">
                           {entry.user ? (
-                            <div className="flex items-center justify-around gap-8 sm:gap-0">
-                              <div className="flex items-center gap-6 sm:gap-8 flex-shrink-0">
-                                <div
-                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
-                                    entry.user.equippedBorder || ""
-                                  )}`}
-                                  style={getBorderStyle(
-                                    entry.user.equippedBorder || "default",
-                                    56
-                                  )}
-                                >
-                                  {entry.user.profilePicture ? (
-                                    <Image
-                                      src={entry.user.profilePicture}
-                                      alt={`${entry.user.firstName} ${entry.user.lastName}`}
-                                      width={56}
-                                      height={56}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  ) : (
-                                    <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
-                                      {entry.user.firstName
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                      {entry.user.lastName
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                    </div>
-                                  )}
+                            <div className="flex items-center gap-6 sm:gap-8">
+                              <div
+                                className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
+                                  entry.user.equippedBorder || ""
+                                )}`}
+                                style={getBorderStyle(
+                                  entry.user.equippedBorder || "default",
+                                  56
+                                )}
+                              >
+                                {entry.user.profilePicture ? (
+                                  <Image
+                                    src={entry.user.profilePicture}
+                                    alt={`${entry.user.firstName} ${entry.user.lastName}`}
+                                    width={56}
+                                    height={56}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
+                                    {entry.user.firstName
+                                      .charAt(0)
+                                      .toUpperCase()}
+                                    {entry.user.lastName
+                                      .charAt(0)
+                                      .toUpperCase()}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
+                                  {entry.user.firstName} {entry.user.lastName}
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
-                                    {entry.user.firstName} {entry.user.lastName}
-                                  </div>
-                                  <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
-                                    @{entry.user.username}
-                                  </div>
+                                <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
+                                  @{entry.user.username}
                                 </div>
                               </div>
-                              {(entry.rank === 1 ||
-                                entry.rank === 2 ||
-                                entry.rank === 3) && (
-                                <div className="flex-shrink-0">
-                                  <TrophyIcon
-                                    rank={entry.rank}
-                                    userId={entry.userId}
-                                  />
-                                </div>
-                              )}
                             </div>
                           ) : (
                             <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
@@ -573,9 +562,25 @@ export default function Leaderboard() {
                             </div>
                           )}
                         </td>
+                        <td className="w-12 sm:w-14 p-0 text-center align-middle">
+                          {(entry.rank === 1 ||
+                            entry.rank === 2 ||
+                            entry.rank === 3) && (
+                            <div className="flex items-center justify-center">
+                              <TrophyIcon
+                                rank={entry.rank}
+                                userId={entry.userId}
+                              />
+                            </div>
+                          )}
+                        </td>
                         <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
                           <div className="text-xs sm:text-sm text-black dark:text-white">
-                            {entry.user?.currentStreak || 0} days
+                            {entry.user?.currentStreak || 0}{" "}
+                            {(entry.user?.currentStreak || 0) === 0 ||
+                            (entry.user?.currentStreak || 0) === 1
+                              ? "day"
+                              : "days"}
                           </div>
                         </td>
                         <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
@@ -621,6 +626,7 @@ export default function Leaderboard() {
                         <th className="px-2 sm:px-6 py-2 sm:py-3 text-left text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           User
                         </th>
+                        <th className="w-12 sm:w-14 p-0"></th>
                         <th className="px-2 sm:px-6 py-2 sm:py-3 text-center text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Streak
                         </th>
@@ -648,7 +654,7 @@ export default function Leaderboard() {
                               XX
                             </div>
                           </td>
-                          <td className="px-2 sm:px-6 py-3 sm:py-6 text-left">
+                          <td className="pl-2 pr-4 sm:pl-6 sm:pr-0 py-3 sm:py-6 text-left">
                             {entry.user ? (
                               <div className="flex items-center gap-6 sm:gap-8">
                                 <div
@@ -694,9 +700,14 @@ export default function Leaderboard() {
                               </div>
                             )}
                           </td>
+                          <td className="w-12 sm:w-14 p-0 text-center align-middle"></td>
                           <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm text-black dark:text-white">
-                              {entry.user?.currentStreak || 0} days
+                              {entry.user?.currentStreak || 0}{" "}
+                              {(entry.user?.currentStreak || 0) === 0 ||
+                              (entry.user?.currentStreak || 0) === 1
+                                ? "day"
+                                : "days"}
                             </div>
                           </td>
                           <td className="px-2 sm:px-6 py-3 sm:py-6 whitespace-nowrap text-center">
