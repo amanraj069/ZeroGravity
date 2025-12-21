@@ -156,6 +156,7 @@ export const apiCall = async (url: string, options: RequestInit = {}) => {
   const defaultOptions: RequestInit = {
     credentials: "include", // This is crucial for sending cookies cross-origin
     mode: "cors", // Explicitly set CORS mode
+    cache: "no-store", // Prevent caching to ensure fresh data
     ...restOptions,
     headers: {
       "Content-Type": "application/json",
@@ -183,6 +184,12 @@ export const apiCall = async (url: string, options: RequestInit = {}) => {
     return response;
   } catch (error) {
     console.error("API call failed:", error);
+    // Provide more helpful error message
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      const errorMessage = `Failed to connect to backend server at ${url}. Please ensure the backend server is running on port 9000.`;
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
     throw error;
   }
 };

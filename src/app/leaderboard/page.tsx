@@ -64,7 +64,7 @@ export default function Leaderboard() {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-        hour12: true,
+        hour12: false, // Use 24-hour format instead of 12-hour format with AM/PM
         timeZone: "Asia/Kolkata",
       };
       const dateStr = date.toLocaleDateString("en-US", dateOptions);
