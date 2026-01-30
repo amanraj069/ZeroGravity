@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
 
 interface ZeroGravityLoadingProps {
   title?: string;
@@ -13,12 +11,9 @@ interface ZeroGravityLoadingProps {
 export default function ZeroGravityLoading({
   title = "ZeroGravity",
   subtitle = "Preparing your cosmic experience...",
-  showNavigation = true,
 }: ZeroGravityLoadingProps) {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      {showNavigation && <LandingNavbar />}
-
       <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin h-12 w-12 border-4 border-gray-200 dark:border-gray-700 border-t-black dark:border-t-white rounded-full mb-6"></div>
@@ -30,8 +25,6 @@ export default function ZeroGravityLoading({
           </p>
         </div>
       </main>
-
-      {showNavigation && <LandingFooter />}
     </div>
   );
 }

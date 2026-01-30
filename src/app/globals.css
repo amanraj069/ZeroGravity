@@ -33,12 +33,14 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 * {
@@ -331,27 +333,32 @@ textarea::placeholder {
   }
   15% {
     transform: scale(1.08);
-    box-shadow: 0 0 15px 4px rgba(34, 197, 94, 0.7),
+    box-shadow:
+      0 0 15px 4px rgba(34, 197, 94, 0.7),
       0 0 25px 6px rgba(34, 197, 94, 0.5);
   }
   30% {
     transform: scale(1.12);
-    box-shadow: 0 0 20px 6px rgba(34, 197, 94, 0.8),
+    box-shadow:
+      0 0 20px 6px rgba(34, 197, 94, 0.8),
       0 0 35px 8px rgba(34, 197, 94, 0.6);
   }
   50% {
     transform: scale(1.08);
-    box-shadow: 0 0 18px 5px rgba(34, 197, 94, 0.7),
+    box-shadow:
+      0 0 18px 5px rgba(34, 197, 94, 0.7),
       0 0 30px 7px rgba(34, 197, 94, 0.5);
   }
   70% {
     transform: scale(1.04);
-    box-shadow: 0 0 12px 3px rgba(34, 197, 94, 0.5),
+    box-shadow:
+      0 0 12px 3px rgba(34, 197, 94, 0.5),
       0 0 20px 5px rgba(34, 197, 94, 0.3);
   }
   85% {
     transform: scale(1.02);
-    box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.3),
+    box-shadow:
+      0 0 8px 2px rgba(34, 197, 94, 0.3),
       0 0 15px 3px rgba(34, 197, 94, 0.2);
   }
   100% {
@@ -370,23 +377,35 @@ textarea::placeholder {
 /* Aurora border - Northern lights shifting effect */
 @keyframes aurora-glow {
   0% {
-    box-shadow: 0 0 8px #00ff88, 0 0 15px rgba(0, 255, 136, 0.6),
-      0 0 25px rgba(0, 200, 255, 0.4), 0 0 35px rgba(100, 255, 150, 0.2);
+    box-shadow:
+      0 0 8px #00ff88,
+      0 0 15px rgba(0, 255, 136, 0.6),
+      0 0 25px rgba(0, 200, 255, 0.4),
+      0 0 35px rgba(100, 255, 150, 0.2);
     border-color: #00ff88;
   }
   33% {
-    box-shadow: 0 0 8px #00d4ff, 0 0 15px rgba(0, 212, 255, 0.6),
-      0 0 25px rgba(0, 255, 136, 0.4), 0 0 35px rgba(138, 43, 226, 0.2);
+    box-shadow:
+      0 0 8px #00d4ff,
+      0 0 15px rgba(0, 212, 255, 0.6),
+      0 0 25px rgba(0, 255, 136, 0.4),
+      0 0 35px rgba(138, 43, 226, 0.2);
     border-color: #00d4ff;
   }
   66% {
-    box-shadow: 0 0 8px #7b68ee, 0 0 15px rgba(123, 104, 238, 0.6),
-      0 0 25px rgba(0, 212, 255, 0.4), 0 0 35px rgba(0, 255, 136, 0.2);
+    box-shadow:
+      0 0 8px #7b68ee,
+      0 0 15px rgba(123, 104, 238, 0.6),
+      0 0 25px rgba(0, 212, 255, 0.4),
+      0 0 35px rgba(0, 255, 136, 0.2);
     border-color: #7b68ee;
   }
   100% {
-    box-shadow: 0 0 8px #00ff88, 0 0 15px rgba(0, 255, 136, 0.6),
-      0 0 25px rgba(0, 200, 255, 0.4), 0 0 35px rgba(100, 255, 150, 0.2);
+    box-shadow:
+      0 0 8px #00ff88,
+      0 0 15px rgba(0, 255, 136, 0.6),
+      0 0 25px rgba(0, 200, 255, 0.4),
+      0 0 35px rgba(100, 255, 150, 0.2);
     border-color: #00ff88;
   }
 }
@@ -399,44 +418,68 @@ textarea::placeholder {
 /* Quantum border - Ultimate quantum field with dense particle effects */
 @keyframes quantum-field {
   0% {
-    box-shadow: 0 0 8px #001f3f, 0 0 15px #003d7a,
-      0 0 25px rgba(0, 61, 122, 0.8), 0 0 40px rgba(0, 100, 200, 0.6),
-      0 0 60px rgba(0, 150, 255, 0.4), 0 0 80px rgba(64, 180, 255, 0.3),
+    box-shadow:
+      0 0 8px #001f3f,
+      0 0 15px #003d7a,
+      0 0 25px rgba(0, 61, 122, 0.8),
+      0 0 40px rgba(0, 100, 200, 0.6),
+      0 0 60px rgba(0, 150, 255, 0.4),
+      0 0 80px rgba(64, 180, 255, 0.3),
       inset 0 0 20px rgba(0, 31, 63, 0.3);
     border-color: #001f3f;
   }
   20% {
-    box-shadow: 0 0 8px #003366, 0 0 16px #004d99,
-      0 0 28px rgba(0, 77, 153, 0.8), 0 0 45px rgba(0, 100, 200, 0.6),
-      0 0 65px rgba(0, 150, 255, 0.4), 0 0 85px rgba(64, 180, 255, 0.3),
+    box-shadow:
+      0 0 8px #003366,
+      0 0 16px #004d99,
+      0 0 28px rgba(0, 77, 153, 0.8),
+      0 0 45px rgba(0, 100, 200, 0.6),
+      0 0 65px rgba(0, 150, 255, 0.4),
+      0 0 85px rgba(64, 180, 255, 0.3),
       inset 0 0 22px rgba(0, 51, 102, 0.3);
     border-color: #003366;
   }
   40% {
-    box-shadow: 0 0 8px #004080, 0 0 17px #0066cc,
-      0 0 30px rgba(0, 102, 204, 0.8), 0 0 48px rgba(0, 150, 255, 0.6),
-      0 0 68px rgba(64, 180, 255, 0.4), 0 0 88px rgba(100, 200, 255, 0.3),
+    box-shadow:
+      0 0 8px #004080,
+      0 0 17px #0066cc,
+      0 0 30px rgba(0, 102, 204, 0.8),
+      0 0 48px rgba(0, 150, 255, 0.6),
+      0 0 68px rgba(64, 180, 255, 0.4),
+      0 0 88px rgba(100, 200, 255, 0.3),
       inset 0 0 24px rgba(0, 64, 128, 0.3);
     border-color: #004080;
   }
   60% {
-    box-shadow: 0 0 8px #003366, 0 0 16px #004d99,
-      0 0 28px rgba(0, 77, 153, 0.8), 0 0 45px rgba(0, 100, 200, 0.6),
-      0 0 65px rgba(0, 150, 255, 0.4), 0 0 85px rgba(64, 180, 255, 0.3),
+    box-shadow:
+      0 0 8px #003366,
+      0 0 16px #004d99,
+      0 0 28px rgba(0, 77, 153, 0.8),
+      0 0 45px rgba(0, 100, 200, 0.6),
+      0 0 65px rgba(0, 150, 255, 0.4),
+      0 0 85px rgba(64, 180, 255, 0.3),
       inset 0 0 22px rgba(0, 51, 102, 0.3);
     border-color: #003366;
   }
   80% {
-    box-shadow: 0 0 8px #001f3f, 0 0 15px #003d7a,
-      0 0 25px rgba(0, 61, 122, 0.8), 0 0 40px rgba(0, 100, 200, 0.6),
-      0 0 60px rgba(0, 150, 255, 0.4), 0 0 80px rgba(64, 180, 255, 0.3),
+    box-shadow:
+      0 0 8px #001f3f,
+      0 0 15px #003d7a,
+      0 0 25px rgba(0, 61, 122, 0.8),
+      0 0 40px rgba(0, 100, 200, 0.6),
+      0 0 60px rgba(0, 150, 255, 0.4),
+      0 0 80px rgba(64, 180, 255, 0.3),
       inset 0 0 20px rgba(0, 31, 63, 0.3);
     border-color: #001f3f;
   }
   100% {
-    box-shadow: 0 0 8px #001f3f, 0 0 15px #003d7a,
-      0 0 25px rgba(0, 61, 122, 0.8), 0 0 40px rgba(0, 100, 200, 0.6),
-      0 0 60px rgba(0, 150, 255, 0.4), 0 0 80px rgba(64, 180, 255, 0.3),
+    box-shadow:
+      0 0 8px #001f3f,
+      0 0 15px #003d7a,
+      0 0 25px rgba(0, 61, 122, 0.8),
+      0 0 40px rgba(0, 100, 200, 0.6),
+      0 0 60px rgba(0, 150, 255, 0.4),
+      0 0 80px rgba(64, 180, 255, 0.3),
       inset 0 0 20px rgba(0, 31, 63, 0.3);
     border-color: #001f3f;
   }
@@ -446,7 +489,8 @@ textarea::placeholder {
 @keyframes quantum-particles-1 {
   0%,
   100% {
-    box-shadow: -65px -25px 2px 1px rgba(0, 31, 63, 0),
+    box-shadow:
+      -65px -25px 2px 1px rgba(0, 31, 63, 0),
       48px -68px 3px 1px rgba(0, 77, 153, 0),
       -28px 72px 2px 1px rgba(0, 100, 200, 0),
       75px 32px 2px 1px rgba(0, 150, 255, 0),
@@ -460,7 +504,8 @@ textarea::placeholder {
       -42px 65px 2px 1px rgba(0, 150, 255, 0);
   }
   15% {
-    box-shadow: -72px -28px 2px 1px rgba(0, 31, 63, 0.95),
+    box-shadow:
+      -72px -28px 2px 1px rgba(0, 31, 63, 0.95),
       52px -75px 3px 1px rgba(0, 77, 153, 0.9),
       -32px 78px 2px 1px rgba(0, 100, 200, 0.95),
       82px 35px 2px 1px rgba(0, 150, 255, 0.9),
@@ -474,7 +519,8 @@ textarea::placeholder {
       -48px 72px 2px 1px rgba(0, 150, 255, 0.9);
   }
   50% {
-    box-shadow: -95px -38px 2px 1px rgba(0, 31, 63, 0.5),
+    box-shadow:
+      -95px -38px 2px 1px rgba(0, 31, 63, 0.5),
       68px -98px 3px 1px rgba(0, 77, 153, 0.45),
       -42px 102px 2px 1px rgba(0, 100, 200, 0.5),
       108px 48px 2px 1px rgba(0, 150, 255, 0.45),
@@ -488,7 +534,8 @@ textarea::placeholder {
       -62px 95px 2px 1px rgba(0, 150, 255, 0.45);
   }
   100% {
-    box-shadow: -125px -50px 2px 1px rgba(0, 31, 63, 0),
+    box-shadow:
+      -125px -50px 2px 1px rgba(0, 31, 63, 0),
       88px -128px 3px 1px rgba(0, 77, 153, 0),
       -55px 132px 2px 1px rgba(0, 100, 200, 0),
       142px 62px 2px 1px rgba(0, 150, 255, 0),
@@ -507,7 +554,8 @@ textarea::placeholder {
 @keyframes quantum-particles-2 {
   0%,
   100% {
-    box-shadow: -45px -70px 2px 1px rgba(0, 100, 200, 0),
+    box-shadow:
+      -45px -70px 2px 1px rgba(0, 100, 200, 0),
       70px -15px 3px 1px rgba(0, 150, 255, 0),
       -70px 38px 2px 1px rgba(0, 31, 63, 0),
       38px 72px 2px 1px rgba(0, 77, 153, 0),
@@ -519,7 +567,8 @@ textarea::placeholder {
       -25px 72px 2px 1px rgba(0, 150, 255, 0);
   }
   18% {
-    box-shadow: -52px -80px 2px 1px rgba(0, 100, 200, 0.9),
+    box-shadow:
+      -52px -80px 2px 1px rgba(0, 100, 200, 0.9),
       80px -18px 3px 1px rgba(0, 150, 255, 0.85),
       -80px 42px 2px 1px rgba(0, 31, 63, 0.9),
       42px 82px 2px 1px rgba(0, 77, 153, 0.85),
@@ -531,7 +580,8 @@ textarea::placeholder {
       -30px 82px 2px 1px rgba(0, 150, 255, 0.85);
   }
   55% {
-    box-shadow: -72px -108px 2px 1px rgba(0, 100, 200, 0.4),
+    box-shadow:
+      -72px -108px 2px 1px rgba(0, 100, 200, 0.4),
       108px -25px 3px 1px rgba(0, 150, 255, 0.35),
       -108px 58px 2px 1px rgba(0, 31, 63, 0.4),
       58px 112px 2px 1px rgba(0, 77, 153, 0.35),
@@ -543,7 +593,8 @@ textarea::placeholder {
       -42px 112px 2px 1px rgba(0, 150, 255, 0.35);
   }
   100% {
-    box-shadow: -95px -142px 2px 1px rgba(0, 100, 200, 0),
+    box-shadow:
+      -95px -142px 2px 1px rgba(0, 100, 200, 0),
       142px -35px 3px 1px rgba(0, 150, 255, 0),
       -142px 78px 2px 1px rgba(0, 31, 63, 0),
       78px 148px 2px 1px rgba(0, 77, 153, 0),
@@ -560,7 +611,8 @@ textarea::placeholder {
 @keyframes quantum-particles-3 {
   0%,
   100% {
-    box-shadow: -58px -52px 3px 1px rgba(0, 150, 255, 0),
+    box-shadow:
+      -58px -52px 3px 1px rgba(0, 150, 255, 0),
       52px -65px 2px 1px rgba(0, 31, 63, 0),
       75px 5px 2px 1px rgba(0, 100, 200, 0),
       -12px 75px 3px 1px rgba(0, 77, 153, 0),
@@ -570,7 +622,8 @@ textarea::placeholder {
       72px -32px 2px 1px rgba(0, 77, 153, 0);
   }
   22% {
-    box-shadow: -68px -60px 3px 1px rgba(0, 150, 255, 0.85),
+    box-shadow:
+      -68px -60px 3px 1px rgba(0, 150, 255, 0.85),
       60px -75px 2px 1px rgba(0, 31, 63, 0.9),
       88px 8px 2px 1px rgba(0, 100, 200, 0.85),
       -15px 88px 3px 1px rgba(0, 77, 153, 0.9),
@@ -580,7 +633,8 @@ textarea::placeholder {
       85px -38px 2px 1px rgba(0, 77, 153, 0.9);
   }
   60% {
-    box-shadow: -92px -82px 3px 1px rgba(0, 150, 255, 0.4),
+    box-shadow:
+      -92px -82px 3px 1px rgba(0, 150, 255, 0.4),
       82px -102px 2px 1px rgba(0, 31, 63, 0.35),
       118px 12px 2px 1px rgba(0, 100, 200, 0.4),
       -20px 118px 3px 1px rgba(0, 77, 153, 0.35),
@@ -590,7 +644,8 @@ textarea::placeholder {
       115px -52px 2px 1px rgba(0, 77, 153, 0.35);
   }
   100% {
-    box-shadow: -120px -108px 3px 1px rgba(0, 150, 255, 0),
+    box-shadow:
+      -120px -108px 3px 1px rgba(0, 150, 255, 0),
       108px -135px 2px 1px rgba(0, 31, 63, 0),
       152px 18px 2px 1px rgba(0, 100, 200, 0),
       -28px 152px 3px 1px rgba(0, 77, 153, 0),
@@ -629,7 +684,8 @@ textarea::placeholder {
   background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: quantum-particles-1 7s linear infinite,
+  animation:
+    quantum-particles-1 7s linear infinite,
     quantum-particles-3 9s linear infinite 2s,
     quantum-twinkle 2s ease-in-out infinite;
   pointer-events: none;
@@ -646,7 +702,8 @@ textarea::placeholder {
   background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: quantum-particles-2 8s linear infinite 1s,
+  animation:
+    quantum-particles-2 8s linear infinite 1s,
     quantum-twinkle 2.5s ease-in-out infinite 0.5s;
   pointer-events: none;
   z-index: 10;
@@ -655,33 +712,63 @@ textarea::placeholder {
 /* Galaxy border - Ultimate mythic cosmic frame */
 @keyframes galaxy-nebula {
   0% {
-    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #a855f7, 0 0 35px #7c3aed,
-      0 0 50px rgba(139, 92, 246, 0.7), 0 0 70px rgba(236, 72, 153, 0.4),
-      0 0 90px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    box-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #a855f7,
+      0 0 35px #7c3aed,
+      0 0 50px rgba(139, 92, 246, 0.7),
+      0 0 70px rgba(236, 72, 153, 0.4),
+      0 0 90px rgba(59, 130, 246, 0.3),
+      inset 0 0 20px rgba(139, 92, 246, 0.3);
     border-color: #c4b5fd;
   }
   25% {
-    box-shadow: 0 0 5px #fff, 0 0 12px #fff, 0 0 22px #ec4899, 0 0 38px #a855f7,
-      0 0 55px rgba(236, 72, 153, 0.7), 0 0 75px rgba(139, 92, 246, 0.4),
-      0 0 95px rgba(59, 130, 246, 0.3), inset 0 0 22px rgba(236, 72, 153, 0.3);
+    box-shadow:
+      0 0 5px #fff,
+      0 0 12px #fff,
+      0 0 22px #ec4899,
+      0 0 38px #a855f7,
+      0 0 55px rgba(236, 72, 153, 0.7),
+      0 0 75px rgba(139, 92, 246, 0.4),
+      0 0 95px rgba(59, 130, 246, 0.3),
+      inset 0 0 22px rgba(236, 72, 153, 0.3);
     border-color: #f0abfc;
   }
   50% {
-    box-shadow: 0 0 5px #fff, 0 0 11px #fff, 0 0 21px #3b82f6, 0 0 36px #8b5cf6,
-      0 0 52px rgba(59, 130, 246, 0.7), 0 0 72px rgba(139, 92, 246, 0.4),
-      0 0 92px rgba(236, 72, 153, 0.3), inset 0 0 21px rgba(59, 130, 246, 0.3);
+    box-shadow:
+      0 0 5px #fff,
+      0 0 11px #fff,
+      0 0 21px #3b82f6,
+      0 0 36px #8b5cf6,
+      0 0 52px rgba(59, 130, 246, 0.7),
+      0 0 72px rgba(139, 92, 246, 0.4),
+      0 0 92px rgba(236, 72, 153, 0.3),
+      inset 0 0 21px rgba(59, 130, 246, 0.3);
     border-color: #a5b4fc;
   }
   75% {
-    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #8b5cf6, 0 0 35px #ec4899,
-      0 0 50px rgba(139, 92, 246, 0.7), 0 0 70px rgba(59, 130, 246, 0.4),
-      0 0 90px rgba(236, 72, 153, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    box-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #8b5cf6,
+      0 0 35px #ec4899,
+      0 0 50px rgba(139, 92, 246, 0.7),
+      0 0 70px rgba(59, 130, 246, 0.4),
+      0 0 90px rgba(236, 72, 153, 0.3),
+      inset 0 0 20px rgba(139, 92, 246, 0.3);
     border-color: #ddd6fe;
   }
   100% {
-    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #a855f7, 0 0 35px #7c3aed,
-      0 0 50px rgba(139, 92, 246, 0.7), 0 0 70px rgba(236, 72, 153, 0.4),
-      0 0 90px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    box-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #a855f7,
+      0 0 35px #7c3aed,
+      0 0 50px rgba(139, 92, 246, 0.7),
+      0 0 70px rgba(236, 72, 153, 0.4),
+      0 0 90px rgba(59, 130, 246, 0.3),
+      inset 0 0 20px rgba(139, 92, 246, 0.3);
     border-color: #c4b5fd;
   }
 }
@@ -690,9 +777,10 @@ textarea::placeholder {
 @keyframes galaxy-stars-1 {
   0%,
   100% {
-    box-shadow: calc(-72px * var(--star-scale, 1))
-        calc(-20px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
-        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.95),
+    box-shadow:
+      calc(-72px * var(--star-scale, 1)) calc(-20px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
       calc(45px * var(--star-scale, 1)) calc(-70px * var(--star-scale, 1))
         calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
         rgba(199, 210, 254, 0.9),
@@ -722,9 +810,10 @@ textarea::placeholder {
         rgba(196, 181, 253, 0.9);
   }
   50% {
-    box-shadow: calc(-105px * var(--star-scale, 1))
-        calc(-30px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
-        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.4),
+    box-shadow:
+      calc(-105px * var(--star-scale, 1)) calc(-30px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
       calc(65px * var(--star-scale, 1)) calc(-102px * var(--star-scale, 1))
         calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
         rgba(199, 210, 254, 0.35),
@@ -759,9 +848,10 @@ textarea::placeholder {
 @keyframes galaxy-stars-2 {
   0%,
   100% {
-    box-shadow: calc(-48px * var(--star-scale, 1))
-        calc(-68px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
-        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
+    box-shadow:
+      calc(-48px * var(--star-scale, 1)) calc(-68px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
       calc(72px * var(--star-scale, 1)) calc(-15px * var(--star-scale, 1))
         calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
         rgba(196, 181, 253, 0.95),
@@ -791,9 +881,10 @@ textarea::placeholder {
         rgba(251, 207, 232, 0.95);
   }
   50% {
-    box-shadow: calc(-70px * var(--star-scale, 1))
-        calc(-99px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1))
-        calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
+    box-shadow:
+      calc(-70px * var(--star-scale, 1)) calc(-99px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
       calc(105px * var(--star-scale, 1)) calc(-22px * var(--star-scale, 1))
         calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
         rgba(196, 181, 253, 0.4),
@@ -828,9 +919,10 @@ textarea::placeholder {
 @keyframes galaxy-stars-3 {
   0%,
   100% {
-    box-shadow: calc(-58px * var(--star-scale, 1))
-        calc(-52px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1))
-        calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.95),
+    box-shadow:
+      calc(-58px * var(--star-scale, 1)) calc(-52px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
       calc(52px * var(--star-scale, 1)) calc(-65px * var(--star-scale, 1))
         calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
         rgba(255, 255, 255, 0.9),
@@ -854,9 +946,10 @@ textarea::placeholder {
         rgba(251, 207, 232, 0.9);
   }
   50% {
-    box-shadow: calc(-85px * var(--star-scale, 1))
-        calc(-76px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1))
-        calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.4),
+    box-shadow:
+      calc(-85px * var(--star-scale, 1)) calc(-76px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
       calc(76px * var(--star-scale, 1)) calc(-95px * var(--star-scale, 1))
         calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
         rgba(255, 255, 255, 0.35),
@@ -912,7 +1005,8 @@ textarea::placeholder {
   background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: galaxy-stars-1 8s ease-in-out infinite,
+  animation:
+    galaxy-stars-1 8s ease-in-out infinite,
     galaxy-stars-3 10s ease-in-out infinite 2s,
     galaxy-twinkle 3s ease-in-out infinite;
   pointer-events: none;
@@ -929,7 +1023,8 @@ textarea::placeholder {
   background: transparent;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: galaxy-stars-2 9s ease-in-out infinite 1s,
+  animation:
+    galaxy-stars-2 9s ease-in-out infinite 1s,
     galaxy-twinkle 2.5s ease-in-out infinite 0.5s;
   pointer-events: none;
   z-index: 10;

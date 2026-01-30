@@ -74,10 +74,14 @@ export const API_ENDPOINTS = {
     PUBLISH: (quizId: string) =>
       `${API_BASE_URL}/api/quizzes/${quizId}/publish`,
     GET: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}`,
+    GET_PUBLIC_INFO: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/info/public`,
     JOIN: `${API_BASE_URL}/api/quizzes/join`,
     LEAVE: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}/leave`,
     PARTICIPANTS: (quizId: string) =>
       `${API_BASE_URL}/api/quizzes/${quizId}/participants`,
+    PARTICIPANTS_PUBLIC: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/participants/public`,
     START: (quizId: string) => `${API_BASE_URL}/api/quizzes/${quizId}/start`,
     PUSH: (quizId: string, index: number) =>
       `${API_BASE_URL}/api/quizzes/${quizId}/push/${index}`,
@@ -197,7 +201,7 @@ export const apiCall = async (url: string, options: RequestInit = {}) => {
 // Helper function for making API calls with token in header as fallback
 export const apiCallWithAuth = async (
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ) => {
   // First try with cookies
   let response = await apiCall(url, options);

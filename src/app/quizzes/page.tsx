@@ -34,7 +34,7 @@ export default function QuizzesPage() {
         const filtered = quizzes.filter(
           (quiz) =>
             quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.description?.toLowerCase().includes(searchTerm.toLowerCase())
+            quiz.description?.toLowerCase().includes(searchTerm.toLowerCase()),
         );
         setFilteredQuizzes(filtered);
       } else {
@@ -120,10 +120,10 @@ export default function QuizzesPage() {
       if (response.success) {
         // Remove the quiz from the local state
         setQuizzes((prevQuizzes) =>
-          prevQuizzes.filter((quiz) => quiz.quizId !== quizId)
+          prevQuizzes.filter((quiz) => quiz.quizId !== quizId),
         );
         setFilteredQuizzes((prevFiltered) =>
-          prevFiltered.filter((quiz) => quiz.quizId !== quizId)
+          prevFiltered.filter((quiz) => quiz.quizId !== quizId),
         );
 
         // Show success message based on subscription
@@ -283,6 +283,13 @@ export default function QuizzesPage() {
                   className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Join Quiz
+                </button>
+                <button
+                  onClick={() => router.push("/liveQuiz")}
+                  className="border border-purple-500 dark:border-purple-500 text-purple-600 dark:text-purple-400 px-6 py-3 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-sm font-medium cursor-pointer flex items-center gap-2"
+                >
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  Join Live Quiz
                 </button>
                 {user?.subscription === "pro" && (
                   <button
@@ -477,7 +484,7 @@ export default function QuizzesPage() {
                     <div className="flex items-center gap-3">
                       <span
                         className={`px-3 py-1 text-xs font-medium ${getStatusColor(
-                          quiz.status
+                          quiz.status,
                         )}`}
                       >
                         {getStatusText(quiz.status)}

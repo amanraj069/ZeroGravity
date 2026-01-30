@@ -10,7 +10,10 @@ import {
   obfuscate,
   deobfuscate,
   leaveQuiz,
+  listParticipantsPublic,
+  getQuizPublicInfo,
 } from "@/services/quizzesService";
+import { QuizParticipant } from "@/types/quiz";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { QuizQuestion } from "@/services/quizzesService";
@@ -44,8 +47,9 @@ function JoinQuizContent() {
     quizId: string;
     quizUserId: string;
   } | null>(null);
+  const [participants, setParticipants] = useState<QuizParticipant[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
-    null
+    null,
   );
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
@@ -55,7 +59,29 @@ function JoinQuizContent() {
   const [serverStartTime, setServerStartTime] = useState<Date | null>(null);
   const [serverTimeLimit, setServerTimeLimit] = useState<number>(0);
   const [isRestoredSession, setIsRestoredSession] = useState<boolean>(false);
+  const [quizTitle, setQuizTitle] = useState<string>("");
+  const [totalQuestions, setTotalQuestions] = useState<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Function to generate consistent colors for avatars
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      "bg-pink-400",
+      "bg-orange-400",
+      "bg-red-400",
+      "bg-purple-400",
+      "bg-blue-400",
+      "bg-green-400",
+      "bg-yellow-400",
+      "bg-indigo-400",
+      "bg-cyan-400",
+      "bg-teal-400",
+      "bg-lime-400",
+      "bg-rose-400",
+    ];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
 
   // Handle hydration-safe initialization
   useEffect(() => {
@@ -146,7 +172,7 @@ function JoinQuizContent() {
         setServerTimeLimit(payload.timeLimit);
         // Calculate initial remaining time
         const elapsed = Math.floor(
-          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000
+          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000,
         );
         const remaining = Math.max(0, payload.timeLimit - elapsed);
         setTimeLeft(remaining);
@@ -190,7 +216,7 @@ function JoinQuizContent() {
       // Give some time for the session to stabilize (only for the first few seconds)
       if (isRestoredSession) {
         console.log(
-          "Ignoring participant:left event during session restoration period"
+          "Ignoring participant:left event during session restoration period",
         );
         return;
       }
@@ -234,6 +260,40 @@ function JoinQuizContent() {
     s.on("quiz:ended", onEnded);
     s.on("participant:left", onKickedOut);
     s.on("participants:cleared", onParticipantsCleared);
+
+    // Listen for new participants joining
+    const onParticipantJoined = (payload: {
+      quizId: string;
+      participant: QuizParticipant;
+    }) => {
+      if (payload?.quizId !== joined.quizId) return;
+      setParticipants((prev) => {
+        // Check if participant already exists to avoid duplicates
+        const exists = prev.find(
+          (p) => p.quizUserId === payload.participant.quizUserId,
+        );
+        if (exists) return prev;
+        return [...prev, payload.participant];
+      });
+    };
+    s.on("participant:joined", onParticipantJoined);
+
+    // Listen for participants leaving/being removed
+    const onParticipantRemoved = (payload: {
+      quizId: string;
+      quizUserId: string;
+    }) => {
+      if (payload?.quizId !== joined.quizId) return;
+      // Remove the participant from the list (unless it's the current user, which is handled by onKickedOut)
+      if (payload.quizUserId !== joined.quizUserId) {
+        setParticipants((prev) =>
+          prev.filter((p) => p.quizUserId !== payload.quizUserId),
+        );
+      }
+    };
+    // participant:left is used for both kicked out notification and updating participant list
+    s.on("participant:left", onParticipantRemoved);
+
     // On mount, also fetch current state in case we refreshed mid-question
     (async () => {
       const cur = await getCurrentQuestion(joined.quizId);
@@ -253,13 +313,36 @@ function JoinQuizContent() {
           setServerTimeLimit(0);
         }
       }
+
+      // Fetch initial participants list and quiz info
+      try {
+        const p = await listParticipantsPublic(joined.quizId);
+        if (p?.success && p.participants) {
+          setParticipants(p.participants);
+        }
+      } catch (error) {
+        console.error("Failed to fetch participants:", error);
+      }
+
+      // Fetch quiz metadata
+      try {
+        const quizData = await getQuizPublicInfo(joined.quizId);
+        if (quizData?.success && quizData.quiz) {
+          setQuizTitle(quizData.quiz.title || "Quiz");
+          setTotalQuestions(quizData.quiz.questions?.length || 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch quiz data:", error);
+      }
     })();
     return () => {
       s.off("question:pushed", onQuestion);
       s.off("question:timeup", onQuestionTimeUp);
       s.off("quiz:ended", onEnded);
       s.off("participant:left", onKickedOut);
+      s.off("participant:left", onParticipantRemoved);
       s.off("participants:cleared", onParticipantsCleared);
+      s.off("participant:joined", onParticipantJoined);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joined]);
@@ -272,7 +355,7 @@ function JoinQuizContent() {
       if (serverStartTime && serverTimeLimit > 0) {
         // Use server-side timer synchronization
         const elapsed = Math.floor(
-          (new Date().getTime() - serverStartTime.getTime()) / 1000
+          (new Date().getTime() - serverStartTime.getTime()) / 1000,
         );
         const remaining = Math.max(0, serverTimeLimit - elapsed);
         setTimeLeft(remaining);
@@ -317,7 +400,7 @@ function JoinQuizContent() {
     const res = await joinQuiz(
       joinCode.trim().toUpperCase(),
       name.trim(),
-      selectedAvatar
+      selectedAvatar,
     );
     if (res?.success) {
       setJoined({ quizId: res.quizId, quizUserId: res.quizUserId });
@@ -325,7 +408,7 @@ function JoinQuizContent() {
       try {
         localStorage.setItem(
           STORAGE_KEY,
-          JSON.stringify({ quizId: res.quizId, quizUserId: res.quizUserId })
+          JSON.stringify({ quizId: res.quizId, quizUserId: res.quizUserId }),
         );
         localStorage.setItem("zg_join_code", joinCode.trim().toUpperCase());
         localStorage.setItem("zg_name_obf", obfuscate(name.trim()));
@@ -381,7 +464,7 @@ function JoinQuizContent() {
     }
 
     const confirmExit = window.confirm(
-      "Are you sure you want to leave the quiz?"
+      "Are you sure you want to leave the quiz?",
     );
     if (confirmExit) {
       // If we're currently in a quiz, attempt to remove from backend
@@ -436,7 +519,7 @@ function JoinQuizContent() {
       <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         {/* Hero-style header */}
         <div className="text-center py-8 lg:py-12 bg-white dark:bg-gray-900">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className=" mx-auto px-4">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black dark:text-white mb-6 tracking-tight">
               Join Quiz
             </h1>
@@ -547,104 +630,162 @@ function JoinQuizContent() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Hero-style header section */}
       <div className="bg-white dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 pt-8 sm:pt-12">
-          {/* Title and Exit Button Row */}
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black dark:text-white tracking-tight">
-              Quiz Room
-            </h1>
-            {!showKickedOut && (
-              <button
-                onClick={handleExit}
-                className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-6 py-3 text-sm font-light transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800"
-                title="Leave Quiz"
-              >
-                Exit Quiz
-              </button>
+        <div className="max-w-6xl mx-auto px-4 pt-8">
+          {/* Mobile Layout */}
+          <div className="lg:hidden mb-4">
+            {/* Title and Exit Button Row */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <h1 className="text-2xl font-light text-black dark:text-white tracking-tight">
+                  Quiz {quizTitle && `- ${quizTitle}`}
+                </h1>
+              </div>
+              <div className="flex items-center gap-3 ml-2">
+                {totalQuestions > 0 && (
+                  <span className="text-sm text-gray-600 dark:text-gray-400 font-medium whitespace-nowrap">
+                    {totalQuestions}Q
+                  </span>
+                )}
+                {!showKickedOut && (
+                  <button
+                    onClick={handleExit}
+                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800 whitespace-nowrap"
+                    title="Leave Quiz"
+                  >
+                    Exit
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Host Status Message - Below on Mobile */}
+            {!currentQuestion && !showQuizEnded && !showKickedOut && (
+              <div className="flex items-center justify-center gap-2 py-2">
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-amber-500 animate-pulse"></div>
+                  <div
+                    className="w-2 h-2 bg-amber-500 animate-pulse"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-amber-500 animate-pulse"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
+                </div>
+                <p className="text-amber-800 dark:text-amber-300 font-medium text-sm">
+                  The host has not started the quiz yet
+                </p>
+              </div>
             )}
           </div>
 
+          {/* Desktop Layout */}
+          <div className="hidden lg:flex items-center justify-between mb-4 gap-6">
+            <div className="flex-shrink-0">
+              <h1 className="text-3xl font-light text-black dark:text-white tracking-tight">
+                Quiz {quizTitle && `- ${quizTitle}`}
+              </h1>
+            </div>
+
+            {/* Host Status Message - Center on Desktop */}
+            {!currentQuestion && !showQuizEnded && !showKickedOut && (
+              <div className="flex items-center justify-center gap-3 flex-1">
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-amber-500 animate-pulse"></div>
+                  <div
+                    className="w-2 h-2 bg-amber-500 animate-pulse"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-amber-500 animate-pulse"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
+                </div>
+                <p className="text-amber-800 dark:text-amber-300 font-medium text-sm whitespace-nowrap">
+                  The host has not started the quiz yet
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center gap-4 flex-shrink-0">
+              {totalQuestions > 0 && (
+                <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                  {totalQuestions}Q
+                </span>
+              )}
+              {!showKickedOut && (
+                <button
+                  onClick={handleExit}
+                  className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800"
+                  title="Leave Quiz"
+                >
+                  Exit Quiz
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="text-center">
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-light">
               {currentQuestion && !showQuizEnded && !showKickedOut
-                ? "Answer the current question before time runs out"
+                ? "Answer the question before time runs out"
                 : showQuizEnded
-                ? "Quiz completed - great job participating!"
-                : ""}
+                  ? "Quiz completed - great job!"
+                  : ""}
             </p>
 
             {currentQuestion && !showQuizEnded && !showKickedOut && (
-              <div className="mt-8">
-                {/* Enhanced Timer Display */}
-                <div className="max-w-md mx-auto">
-                  <div className="text-center mb-4">
-                    <div className="flex items-center justify-center space-x-2 mb-2">
-                      <div
-                        className={`w-3 h-3 ${
-                          timeLeft <= 10
-                            ? "bg-red-500"
-                            : timeLeft <= 30
-                            ? "bg-yellow-500"
+              <div className="mt-6">
+                {/* Compact Timer Display */}
+                <div className="inline-flex items-center gap-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-6 py-3">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-2 h-2 ${
+                        timeLeft <= 10
+                          ? "bg-red-500"
+                          : timeLeft <= 30
+                            ? "bg-amber-500"
                             : "bg-green-500"
-                        } animate-pulse`}
-                      ></div>
-                      <span className="text-sm text-gray-600 dark:text-gray-400 font-medium tracking-wide uppercase">
-                        Time Remaining
-                      </span>
-                    </div>
+                      } animate-pulse`}
+                    ></div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                      Time
+                    </span>
                   </div>
-
                   <div
-                    className={`relative p-6 border transition-all duration-300 ${
+                    className={`text-2xl font-mono font-bold ${
                       timeLeft <= 10
-                        ? "bg-red-50 dark:bg-red-900/30 border-red-300 dark:border-red-700"
+                        ? "text-red-600 dark:text-red-400"
                         : timeLeft <= 30
-                        ? "bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700"
-                        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-black dark:text-white"
                     }`}
                   >
-                    {/* Timer Display */}
-                    <div className="relative text-center">
-                      <div
-                        className={`text-5xl sm:text-6xl font-mono font-bold tracking-wider mb-4 ${
-                          timeLeft <= 10
-                            ? "text-red-600 dark:text-red-400"
-                            : timeLeft <= 30
-                            ? "text-amber-600 dark:text-amber-400"
-                            : "text-black dark:text-white"
-                        }`}
-                      >
-                        {Math.floor(timeLeft / 60)}:
-                        {(timeLeft % 60).toString().padStart(2, "0")}
-                      </div>
-
-                      {/* Progress bar */}
-                      <div className="w-full">
-                        <div className="h-1 bg-gray-200 dark:bg-gray-700">
-                          <div
-                            className={`h-full transition-all duration-1000 ease-linear ${
-                              timeLeft <= 10
-                                ? "bg-red-600 dark:bg-red-500"
-                                : timeLeft <= 30
-                                ? "bg-yellow-600 dark:bg-yellow-500"
-                                : "bg-black dark:bg-white"
-                            }`}
-                            style={{
-                              width: `${Math.max(
-                                0,
-                                (timeLeft /
-                                  (currentQuestion?.timeLimitSeconds ||
-                                    timeLeft)) *
-                                  100
-                              )}%`,
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
+                    {Math.floor(timeLeft / 60)}:
+                    {(timeLeft % 60).toString().padStart(2, "0")}
+                  </div>
+                  {/* Progress bar */}
+                  <div className="w-24 h-1 bg-gray-200 dark:bg-gray-700">
+                    <div
+                      className={`h-full transition-all duration-1000 ease-linear ${
+                        timeLeft <= 10
+                          ? "bg-red-500"
+                          : timeLeft <= 30
+                            ? "bg-amber-500"
+                            : "bg-black dark:bg-white"
+                      }`}
+                      style={{
+                        width: `${Math.max(
+                          0,
+                          (timeLeft /
+                            (currentQuestion?.timeLimitSeconds || timeLeft)) *
+                            100,
+                        )}%`,
+                      }}
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -653,8 +794,8 @@ function JoinQuizContent() {
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col items-center px-4 pb-10">
-        <div className="w-full max-w-3xl">
+      <main className="flex-1 flex flex-col items-center px-4 pb-8">
+        <div className="w-full max-w-6xl">
           {showKickedOut ? (
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto mt-12">
@@ -682,8 +823,18 @@ function JoinQuizContent() {
             <div className="text-center pt-8 pb-16">
               <div className="max-w-2xl mx-auto">
                 <div className="w-24 h-24 mx-auto mb-8 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <svg className="w-12 h-12 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-12 h-12 text-green-600 dark:text-green-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
                 <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
@@ -877,7 +1028,7 @@ function JoinQuizContent() {
                         </svg>
                       </div>
                     </div>
-                    <h2 className="text-2xl lg:text-3xl font-light text-black dark:text-white leading-relaxed text-center max-w-4xl mx-auto">
+                    <h2 className="text-2xl lg:text-3xl font-light text-black dark:text-white leading-relaxed text-center mx-auto">
                       {currentQuestion.text}
                     </h2>
                   </div>
@@ -921,34 +1072,78 @@ function JoinQuizContent() {
               )}
             </div>
           ) : (
-            <div className="text-center pt-8 pb-16">
-              <div className="max-w-2xl mx-auto">
-                <div className="w-128 h-128 mx-auto mb-8 flex items-center justify-center">
-                  <NextImage
-                    src="/quiz/waitingQuizzes.png"
-                    alt="Waiting for quiz"
-                    className="w-full h-full object-contain"
-                    width={512}
-                    height={512}
-                  />
-                </div>
-                <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-4">
-                  Waiting for quiz to start
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                  You&apos;re all set! The host will start pushing questions
-                  shortly.
-                </p>
-                <div className="mt-12 flex items-center justify-center space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-pulse"></div>
-                  <div
-                    className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-pulse"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-pulse"
-                    style={{ animationDelay: "0.4s" }}
-                  ></div>
+            <div className="pb-16">
+              <div className="mx-auto pb-4">
+                {/* Participants Section */}
+                <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 lg:mt-4 min-h-[650px]">
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="text-base font-medium text-gray-900 dark:text-white">
+                      Participants
+                    </h3>
+                    <span className="inline-flex items-center bg-black dark:bg-white px-3 py-1 text-sm text-white dark:text-black font-medium">
+                      {participants.length} joined
+                    </span>
+                  </div>
+
+                  <div className="p-6 min-h-[200px]">
+                    {participants.length > 0 ? (
+                      <div className="grid grid-cols-3 lg:grid-cols-7 gap-3 lg:gap-6">
+                        {participants.map((p) => (
+                          <div
+                            key={p.quizUserId}
+                            className={`flex flex-col items-center text-center p-2 transition-all ${
+                              p.quizUserId === joined?.quizUserId
+                                ? "border-2 border-amber-500 dark:border-amber-500"
+                                : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                            }`}
+                          >
+                            {p.participantAvatar ? (
+                              <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex-shrink-0 border border-gray-200 dark:border-gray-600">
+                                <NextImage
+                                  src={`/quiz/avatars/${p.participantAvatar}`}
+                                  alt={`Avatar for ${p.participantName}`}
+                                  className="w-full h-full object-cover"
+                                  width={64}
+                                  height={64}
+                                />
+                              </div>
+                            ) : (
+                              <div
+                                className={`w-16 h-16 rounded-full flex items-center justify-center text-white text-lg leading-none font-medium shadow-sm flex-shrink-0 ${getAvatarColor(
+                                  p.participantName || "U",
+                                )}`}
+                              >
+                                {p.participantName?.charAt(0)?.toUpperCase() ||
+                                  "?"}
+                              </div>
+                            )}
+                            <span className="text-xs text-gray-700 dark:text-gray-300 mt-2 truncate w-full font-medium">
+                              {p.quizUserId === joined?.quizUserId
+                                ? `${p.participantName} (You)`
+                                : p.participantName}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12">
+                        <div className="flex items-center justify-center space-x-2 mb-4">
+                          <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
+                          <div
+                            className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"
+                            style={{ animationDelay: "0.1s" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"
+                            style={{ animationDelay: "0.2s" }}
+                          ></div>
+                        </div>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm">
+                          Waiting for participants to join...
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

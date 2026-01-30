@@ -190,7 +190,7 @@ export default function PhotoEditor({
         });
       }
     }
-  }, [imageDimensions.width, imageDimensions.height, displayScale, rotation]);
+  }, [imageDimensions.width, imageDimensions.height, displayScale, rotation, cropArea.x, cropArea.y, cropArea.size, imageBounds.minX, imageBounds.minY, imageBounds.maxX, imageBounds.maxY]);
 
   // Draw image with rotation and crop overlay
   useEffect(() => {
@@ -311,7 +311,7 @@ export default function PhotoEditor({
         handleSize
       );
     });
-  }, [imageSrc, rotation, cropArea]);
+  }, [imageSrc, rotation, cropArea, imageBounds.minX, imageBounds.minY, imageBounds.maxX, imageBounds.maxY]);
 
   // Helper function to get coordinates from event (mouse or touch)
   const getEventCoordinates = (

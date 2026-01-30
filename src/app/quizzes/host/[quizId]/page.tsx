@@ -79,7 +79,7 @@ export default function HostQuizPage() {
         setQuiz(q.quiz);
         setIsActive(q.quiz?.status === "active");
         setIsHosted(
-          q.quiz?.status === "published" || q.quiz?.status === "active"
+          q.quiz?.status === "published" || q.quiz?.status === "active",
         );
         if (q.quiz?.joinCode) {
           setGeneratedJoinCode(q.quiz.joinCode);
@@ -103,7 +103,7 @@ export default function HostQuizPage() {
       setParticipants((prev) => {
         // Check if participant already exists to avoid duplicates
         const exists = prev.find(
-          (p) => p.quizUserId === payload.participant.quizUserId
+          (p) => p.quizUserId === payload.participant.quizUserId,
         );
         if (exists) {
           console.log("Participant already exists, skipping duplicate");
@@ -146,7 +146,7 @@ export default function HostQuizPage() {
         setCurrentQuestionTimeLimit(payload.timeLimit);
         // Calculate initial remaining time
         const elapsed = Math.floor(
-          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000
+          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000,
         );
         const remaining = Math.max(0, payload.timeLimit - elapsed);
         setCurrentQuestionTimeLeft(remaining);
@@ -217,7 +217,7 @@ export default function HostQuizPage() {
     if (currentQuestionStartTime && currentQuestionTimeLimit > 0) {
       const timer = setInterval(() => {
         const elapsed = Math.floor(
-          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000
+          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000,
         );
         const remaining = Math.max(0, currentQuestionTimeLimit - elapsed);
         setCurrentQuestionTimeLeft(remaining);
@@ -363,16 +363,16 @@ export default function HostQuizPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <main className="flex-1">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Participants Panel - 60% width */}
-            <div className="w-full lg:w-[60%] space-y-6">
+            {/* Participants Panel - 55% width */}
+            <div className="w-full lg:w-[55%]">
               {/* Participants List with Avatars */}
-              <div className="bg-white border border-gray-100 shadow-sm p-8 min-h-[80vh] flex flex-col">
-                <div className="mb-6 flex items-end justify-between border-b border-gray-100 pb-4">
-                  <h2 className="text-2xl font-light text-gray-900">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-8 h-[85vh] flex flex-col">
+                <div className="mb-6 flex items-end justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
+                  <h2 className="text-2xl font-light text-gray-900 dark:text-white">
                     Participants
                   </h2>
                   <div className="flex items-center gap-3">
@@ -384,11 +384,11 @@ export default function HostQuizPage() {
                           setParticipants(p.participants);
                           console.log(
                             "Participants refreshed:",
-                            p.participants.length
+                            p.participants.length,
                           );
                         }
                       }}
-                      className="inline-flex items-center bg-blue-50 px-3 py-1 text-xs text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
+                      className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-3 py-1 text-xs text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
                       title="Refresh participants list"
                     >
                       <svg
@@ -406,15 +406,15 @@ export default function HostQuizPage() {
                       </svg>
                       Refresh
                     </button>
-                    <span className="inline-flex items-center bg-gray-50 px-3 py-1 text-xs text-gray-700 border border-gray-200">
+                    <span className="inline-flex items-center bg-gray-50 dark:bg-gray-700 px-3 py-1 text-xs text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
                       {participants.length} joined
                     </span>
                   </div>
                 </div>
 
                 {/* Avatar Grid Layout - newest participants at beginning */}
-                <div className="flex-1 min-h-0">
-                  <div className="grid grid-cols-4 gap-6 max-h-[50vh] overflow-auto pr-2">
+                <div className="flex-1 min-h-0 overflow-auto">
+                  <div className="grid grid-cols-3 xl:grid-cols-4 gap-6 pr-2">
                     {participants
                       .slice()
                       .reverse()
@@ -425,19 +425,19 @@ export default function HostQuizPage() {
                         >
                           <div className="relative">
                             {p.participantAvatar ? (
-                              <div className="w-32 h-32 min-w-32 min-h-32 aspect-square rounded-full overflow-hidden shadow-lg flex-shrink-0 border-2 border-gray-200">
+                              <div className="w-24 h-24 xl:w-28 xl:h-28 aspect-square overflow-hidden shadow-lg flex-shrink-0 border-2 border-gray-200 dark:border-gray-600">
                                 <NextImage
                                   src={`/quiz/avatars/${p.participantAvatar}`}
                                   alt={`Avatar for ${p.participantName}`}
                                   className="w-full h-full object-cover scale-110"
-                                  width={128}
-                                  height={128}
+                                  width={112}
+                                  height={112}
                                 />
                               </div>
                             ) : (
                               <div
-                                className={`w-32 h-32 min-w-32 min-h-32 aspect-square rounded-full overflow-hidden flex items-center justify-center text-white text-4xl leading-none font-medium shadow-lg flex-shrink-0 ${getAvatarColor(
-                                  p.participantName || "U"
+                                className={`w-24 h-24 xl:w-28 xl:h-28 aspect-square overflow-hidden flex items-center justify-center text-white text-3xl leading-none font-medium shadow-lg flex-shrink-0 ${getAvatarColor(
+                                  p.participantName || "U",
                                 )}`}
                               >
                                 {p.participantName?.charAt(0)?.toUpperCase() ||
@@ -447,16 +447,15 @@ export default function HostQuizPage() {
                             <button
                               onClick={async () => {
                                 const ok = confirm(
-                                  `Remove ${p.participantName} from the quiz?`
+                                  `Remove ${p.participantName} from the quiz?`,
                                 );
                                 if (!ok) return;
                                 try {
-                                  const { leaveQuiz } = await import(
-                                    "@/services/quizzesService"
-                                  );
+                                  const { leaveQuiz } =
+                                    await import("@/services/quizzesService");
                                   const res = await leaveQuiz(
                                     quizId,
-                                    p.quizUserId
+                                    p.quizUserId,
                                   );
                                   if (!res?.success) {
                                     alert("Failed to remove participant");
@@ -465,23 +464,23 @@ export default function HostQuizPage() {
                                       prev.filter(
                                         (participant) =>
                                           participant.quizUserId !==
-                                          p.quizUserId
-                                      )
+                                          p.quizUserId,
+                                      ),
                                     );
                                   }
                                 } catch (error) {
                                   console.error(
                                     "Error removing participant:",
-                                    error
+                                    error,
                                   );
                                   alert("Failed to remove participant");
                                 }
                               }}
-                              className="absolute -top-1 -right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg border-2 border-white"
+                              className="absolute -top-1 -right-1 w-7 h-7 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg border-2 border-white dark:border-gray-800"
                               title={`Remove ${p.participantName}`}
                             >
                               <svg
-                                className="w-5 h-5"
+                                className="w-4 h-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -495,7 +494,7 @@ export default function HostQuizPage() {
                               </svg>
                             </button>
                           </div>
-                          <span className="text-base text-gray-600 mt-4 truncate w-full font-medium">
+                          <span className="text-sm text-gray-600 dark:text-gray-400 mt-3 truncate w-full font-medium">
                             {p.participantName}
                           </span>
                         </div>
@@ -504,32 +503,33 @@ export default function HostQuizPage() {
                 </div>
 
                 {participants.length === 0 && (
-                  <div className="mt-2 border border-dashed border-gray-200 bg-gray-50 py-12 text-center text-gray-500">
-                    <p className="text-base font-light mb-2">
-                      Waiting for participants...
-                    </p>
-                    {(joinCode || generatedJoinCode) && (
-                      <p className="text-sm text-gray-400 font-light">
-                        Share code:{" "}
-                        <span className="font-mono">
-                          {generatedJoinCode || joinCode}
-                        </span>
+                  <div className="flex-1 flex items-center justify-center border border-dashed border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                    <div className="text-center">
+                      <p className="text-base font-light mb-2 text-gray-500 dark:text-gray-400">
+                        Waiting for participants...
                       </p>
-                    )}
+                      {(joinCode || generatedJoinCode) && (
+                        <p className="text-sm text-gray-400 dark:text-gray-500 font-light">
+                          Share code:{" "}
+                          <span className="font-mono">
+                            {generatedJoinCode || joinCode}
+                          </span>
+                        </p>
+                      )}
+                    </div>
                   </div>
                 )}
 
                 {participants.length > 0 && (
                   <button
-                    className="w-full mt-auto px-4 py-3 border border-gray-300 text-sm text-gray-700 hover:border-red-300 hover:text-red-700 transition-colors font-light"
+                    className="w-full mt-4 px-4 py-3 border border-gray-300 dark:border-gray-600 text-sm text-gray-700 dark:text-gray-300 hover:border-red-300 dark:hover:border-red-700 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-light"
                     onClick={async () => {
                       const ok = confirm(
-                        "Clear all participants? This cannot be undone."
+                        "Clear all participants? This cannot be undone.",
                       );
                       if (!ok) return;
-                      const { clearParticipants } = await import(
-                        "@/services/quizzesService"
-                      );
+                      const { clearParticipants } =
+                        await import("@/services/quizzesService");
                       const res = await clearParticipants(quizId);
                       if (!res?.success) alert("Failed to clear participants");
                       else setParticipants([]);
@@ -541,28 +541,41 @@ export default function HostQuizPage() {
               </div>
             </div>
 
-            {/* Right Panel - Quiz Info and Controls - 40% width */}
-            <div className="w-full lg:w-[40%]">
-              <div className="bg-white border border-gray-100 shadow-sm p-8 min-h-80vh] flex flex-col gap-6">
+            {/* Right Panel - Quiz Info and Controls - 45% width */}
+            <div className="w-full lg:w-[45%]">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-6 h-[85vh] flex flex-col overflow-auto">
                 {/* Quiz Info (moved from top header) */}
-                <div className="space-y-6">
+                <div className="space-y-5">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="text-2xl font-light text-gray-900 tracking-tight">
+                      <h2 className="text-2xl font-light text-gray-900 dark:text-white tracking-tight">
                         {quiz?.title || "Host Quiz"}
                       </h2>
-                      <p className="text-sm text-gray-500 font-light leading-relaxed">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-light leading-relaxed">
                         {quiz?.description || "Ready to host your quiz?"}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
                       {!isHosted ? (
-                        <button
-                          className="px-5 py-2.5 bg-black text-white hover:bg-gray-800 transition-colors font-light"
-                          onClick={host}
-                        >
-                          Host Quiz
-                        </button>
+                        <>
+                          <button
+                            className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 transition-colors font-light flex items-center gap-2"
+                            onClick={() =>
+                              router.push(
+                                `/liveQuiz/host?quizId=${quizId}&title=${encodeURIComponent(quiz?.title || "Quiz")}`,
+                              )
+                            }
+                          >
+                            <span className="w-2 h-2 bg-green-400 animate-pulse"></span>
+                            Host Live
+                          </button>
+                          <button
+                            className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-light"
+                            onClick={host}
+                          >
+                            Host Quiz
+                          </button>
+                        </>
                       ) : (
                         <div className="flex items-center gap-3">
                           {!isActive ? (
@@ -570,7 +583,7 @@ export default function HostQuizPage() {
                               <button
                                 onClick={async () => {
                                   const ok = confirm(
-                                    "Stop hosting this quiz? This will remove the join code and clear all participants."
+                                    "Stop hosting this quiz? This will remove the join code and clear all participants.",
                                   );
                                   if (!ok) return;
                                   await unhost();
@@ -581,7 +594,7 @@ export default function HostQuizPage() {
                                 <div className="w-4 h-4 bg-white"></div>
                               </button>
                               <button
-                                className="px-5 py-2.5 bg-black text-white hover:bg-gray-800 transition-colors font-light"
+                                className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-light"
                                 onClick={start}
                               >
                                 Start Quiz
@@ -602,13 +615,13 @@ export default function HostQuizPage() {
                   </div>
 
                   {(joinCode || generatedJoinCode) && (
-                    <div className="bg-gray-50 p-5 border border-gray-200">
+                    <div className="bg-gray-50 dark:bg-gray-900 p-5 border border-gray-200 dark:border-gray-700">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs font-light text-gray-700 mb-1">
+                          <p className="text-xs font-light text-gray-700 dark:text-gray-400 mb-1">
                             Quiz Join Code
                           </p>
-                          <p className="text-2xl tracking-widest font-mono font-light text-gray-900">
+                          <p className="text-2xl tracking-widest font-mono font-light text-gray-900 dark:text-white">
                             {generatedJoinCode || joinCode}
                           </p>
                         </div>
@@ -617,8 +630,8 @@ export default function HostQuizPage() {
                             onClick={copyJoinCode}
                             className={`px-4 py-2 border transition-colors font-light ${
                               copySuccess
-                                ? "bg-green-50 border-green-200 text-green-700"
-                                : "bg-white border-gray-300 text-gray-700 hover:border-black"
+                                ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400"
+                                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white"
                             }`}
                             aria-label="Copy join code"
                           >
@@ -626,7 +639,7 @@ export default function HostQuizPage() {
                           </button>
                           <button
                             onClick={generateQRCode}
-                            className="px-3 py-2 border border-gray-300 text-gray-700 hover:border-black transition-colors font-light"
+                            className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white transition-colors font-light bg-white dark:bg-gray-800"
                             aria-label="Show QR code"
                             title="Show QR code for easy joining"
                           >
@@ -646,44 +659,188 @@ export default function HostQuizPage() {
                           </button>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-600 mt-3 font-light">
+                      <p className="text-xs text-gray-600 dark:text-gray-500 mt-3 font-light">
                         Share this code with participants to join your quiz
                       </p>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-3 pt-1">
-                    <span className="inline-flex items-center gap-2 bg-gray-50 px-3 py-3 text-xs text-gray-700 border border-gray-200 w-[40%]">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-900 px-3 py-3 text-xs text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 w-[40%]">
                       <span
-                        className={`inline-block h-2 w-2 rounded-full ${
+                        className={`inline-block h-2 w-2 ${
                           isActive
                             ? "bg-green-500"
                             : isHosted
-                            ? "bg-yellow-500"
-                            : "bg-gray-400"
+                              ? "bg-yellow-500"
+                              : "bg-gray-400"
                         }`}
                       />
                       {isActive
                         ? "Quiz Active"
                         : isHosted
-                        ? "Quiz Hosted"
-                        : "Quiz Not Hosted"}
+                          ? "Quiz Hosted"
+                          : "Quiz Not Hosted"}
                     </span>
-                    <span className="inline-flex items-center bg-white px-3 py-3 text-xs text-gray-600 border border-gray-200 w-[60%]">
+                    <span className="inline-flex items-center bg-white dark:bg-gray-800 px-3 py-3 text-xs text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 w-[60%]">
                       {participants.length} participant
                       {participants.length !== 1 ? "s" : ""} joined
                     </span>
                   </div>
                 </div>
 
+                {/* Admin Settings Section */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-5 mt-5">
+                  <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Quiz Settings
+                  </h3>
+                  <div className="space-y-3">
+                    <button
+                      onClick={() =>
+                        router.push(`/quizzes/create?edit=${quizId}`)
+                      }
+                      className="w-full flex items-center justify-between px-4 py-3 text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                      disabled={isActive}
+                    >
+                      <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                        Edit Questions
+                      </span>
+                      <svg
+                        className="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const link = `${window.location.origin}/joinQuiz?code=${generatedJoinCode || joinCode}`;
+                        navigator.clipboard.writeText(link);
+                        alert("Quiz link copied to clipboard!");
+                      }}
+                      className="w-full flex items-center justify-between px-4 py-3 text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                      disabled={!isHosted}
+                    >
+                      <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                          />
+                        </svg>
+                        Share Quiz Link
+                      </span>
+                      <svg
+                        className="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const b = await leaderboard(quizId);
+                        if (b?.success) {
+                          setBoard(b.leaderboard);
+                          setViewMode("leaderboard");
+                        }
+                      }}
+                      className="w-full flex items-center justify-between px-4 py-3 text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                    >
+                      <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                        View Leaderboard
+                      </span>
+                      <svg
+                        className="w-4 h-4 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Control mode: single CTA to push/stop with timer */}
                 {viewMode === "control" && (
-                  <div className="space-y-6 border-t border-gray-100 pt-6 mt-auto">
+                  <div className="space-y-5 border-t border-gray-200 dark:border-gray-700 pt-5 mt-auto">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-2xl font-light text-black">
+                      <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                         Question Control
                       </h2>
-                      <span className="text-sm text-gray-600 font-light">
+                      <span className="text-sm text-gray-600 dark:text-gray-400 font-light">
                         {questions.length} question
                         {questions.length !== 1 ? "s" : ""}
                       </span>
@@ -693,10 +850,10 @@ export default function HostQuizPage() {
                     {currentIndex < 0 ? (
                       <div className="flex justify-center">
                         <button
-                          className={`px-8 py-4 font-light ${
+                          className={`px-6 py-3 font-light text-sm ${
                             isActive
-                              ? "bg-black text-white hover:bg-gray-800"
-                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
+                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                           }`}
                           onClick={() => push(0)}
                           disabled={!isActive || questions.length === 0}
@@ -707,10 +864,10 @@ export default function HostQuizPage() {
                     ) : (
                       <div className="flex items-center justify-center gap-4">
                         <button
-                          className={`px-8 py-4 font-light ${
+                          className={`px-6 py-3 font-light text-sm ${
                             currentQuestionTimeLeft > 0
                               ? "bg-red-600 text-white hover:bg-red-700"
-                              : "bg-gray-100 text-gray-400"
+                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
                           }`}
                           onClick={endCurrentQuestion}
                           disabled={currentQuestionTimeLeft === 0}
@@ -718,7 +875,7 @@ export default function HostQuizPage() {
                         >
                           Stop
                         </button>
-                        <div className="text-xl font-mono font-light text-gray-900">
+                        <div className="text-xl font-mono font-light text-gray-900 dark:text-white">
                           {formatTime(currentQuestionTimeLeft)}
                         </div>
                       </div>
@@ -726,12 +883,12 @@ export default function HostQuizPage() {
 
                     {/* After a question ended, show Next CTA */}
                     {currentIndex >= 0 && currentQuestionTimeLeft === 0 && (
-                      <div className="flex items-center justify-center gap-4">
+                      <div className="flex items-center justify-center gap-3">
                         <button
-                          className={`px-8 py-4 font-light ${
+                          className={`px-6 py-3 font-light text-sm ${
                             currentIndex + 1 < questions.length
-                              ? "bg-black text-white hover:bg-gray-800"
-                              : "bg-gray-100 text-gray-400"
+                              ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
+                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
                           }`}
                           onClick={pushNextQuestion}
                           disabled={currentIndex + 1 >= questions.length}
@@ -739,10 +896,10 @@ export default function HostQuizPage() {
                           Push next question
                         </button>
                         <button
-                          className="px-8 py-4 font-light border border-gray-300 text-gray-800"
+                          className="px-6 py-3 font-light text-sm border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                           onClick={() => setViewMode("results")}
                         >
-                          View responses for this question
+                          View responses
                         </button>
                       </div>
                     )}
@@ -751,21 +908,21 @@ export default function HostQuizPage() {
 
                 {/* Results mode: histogram with correct/incorrect colors */}
                 {viewMode === "results" && currentIndex >= 0 && (
-                  <div className="space-y-6 mt-auto">
+                  <div className="space-y-5 border-t border-gray-200 dark:border-gray-700 pt-5 mt-auto">
                     <div className="text-center">
-                      <h2 className="text-2xl font-light text-black">
+                      <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                         Responses - Question {currentIndex + 1}
                       </h2>
                     </div>
                     <div className="flex items-center justify-center gap-3">
                       <button
-                        className="px-8 py-4 font-light border border-gray-300 text-gray-800"
+                        className="px-6 py-3 font-light text-sm border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                         onClick={() => setViewMode("leaderboard")}
                       >
                         View Leaderboard
                       </button>
                       <button
-                        className="px-8 py-4 font-light border border-gray-300 text-gray-800"
+                        className="px-6 py-3 font-light text-sm border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                         onClick={() => setViewMode("control")}
                       >
                         Go back to quiz
@@ -778,11 +935,11 @@ export default function HostQuizPage() {
                         const correctKeys = new Set(
                           (q?.options || [])
                             .filter((o) => o.isCorrect)
-                            .map((o) => o.key)
+                            .map((o) => o.key),
                         );
                         const total = Object.values(voteCounts).reduce(
                           (sum, c) => sum + (c as number),
-                          0
+                          0,
                         );
                         const entries = (q?.options || []).map((o) => {
                           const count = voteCounts[o.key] || 0;
@@ -801,28 +958,28 @@ export default function HostQuizPage() {
                           ({ key, text, count, pct, isCorrect }) => (
                             <div key={key} className="space-y-2">
                               <div className="flex items-center justify-between">
-                                <span className="text-xl font-light text-gray-900">
+                                <span className="text-base font-light text-gray-900 dark:text-white">
                                   {key}. {text}
                                 </span>
                                 <div className="flex items-center gap-3">
-                                  <span className="text-gray-600 font-light">
+                                  <span className="text-gray-600 dark:text-gray-400 font-light text-sm">
                                     {count} vote{count !== 1 ? "s" : ""}
                                   </span>
-                                  <span className="bg-gray-100 text-gray-800 px-3 py-1 text-sm font-light">
+                                  <span className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-3 py-1 text-sm font-light">
                                     {pct}%
                                   </span>
                                 </div>
                               </div>
-                              <div className="h-4 bg-gray-200 overflow-hidden">
+                              <div className="h-3 bg-gray-200 dark:bg-gray-700 overflow-hidden">
                                 <div
-                                  className={`h-4 ${
+                                  className={`h-3 ${
                                     isCorrect ? "bg-green-600" : "bg-red-600"
                                   }`}
                                   style={{ width: `${pct}%` }}
                                 />
                               </div>
                             </div>
-                          )
+                          ),
                         );
                       })()}
                     </div>
@@ -831,47 +988,47 @@ export default function HostQuizPage() {
 
                 {/* Leaderboard full-page view within panel */}
                 {viewMode === "leaderboard" && (
-                  <div className="space-y-6 mt-auto">
+                  <div className="space-y-5 border-t border-gray-200 dark:border-gray-700 pt-5 mt-auto">
                     <div className="text-center">
-                      <h2 className="text-2xl font-light text-black">
+                      <h2 className="text-lg font-medium text-gray-900 dark:text-white">
                         Leaderboard
                       </h2>
                     </div>
                     <div className="flex items-center justify-center">
                       <button
-                        className="px-8 py-4 font-light border border-gray-300 text-gray-800"
+                        className="px-6 py-3 font-light text-sm border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                         onClick={() => setViewMode("control")}
                       >
                         Go back to quiz
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2 max-h-[30vh] overflow-auto">
                       {board
                         .slice()
                         .sort(
-                          (a, b) => (b.totalScore || 0) - (a.totalScore || 0)
+                          (a, b) => (b.totalScore || 0) - (a.totalScore || 0),
                         )
                         .map((b, idx) => (
                           <div
                             key={b.quizUserId}
-                            className="flex items-center justify-between p-4 border"
+                            className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 flex items-center justify-center text-sm font-bold bg-gray-100 text-gray-700">
+                              <div className="w-7 h-7 flex items-center justify-center text-sm font-bold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                                 {idx + 1}
                               </div>
-                              <span className="text-lg font-light text-gray-900">
+                              <span className="text-sm font-light text-gray-900 dark:text-white">
                                 {b.participantName}
                               </span>
                             </div>
-                            <span className="text-lg font-light text-gray-700">
+                            <span className="text-sm font-light text-gray-700 dark:text-gray-400">
                               {Math.round(b.totalScore || 0)} pts
                             </span>
                           </div>
                         ))}
                       {board.length === 0 && (
-                        <div className="text-center py-12 text-gray-500 text-lg font-light">
+                        <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm font-light">
                           No scores yet.
                         </div>
                       )}
@@ -891,16 +1048,16 @@ export default function HostQuizPage() {
           onClick={() => setShowQRPopup(false)}
         >
           <div
-            className="bg-white p-8 shadow-xl max-w-lg w-full mx-4"
+            className="bg-white dark:bg-gray-800 p-8 shadow-xl max-w-lg w-full mx-4 border border-gray-200 dark:border-gray-700"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-light text-gray-900">
+              <h3 className="text-xl font-light text-gray-900 dark:text-white">
                 Join Quiz QR Code
               </h3>
               <button
                 onClick={() => setShowQRPopup(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 aria-label="Close QR code popup"
               >
                 <svg
@@ -921,10 +1078,10 @@ export default function HostQuizPage() {
 
             <div className="text-center">
               <div className="mb-4">
-                <p className="text-sm text-gray-600 font-light mb-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-light mb-2">
                   Scan this QR code to join the quiz
                 </p>
-                <p className="text-xs text-gray-500 font-mono">
+                <p className="text-xs text-gray-500 dark:text-gray-500 font-mono">
                   Code: {generatedJoinCode || joinCode}
                 </p>
               </div>
@@ -934,7 +1091,7 @@ export default function HostQuizPage() {
                   <NextImage
                     src={qrCodeDataUrl}
                     alt="QR Code for joining quiz"
-                    className="border border-gray-200 rounded-lg"
+                    className="border border-gray-200 dark:border-gray-700"
                     width={200}
                     height={200}
                   />
@@ -947,17 +1104,17 @@ export default function HostQuizPage() {
                     const code = generatedJoinCode || joinCode;
                     if (code) {
                       navigator.clipboard.writeText(
-                        `${window.location.origin}/joinQuiz?code=${code}`
+                        `${window.location.origin}/joinQuiz?code=${code}`,
                       );
                     }
                   }}
-                  className="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 transition-colors font-light"
+                  className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 transition-colors font-light"
                 >
                   Copy Join Link
                 </button>
                 <button
                   onClick={() => setShowQRPopup(false)}
-                  className="w-full px-4 py-2 bg-black text-white hover:bg-gray-800 transition-colors font-light"
+                  className="w-full px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-light"
                 >
                   Close
                 </button>

@@ -31,7 +31,7 @@ export const createQuiz = async (draft: QuizDraft) => {
 
 export const updateDraft = async (
   quizId: string,
-  draft: Partial<QuizDraft>
+  draft: Partial<QuizDraft>,
 ) => {
   const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.GET(quizId), {
     method: "PATCH",
@@ -52,6 +52,11 @@ export const getQuiz = async (quizId: string) => {
   return res.json();
 };
 
+export const getQuizPublicInfo = async (quizId: string) => {
+  const res = await apiCall(API_ENDPOINTS.QUIZZES.GET_PUBLIC_INFO(quizId));
+  return res.json();
+};
+
 export const getCurrentQuestion = async (quizId: string) => {
   const res = await apiCall(API_ENDPOINTS.QUIZZES.CURRENT(quizId));
   return res.json();
@@ -60,7 +65,7 @@ export const getCurrentQuestion = async (quizId: string) => {
 export const joinQuiz = async (
   joinCode: string,
   name: string,
-  avatar?: string
+  avatar?: string,
 ) => {
   const res = await apiCall(API_ENDPOINTS.QUIZZES.JOIN, {
     method: "POST",
@@ -71,6 +76,12 @@ export const joinQuiz = async (
 
 export const listParticipants = async (quizId: string) => {
   const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.PARTICIPANTS(quizId));
+  return res.json();
+};
+
+// Public endpoint for participants to see other participants
+export const listParticipantsPublic = async (quizId: string) => {
+  const res = await apiCall(API_ENDPOINTS.QUIZZES.PARTICIPANTS_PUBLIC(quizId));
   return res.json();
 };
 
@@ -102,7 +113,7 @@ export const submitAnswer = async (
     questionId: string;
     selectedOptionKey: string;
     timeLeftSeconds: number;
-  }
+  },
 ) => {
   const res = await apiCall(API_ENDPOINTS.QUIZZES.ANSWER(quizId), {
     method: "POST",
@@ -135,7 +146,7 @@ export const endQuestion = async (quizId: string) => {
     API_ENDPOINTS.QUIZZES.END_QUESTION(quizId),
     {
       method: "POST",
-    }
+    },
   );
   return res.json();
 };
@@ -151,7 +162,7 @@ export const leaveQuiz = async (quizId: string, quizUserId: string) => {
 export const clearParticipants = async (quizId: string) => {
   const res = await apiCallWithAuth(
     `${API_ENDPOINTS.QUIZZES.GET(quizId)}/participants/clear`,
-    { method: "POST" }
+    { method: "POST" },
   );
   return res.json();
 };
@@ -191,7 +202,7 @@ export const permanentlyDeleteQuiz = async (quizId: string) => {
     API_ENDPOINTS.QUIZZES.DELETE_PERMANENT(quizId),
     {
       method: "DELETE",
-    }
+    },
   );
   return res.json();
 };
@@ -233,7 +244,7 @@ export const adminListPastQuizzes = async (params?: {
 
 export const adminQuizDetails = async (quizId: string) => {
   const res = await apiCallWithAuth(
-    API_ENDPOINTS.QUIZZES.ADMIN_DETAILS(quizId)
+    API_ENDPOINTS.QUIZZES.ADMIN_DETAILS(quizId),
   );
   return res.json();
 };
