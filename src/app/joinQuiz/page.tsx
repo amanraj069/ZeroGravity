@@ -54,6 +54,7 @@ function JoinQuizContent() {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
   const [isTimeUp, setIsTimeUp] = useState<boolean>(false);
+  const [stoppedByHost, setStoppedByHost] = useState<boolean>(false);
   const [showQuizEnded, setShowQuizEnded] = useState<boolean>(false);
   const [showKickedOut, setShowKickedOut] = useState<boolean>(false);
   const [serverStartTime, setServerStartTime] = useState<Date | null>(null);
@@ -166,6 +167,7 @@ function JoinQuizContent() {
       setCurrentQuestion(payload.question);
       setHasAnswered(false);
       setIsTimeUp(false);
+      setStoppedByHost(false);
 
       if (payload.startTime && payload.timeLimit) {
         setServerStartTime(new Date(payload.startTime));
@@ -183,14 +185,17 @@ function JoinQuizContent() {
         setServerTimeLimit(0);
       }
     };
-    const onQuestionTimeUp = () => {
+    const onQuestionTimeUp = (payload?: { stoppedByHost?: boolean }) => {
       setIsTimeUp(true);
+      setStoppedByHost(payload?.stoppedByHost || false);
+      setTimeLeft(0);
     };
     const onEnded = () => {
       setCurrentQuestion(null);
       setShowQuizEnded(true);
       setHasAnswered(false);
       setIsTimeUp(false);
+      setStoppedByHost(false);
       setTimeLeft(0);
       // Clear timer
       if (timerRef.current) {
@@ -296,19 +301,21 @@ function JoinQuizContent() {
 
     // On mount, also fetch current state in case we refreshed mid-question
     (async () => {
-      const cur = await getCurrentQuestion(joined.quizId);
+      const cur = await getCurrentQuestion(joined.quizId, joined.quizUserId);
       if (cur?.success && cur.index >= 0) {
         setCurrentQuestion(cur.question);
-        setHasAnswered(false);
-        setIsTimeUp(false);
+        // Set hasAnswered and isTimeUp based on server response
+        setHasAnswered(cur.hasAnswered || false);
+        setIsTimeUp(cur.isTimeUp || false);
 
         if (cur.startTime && cur.timeLimit && cur.remainingTime !== undefined) {
           setServerStartTime(new Date(cur.startTime));
           setServerTimeLimit(cur.timeLimit);
-          setTimeLeft(cur.remainingTime);
+          // If time is up, set to 0, otherwise use server's remaining time
+          setTimeLeft(cur.isTimeUp ? 0 : cur.remainingTime);
         } else {
           // Fallback to client-side timer
-          setTimeLeft(cur.question.timeLimitSeconds);
+          setTimeLeft(cur.isTimeUp ? 0 : cur.question.timeLimitSeconds);
           setServerStartTime(null);
           setServerTimeLimit(0);
         }
@@ -349,6 +356,15 @@ function JoinQuizContent() {
 
   useEffect(() => {
     if (!currentQuestion) return;
+    // Don't start timer if already time up
+    if (isTimeUp) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+
     if (timerRef.current) clearInterval(timerRef.current);
 
     timerRef.current = setInterval(() => {
@@ -386,7 +402,7 @@ function JoinQuizContent() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [currentQuestion, serverStartTime, serverTimeLimit]);
+  }, [currentQuestion, serverStartTime, serverTimeLimit, isTimeUp]);
 
   const handleJoin = async () => {
     if (!joinCode || !name) return;
@@ -437,15 +453,25 @@ function JoinQuizContent() {
 
     setHasAnswered(true);
 
-    const result = await submitAnswer(joined.quizId, {
-      quizUserId: joined.quizUserId,
-      questionId: currentQuestion.questionId,
-      selectedOptionKey: key,
-      timeLeftSeconds: timeLeft,
-    });
-    if (!result?.success) {
-      alert("Failed to submit answer");
-      setHasAnswered(false);
+    try {
+      const result = await submitAnswer(joined.quizId, {
+        quizUserId: joined.quizUserId,
+        questionId: currentQuestion.questionId,
+        selectedOptionKey: key,
+        timeLeftSeconds: timeLeft,
+      });
+      if (!result?.success) {
+        // If time is up on server side, don't revert - the answer window has closed
+        if (result?.message?.toLowerCase().includes("time")) {
+          setIsTimeUp(true);
+        } else {
+          console.error("Failed to submit answer:", result?.message);
+          setHasAnswered(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+      // Don't show alert, just log the error - the UI state handles it
     }
   };
 
@@ -633,7 +659,7 @@ function JoinQuizContent() {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Hero-style header section */}
       <div className="bg-white dark:bg-gray-900">
-        <div className="max-w-6xl mx-auto px-4 pt-8">
+        <div className="max-w-6xl mx-auto px-4 lg:py-8 pt-4 pb-2">
           {/* Mobile Layout */}
           <div className="lg:hidden mb-4">
             {/* Title and Exit Button Row */}
@@ -660,26 +686,6 @@ function JoinQuizContent() {
                 )}
               </div>
             </div>
-
-            {/* Host Status Message - Below on Mobile */}
-            {!currentQuestion && !showQuizEnded && !showKickedOut && (
-              <div className="flex items-center justify-center gap-2 py-2">
-                <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-amber-500 animate-pulse"></div>
-                  <div
-                    className="w-2 h-2 bg-amber-500 animate-pulse"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-amber-500 animate-pulse"
-                    style={{ animationDelay: "0.4s" }}
-                  ></div>
-                </div>
-                <p className="text-amber-800 dark:text-amber-300 font-medium text-sm">
-                  The host has not started the quiz yet
-                </p>
-              </div>
-            )}
           </div>
 
           {/* Desktop Layout */}
@@ -689,26 +695,6 @@ function JoinQuizContent() {
                 Quiz {quizTitle && `- ${quizTitle}`}
               </h1>
             </div>
-
-            {/* Host Status Message - Center on Desktop */}
-            {!currentQuestion && !showQuizEnded && !showKickedOut && (
-              <div className="flex items-center justify-center gap-3 flex-1">
-                <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-amber-500 animate-pulse"></div>
-                  <div
-                    className="w-2 h-2 bg-amber-500 animate-pulse"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-amber-500 animate-pulse"
-                    style={{ animationDelay: "0.4s" }}
-                  ></div>
-                </div>
-                <p className="text-amber-800 dark:text-amber-300 font-medium text-sm whitespace-nowrap">
-                  The host has not started the quiz yet
-                </p>
-              </div>
-            )}
 
             <div className="flex items-center gap-4 flex-shrink-0">
               {totalQuestions > 0 && (
@@ -727,349 +713,157 @@ function JoinQuizContent() {
               )}
             </div>
           </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400 font-light">
-              {currentQuestion && !showQuizEnded && !showKickedOut
-                ? "Answer the question before time runs out"
-                : showQuizEnded
-                  ? "Quiz completed - great job!"
-                  : ""}
-            </p>
-
-            {currentQuestion && !showQuizEnded && !showKickedOut && (
-              <div className="mt-6">
-                {/* Compact Timer Display */}
-                <div className="inline-flex items-center gap-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-6 py-3">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`w-2 h-2 ${
-                        timeLeft <= 10
-                          ? "bg-red-500"
-                          : timeLeft <= 30
-                            ? "bg-amber-500"
-                            : "bg-green-500"
-                      } animate-pulse`}
-                    ></div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
-                      Time
-                    </span>
-                  </div>
-                  <div
-                    className={`text-2xl font-mono font-bold ${
-                      timeLeft <= 10
-                        ? "text-red-600 dark:text-red-400"
-                        : timeLeft <= 30
-                          ? "text-amber-600 dark:text-amber-400"
-                          : "text-black dark:text-white"
-                    }`}
-                  >
-                    {Math.floor(timeLeft / 60)}:
-                    {(timeLeft % 60).toString().padStart(2, "0")}
-                  </div>
-                  {/* Progress bar */}
-                  <div className="w-24 h-1 bg-gray-200 dark:bg-gray-700">
-                    <div
-                      className={`h-full transition-all duration-1000 ease-linear ${
-                        timeLeft <= 10
-                          ? "bg-red-500"
-                          : timeLeft <= 30
-                            ? "bg-amber-500"
-                            : "bg-black dark:bg-white"
-                      }`}
-                      style={{
-                        width: `${Math.max(
-                          0,
-                          (timeLeft /
-                            (currentQuestion?.timeLimitSeconds || timeLeft)) *
-                            100,
-                        )}%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
       <main className="flex-1 flex flex-col items-center px-4 pb-8">
         <div className="w-full max-w-6xl">
           {showKickedOut ? (
-            <div className="text-center pt-8 pb-16">
-              <div className="max-w-2xl mx-auto mt-12">
-                <h2 className="text-3xl font-light text-red-600 dark:text-red-400 mb-4">
-                  You were removed from the quiz
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
-                  The host has removed you from this quiz. You can join another
-                  quiz or create your own.
-                </p>
-                <div className="bg-red-50 dark:bg-red-900/30 p-4 mb-6 border border-red-200 dark:border-red-800">
-                  <p className="text-sm text-red-600 dark:text-red-400">
-                    You were kicked out by the admin
-                  </p>
-                </div>
-                <button
-                  onClick={handleExit}
-                  className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 font-light hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+              <div className="w-16 h-16 mb-6 border-2 border-red-500 flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Return to Quiz Entry
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </div>
+              <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-2">
+                Removed from Quiz
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
+                The host has removed you from this quiz
+              </p>
+              <button
+                onClick={handleExit}
+                className="h-10 px-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+              >
+                Return to Quiz Entry
+              </button>
             </div>
           ) : showQuizEnded ? (
-            <div className="text-center pt-8 pb-16">
-              <div className="max-w-2xl mx-auto">
-                <div className="w-24 h-24 mx-auto mb-8 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                  <svg
-                    className="w-12 h-12 text-green-600 dark:text-green-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-                <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
-                  Quiz Complete!
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-6">
-                  Thanks for participating! Contact the host to learn about the
-                  results.
-                </p>
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 mb-6 border border-gray-200 dark:border-gray-700">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Great job completing the quiz!
-                  </p>
-                </div>
-                <button
-                  onClick={handleExit}
-                  className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 font-light hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+              <div className="w-16 h-16 mb-6 border-2 border-green-500 flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Return to Quiz Entry
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
               </div>
+              <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-2">
+                Quiz Complete
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
+                Thanks for participating
+              </p>
+              <button
+                onClick={handleExit}
+                className="h-10 px-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+              >
+                Return to Quiz Entry
+              </button>
             </div>
           ) : currentQuestion ? (
-            <div className="space-y-4">
-              {hasAnswered ? (
-                <div className="text-center pt-12 pb-16">
-                  <div className="max-w-2xl mx-auto">
-                    {/* Success Icon with Animation */}
-                    <div className="relative mx-auto mb-8">
-                      <div className="w-32 h-32 mx-auto bg-green-100 dark:bg-green-900/30 flex items-center justify-center border border-green-200 dark:border-green-800">
-                        <div className="w-16 h-16 bg-green-500 dark:bg-green-600 flex items-center justify-center animate-pulse">
-                          <svg
-                            className="w-8 h-8 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    <h2 className="text-3xl font-light text-gray-900 dark:text-white mb-6 tracking-tight">
-                      Answer Submitted
-                    </h2>
-                    <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-                      Great job! Waiting for the next question...
-                    </p>
-
-                    {/* Elegant waiting indicator */}
-                    <div className="flex items-center justify-center space-x-3 mb-8">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-green-400 dark:bg-green-500 animate-pulse"></div>
-                        <div
-                          className="w-2 h-2 bg-green-400 dark:bg-green-500 animate-pulse"
-                          style={{ animationDelay: "0.2s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-green-400 dark:bg-green-500 animate-pulse"
-                          style={{ animationDelay: "0.4s" }}
-                        ></div>
-                      </div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 font-light">
-                        Processing...
-                      </span>
-                    </div>
-
-                    {/* Progress indicator */}
-                    <div className="bg-gray-50 dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center justify-center space-x-3">
-                        <div className="w-8 h-8 bg-green-500 dark:bg-green-600 flex items-center justify-center">
-                          <svg
-                            className="w-4 h-4 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                        <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 dark:from-green-500 dark:to-emerald-600 animate-pulse"></div>
-                        </div>
-                        <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                          Submitted
-                        </span>
-                      </div>
-                    </div>
+            /* Question Box - Fixed Height */
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 min-h-[500px] md:min-h-[550px] flex flex-col">
+              {/* Question Header with Timer */}
+              <div className="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-start justify-between gap-4">
+                  <h2 className="text-xl md:text-2xl font-light text-black dark:text-white leading-relaxed flex-1">
+                    {currentQuestion.text}
+                  </h2>
+                  {/* Timer */}
+                  <div
+                    className={`h-10 px-4 font-mono text-lg font-bold flex items-center flex-shrink-0 ${
+                      timeLeft <= 10
+                        ? "bg-red-500 text-white"
+                        : timeLeft <= 30
+                          ? "bg-amber-500 text-white"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                    }`}
+                  >
+                    {Math.floor(timeLeft / 60)}:
+                    {(timeLeft % 60).toString().padStart(2, "0")}
                   </div>
                 </div>
-              ) : isTimeUp ? (
-                <div className="text-center pt-12 pb-16">
-                  <div className="max-w-2xl mx-auto">
-                    {/* Enhanced Time's Up Icon */}
-                    <div className="relative mx-auto mb-8">
-                      <div className="w-32 h-32 mx-auto bg-red-100 dark:bg-red-900/30 flex items-center justify-center border border-red-200 dark:border-red-800">
-                        <div className="w-16 h-16 bg-red-500 dark:bg-red-600 flex items-center justify-center animate-pulse">
-                          <svg
-                            className="w-8 h-8 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
+              </div>
 
-                    <h2 className="text-3xl font-light text-red-600 dark:text-red-400 mb-6 tracking-tight">
-                      Time&apos;s Up!
-                    </h2>
-                    <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-                      Don&apos;t worry, there&apos;s always the next question.
+              {/* Content Area */}
+              <div className="flex-1 p-4 md:p-6 flex flex-col justify-center items-center">
+                {hasAnswered ? (
+                  /* Answered State - Centered */
+                  <div className="text-center">
+                    <h3 className="text-xl md:text-2xl font-light text-gray-900 dark:text-white">
+                      Answer submitted
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      Waiting for host to push next question
                     </p>
-
-                    {/* Enhanced waiting message */}
-                    <div className="bg-gray-50 dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 mb-8">
-                      <div className="flex items-center justify-center space-x-3 mb-4">
-                        <div className="w-8 h-8 bg-gray-400 dark:bg-gray-600 flex items-center justify-center">
-                          <svg
-                            className="w-4 h-4 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">
-                          Waiting for next question
-                        </span>
-                      </div>
-
-                      {/* Animated progress dots */}
-                      <div className="flex items-center justify-center space-x-2">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
-                          <div
-                            className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"
-                            style={{ animationDelay: "0.2s" }}
-                          ></div>
-                          <div
-                            className="w-2 h-2 bg-gray-400 dark:bg-gray-500 animate-bounce"
-                            style={{ animationDelay: "0.4s" }}
-                          ></div>
-                        </div>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 ml-3">
-                          Host is preparing...
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Encouragement message */}
-                    <div className="bg-blue-50 dark:bg-blue-900/30 p-4 border border-blue-200 dark:border-blue-800">
-                      <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
-                        Stay focused! The next question is coming soon.
-                      </p>
-                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="bg-white dark:bg-gray-800 p-8 lg:p-10 border border-gray-200 dark:border-gray-700">
-                  {/* Question Header */}
-                  <div className="mb-8">
-                    <div className="flex items-center justify-center mb-4">
-                      <div className="w-12 h-12 bg-black dark:bg-white flex items-center justify-center">
-                        <svg
-                          className="w-6 h-6 text-white dark:text-black"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+                ) : isTimeUp ? (
+                  /* Time Up / Stopped by Host State - Centered */
+                  <div className="text-center">
+                    <h3 className="text-xl md:text-2xl font-light text-gray-900 dark:text-white">
+                      {stoppedByHost
+                        ? "Oops! Host has stopped receiving responses"
+                        : "Time's up"}
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      Waiting for next question
+                    </p>
+                  </div>
+                ) : (
+                  /* Answer Options - Colorful Buttons */
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 w-full">
+                    {currentQuestion.options.map((o, index) => {
+                      const colors = [
+                        "bg-red-500 hover:bg-red-600 active:bg-red-700",
+                        "bg-blue-500 hover:bg-blue-600 active:bg-blue-700",
+                        "bg-amber-500 hover:bg-amber-600 active:bg-amber-700",
+                        "bg-purple-500 hover:bg-purple-600 active:bg-purple-700",
+                        "bg-green-500 hover:bg-green-600 active:bg-green-700",
+                        "bg-pink-500 hover:bg-pink-600 active:bg-pink-700",
+                        "bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700",
+                        "bg-orange-500 hover:bg-orange-600 active:bg-orange-700",
+                      ];
+                      const colorClass = colors[index % colors.length];
+
+                      return (
+                        <button
+                          key={o.key}
+                          className={`${colorClass} text-white p-6 md:p-8 text-left transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]`}
+                          onClick={() => sendAnswer(o.key)}
+                          disabled={hasAnswered || isTimeUp}
                         >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <h2 className="text-2xl lg:text-3xl font-light text-black dark:text-white leading-relaxed text-center mx-auto">
-                      {currentQuestion.text}
-                    </h2>
-                  </div>
-
-                  {/* Answer Options */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
-                    {currentQuestion.options.map((o) => (
-                      <button
-                        key={o.key}
-                        className="group relative p-5 lg:p-6 text-left transition-all duration-200 border border-gray-200 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-600 disabled:hover:bg-white dark:disabled:hover:bg-gray-800"
-                        onClick={(e) => {
-                          const target = e.currentTarget as HTMLButtonElement;
-                          target.className =
-                            "group relative p-5 lg:p-6 text-left transition-all duration-200 border border-black dark:border-white bg-black dark:bg-white text-white dark:text-black hover:border-black dark:hover:border-white hover:bg-black dark:hover:bg-white";
-                          sendAnswer(o.key);
-                        }}
-                        disabled={hasAnswered || isTimeUp}
-                      >
-                        {/* Option Content */}
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-8 h-8 bg-black dark:bg-white text-white dark:text-black flex items-center justify-center text-sm font-bold transition-all duration-200 group-hover:shadow-md">
-                            {o.key}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-base font-medium text-gray-900 dark:text-gray-100 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors break-words">
+                          <div className="flex items-center gap-4">
+                            <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-white/20 flex items-center justify-center text-lg md:text-xl font-bold">
+                              {o.key}
+                            </div>
+                            <div className="flex-1 text-base md:text-lg font-medium">
                               {o.text}
                             </div>
                           </div>
-                        </div>
-                      </button>
-                    ))}
+                        </button>
+                      );
+                    })}
                   </div>
-
-                  {/* Answer Instructions */}
-                  <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 font-light">
-                      Select your answer by clicking on one of the options above
-                    </p>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ) : (
             <div className="pb-16">

@@ -93,7 +93,7 @@ export default function QuizzesPage() {
 
   const handleQuizClick = (quiz: Quiz) => {
     if (quiz.status === "draft") {
-      router.push(`/quizzes/create?quizId=${quiz.quizId}`);
+      router.push(`/quizzes/create?quizId=${quiz.quizId}&savedStatus=true`);
     } else if (quiz.status === "published") {
       router.push(`/quizzes/host/${quiz.quizId}`);
     } else {
@@ -165,7 +165,7 @@ export default function QuizzesPage() {
   // Check if user has pro subscription
   if (user?.subscription !== "pro") {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         <main className="flex-1 py-10 max-w-6xl mx-auto">
           <div className="max-w-4xl px-4 mx-auto">
             <div className="text-center py-16">
@@ -263,7 +263,7 @@ export default function QuizzesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <main className="flex-1 py-10">
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
@@ -283,13 +283,6 @@ export default function QuizzesPage() {
                   className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Join Quiz
-                </button>
-                <button
-                  onClick={() => router.push("/liveQuiz")}
-                  className="border border-purple-500 dark:border-purple-500 text-purple-600 dark:text-purple-400 px-6 py-3 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-sm font-medium cursor-pointer flex items-center gap-2"
-                >
-                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  Join Live Quiz
                 </button>
                 {user?.subscription === "pro" && (
                   <button

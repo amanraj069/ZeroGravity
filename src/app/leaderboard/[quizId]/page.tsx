@@ -1,20 +1,41 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { getQuiz, leaderboard } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LeaderboardPage() {
   const params = useParams();
   const router = useRouter();
   const quizId = String(params?.quizId || "");
+  const { user } = useAuth();
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [board, setBoard] = useState<QuizLeaderboardEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Function to fetch leaderboard data
+  const fetchLeaderboard = React.useCallback(async () => {
+    try {
+      const b = await leaderboard(quizId);
+      if (b?.success) {
+        setBoard(b.leaderboard);
+      }
+    } catch (error) {
+      console.error("Failed to update leaderboard:", error);
+    }
+  }, [quizId]);
 
   useEffect(() => {
     if (!quizId) return;
@@ -39,7 +60,16 @@ export default function LeaderboardPage() {
         setLoading(false);
       }
     })();
-  }, [quizId]);
+
+    // Start polling every 5 seconds for live updates
+    pollingRef.current = setInterval(fetchLeaderboard, 5000);
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, [quizId, fetchLeaderboard]);
 
   useEffect(() => {
     if (!quizId) return;
@@ -47,26 +77,19 @@ export default function LeaderboardPage() {
     joinQuizRoom(quizId);
     const s = getSocket();
 
-    const onVotesUpdate = async () => {
-      // Refresh leaderboard when votes are updated
-      try {
-        const b = await leaderboard(quizId);
-        if (b?.success) {
-          setBoard(b.leaderboard);
-        }
-      } catch (error) {
-        console.error("Failed to update leaderboard:", error);
-      }
-    };
-
-    s.on("votes:update", onVotesUpdate);
-    s.on("question:timeup", onVotesUpdate);
+    // Refresh leaderboard on various events
+    s.on("votes:update", fetchLeaderboard);
+    s.on("question:timeup", fetchLeaderboard);
+    s.on("question:pushed", fetchLeaderboard);
+    s.on("quiz:ended", fetchLeaderboard);
 
     return () => {
-      s.off("votes:update", onVotesUpdate);
-      s.off("question:timeup", onVotesUpdate);
+      s.off("votes:update", fetchLeaderboard);
+      s.off("question:timeup", fetchLeaderboard);
+      s.off("question:pushed", fetchLeaderboard);
+      s.off("quiz:ended", fetchLeaderboard);
     };
-  }, [quizId]);
+  }, [quizId, fetchLeaderboard]);
 
   const handleBackToHosted = () => {
     router.push(`/hosted/${quizId}`);
@@ -91,53 +114,79 @@ export default function LeaderboardPage() {
       <main className="flex-1 flex flex-col items-center px-4 py-10">
         <div className="w-full max-w-6xl space-y-8">
           {/* Header */}
-          <div className="border-b border-gray-100 dark:border-gray-800 pb-8">
-            <h1 className="text-4xl font-light text-black dark:text-white tracking-tight mb-2">
-              Leaderboard
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 font-light mb-8">
-              {quiz?.title || "Quiz Results"}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex items-start justify-between gap-6">
+            <div className="flex items-start gap-2">
               <button
-                onClick={handleBackToHosted}
-                className="flex-1 px-6 py-3 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black font-light transition-colors"
+                onClick={() =>
+                  router.push(
+                    `/quizzes/host/${quizId}${quiz?.joinCode ? `?code=${quiz.joinCode}` : ""}`,
+                  )
+                }
+                className="mt-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                title="Back to Host"
               >
-                ← Back to Control
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
               </button>
-              <button
-                onClick={handleBackToPortal}
-                className="flex-1 px-6 py-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-white font-light transition-colors"
-              >
-                Portal
-              </button>
+              <div>
+                <h1 className="text-4xl font-light text-black dark:text-white tracking-tight mb-2">
+                  Leaderboard
+                </h1>
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-light">
+                  {quiz?.title || "Quiz Results"}
+                </p>
+              </div>
             </div>
+
+            {user && quiz?.ownerUserId === user.userId && (
+              <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+                <button
+                  onClick={handleBackToHosted}
+                  className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap"
+                >
+                  ← Back to Control
+                </button>
+                <button
+                  onClick={handleBackToPortal}
+                  className="px-6 py-3 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap"
+                >
+                  Portal
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Leaderboard - Table Header */}
-          <div className="hidden lg:block border border-gray-200 mb-0">
-            <div className="grid grid-cols-12 gap-0 p-4 bg-white border-b border-gray-200">
-              <div className="col-span-3 text-xs font-medium text-gray-600 uppercase tracking-wide">
-                Name
+          <div className="hidden lg:block border border-gray-200 dark:border-gray-800">
+            <div className="grid grid-cols-12 gap-0 p-4 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+              <div className="col-span-4 text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                Participant
               </div>
-              <div className="col-span-4 text-xs font-medium text-gray-600 uppercase tracking-wide">
-                Answer Summary
+              <div className="col-span-2 text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide text-center">
+                Score
               </div>
-              <div className="col-span-2 text-xs font-medium text-gray-600 uppercase tracking-wide text-center">
+              <div className="col-span-1 text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide text-center">
                 Accuracy
               </div>
-              <div className="col-span-2 text-xs font-medium text-gray-600 uppercase tracking-wide text-center">
-                Points
-              </div>
-              <div className="col-span-1 text-xs font-medium text-gray-600 uppercase tracking-wide text-right pr-4">
-                Score
+              <div className="col-span-5 text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                Answer Summary
               </div>
             </div>
           </div>
 
           {/* Leaderboard */}
-          <div className="space-y-0 border border-gray-200 border-t-0">
+          <div className="space-y-0 border border-gray-200 dark:border-gray-800 border-t-0">
             {board.length > 0 ? (
               board
                 .slice()
@@ -148,100 +197,121 @@ export default function LeaderboardPage() {
                   const incorrectAnswers = entry.incorrectAnswers || 0;
                   const accuracy = entry.accuracy || 0;
                   const pointsScored = entry.pointsEarned || 0;
+                  const totalQuestions =
+                    quiz?.questions?.length ||
+                    correctAnswers + incorrectAnswers ||
+                    1;
+                  const answeredQuestions = correctAnswers + incorrectAnswers;
+
+                  // Generate avatar color from name
+                  const getAvatarColor = (name: string) => {
+                    const colors = [
+                      "bg-pink-500",
+                      "bg-orange-500",
+                      "bg-red-500",
+                      "bg-purple-500",
+                      "bg-blue-500",
+                      "bg-green-500",
+                      "bg-yellow-500",
+                      "bg-indigo-500",
+                      "bg-cyan-500",
+                      "bg-teal-500",
+                    ];
+                    const charCode = name.charCodeAt(0) || 0;
+                    return colors[charCode % colors.length];
+                  };
 
                   return (
                     <div
                       key={entry.quizUserId}
-                      className={`hidden lg:block border-b border-gray-200 hover:bg-opacity-80 transition-colors last:border-b-0 ${
-                        rank === 1
-                          ? "bg-yellow-50"
-                          : rank === 2
-                          ? "bg-gray-100"
-                          : rank === 3
-                          ? "bg-orange-50"
-                          : "hover:bg-gray-50"
-                      }`}
+                      className={`hidden lg:block border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors last:border-b-0 bg-white dark:bg-gray-900`}
                     >
                       <div className="grid grid-cols-12 gap-0 p-4 items-center">
-                        {/* Name Column */}
-                        <div className="col-span-3 flex items-center gap-3">
-                          <div className="w-10 h-10 flex items-center justify-center bg-black text-white text-sm font-medium flex-shrink-0">
+                        {/* Participant Column with Avatar */}
+                        <div className="col-span-4 flex items-center gap-3">
+                          <div className="w-8 h-8 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold flex-shrink-0">
                             {rank}
                           </div>
-                          <div className="min-w-0">
-                            <h3 className="text-sm font-light text-gray-900 truncate">
-                              {entry.participantName}
-                            </h3>
-                            <p className="text-xs text-gray-500 font-light">
-                              Participant
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Answer Summary Column */}
-                        <div className="col-span-4 space-y-2">
-                          {/* Visual Blocks */}
-                          <div className="flex gap-0.5">
-                            {Array.from({
-                              length: Math.max(
-                                correctAnswers + incorrectAnswers,
-                                1
-                              ),
-                            }).map((_, i) => {
-                              if (i < correctAnswers)
-                                return (
-                                  <div
-                                    key={i}
-                                    className="w-2 h-3 bg-green-500"
-                                  />
-                                );
-                              return (
-                                <div key={i} className="w-2 h-3 bg-red-500" />
-                              );
-                            })}
-                          </div>
-                          {/* Answer Count */}
-                          <div className="flex gap-4 text-xs font-light">
-                            <span className="text-green-700">
-                              ✓{correctAnswers}
-                            </span>
-                            <span className="text-red-700">
-                              ✗{incorrectAnswers}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Accuracy Column */}
-                        <div className="col-span-2 text-center">
-                          <div className="flex items-center justify-center">
-                            <span className="text-sm font-light text-gray-900">
-                              {accuracy}%
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Points Column */}
-                        <div className="col-span-2 text-center">
-                          <span className="text-sm font-light text-gray-900">
-                            {pointsScored}/92
-                          </span>
+                          {entry.participantAvatar ? (
+                            <Image
+                              src={`/quiz/avatars/${entry.participantAvatar}`}
+                              alt={entry.participantName}
+                              width={48}
+                              height={48}
+                              className="w-12 h-12 object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div
+                              className={`w-12 h-12 flex items-center justify-center text-white text-lg font-medium flex-shrink-0 ${getAvatarColor(entry.participantName)}`}
+                            >
+                              {entry.participantName
+                                ?.charAt(0)
+                                ?.toUpperCase() || "?"}
+                            </div>
+                          )}
+                          <h3 className="text-lg font-medium text-gray-900 dark:text-white truncate">
+                            {entry.participantName}
+                          </h3>
                         </div>
 
                         {/* Score Column */}
-                        <div className="col-span-1 text-right pr-4">
-                          <span className="text-sm font-light text-gray-900">
+                        <div className="col-span-2 text-center">
+                          <span className="text-xl font-bold text-gray-900 dark:text-white">
                             {Math.round(entry.totalScore || 0)}
                           </span>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {Math.round(pointsScored)} pts
+                          </p>
+                        </div>
+
+                        {/* Accuracy Column */}
+                        <div className="col-span-1 text-center">
+                          <span className="text-base font-medium text-gray-900 dark:text-white">
+                            {accuracy}%
+                          </span>
+                        </div>
+
+                        {/* Answer Summary Column - Fixed width per question */}
+                        <div className="col-span-5">
+                          <div className="flex gap-1">
+                            {Array.from({ length: totalQuestions }).map(
+                              (_, i) => {
+                                let bgColor = "bg-gray-300 dark:bg-gray-600"; // unanswered
+                                if (i < correctAnswers) {
+                                  bgColor = "bg-green-500";
+                                } else if (i < answeredQuestions) {
+                                  bgColor = "bg-red-500";
+                                }
+                                return (
+                                  <div
+                                    key={i}
+                                    className={`h-6 ${bgColor}`}
+                                    style={{
+                                      width: `${100 / totalQuestions}%`,
+                                    }}
+                                  />
+                                );
+                              },
+                            )}
+                          </div>
+                          <div className="flex gap-3 mt-1 text-xs">
+                            <span className="text-green-600 dark:text-green-400 font-medium">
+                              ✓{correctAnswers}
+                            </span>
+                            <span className="text-red-600 dark:text-red-400 font-medium">
+                              ✗{incorrectAnswers}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   );
                 })
             ) : (
-              <div className="text-center py-12 bg-gray-50">
-                <div className="w-12 h-12 mx-auto mb-4 bg-gray-200 flex items-center justify-center">
+              <div className="min-h-[500px] text-center py-12 bg-white dark:bg-gray-900 align-items-center justify-center flex flex-col gap-2">
+                <div className="w-12 h-12 mx-auto mb-4 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-gray-400"
+                    className="w-6 h-6 text-gray-400 dark:text-gray-500"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -252,10 +322,10 @@ export default function LeaderboardPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-base font-light text-gray-900 mb-2">
+                <h3 className="text-base font-light text-gray-900 dark:text-white mb-2">
                   No scores yet
                 </h3>
-                <p className="text-sm text-gray-600 font-light">
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-light">
                   Participants need to answer questions to appear on the
                   leaderboard
                 </p>
@@ -272,73 +342,107 @@ export default function LeaderboardPage() {
                 .map((entry, index) => {
                   const rank = index + 1;
                   const accuracy = entry.accuracy || 0;
+                  const correctAnswers = entry.correctAnswers || 0;
+                  const incorrectAnswers = entry.incorrectAnswers || 0;
+                  const totalQuestions =
+                    quiz?.questions?.length ||
+                    correctAnswers + incorrectAnswers ||
+                    1;
+                  const answeredQuestions = correctAnswers + incorrectAnswers;
+
+                  // Generate avatar color from name
+                  const getAvatarColor = (name: string) => {
+                    const colors = [
+                      "bg-pink-500",
+                      "bg-orange-500",
+                      "bg-red-500",
+                      "bg-purple-500",
+                      "bg-blue-500",
+                      "bg-green-500",
+                      "bg-yellow-500",
+                      "bg-indigo-500",
+                      "bg-cyan-500",
+                      "bg-teal-500",
+                    ];
+                    const charCode = name.charCodeAt(0) || 0;
+                    return colors[charCode % colors.length];
+                  };
 
                   return (
                     <div
                       key={entry.quizUserId}
-                      className={`p-4 border border-gray-200 hover:border-gray-400 transition-colors ${
-                        rank === 1
-                          ? "bg-yellow-50 border-yellow-200"
-                          : rank === 2
-                          ? "bg-gray-100 border-gray-300"
-                          : rank === 3
-                          ? "bg-orange-50 border-orange-200"
-                          : "hover:bg-gray-50"
-                      }`}
+                      className="p-4 border border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600 transition-colors bg-white dark:bg-gray-900"
                     >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 flex items-center justify-center bg-black text-white text-xs font-medium flex-shrink-0">
+                          <div className="w-8 h-8 flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-bold flex-shrink-0">
                             {rank}
                           </div>
-                          <div>
-                            <h3 className="text-sm font-light text-gray-900">
-                              {entry.participantName}
-                            </h3>
-                          </div>
+                          {entry.participantAvatar ? (
+                            <Image
+                              src={`/quiz/avatars/${entry.participantAvatar}`}
+                              alt={entry.participantName}
+                              width={48}
+                              height={48}
+                              className="w-12 h-12 object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div
+                              className={`w-12 h-12 flex items-center justify-center text-white text-lg font-medium flex-shrink-0 ${getAvatarColor(entry.participantName)}`}
+                            >
+                              {entry.participantName
+                                ?.charAt(0)
+                                ?.toUpperCase() || "?"}
+                            </div>
+                          )}
+                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                            {entry.participantName}
+                          </h3>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg font-light text-gray-900">
+                          <div className="text-xl font-bold text-gray-900 dark:text-white">
                             {Math.round(entry.totalScore || 0)}
                           </div>
-                          <p className="text-xs text-gray-500 font-light">
-                            score
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {Math.round(entry.pointsEarned || 0)} pts ·{" "}
+                            {accuracy}%
                           </p>
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <div className="flex gap-0.5">
-                          {Array.from({
-                            length: Math.max(
-                              (entry.correctAnswers || 0) +
-                                (entry.incorrectAnswers || 0),
-                              1
-                            ),
-                          }).map((_, i) => {
-                            if (i < (entry.correctAnswers || 0))
+                        <div className="flex gap-1">
+                          {Array.from({ length: totalQuestions }).map(
+                            (_, i) => {
+                              let bgColor = "bg-gray-300 dark:bg-gray-600";
+                              if (i < correctAnswers) {
+                                bgColor = "bg-green-500";
+                              } else if (i < answeredQuestions) {
+                                bgColor = "bg-red-500";
+                              }
                               return (
                                 <div
                                   key={i}
-                                  className="flex-1 h-2 bg-green-500"
+                                  className={`h-4 ${bgColor}`}
+                                  style={{ width: `${100 / totalQuestions}%` }}
                                 />
                               );
-                            return (
-                              <div key={i} className="flex-1 h-2 bg-red-500" />
-                            );
-                          })}
+                            },
+                          )}
                         </div>
-                        <div className="flex items-center justify-between text-xs">
-                          <div className="text-gray-600 font-light">
-                            {accuracy}% • ✓{entry.correctAnswers || 0} ✗
-                            {entry.incorrectAnswers || 0}
-                          </div>
+                        <div className="flex items-center gap-3 text-xs">
+                          <span className="text-green-600 dark:text-green-400 font-medium">
+                            ✓{correctAnswers}
+                          </span>
+                          <span className="text-red-600 dark:text-red-400 font-medium">
+                            ✗{incorrectAnswers}
+                          </span>
                         </div>
                       </div>
                     </div>
                   );
                 })
             ) : (
-              <div className="text-center py-8 text-gray-600">
+              <div className="text-center py-8 text-gray-600 dark:text-gray-400">
                 No scores yet
               </div>
             )}
@@ -346,33 +450,33 @@ export default function LeaderboardPage() {
 
           {/* Stats Summary */}
           {board.length > 0 && (
-            <div className="grid grid-cols-3 gap-4 border-t border-gray-100 pt-8">
-              <div className="p-5 border border-gray-200  text-center">
-                <div className="text-2xl font-light text-gray-900 mb-2">
+            <div className="grid grid-cols-3 gap-4 border-t border-gray-200 dark:border-gray-800 pt-8">
+              <div className="p-5 border border-gray-200 dark:border-gray-800 text-center bg-white dark:bg-gray-900">
+                <div className="text-2xl font-light text-gray-900 dark:text-white mb-2">
                   {board.length}
                 </div>
-                <p className="text-xs text-gray-600 font-light uppercase tracking-wide">
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-light uppercase tracking-wide">
                   Participants
                 </p>
               </div>
-              <div className="p-5 border border-gray-200  text-center">
-                <div className="text-2xl font-light text-gray-900 mb-2">
+              <div className="p-5 border border-gray-200 dark:border-gray-800 text-center bg-white dark:bg-gray-900">
+                <div className="text-2xl font-light text-gray-900 dark:text-white mb-2">
                   {Math.round(board[0]?.totalScore || 0)}
                 </div>
-                <p className="text-xs text-gray-600 font-light uppercase tracking-wide">
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-light uppercase tracking-wide">
                   High Score
                 </p>
               </div>
-              <div className="p-5 border border-gray-200  text-center">
-                <div className="text-2xl font-light text-gray-900 mb-2">
+              <div className="p-5 border border-gray-200 dark:border-gray-800 text-center bg-white dark:bg-gray-900">
+                <div className="text-2xl font-light text-gray-900 dark:text-white mb-2">
                   {Math.round(
                     board.reduce(
                       (sum, entry) => sum + (entry.totalScore || 0),
-                      0
-                    ) / board.length
+                      0,
+                    ) / board.length,
                   ) || 0}
                 </div>
-                <p className="text-xs text-gray-600 font-light uppercase tracking-wide">
+                <p className="text-xs text-gray-600 dark:text-gray-400 font-light uppercase tracking-wide">
                   Average
                 </p>
               </div>

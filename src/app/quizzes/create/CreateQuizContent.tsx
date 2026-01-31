@@ -87,7 +87,7 @@ export default function CreateQuizContent({
 
   const updateQuestion = (idx: number, updates: Partial<QuizQuestion>) => {
     setQuestions((prev) =>
-      prev.map((q, i) => (i === idx ? { ...q, ...updates } : q))
+      prev.map((q, i) => (i === idx ? { ...q, ...updates } : q)),
     );
   };
 
@@ -95,16 +95,16 @@ export default function CreateQuizContent({
     qIdx: number,
     oIdx: number,
     text: string,
-    isCorrect?: boolean
+    isCorrect?: boolean,
   ) => {
     setQuestions((prev) =>
       prev.map((q, i) => {
         if (i !== qIdx) return q;
         const options = q.options.map((o, j) =>
-          j === oIdx ? { ...o, text, isCorrect: isCorrect ?? o.isCorrect } : o
+          j === oIdx ? { ...o, text, isCorrect: isCorrect ?? o.isCorrect } : o,
         );
         return { ...q, options };
-      })
+      }),
     );
   };
 
@@ -114,7 +114,7 @@ export default function CreateQuizContent({
         if (i !== qIdx) return q;
         const nextKey = String.fromCharCode(65 + q.options.length);
         return { ...q, options: [...q.options, { key: nextKey, text: "" }] };
-      })
+      }),
     );
   };
 
@@ -126,7 +126,7 @@ export default function CreateQuizContent({
           ...q,
           options: q.options.map((o) => ({ ...o, isCorrect: o.key === key })),
         };
-      })
+      }),
     );
   };
 

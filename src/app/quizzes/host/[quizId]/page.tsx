@@ -557,25 +557,12 @@ export default function HostQuizPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       {!isHosted ? (
-                        <>
-                          <button
-                            className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 transition-colors font-light flex items-center gap-2"
-                            onClick={() =>
-                              router.push(
-                                `/liveQuiz/host?quizId=${quizId}&title=${encodeURIComponent(quiz?.title || "Quiz")}`,
-                              )
-                            }
-                          >
-                            <span className="w-2 h-2 bg-green-400 animate-pulse"></span>
-                            Host Live
-                          </button>
-                          <button
-                            className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-light"
-                            onClick={host}
-                          >
-                            Host Quiz
-                          </button>
-                        </>
+                        <button
+                          className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-light"
+                          onClick={host}
+                        >
+                          Host Quiz
+                        </button>
                       ) : (
                         <div className="flex items-center gap-3">
                           {!isActive ? (
@@ -791,13 +778,7 @@ export default function HostQuizPage() {
                       </svg>
                     </button>
                     <button
-                      onClick={async () => {
-                        const b = await leaderboard(quizId);
-                        if (b?.success) {
-                          setBoard(b.leaderboard);
-                          setViewMode("leaderboard");
-                        }
-                      }}
+                      onClick={() => router.push(`/leaderboard/${quizId}`)}
                       className="w-full flex items-center justify-between px-4 py-3 text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
                     >
                       <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">

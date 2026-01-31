@@ -25,6 +25,7 @@ export default function HostedQuizPage() {
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [voteCounts, setVoteCounts] = useState<Record<string, number>>({});
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [quizStatus, setQuizStatus] = useState<string>("");
   const [currentQuestionTimeLeft, setCurrentQuestionTimeLeft] =
     useState<number>(0);
   const [currentQuestionStartTime, setCurrentQuestionStartTime] =
@@ -32,6 +33,7 @@ export default function HostedQuizPage() {
   const [currentQuestionTimeLimit, setCurrentQuestionTimeLimit] =
     useState<number>(0);
   const [isQuestionActive, setIsQuestionActive] = useState<boolean>(false);
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState<boolean>(false);
 
   useEffect(() => {
     if (!quizId) return;
@@ -39,6 +41,7 @@ export default function HostedQuizPage() {
       const q = await getQuiz(quizId);
       if (q?.success) {
         setQuiz(q.quiz);
+        setQuizStatus(q.quiz?.status || "");
         setIsActive(q.quiz?.status === "active");
 
         // If there's an active question, set it up
@@ -53,7 +56,7 @@ export default function HostedQuizPage() {
             const startTime = new Date(q.quiz.currentQuestionStartTime);
             const timeLimit = q.quiz.currentQuestionTimeLimit;
             const elapsed = Math.floor(
-              (new Date().getTime() - startTime.getTime()) / 1000
+              (new Date().getTime() - startTime.getTime()) / 1000,
             );
             const remaining = Math.max(0, timeLimit - elapsed);
 
@@ -84,12 +87,13 @@ export default function HostedQuizPage() {
       setCurrentIndex(payload.index);
       setVoteCounts({});
       setIsQuestionActive(true);
+      setShowCorrectAnswer(false);
 
       if (payload.startTime && payload.timeLimit) {
         setCurrentQuestionStartTime(new Date(payload.startTime));
         setCurrentQuestionTimeLimit(payload.timeLimit);
         const elapsed = Math.floor(
-          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000
+          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000,
         );
         const remaining = Math.max(0, payload.timeLimit - elapsed);
         setCurrentQuestionTimeLeft(remaining);
@@ -120,6 +124,7 @@ export default function HostedQuizPage() {
     const onEnded = () => {
       setCurrentIndex(-1);
       setIsActive(false);
+      setQuizStatus("ended");
       // Don't redirect - stay on hosted page
     };
 
@@ -145,7 +150,7 @@ export default function HostedQuizPage() {
     ) {
       const timer = setInterval(() => {
         const elapsed = Math.floor(
-          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000
+          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000,
         );
         const remaining = Math.max(0, currentQuestionTimeLimit - elapsed);
         setCurrentQuestionTimeLeft(remaining);
@@ -228,6 +233,7 @@ export default function HostedQuizPage() {
     } else {
       setIsActive(false);
       setCurrentIndex(-1);
+      setQuizStatus("ended");
       // Stay on hosted page - don't redirect
     }
   };
@@ -242,15 +248,15 @@ export default function HostedQuizPage() {
 
   if (!quiz) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-light text-gray-900 mb-4">
+            <h1 className="text-2xl font-light text-gray-900 dark:text-white mb-4">
               Quiz not found
             </h1>
             <button
               onClick={handleBackToPortal}
-              className="px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors font-light"
+              className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-light"
             >
               Back to Quiz Portal
             </button>
@@ -261,294 +267,244 @@ export default function HostedQuizPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <main className="flex-1 flex flex-col items-center px-4 py-10">
         <div className="w-full max-w-6xl space-y-6">
           {/* Header */}
-          <div className="border-b border-gray-100 pb-6">
-            <div className="flex items-start justify-between gap-6 mb-4">
-              <div className="flex-1">
-                <h1 className="text-4xl font-light text-black tracking-tight">
+          <div className="flex items-start justify-between gap-6">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <button
+                  onClick={handleBackToPortal}
+                  className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <h1 className="text-2xl md:text-3xl font-light text-black dark:text-white tracking-tight">
                   {quiz.title}
                 </h1>
-                <p className="text-sm text-gray-600 font-light mt-2">
-                  {quiz.description || "Live quiz control"}
-                </p>
               </div>
+              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <span>
+                  {participants.length} participant
+                  {participants.length !== 1 ? "s" : ""}
+                </span>
+                <span>•</span>
+                <span>
+                  Question {currentIndex + 1} of {questions.length}
+                </span>
+              </div>
+            </div>
+
+            {/* Top Right Controls */}
+            <div className="flex items-center gap-2">
+              {currentQuestion && (
+                <>
+                  {isQuestionActive ? (
+                    <button
+                      onClick={handleStopQuestion}
+                      className="px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
+                    >
+                      Stop Question
+                    </button>
+                  ) : currentIndex + 1 < questions.length ? (
+                    <button
+                      onClick={handlePushNext}
+                      className="px-4 py-2 text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
+                    >
+                      Next Question
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleEndQuiz}
+                      className="px-4 py-2 text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
+                    >
+                      End Quiz
+                    </button>
+                  )}
+                </>
+              )}
               <button
                 onClick={handleBackToPortal}
-                className="px-5 py-2 text-sm font-light text-gray-900 border border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all whitespace-nowrap"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
               >
-                ← Back
+                Portal
+              </button>
+              <button
+                onClick={handleViewLeaderboard}
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+              >
+                Leaderboard
               </button>
             </div>
           </div>
 
           {currentQuestion ? (
-            <div className="space-y-6">
-              {/* Question Section */}
-              <div className="space-y-4">
+            /* Question Box */
+            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              {/* Question Header with Timer */}
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
-                      Question {currentIndex + 1} of {questions.length}
-                    </div>
-                    <h2 className="text-2xl font-light text-gray-900 leading-relaxed">
+                    <h2 className="text-xl md:text-2xl font-light text-gray-900 dark:text-white leading-relaxed">
                       {currentQuestion.text}
                     </h2>
                   </div>
-                  <div
-                    className={`px-3 py-1 text-xs font-medium whitespace-nowrap ${
-                      isQuestionActive
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {isQuestionActive ? "Active" : "Ended"}
-                  </div>
-                </div>
-
-                {/* Answer Options */}
-                <div className="space-y-3">
-                  <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                    Options
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {currentQuestion.options.map((option) => {
-                      const total = Object.values(voteCounts).reduce(
-                        (sum, c) => sum + (c as number),
-                        0
-                      );
-                      const count = voteCounts[option.key] || 0;
-                      const percentage =
-                        total > 0 ? Math.round((count / total) * 100) : 0;
-
-                      return (
-                        <div
-                          key={option.key}
-                          className="relative p-3 border border-gray-200 hover:border-gray-400 transition-colors"
-                        >
-                          {/* Background percentage bar */}
-                          <div
-                            className="absolute inset-0 bg-gray-100 transition-all duration-300 pointer-events-none"
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-
-                          {/* Content */}
-                          <div className="relative flex items-start gap-2">
-                            <div className="flex-shrink-0 w-6 h-6 bg-black text-white flex items-center justify-center text-xs font-medium">
-                              {option.key}
-                            </div>
-                            <div className="flex-1">
-                              <div className="text-sm text-gray-700">
-                                {option.text}
-                              </div>
-                              {total > 0 && (
-                                <div className="text-xs text-gray-500 font-light mt-1">
-                                  {count} vote{count !== 1 ? "s" : ""} (
-                                  {percentage}%)
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Timer and Stats */}
-              <div className="grid grid-cols-3 gap-3">
-                {/* Timer */}
-                <div>
-                  <div
-                    className={`p-4 border transition-all ${
-                      currentQuestionTimeLeft <= 10
-                        ? "bg-red-50 border-red-200"
-                        : currentQuestionTimeLeft <= 30
-                        ? "bg-amber-50 border-amber-200"
-                        : "bg-gray-50 border-gray-200"
-                    }`}
-                  >
-                    <div className="text-xs text-gray-600 font-medium uppercase tracking-wide mb-2">
-                      Time Left
-                    </div>
+                  <div className="flex items-center gap-3">
+                    {/* Show Correct Answer Button - Only when question ended */}
+                    {!isQuestionActive && !showCorrectAnswer && (
+                      <button
+                        onClick={() => setShowCorrectAnswer(true)}
+                        className="h-10 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors flex items-center"
+                      >
+                        Show Correct
+                      </button>
+                    )}
+                    {/* Timer */}
                     <div
-                      className={`text-2xl font-mono font-light tracking-tight ${
+                      className={`h-10 px-4 font-mono text-lg font-medium flex items-center ${
                         currentQuestionTimeLeft <= 10
-                          ? "text-red-600"
+                          ? "bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400"
                           : currentQuestionTimeLeft <= 30
-                          ? "text-amber-600"
-                          : "text-gray-900"
+                            ? "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400"
+                            : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
                       }`}
                     >
                       {formatTime(currentQuestionTimeLeft)}
                     </div>
-                    <div className="mt-3 h-1 bg-gray-200">
-                      <div
-                        className={`h-full transition-all duration-1000 ease-linear ${
-                          currentQuestionTimeLeft <= 10
-                            ? "bg-red-500"
-                            : currentQuestionTimeLeft <= 30
-                            ? "bg-amber-500"
-                            : "bg-gray-400"
-                        }`}
-                        style={{
-                          width: `${Math.max(
-                            0,
-                            (currentQuestionTimeLeft /
-                              (currentQuestion?.timeLimitSeconds || 1)) *
-                              100
-                          )}%`,
-                        }}
-                      ></div>
+                    {/* Status Badge */}
+                    <div
+                      className={`h-10 px-4 text-sm font-medium flex items-center ${
+                        isQuestionActive
+                          ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                      }`}
+                    >
+                      {isQuestionActive ? "● Live" : "Ended"}
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Response Count */}
-                <div>
-                  <div className="p-4 border border-gray-200">
-                    <div className="text-xs text-gray-600 font-medium uppercase tracking-wide mb-2">
-                      Responses
-                    </div>
-                    <div className="text-2xl font-light text-gray-900">
+              {/* Vertical Histogram Options */}
+              <div className="p-6 md:p-8">
+                <div className="flex items-end justify-center gap-6 md:gap-10 min-h-[400px]">
+                  {currentQuestion.options.map((option) => {
+                    const total = Object.values(voteCounts).reduce(
+                      (sum, c) => sum + (c as number),
+                      0,
+                    );
+                    const count = voteCounts[option.key] || 0;
+                    const percentage =
+                      total > 0 ? Math.round((count / total) * 100) : 0;
+                    // Calculate bar height - minimum 8% when there are votes, 4% base when no votes
+                    const barHeight = total > 0 ? Math.max(8, percentage) : 4;
+                    const isCorrect = option.isCorrect;
+                    const shouldHighlight = showCorrectAnswer && isCorrect;
+
+                    return (
+                      <div
+                        key={option.key}
+                        className="flex flex-col items-center flex-1 max-w-40"
+                      >
+                        {/* Vote count */}
+                        <div
+                          className={`text-2xl font-semibold mb-3 ${
+                            shouldHighlight
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-gray-900 dark:text-white"
+                          }`}
+                        >
+                          {count}
+                        </div>
+
+                        {/* Bar Container */}
+                        <div className="w-full h-64 md:h-72 flex items-end justify-center bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                          <div
+                            className={`w-full transition-all duration-500 ease-out ${
+                              shouldHighlight
+                                ? "bg-green-500 dark:bg-green-500"
+                                : "bg-blue-500 dark:bg-blue-400"
+                            }`}
+                            style={{ height: `${barHeight}%` }}
+                          />
+                        </div>
+
+                        {/* Option Label */}
+                        <div
+                          className={`mt-4 text-center ${
+                            shouldHighlight
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-gray-700 dark:text-gray-300"
+                          }`}
+                        >
+                          <div
+                            className={`w-10 h-10 mx-auto mb-2 flex items-center justify-center text-base font-semibold ${
+                              shouldHighlight
+                                ? "bg-green-500 text-white"
+                                : "bg-black dark:bg-white text-white dark:text-black"
+                            }`}
+                          >
+                            {option.key}
+                          </div>
+                          <div className="text-sm font-medium">
+                            {option.text}
+                          </div>
+                          {total > 0 && (
+                            <div
+                              className={`text-sm mt-1 font-medium ${
+                                shouldHighlight
+                                  ? "text-green-600 dark:text-green-400"
+                                  : "text-gray-500 dark:text-gray-400"
+                              }`}
+                            >
+                              {percentage}%
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Response Stats */}
+                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+                  <div>
+                    <span className="font-medium text-gray-900 dark:text-white">
                       {Object.values(voteCounts).reduce(
                         (sum, c) => sum + (c as number),
-                        0
+                        0,
                       )}
-                      /{participants.length}
-                    </div>
-                    <div className="mt-3 h-1 bg-gray-200">
-                      <div
-                        className="h-full bg-gray-400 transition-all duration-500"
-                        style={{
-                          width: `${
-                            participants.length > 0
-                              ? (Object.values(voteCounts).reduce(
-                                  (sum, c) => sum + (c as number),
-                                  0
-                                ) /
-                                  participants.length) *
-                                100
-                              : 0
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
+                    </span>
+                    <span className="ml-1">responses</span>
                   </div>
-                </div>
-
-                {/* Participants */}
-                <div>
-                  <div className="p-4 border border-gray-200">
-                    <div className="text-xs text-gray-600 font-medium uppercase tracking-wide mb-2">
-                      Participants
-                    </div>
-                    <div className="text-2xl font-light text-gray-900">
+                  <div>
+                    <span className="font-medium text-gray-900 dark:text-white">
                       {participants.length}
-                    </div>
-                    <div className="mt-3 text-xs text-gray-600">Connected</div>
+                    </span>
+                    <span className="ml-1">participants</span>
                   </div>
                 </div>
-              </div>
-
-              {/* Vote Results */}
-              {!isQuestionActive && (
-                <div className="space-y-3 border-t border-gray-100 pt-4">
-                  <div className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                    Response Breakdown
-                  </div>
-                  <div className="space-y-2">
-                    {(() => {
-                      const correctKeys = new Set(
-                        (currentQuestion?.options || [])
-                          .filter((o) => o.isCorrect)
-                          .map((o) => o.key)
-                      );
-                      const total = Object.values(voteCounts).reduce(
-                        (sum, c) => sum + (c as number),
-                        0
-                      );
-
-                      return (currentQuestion?.options || []).map((option) => {
-                        const count = voteCounts[option.key] || 0;
-                        const percentage =
-                          total > 0 ? Math.round((count / total) * 100) : 0;
-                        const isCorrect = correctKeys.has(option.key);
-
-                        return (
-                          <div key={option.key}>
-                            <div className="flex items-center justify-between mb-1">
-                              <div className="flex items-center gap-2 text-sm">
-                                <span className="font-light text-gray-900">
-                                  {option.key}. {option.text}
-                                </span>
-                                {isCorrect && (
-                                  <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-0.5">
-                                    Correct
-                                  </span>
-                                )}
-                              </div>
-                              <span className="text-xs font-light text-gray-600">
-                                {count} ({percentage}%)
-                              </span>
-                            </div>
-                            <div className="h-2 bg-gray-200">
-                              <div
-                                className={`h-full transition-all ${
-                                  isCorrect ? "bg-green-500" : "bg-gray-400"
-                                }`}
-                                style={{ width: `${percentage}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
-                </div>
-              )}
-
-              {/* Controls */}
-              <div className="flex flex-col sm:flex-row gap-3 border-t border-gray-100 pt-4">
-                {isQuestionActive ? (
-                  <button
-                    onClick={handleStopQuestion}
-                    className="flex-1 px-6 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-light transition-colors"
-                  >
-                    Stop Question
-                  </button>
-                ) : currentIndex + 1 < questions.length ? (
-                  <button
-                    onClick={handlePushNext}
-                    className="flex-1 px-6 py-2 bg-black hover:bg-gray-800 text-white text-sm font-light transition-colors"
-                  >
-                    Next Question
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleEndQuiz}
-                    className="flex-1 px-6 py-2 bg-black hover:bg-gray-800 text-white text-sm font-light transition-colors"
-                  >
-                    End Quiz
-                  </button>
-                )}
-                <button
-                  onClick={handleViewLeaderboard}
-                  className="flex-1 px-6 py-2 border border-gray-200 hover:bg-gray-50 text-gray-900 text-sm font-light transition-colors"
-                >
-                  Leaderboard
-                </button>
               </div>
             </div>
-          ) : !isActive ? (
+          ) : quizStatus === "ended" ? (
             /* Quiz Ended */
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto mb-6 bg-green-100 flex items-center justify-center">
+            <div className="text-center py-12 min-h-[500px] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              <div className="w-16 h-16 mx-auto mb-6 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-green-600"
+                  className="w-8 h-8 text-green-600 dark:text-green-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -559,34 +515,20 @@ export default function HostedQuizPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-light text-gray-900 mb-3">
+              <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-3">
                 Quiz Completed
               </h2>
-              <p className="text-gray-600 text-sm mb-8 max-w-md mx-auto">
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-8 max-w-md mx-auto">
                 All questions have been answered. View the final results and
                 leaderboard.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  onClick={handleViewLeaderboard}
-                  className="px-6 py-2 bg-black hover:bg-gray-800 text-white text-sm font-light transition-colors"
-                >
-                  View Leaderboard
-                </button>
-                <button
-                  onClick={handleBackToPortal}
-                  className="px-6 py-2 border border-gray-200 hover:bg-gray-50 text-gray-900 text-sm font-light transition-colors"
-                >
-                  Back to Portal
-                </button>
-              </div>
             </div>
-          ) : (
-            /* No Question Yet */
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gray-100 flex items-center justify-center">
+          ) : !isActive ? (
+            /* Quiz Not Started Yet */
+            <div className="text-center py-12 min-h-[500px] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              <div className="w-16 h-16 mx-auto mb-6 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-gray-600"
+                  className="w-8 h-8 text-blue-600 dark:text-blue-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -597,18 +539,38 @@ export default function HostedQuizPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-xl font-light text-gray-900 mb-3">
-                Waiting for responses
+              <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
+                Quiz Not Started
               </h2>
-              <p className="text-gray-600 text-sm mb-6">
-                Ready to start? Go back to push the first question.
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                Go back to the portal to start the quiz and begin pushing
+                questions.
               </p>
-              <button
-                onClick={handleBackToPortal}
-                className="px-6 py-2 bg-black hover:bg-gray-800 text-white text-sm font-light transition-colors"
-              >
-                Back to Portal
-              </button>
+            </div>
+          ) : (
+            /* Quiz Active - Waiting for First Question */
+            <div className="text-center py-12 min-h-[500px] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              <div className="w-16 h-16 mx-auto mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-yellow-600 dark:text-yellow-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
+                Quiz Active - Ready to Start
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                {participants.length} participant
+                {participants.length !== 1 ? "s" : ""} waiting. Go back to push
+                the first question.
+              </p>
             </div>
           )}
         </div>

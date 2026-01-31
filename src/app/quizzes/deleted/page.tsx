@@ -14,10 +14,10 @@ export default function DeletedQuizzesPage() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredQuizzes, setFilteredQuizzes] = useState<Quiz[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
+  // const [searchLoading, setSearchLoading] = useState(false);
   const [processingQuizId, setProcessingQuizId] = useState<string | null>(null);
   const [processingAction, setProcessingAction] = useState<"restore" | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -31,19 +31,19 @@ export default function DeletedQuizzesPage() {
 
   useEffect(() => {
     // Debounced search functionality
-    setSearchLoading(true);
+    // setSearchLoading(true);
     const timeoutId = setTimeout(() => {
       if (searchTerm.trim()) {
         const filtered = quizzes.filter(
           (quiz) =>
             quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.description?.toLowerCase().includes(searchTerm.toLowerCase())
+            quiz.description?.toLowerCase().includes(searchTerm.toLowerCase()),
         );
         setFilteredQuizzes(filtered);
       } else {
         setFilteredQuizzes(quizzes);
       }
-      setSearchLoading(false);
+      // setSearchLoading(false);
     }, 300);
 
     return () => clearTimeout(timeoutId);
@@ -89,10 +89,10 @@ export default function DeletedQuizzesPage() {
       if (response.success) {
         // Remove from deleted list
         setQuizzes((prevQuizzes) =>
-          prevQuizzes.filter((quiz) => quiz.quizId !== quizId)
+          prevQuizzes.filter((quiz) => quiz.quizId !== quizId),
         );
         setFilteredQuizzes((prevFiltered) =>
-          prevFiltered.filter((quiz) => quiz.quizId !== quizId)
+          prevFiltered.filter((quiz) => quiz.quizId !== quizId),
         );
         alert("Quiz restored successfully!");
       } else {
@@ -101,7 +101,7 @@ export default function DeletedQuizzesPage() {
           router.push("/quizzes");
         } else {
           alert(
-            `Failed to restore quiz: ${response.message || "Unknown error"}`
+            `Failed to restore quiz: ${response.message || "Unknown error"}`,
           );
         }
       }
@@ -136,7 +136,7 @@ export default function DeletedQuizzesPage() {
   // Check if user has pro subscription
   if (user?.subscription !== "pro") {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
+      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         <main className="flex-1 px-6 py-10">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-16">
@@ -225,57 +225,46 @@ export default function DeletedQuizzesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-      <main className="flex-1 px-6 py-10">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <button
-                    onClick={() => router.push("/quizzes")}
-                    className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+      <main className="py-10">
+        <div className="max-w-6xl mx-auto px-4">
+          {/* Header with Search */}
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <button
+                  onClick={() => router.push("/quizzes")}
+                  className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 19l-7-7 7-7"
-                      />
-                    </svg>
-                  </button>
-                  <h1 className="text-3xl font-light text-black dark:text-white">
-                    Deleted Quizzes
-                  </h1>
-                </div>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Restore or permanently delete your deleted quizzes
-                </p>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <h1 className="text-3xl font-light text-black dark:text-white">
+                  Deleted Quizzes
+                </h1>
               </div>
+              <p className="text-gray-600 dark:text-gray-400">
+                Restore or permanently delete your deleted quizzes
+              </p>
             </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="mb-6 relative">
             <input
               type="text"
-              placeholder="Search deleted quizzes..."
+              placeholder="Search by title"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all"
+              className="w-full sm:w-80 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all"
             />
-            {searchLoading && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-700 border-t-black dark:border-t-white  animate-spin"></div>
-              </div>
-            )}
           </div>
 
           {/* Loading State */}
@@ -292,7 +281,7 @@ export default function DeletedQuizzesPage() {
 
           {/* Empty State */}
           {!loading && filteredQuizzes.length === 0 && quizzes.length === 0 && (
-            <div className="py-16 px-4 text-center">
+            <div className="py-16 px-4 text-center min-h-[550px] flex items-center justify-center">
               <div className="max-w-md mx-auto">
                 <div className="mb-6">
                   <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
@@ -439,19 +428,25 @@ export default function DeletedQuizzesPage() {
                       <div className="text-lg font-semibold text-black dark:text-white">
                         {quiz.questions.length}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Questions</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Questions
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-semibold text-black dark:text-white">
                         {quiz.status}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Status</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Status
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="text-lg font-semibold text-black dark:text-white">
                         {new Date(quiz.createdAt).toLocaleDateString()}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Created</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Created
+                      </div>
                     </div>
                   </div>
                 </div>

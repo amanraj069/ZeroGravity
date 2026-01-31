@@ -73,7 +73,7 @@ export default function PhotoEditor({
           // Calculate scale for display - fit entire image without cropping
           const scale = Math.min(
             containerWidth / img.width,
-            containerHeight / img.height
+            containerHeight / img.height,
           );
           setDisplayScale(scale);
 
@@ -95,11 +95,11 @@ export default function PhotoEditor({
           const imageMinY = Math.max(0, centerY - rotatedHeight / 2);
           const imageMaxX = Math.min(
             containerWidth,
-            centerX + rotatedWidth / 2
+            centerX + rotatedWidth / 2,
           );
           const imageMaxY = Math.min(
             containerHeight,
-            centerY + rotatedHeight / 2
+            centerY + rotatedHeight / 2,
           );
 
           // Calculate maximum crop size based on visible image area
@@ -107,7 +107,7 @@ export default function PhotoEditor({
           const imageHeightInDisplay = imageMaxY - imageMinY;
           const maxSizeFromImageBounds = Math.min(
             imageWidthInDisplay,
-            imageHeightInDisplay
+            imageHeightInDisplay,
           );
 
           // Maximum crop size is also limited by actual image dimensions
@@ -118,7 +118,7 @@ export default function PhotoEditor({
           // This allows the crop area to use the full visible image area
           const maxSize = Math.min(
             maxCropSizeInDisplay,
-            maxSizeFromImageBounds
+            maxSizeFromImageBounds,
           );
 
           const initialSize = Math.min(maxSize, maxSize * 0.9); // Start at 90% of max
@@ -149,7 +149,7 @@ export default function PhotoEditor({
 
     const imageMaxCropSize = Math.min(
       imageDimensions.width,
-      imageDimensions.height
+      imageDimensions.height,
     );
     const maxCropSizeInDisplay = imageMaxCropSize * displayScale;
 
@@ -165,22 +165,22 @@ export default function PhotoEditor({
         const imageHeightInDisplay = imageBounds.maxY - imageBounds.minY;
         const maxSizeFromImageBounds = Math.min(
           imageWidthInDisplay,
-          imageHeightInDisplay
+          imageHeightInDisplay,
         );
 
         const finalMaxSize = Math.min(
           maxCropSizeInDisplay,
-          maxSizeFromImageBounds
+          maxSizeFromImageBounds,
         );
 
         // Adjust position to keep crop area centered if possible
         const newX = Math.max(
           0,
-          Math.min(cropArea.x, containerWidth - finalMaxSize)
+          Math.min(cropArea.x, containerWidth - finalMaxSize),
         );
         const newY = Math.max(
           0,
-          Math.min(cropArea.y, containerHeight - finalMaxSize)
+          Math.min(cropArea.y, containerHeight - finalMaxSize),
         );
 
         setCropArea({
@@ -190,7 +190,19 @@ export default function PhotoEditor({
         });
       }
     }
-  }, [imageDimensions.width, imageDimensions.height, displayScale, rotation, cropArea.x, cropArea.y, cropArea.size, imageBounds.minX, imageBounds.minY, imageBounds.maxX, imageBounds.maxY]);
+  }, [
+    imageDimensions.width,
+    imageDimensions.height,
+    displayScale,
+    rotation,
+    cropArea.x,
+    cropArea.y,
+    cropArea.size,
+    imageBounds.minX,
+    imageBounds.minY,
+    imageBounds.maxX,
+    imageBounds.maxY,
+  ]);
 
   // Draw image with rotation and crop overlay
   useEffect(() => {
@@ -222,7 +234,7 @@ export default function PhotoEditor({
     // This ensures the entire image is visible without cropping
     const scale = Math.min(
       containerWidth / img.width,
-      containerHeight / img.height
+      containerHeight / img.height,
     );
     const scaledWidth = img.width * scale;
     const scaledHeight = img.height * scale;
@@ -273,7 +285,7 @@ export default function PhotoEditor({
       -scaledWidth / 2,
       -scaledHeight / 2,
       scaledWidth,
-      scaledHeight
+      scaledHeight,
     );
 
     // Restore context
@@ -308,14 +320,22 @@ export default function PhotoEditor({
         corner.x - handleSize / 2,
         corner.y - handleSize / 2,
         handleSize,
-        handleSize
+        handleSize,
       );
     });
-  }, [imageSrc, rotation, cropArea, imageBounds.minX, imageBounds.minY, imageBounds.maxX, imageBounds.maxY]);
+  }, [
+    imageSrc,
+    rotation,
+    cropArea,
+    imageBounds.minX,
+    imageBounds.minY,
+    imageBounds.maxX,
+    imageBounds.maxY,
+  ]);
 
   // Helper function to get coordinates from event (mouse or touch)
   const getEventCoordinates = (
-    e: React.MouseEvent | React.TouchEvent
+    e: React.MouseEvent | React.TouchEvent,
   ): { x: number; y: number } | null => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return null;
@@ -473,7 +493,7 @@ export default function PhotoEditor({
       // The crop area should never exceed the minimum of image width or height
       const imageMaxCropSize = Math.min(
         imageDimensions.width,
-        imageDimensions.height
+        imageDimensions.height,
       );
       // Convert to display coordinates
       const maxCropSizeInDisplay = imageMaxCropSize * displayScale;
@@ -484,7 +504,7 @@ export default function PhotoEditor({
       const imageHeightInDisplay = imageBounds.maxY - imageBounds.minY;
       const maxSizeFromImageBounds = Math.min(
         imageWidthInDisplay,
-        imageHeightInDisplay
+        imageHeightInDisplay,
       );
 
       // Maximum size is the minimum of: image dimension limit, or visible image bounds
@@ -648,11 +668,11 @@ export default function PhotoEditor({
         // Also keep within container bounds
         const maxX = Math.min(
           container.clientWidth - cropArea.size,
-          imageMaxX - cropArea.size
+          imageMaxX - cropArea.size,
         );
         const maxY = Math.min(
           container.clientHeight - cropArea.size,
-          imageMaxY - cropArea.size
+          imageMaxY - cropArea.size,
         );
 
         setCropArea((prev) => ({
@@ -713,7 +733,7 @@ export default function PhotoEditor({
     const containerHeight = container.clientHeight;
     const displayScale = Math.min(
       containerWidth / rotatedWidth,
-      containerHeight / rotatedHeight
+      containerHeight / rotatedHeight,
     );
 
     // Step 3: Map crop area from display coordinates to rotated image coordinates
@@ -735,20 +755,20 @@ export default function PhotoEditor({
       0,
       Math.min(
         rotatedImageX - cropSizeInImage / 2,
-        rotatedWidth - cropSizeInImage
-      )
+        rotatedWidth - cropSizeInImage,
+      ),
     );
     const sourceY = Math.max(
       0,
       Math.min(
         rotatedImageY - cropSizeInImage / 2,
-        rotatedHeight - cropSizeInImage
-      )
+        rotatedHeight - cropSizeInImage,
+      ),
     );
     const clampedSize = Math.min(
       cropSizeInImage,
       rotatedWidth - sourceX,
-      rotatedHeight - sourceY
+      rotatedHeight - sourceY,
     );
 
     // Step 5: Create final canvas and draw cropped area
@@ -768,7 +788,7 @@ export default function PhotoEditor({
       0,
       0,
       outputSize,
-      outputSize
+      outputSize,
     );
 
     // Convert to blob and create file
@@ -783,7 +803,7 @@ export default function PhotoEditor({
         }
       },
       imageFile.type,
-      0.95
+      0.95,
     );
   };
 

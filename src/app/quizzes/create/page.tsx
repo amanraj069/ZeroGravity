@@ -37,6 +37,11 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
   const [publishing, setPublishing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingExisting, setLoadingExisting] = useState(false);
+  const [titleError, setTitleError] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [modifiedQuestions, setModifiedQuestions] = useState<Set<number>>(
+    new Set(),
+  );
 
   const isPro = user?.subscription === "pro";
 
@@ -44,8 +49,10 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
   useEffect(() => {
     const loadSearchParams = async () => {
       const params = await searchParams;
-      // Support both 'edit' and 'quizId' parameters for editing
-      const existingQuizId = (params?.edit || params?.quizId) as string;
+      // Load quiz using 'quizId' or 'edit' parameter (support both)
+      const existingQuizId = (params?.quizId || params?.edit) as string;
+      const isEditing = !!params?.edit; // Track if we're in edit mode (from host page)
+      // const savedStatus = params?.savedStatus === "true";
       const initTitle = params?.title as string;
       const initDesc = params?.desc as string;
 
@@ -53,6 +60,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         // Load existing quiz data
         setLoadingExisting(true);
         setQuizId(existingQuizId);
+        setIsEditMode(isEditing);
         getQuiz(existingQuizId)
           .then((response) => {
             if (response?.success && response?.quiz) {
@@ -65,16 +73,22 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
               }
             } else {
               console.error("Failed to load quiz:", response?.message);
+              // If quiz not found, just start with defaults
+              if (initTitle) setTitle(initTitle);
+              if (initDesc) setDescription(initDesc);
             }
           })
           .catch((error) => {
             console.error("Error loading quiz:", error);
+            // If error loading quiz, just start with defaults
+            if (initTitle) setTitle(initTitle);
+            if (initDesc) setDescription(initDesc);
           })
           .finally(() => {
             setLoadingExisting(false);
           });
       } else {
-        // Prefill from /createQuiz
+        // Prefill from /createQuiz or start fresh
         if (initTitle) setTitle(initTitle);
         if (initDesc) setDescription(initDesc);
       }
@@ -85,14 +99,19 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
 
   const addQuestion = () => {
     if (questions.length >= 100) return;
+    const newIndex = questions.length;
     setQuestions((q) => [...q, emptyQuestion()]);
-    setCurrentIndex(questions.length);
+    setCurrentIndex(newIndex);
+    // Mark the new question as modified
+    setModifiedQuestions((prev) => new Set(prev).add(newIndex));
   };
 
   const updateQuestion = (idx: number, updates: Partial<QuizQuestion>) => {
     setQuestions((prev) =>
       prev.map((q, i) => (i === idx ? { ...q, ...updates } : q)),
     );
+    // Mark question as modified
+    setModifiedQuestions((prev) => new Set(prev).add(idx));
   };
 
   const updateOption = (
@@ -110,6 +129,8 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         return { ...q, options };
       }),
     );
+    // Mark question as modified
+    setModifiedQuestions((prev) => new Set(prev).add(qIdx));
   };
 
   const addOption = (qIdx: number) => {
@@ -215,23 +236,45 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         return;
       }
 
+      // Check for valid title
+      const quizTitle = title.trim();
+      if (
+        !quizTitle ||
+        quizTitle.toLowerCase() === "untitled" ||
+        quizTitle.toLowerCase() === "untitled quiz"
+      ) {
+        setTitleError(true);
+        setSaving(false);
+        // Remove error state after animation completes
+        setTimeout(() => setTitleError(false), 1000);
+        return;
+      }
+
       if (!quizId) {
         const created = await createQuiz({
-          title: title || "Untitled Quiz",
+          title: quizTitle,
           description,
           questions,
         });
         if (!created?.success)
           throw new Error(created?.message || "Create failed");
-        setQuizId(created.quiz.quizId);
+        const newQuizId = created.quiz.quizId;
+        setQuizId(newQuizId);
+        // Clear modified questions after successful create
+        setModifiedQuestions(new Set());
+        // Update URL with quizId and savedStatus (only for new quizzes)
+        router.replace(`/quizzes/create?quizId=${newQuizId}&savedStatus=true`);
         return;
       }
       const result = await updateDraft(quizId, {
-        title,
+        title: quizTitle,
         description,
         questions,
       });
       if (!result?.success) throw new Error(result?.message || "Save failed");
+      // Clear modified questions after successful save
+      setModifiedQuestions(new Set());
+      // Don't modify the URL when editing an existing quiz - keep the original URL format
     } catch (e) {
       alert((e as Error)?.message || "Failed to save");
     } finally {
@@ -291,21 +334,81 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
       <div className="bg-white dark:bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1">
-              <input
-                type="text"
-                className="text-2xl sm:text-3xl font-light text-black dark:text-white bg-transparent border-none outline-none w-full placeholder-gray-400 dark:placeholder-gray-500"
-                placeholder="Enter Quiz Title..."
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <input
-                type="text"
-                className="text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none w-full max-w-2xl text-sm mt-1 placeholder-gray-400 dark:placeholder-gray-500"
-                placeholder="Add a description (optional)"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+            <div className="flex items-start gap-2 flex-1">
+              <button
+                onClick={() =>
+                  router.push(
+                    isEditMode && quizId
+                      ? `/quizzes/host/${quizId}`
+                      : "/quizzes",
+                  )
+                }
+                className="mt-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                title={isEditMode ? "Back to Host" : "Back to Quizzes"}
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <div className="flex-1">
+                <style jsx>{`
+                  @keyframes shake {
+                    0%,
+                    100% {
+                      transform: translateX(0);
+                    }
+                    10%,
+                    30%,
+                    50%,
+                    70%,
+                    90% {
+                      transform: translateX(-4px);
+                    }
+                    20%,
+                    40%,
+                    60%,
+                    80% {
+                      transform: translateX(4px);
+                    }
+                  }
+                  .shake-animation {
+                    animation: shake 0.5s ease-in-out;
+                  }
+                `}</style>
+                <input
+                  type="text"
+                  className={`text-2xl sm:text-3xl font-light text-black dark:text-white bg-transparent outline-none w-full placeholder-gray-400 dark:placeholder-gray-500 border-b-2 pb-1 transition-colors duration-300 ${
+                    titleError
+                      ? "border-red-500 shake-animation"
+                      : title.trim()
+                        ? "border-transparent"
+                        : "border-gray-200 dark:border-gray-700"
+                  }`}
+                  placeholder="Enter Quiz Title..."
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    if (titleError) setTitleError(false);
+                  }}
+                />
+                <input
+                  type="text"
+                  className="text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none w-full max-w-2xl text-sm mt-1 placeholder-gray-400 dark:placeholder-gray-500"
+                  placeholder="Add a description (optional)"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
             </div>
             <div className="flex items-center gap-3 sm:ml-4">
               <button
@@ -327,7 +430,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         </div>
       </div>
 
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-4 pb-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 px-4">
           <aside className="md:col-span-3 lg:col-span-3">
             <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-[650px]">
@@ -341,13 +444,17 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                   {questions.map((_, i) => (
                     <button
                       key={i}
-                      className={`border p-2 text-sm transition-all ${
+                      className={`border-2 p-2 text-sm transition-all ${
                         i === currentIndex
-                          ? "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
-                          : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                          ? modifiedQuestions.has(i)
+                            ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
+                            : "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
+                          : modifiedQuestions.has(i)
+                            ? "bg-white dark:bg-gray-700 border-orange-400 dark:border-orange-500 text-gray-900 dark:text-gray-100 hover:border-orange-500"
+                            : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                       }`}
                       onClick={() => setCurrentIndex(i)}
-                      title={`Go to question ${i + 1}`}
+                      title={`Go to question ${i + 1}${modifiedQuestions.has(i) ? " (unsaved changes)" : ""}`}
                     >
                       {i + 1}
                     </button>

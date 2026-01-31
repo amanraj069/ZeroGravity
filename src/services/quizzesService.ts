@@ -57,8 +57,14 @@ export const getQuizPublicInfo = async (quizId: string) => {
   return res.json();
 };
 
-export const getCurrentQuestion = async (quizId: string) => {
-  const res = await apiCall(API_ENDPOINTS.QUIZZES.CURRENT(quizId));
+export const getCurrentQuestion = async (
+  quizId: string,
+  quizUserId?: string,
+) => {
+  const url = quizUserId
+    ? `${API_ENDPOINTS.QUIZZES.CURRENT(quizId)}?quizUserId=${quizUserId}`
+    : API_ENDPOINTS.QUIZZES.CURRENT(quizId);
+  const res = await apiCall(url);
   return res.json();
 };
 
