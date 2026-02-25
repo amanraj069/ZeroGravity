@@ -1069,3 +1069,506 @@ html.dark input[type="date"] {
     animation: marquee 6s linear infinite;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   TipTap WYSIWYG editor styles
+   ══════════════════════════════════════════════════════════════ */
+
+/* Placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* Task-list checkboxes */
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2px 0;
+}
+
+.tiptap ul[data-type="taskList"] li > label {
+  flex-shrink: 0;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.tiptap ul[data-type="taskList"] li > label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #9ca3af;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:hover {
+  border-color: #3b82f6;
+}
+
+.tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.tiptap
+  ul[data-type="taskList"]
+  li
+  > label
+  input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.tiptap ul[data-type="taskList"] li > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.tiptap ul[data-type="taskList"] li > div > p {
+  margin: 0;
+}
+
+.tiptap ul[data-type="taskList"] li[data-checked="true"] > div > p {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* Horizontal rule */
+.tiptap hr {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+.dark .tiptap hr {
+  border-color: #374151;
+}
+
+/* Code blocks */
+.tiptap pre {
+  border-radius: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  background: transparent !important;
+  margin: 0 !important;
+}
+
+.tiptap .code-block-wrapper pre {
+  padding: 0.75rem 1.125rem !important;
+}
+
+.tiptap code {
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  background: #f3f4f6;
+}
+
+.dark .tiptap code {
+  background: #1f2937;
+}
+
+/* Code block is handled by NodeView, so don't style nested code in pre */
+.tiptap pre code {
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.875rem;
+  background: transparent !important;
+  color: inherit;
+}
+
+/* ─── Code Block Component Styles ─── */
+.code-block-wrapper {
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.code-block-container {
+  border-radius: 0;
+  overflow: visible;
+  border: 1px solid #2d2d2d;
+  background: #1e1e1e;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.code-block-container:hover,
+.code-block-container:focus-within {
+  border-color: #3a3a3a;
+}
+
+.code-block-header {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.5rem;
+  background: rgba(22, 22, 22, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.code-block-container:hover .code-block-header,
+.code-block-container:focus-within .code-block-header {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.code-block-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #a0a0a0;
+  background: #252525;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-block-lang-btn:hover {
+  color: #e0e0e0;
+  background: #2d2d2d;
+  border-color: #4a4a4a;
+}
+
+.code-block-lang-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #252525;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 50;
+  min-width: 120px;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.code-block-lang-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  color: #b0b0b0;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.1s;
+  border: none;
+  background: transparent;
+}
+
+.code-block-lang-option:hover {
+  color: #ffffff;
+  background: #3a3a3a;
+}
+
+.code-block-lang-option.active {
+  color: #58a6ff;
+  background: rgba(88, 166, 255, 0.1);
+  font-weight: 600;
+}
+
+.code-block-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #808080;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.code-block-action-btn:hover {
+  color: #d0d0d0;
+  background: #252525;
+  border-color: #3a3a3a;
+}
+
+.code-block-pre {
+  padding: 0.75rem 1.125rem;
+  margin: 0;
+  overflow-x: auto;
+  font-family:
+    "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", Menlo,
+    "DejaVu Sans Mono", Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: #d4d4d4;
+  tab-size: 4;
+  background: #1e1e1e !important;
+  border-radius: 0 !important;
+}
+
+.code-block-pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  font-family: inherit !important;
+}
+
+.code-block-code {
+  font-family:
+    "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", Menlo,
+    "DejaVu Sans Mono", Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: #d4d4d4;
+  white-space: pre;
+  tab-size: 4;
+  padding: 0.25rem 0;
+}
+
+.code-block-code code {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
+  font-family: inherit !important;
+}
+
+/* ─── Syntax Highlighting (VS Code Dark+ inspired) ─── */
+.code-block-pre .hljs-keyword,
+.code-block-pre .hljs-type {
+  color: #569cd6;
+  font-weight: 500;
+}
+
+.code-block-pre .hljs-built_in {
+  color: #4ec9b0;
+}
+
+.code-block-pre .hljs-literal,
+.code-block-pre .hljs-number {
+  color: #b5cea8;
+}
+
+.code-block-pre .hljs-string,
+.code-block-pre .hljs-doctag {
+  color: #ce9178;
+}
+
+.code-block-pre .hljs-title,
+.code-block-pre .hljs-section,
+.code-block-pre .hljs-title.function_,
+.code-block-pre .hljs-title.class_ {
+  color: #dcdcaa;
+}
+
+.code-block-pre .hljs-comment {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.code-block-pre .hljs-variable,
+.code-block-pre .hljs-variable.language_ {
+  color: #9cdcfe;
+}
+
+.code-block-pre .hljs-params {
+  color: #9cdcfe;
+}
+
+.code-block-pre .hljs-meta,
+.code-block-pre .hljs-meta .hljs-keyword {
+  color: #c586c0;
+}
+
+.code-block-pre .hljs-meta .hljs-string {
+  color: #ce9178;
+}
+
+.code-block-pre .hljs-operator {
+  color: #d4d4d4;
+}
+
+.code-block-pre .hljs-punctuation {
+  color: #d4d4d4;
+}
+
+.code-block-pre .hljs-attr {
+  color: #92c5f7;
+}
+
+.code-block-pre .hljs-symbol {
+  color: #b5cea8;
+}
+
+.code-block-pre .hljs-subst {
+  color: #d4d4d4;
+}
+
+.code-block-pre .hljs-regexp {
+  color: #d16969;
+}
+
+.code-block-pre .hljs-selector-class,
+.code-block-pre .hljs-selector-id,
+.code-block-pre .hljs-selector-tag {
+  color: #d7ba7d;
+}
+
+/* Control flow keywords (for, while, if, else, return) - make them pop */
+.code-block-pre .hljs-keyword {
+  color: #c586c0;
+}
+
+/* Type keywords separate from control flow */
+.code-block-pre .hljs-type {
+  color: #4ec9b0;
+}
+
+/* Class/struct names */
+.code-block-pre .hljs-title.class_,
+.code-block-pre .hljs-title.class_.inherited__ {
+  color: #4ec9b0;
+  font-weight: 500;
+}
+
+/* Function names */
+.code-block-pre .hljs-title.function_ {
+  color: #dcdcaa;
+}
+
+/* Python decorators */
+.code-block-pre .hljs-decorator,
+.code-block-pre .hljs-meta .hljs-keyword {
+  color: #dcdcaa;
+}
+
+/* Template / Generic types */
+.code-block-pre .hljs-template-variable,
+.code-block-pre .hljs-template-tag {
+  color: #4ec9b0;
+}
+
+/* Blockquote */
+.tiptap blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.dark .tiptap blockquote {
+  border-left-color: #4b5563;
+}
+
+/* Highlight */
+.tiptap mark {
+  padding: 0.1em 0.2em;
+  border-radius: 2px;
+}
+
+.dark .tiptap mark {
+  color: inherit;
+}
+
+/* Table styles */
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.tiptap th,
+.tiptap td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  min-width: 80px;
+}
+
+.dark .tiptap th,
+.dark .tiptap td {
+  border-color: #4b5563;
+}
+
+.tiptap th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+.dark .tiptap th {
+  background: #1f2937;
+}
+
+/* Image */
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+/* Links */
+.tiptap a {
+  color: #3b82f6;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Focused editor */
+.tiptap:focus {
+  outline: none;
+}
+
+/* Selection colour */
+.tiptap ::selection {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.dark .tiptap ::selection {
+  background: rgba(59, 130, 246, 0.35);
+}

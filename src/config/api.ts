@@ -150,6 +150,25 @@ export const API_ENDPOINTS = {
     MARK_ALL_READ: `${API_BASE_URL}/api/notifications/read-all`,
     CLAIM: (id: string) => `${API_BASE_URL}/api/notifications/${id}/claim`,
   },
+  // Notes endpoints
+  NOTES: {
+    LIST: `${API_BASE_URL}/api/notes`,
+    GET: (id: string) => `${API_BASE_URL}/api/notes/${id}`,
+    CREATE: `${API_BASE_URL}/api/notes`,
+    UPDATE: (id: string) => `${API_BASE_URL}/api/notes/${id}`,
+    TRASH: (id: string) => `${API_BASE_URL}/api/notes/${id}/trash`,
+    RESTORE: (id: string) => `${API_BASE_URL}/api/notes/${id}/restore`,
+    FAVORITE: (id: string) => `${API_BASE_URL}/api/notes/${id}/favorite`,
+    DELETE: (id: string) => `${API_BASE_URL}/api/notes/${id}`,
+    EMPTY_TRASH: `${API_BASE_URL}/api/notes/trash`,
+    CATEGORIES: `${API_BASE_URL}/api/notes/categories`,
+    UPDATE_CATEGORY: (id: string) =>
+      `${API_BASE_URL}/api/notes/categories/${id}`,
+    PIN_CATEGORY: (id: string) =>
+      `${API_BASE_URL}/api/notes/categories/${id}/pin`,
+    DELETE_CATEGORY: (id: string) =>
+      `${API_BASE_URL}/api/notes/categories/${id}`,
+  },
 };
 
 // Helper function for making API calls with consistent error handling

@@ -25,9 +25,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
     "/quizzes",
     "/academia",
     "/studentsHub",
+    "/notes",
   ];
   const hasGrayBackground = grayBackgroundPages.some((page) =>
-    pathname?.startsWith(page)
+    pathname?.startsWith(page),
   );
 
   return (

@@ -83,6 +83,40 @@ export default function Dashboard() {
     }));
   }, []);
 
+  // Generate random stars for Quizzes card
+  const quizzesStars = useMemo(() => {
+    return Array.from({ length: 40 }, (_, i) => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 2 + 1,
+      mobileSize: Math.random() * 1 + 0.5,
+      opacity: Math.random() * 0.8 + 0.2,
+      delay: Math.random() * 2.5,
+      twinkleDuration: 4 + Math.random() * 4,
+      twinkleDelay: Math.random() * 3,
+      moveX: (Math.random() - 0.5) * 30,
+      moveY: (Math.random() - 0.5) * 30,
+      showOnMobile: i < 15,
+    }));
+  }, []);
+
+  // Generate random stars for Notes card
+  const notesStars = useMemo(() => {
+    return Array.from({ length: 40 }, (_, i) => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 2 + 1,
+      mobileSize: Math.random() * 1 + 0.5,
+      opacity: Math.random() * 0.8 + 0.2,
+      delay: Math.random() * 2.5,
+      twinkleDuration: 4 + Math.random() * 4,
+      twinkleDelay: Math.random() * 3,
+      moveX: (Math.random() - 0.5) * 30,
+      moveY: (Math.random() - 0.5) * 30,
+      showOnMobile: i < 15,
+    }));
+  }, []);
+
   // Navigation items array with styling
   const navigationItems = [
     {
@@ -99,6 +133,20 @@ export default function Dashboard() {
       stars: academiaStars,
       id: "academia-card",
     },
+    // {
+    //   name: "Quizzes",
+    //   url: "/quizzes",
+    //   description: "Create and take quizzes to test your knowledge",
+    //   stars: quizzesStars,
+    //   id: "quizzes-card",
+    // },
+    // {
+    //   name: "Notes",
+    //   url: "/notes",
+    //   description: "Write, organize, and manage your markdown notes",
+    //   stars: notesStars,
+    //   id: "notes-card",
+    // },
   ];
 
   useEffect(() => {
@@ -382,7 +430,9 @@ export default function Dashboard() {
             }
             
             #goals-card:hover .card-star-base,
-            #academia-card:hover .card-star-base {
+            #academia-card:hover .card-star-base,
+            #quizzes-card:hover .card-star-base,
+            #notes-card:hover .card-star-base {
               transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
             }
           `,
