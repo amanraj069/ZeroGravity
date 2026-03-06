@@ -370,7 +370,7 @@ export default function HostQuizPage() {
             {/* Participants Panel - 55% width */}
             <div className="w-full lg:w-[55%]">
               {/* Participants List with Avatars */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-8 h-[85vh] flex flex-col">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-8 h-[85dvh] flex flex-col">
                 <div className="mb-6 flex items-end justify-between border-b border-gray-200 dark:border-gray-700 pb-4">
                   <h2 className="text-2xl font-light text-gray-900 dark:text-white">
                     Participants
@@ -543,7 +543,7 @@ export default function HostQuizPage() {
 
             {/* Right Panel - Quiz Info and Controls - 45% width */}
             <div className="w-full lg:w-[45%]">
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-6 h-[85vh] flex flex-col overflow-auto">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-6 h-[85dvh] flex flex-col overflow-auto">
                 {/* Quiz Info (moved from top header) */}
                 <div className="space-y-5">
                   <div className="flex items-start justify-between">
@@ -984,7 +984,7 @@ export default function HostQuizPage() {
                       </button>
                     </div>
 
-                    <div className="space-y-2 max-h-[30vh] overflow-auto">
+                    <div className="space-y-2 max-h-[30dvh] overflow-auto">
                       {board
                         .slice()
                         .sort(

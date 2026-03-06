@@ -395,7 +395,7 @@ const Goals: React.FC = () => {
         {/* Mobile-optimized Goals Display */}
         <div className="space-y-4">
           {filteredGoals.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100vh-300px)] py-12 px-4 text-center shadow-sm relative">
+            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100dvh-300px)] py-12 px-4 text-center shadow-sm relative">
               {/* Dark mode hint - only show in light mode */}
               {theme === "light" && (
                 <div className="absolute top-4 right-4 text-xs text-gray-400 flex items-center gap-1">

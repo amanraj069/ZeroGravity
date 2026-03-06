@@ -514,7 +514,7 @@ export default function EditProfile() {
         />
       )}
 
-      <div className="mt-2 min-h-[calc(100vh-12rem)]">
+      <div className="mt-2 min-h-[calc(100dvh-12rem)]">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <Link

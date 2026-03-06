@@ -617,7 +617,7 @@ export default function Profile() {
       {/* Border Picker Modal */}
       {showBorderPicker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] overflow-hidden">
             <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
               <h2 className="text-xl font-medium text-black dark:text-white">
                 Choose Border
@@ -641,7 +641,7 @@ export default function Profile() {
                 </svg>
               </button>
             </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
+            <div className="p-6 overflow-y-auto max-h-[70dvh]">
               {userBorders.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">

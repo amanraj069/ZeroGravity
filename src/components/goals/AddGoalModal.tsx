@@ -158,7 +158,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-[#020410]/90 backdrop-blur-lg flex items-center justify-center z-50 p-4 transition-all">
-      <div className="goal-modal-shell relative w-full max-w-2xl max-h-[85vh] overflow-y-auto border border-white/20 bg-[#01020a]/95 shadow-[0_0_45px_rgba(26,110,255,0.35)] overflow-hidden">
+      <div className="goal-modal-shell relative w-full max-w-2xl max-h-[85dvh] overflow-y-auto border border-white/20 bg-[#01020a]/95 shadow-[0_0_45px_rgba(26,110,255,0.35)] overflow-hidden">
         <style
           dangerouslySetInnerHTML={{
             __html: `

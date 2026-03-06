@@ -812,8 +812,8 @@ export default function PhotoEditor({
       <div
         className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full flex flex-col"
         style={{
-          maxWidth: "min(95vw, 95vh - 120px)",
-          maxHeight: "95vh",
+          maxWidth: "min(95vw, 95dvh - 120px)",
+          maxHeight: "95dvh",
           aspectRatio: "1 / 1",
         }}
       >

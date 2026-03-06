@@ -819,7 +819,7 @@ const DailyTasks: React.FC = () => {
       {/* Tasks Display */}
       <div className="space-y-2 sm:space-y-4 mt-2 sm:mt-4">
         {tasks.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100vh-360px)]">
+          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100dvh-360px)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/goals/dTasks.png"

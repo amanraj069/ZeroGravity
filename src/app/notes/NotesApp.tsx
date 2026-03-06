@@ -22,7 +22,7 @@ import {
 import NotesSidebar from "./NotesSidebar";
 import NoteEditor from "./NoteEditor";
 import NotesGrid from "./NotesGrid";
-import { Menu, PanelLeftClose } from "lucide-react";
+
 
 export type SidebarView = "notes" | "favorites" | "trash";
 
@@ -60,7 +60,11 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== "undefined") return window.innerWidth >= 1024;
+    return true;
+  });
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Prevent URL updates during initial mount / data load
   const initializedRef = useRef(false);
@@ -135,17 +139,8 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
   // ─── Note actions ─────────────────────────────────────────
   const handleCreateNote = useCallback(async () => {
     try {
-      // Generate unique "Untitled" name
-      const existingTitles = new Set(allNotes.map((n) => n.title));
-      let title = "Untitled";
-      if (existingTitles.has(title)) {
-        let i = 1;
-        while (existingTitles.has(`Untitled(${i})`)) i++;
-        title = `Untitled(${i})`;
-      }
-
       const body: Partial<Note> = {
-        title,
+        title: "Untitled",
         content: "",
         category:
           activeCategory && activeCategory !== "__uncategorised"
@@ -158,7 +153,22 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
     } catch (err) {
       console.error("Failed to create note:", err);
     }
-  }, [activeCategory, allNotes]);
+  }, [activeCategory]);
+
+  const handleCreateNoteInCategory = useCallback(async (categoryName: string | null) => {
+    try {
+      const body: Partial<Note> = {
+        title: "Untitled",
+        content: "",
+        category: categoryName && categoryName !== "__uncategorised" ? categoryName : null,
+      };
+      const note = await createNote(body);
+      setAllNotes((prev) => [note, ...prev]);
+      setActiveNoteId(note._id);
+    } catch (err) {
+      console.error("Failed to create note:", err);
+    }
+  }, []);
 
   const handleUpdateNote = useCallback((id: string, changes: Partial<Note>) => {
     // Optimistically update local state
@@ -381,27 +391,30 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
   // ─── Render ───────────────────────────────────────────────
   if (loading && allNotes.length === 0) {
     return (
-      <div className="flex h-[calc(100vh-64px)] items-center justify-center bg-white dark:bg-[#0a0a0a]">
+      <div className="flex h-[calc(100dvh-64px)] items-center justify-center bg-white dark:bg-[#0a0a0a]">
         <div className="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-gray-600 dark:border-t-gray-300 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-white dark:bg-[#0a0a0a]">
-      {/* Mobile sidebar toggle */}
-      <button
-        onClick={() => setSidebarOpen((o) => !o)}
-        className="fixed top-[72px] left-2 z-50 p-1.5 lg:hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md"
-      >
-        {sidebarOpen ? <PanelLeftClose size={18} /> : <Menu size={18} />}
-      </button>
+    <div className="flex h-[calc(100dvh-64px)] overflow-hidden bg-white dark:bg-[#0a0a0a]">
+      {/* Click overlay to close sidebar on mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-      {/* Sidebar */}
+      {/* Sidebar - overlay on mobile, inline on desktop */}
       <div
-        className={`${
-          sidebarOpen ? "w-64 min-w-[256px]" : "w-0 min-w-0"
-        } transition-all duration-200 h-full flex-shrink-0 overflow-hidden`}
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-200 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:relative lg:z-auto lg:translate-x-0 lg:transition-[width,min-width] lg:duration-200
+          ${sidebarOpen ? "lg:w-64 lg:min-w-[256px]" : "lg:w-0 lg:min-w-0 lg:overflow-hidden"}
+        `}
       >
         <div className="w-64 min-w-[256px] h-full">
           <NotesSidebar
@@ -410,6 +423,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
               setSidebarView(v);
               setActiveNoteId(null);
               setActiveCategory(null);
+              if (window.innerWidth < 1024) setSidebarOpen(false);
             }}
             categories={categories}
             activeCategory={activeCategory}
@@ -424,12 +438,17 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
             activeNoteId={activeNoteId}
             onSelectNote={(id: string) => {
               setActiveNoteId(id);
+              if (window.innerWidth < 1024) setSidebarOpen(false);
             }}
             onCreateNote={handleCreateNote}
             onTrashNote={handleTrashNote}
             onRestoreNote={handleRestoreNote}
             onDeleteNote={handleDeleteNote}
             onEmptyTrash={handleEmptyTrash}
+            onCreateNoteInCategory={handleCreateNoteInCategory}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onCloseSidebar={() => setSidebarOpen(false)}
           />
         </div>
       </div>
@@ -450,13 +469,17 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
             isTrash={sidebarView === "trash"}
             onBack={() => setActiveNoteId(null)}
             allNotes={allNotes}
+            onCreateCategory={handleCreateCategory}
           />
         ) : (
           <NotesGrid
             allNotes={allNotes}
             view={sidebarView}
             activeCategory={activeCategory}
-            onSelectNote={(id: string) => setActiveNoteId(id)}
+            onSelectNote={(id: string) => {
+              setActiveNoteId(id);
+              if (window.innerWidth < 1024) setSidebarOpen(false);
+            }}
             onCreateNote={handleCreateNote}
             onTrashNote={handleTrashNote}
             onRestoreNote={handleRestoreNote}
@@ -465,17 +488,11 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
             onEmptyTrash={handleEmptyTrash}
             sidebarOpen={sidebarOpen}
             onToggleSidebar={() => setSidebarOpen((o) => !o)}
+            searchQuery={searchQuery}
           />
         )}
       </div>
 
-      {/* Click overlay to close sidebar on mobile */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
     </div>
   );
 }

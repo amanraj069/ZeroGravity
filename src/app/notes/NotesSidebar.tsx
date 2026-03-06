@@ -39,6 +39,10 @@ interface NotesSidebarProps {
   onRestoreNote: (id: string) => void;
   onDeleteNote: (id: string) => void;
   onEmptyTrash: () => void;
+  onCreateNoteInCategory: (categoryName: string | null) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onCloseSidebar: () => void;
 }
 
 function formatTimeAgo(date: string) {
@@ -73,8 +77,11 @@ export default function NotesSidebar({
   onRestoreNote,
   onDeleteNote,
   onEmptyTrash,
+  onCreateNoteInCategory,
+  searchQuery,
+  onSearchChange,
+  onCloseSidebar,
 }: NotesSidebarProps) {
-  const [searchQuery, setSearchQuery] = useState("");
   const [categoriesExpanded, setCategoriesExpanded] = useState(true);
   const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
   const [addingCategory, setAddingCategory] = useState(false);
@@ -144,7 +151,7 @@ export default function NotesSidebar({
   const trashCount = allNotes.filter((n) => n.trash).length;
 
   const recentNotes = useMemo(() => {
-    return [...allNotes]
+    return [...searchFiltered]
       .filter((n) => !n.trash)
       .sort(
         (a, b) =>
@@ -152,7 +159,7 @@ export default function NotesSidebar({
           new Date(a.lastUpdatedDate).getTime(),
       )
       .slice(0, 8);
-  }, [allNotes]);
+  }, [searchFiltered]);
 
   const navItems = [
     {
@@ -179,23 +186,32 @@ export default function NotesSidebar({
   return (
     <div className="w-64 h-full bg-gray-50 dark:bg-[#111111] border-r border-gray-200 dark:border-gray-800 flex flex-col select-none">
       {/* ── Header ───────────────────────────────────────── */}
-      <div className="px-4 py-3.5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between flex-shrink-0">
+      <div className="px-4 min-h-[42px] border-b border-gray-200 dark:border-gray-800 flex items-center justify-between flex-shrink-0">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white tracking-wide uppercase">
           Notes
         </h2>
-        <button
-          onClick={onCreateNote}
-          className="flex items-center gap-1 text-[11px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
-          title="New note (⌘N)"
-        >
-          <Plus size={13} />
-          New
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={onCreateNote}
+            className="flex items-center gap-1 text-[11px] font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+            title="New note (⌘N)"
+          >
+            <Plus size={13} />
+            New
+          </button>
+          <button
+            onClick={onCloseSidebar}
+            className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors lg:hidden"
+            title="Close sidebar"
+          >
+            <X size={16} />
+          </button>
+        </div>
       </div>
 
       {/* ── Search ───────────────────────────────────────── */}
-      <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
-        <div className="relative">
+      <div className="px-3 min-h-[38px] border-b border-gray-200 dark:border-gray-800 flex-shrink-0 flex items-center">
+        <div className="relative w-full">
           <Search
             size={13}
             className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"
@@ -203,9 +219,9 @@ export default function NotesSidebar({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search notes..."
-            className="w-full text-xs pl-7 pr-3 py-1.5 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-700 rounded text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 transition-colors"
+            className="w-full text-xs pl-7 pr-3 py-1.5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-300 dark:border-gray-700 rounded text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 dark:focus:border-gray-500 focus:ring-1 focus:ring-blue-400/20 transition-colors"
           />
         </div>
       </div>
@@ -216,15 +232,18 @@ export default function NotesSidebar({
         <nav className="py-1.5 flex-shrink-0">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = view === item.id;
+            const active =
+              item.id === "notes"
+                ? view === "notes" && !activeCategory && !activeNoteId
+                : view === item.id && !activeNoteId;
             return (
               <button
                 key={item.id}
                 onClick={() => onChangeView(item.id)}
-                className={`w-full flex items-center justify-between px-4 py-1.5 text-[13px] transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-1.5 text-[13px] transition-all ${
                   active
-                    ? "bg-gray-200/80 dark:bg-gray-800 text-gray-900 dark:text-white font-medium"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white"
+                    ? "bg-gray-200/80 dark:bg-gray-800 text-gray-900 dark:text-white font-medium border-l-2 border-blue-500"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white border-l-2 border-transparent"
                 }`}
               >
                 <span className="flex items-center gap-2.5">
@@ -450,12 +469,34 @@ export default function NotesSidebar({
                             compact
                           />
                         ))}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onCreateNoteInCategory(cat.name);
+                          }}
+                          className="w-full text-left pl-4 pr-3 py-1.5 text-[11px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/30 transition-colors flex items-center gap-1.5"
+                        >
+                          <Plus size={11} />
+                          New note
+                        </button>
                       </div>
                     )}
                     {isExpanded && catNotes.length === 0 && (
-                      <p className="ml-4 pl-4 py-1 text-[10px] text-gray-400 dark:text-gray-600 italic border-l border-gray-200 dark:border-gray-700/50">
-                        No notes
-                      </p>
+                      <div className="ml-4 border-l border-gray-200 dark:border-gray-700/50">
+                        <p className="pl-4 py-1 text-[10px] text-gray-400 dark:text-gray-600 italic">
+                          No notes
+                        </p>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onCreateNoteInCategory(cat.name);
+                          }}
+                          className="w-full text-left pl-4 pr-3 py-1.5 text-[11px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/30 transition-colors flex items-center gap-1.5"
+                        >
+                          <Plus size={11} />
+                          New note
+                        </button>
+                      </div>
                     )}
                   </div>
                 );
@@ -516,13 +557,35 @@ export default function NotesSidebar({
                           compact
                         />
                       ))}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onCreateNoteInCategory(null);
+                        }}
+                        className="w-full text-left pl-4 pr-3 py-1.5 text-[11px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/30 transition-colors flex items-center gap-1.5"
+                      >
+                        <Plus size={11} />
+                        New note
+                      </button>
                     </div>
                   )}
                 {expandedCats.has("__uncategorised") &&
                   uncategorisedNotes.length === 0 && (
-                    <p className="ml-4 pl-4 py-1 text-[10px] text-gray-400 dark:text-gray-600 italic border-l border-gray-200 dark:border-gray-700/50">
-                      No notes
-                    </p>
+                    <div className="ml-4 border-l border-gray-200 dark:border-gray-700/50">
+                      <p className="pl-4 py-1 text-[10px] text-gray-400 dark:text-gray-600 italic">
+                        No notes
+                      </p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onCreateNoteInCategory(null);
+                        }}
+                        className="w-full text-left pl-4 pr-3 py-1.5 text-[11px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/30 transition-colors flex items-center gap-1.5"
+                      >
+                        <Plus size={11} />
+                        New note
+                      </button>
+                    </div>
                   )}
               </div>
 
@@ -561,7 +624,7 @@ export default function NotesSidebar({
                   if (view === "trash") onChangeView("notes");
                   onSelectNote(n._id);
                 }}
-                className={`w-full text-left px-4 py-1.5 transition-colors group ${
+                className={`w-full text-left px-4 py-1.5 transition-all group ${
                   activeNoteId === n._id
                     ? "bg-gray-200/60 dark:bg-gray-800/60"
                     : "hover:bg-gray-100 dark:hover:bg-gray-800/30"
@@ -599,8 +662,8 @@ export default function NotesSidebar({
       </div>
 
       {/* ── Footer ──────────────────────────────────────── */}
-      <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 text-[10px] text-gray-400 dark:text-gray-600 hidden lg:block flex-shrink-0">
-        <p>⌘N — New note</p>
+      <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 text-[10px] text-gray-400 dark:text-gray-600 hidden lg:flex items-center gap-3 flex-shrink-0">
+        <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-800 rounded text-[9px] font-mono">⌘N</kbd> New note</span>
       </div>
     </div>
   );

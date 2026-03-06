@@ -560,7 +560,7 @@ function JoinQuizContent() {
           <div className="max-w-6xl mx-auto w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
               {/* Form section - First on mobile, Second on desktop */}
-              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60vh] flex flex-col justify-center order-1 lg:order-2">
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60dvh] flex flex-col justify-center order-1 lg:order-2">
                 <div className="space-y-8">
                   <div>
                     <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-4">
@@ -608,7 +608,7 @@ function JoinQuizContent() {
               </div>
 
               {/* Avatar Selection - Second on mobile, First on desktop */}
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 lg:p-8 border border-black dark:border-gray-700 h-[50vh] lg:h-[60vh] flex flex-col order-2 lg:order-1">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 lg:p-8 border border-black dark:border-gray-700 h-[50dvh] lg:h-[60dvh] flex flex-col order-2 lg:order-1">
                 <div className="mb-6">
                   <h3 className="text-xl font-light text-gray-900 dark:text-white mb-2">
                     Choose Your Avatar

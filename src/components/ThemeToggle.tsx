@@ -21,13 +21,15 @@ export default function ThemeToggle() {
   const ClassicComponent = Classic as unknown as ComponentType<ClassicProps>;
 
   return (
-    <ClassicComponent
-      duration={750}
-      toggled={isDark}
-      toggle={toggleTheme}
-      className="text-black dark:text-white"
-      style={{ fontSize: "1.5rem" }}
-    />
+    <div suppressHydrationWarning>
+      <ClassicComponent
+        duration={750}
+        toggled={isDark}
+        toggle={toggleTheme}
+        className="text-black dark:text-white"
+        style={{ fontSize: "1.5rem" }}
+      />
+    </div>
   );
 }
 
