@@ -83,15 +83,13 @@ export default function ActivityGraph({
   // Scroll to end on mobile when data loads
   useEffect(() => {
     if (!loading && activityData && scrollContainerRef.current) {
-      // Only scroll on mobile (screen width < 640px)
       const isMobile = window.innerWidth < 640;
       if (isMobile) {
-        // Small delay to ensure DOM is fully rendered
+        const scroll = scrollContainerRef.current;
         setTimeout(() => {
-          if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollLeft =
-              scrollContainerRef.current.scrollWidth;
-          }
+          if (!scroll) return;
+          const maxScroll = scroll.scrollWidth - scroll.clientWidth;
+          scroll.scrollLeft = Math.max(maxScroll, 0);
         }, 100);
       }
     }
@@ -108,14 +106,18 @@ export default function ActivityGraph({
     });
 
     const today = new Date();
-    const currentYear = today.getFullYear();
     const months: MonthData[] = [];
 
-    // Generate data for each month (Jan to Dec)
-    for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+    // Show the last 12 months ending at the current month
+    // e.g. if today is Mar 2026, show Apr 2025 → Mar 2026
+    for (let i = 11; i >= 0; i--) {
+      const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      const monthIndex = monthDate.getMonth();
+      const monthYear = monthDate.getFullYear();
+
       // Get first and last day of the month
-      const firstDay = new Date(currentYear, monthIndex, 1);
-      const lastDay = new Date(currentYear, monthIndex + 1, 0);
+      const firstDay = new Date(monthYear, monthIndex, 1);
+      const lastDay = new Date(monthYear, monthIndex + 1, 0);
 
       // Check if the month starts on Sunday
       const startsOnSunday = firstDay.getDay() === 0;
@@ -147,11 +149,11 @@ export default function ActivityGraph({
           const day = currentDate.getDate();
           const dateStr = `${year}-${String(month + 1).padStart(
             2,
-            "0"
+            "0",
           )}-${String(day).padStart(2, "0")}`;
 
           // Check if this day belongs to the current month
-          const belongsToMonth = month === monthIndex && year === currentYear;
+          const belongsToMonth = month === monthIndex && year === monthYear;
           const isFuture = currentDate > today;
 
           week.push({
@@ -198,7 +200,7 @@ export default function ActivityGraph({
 
   const handleMouseEnter = (
     day: ActivityDay,
-    event: React.MouseEvent<HTMLDivElement>
+    event: React.MouseEvent<HTMLDivElement>,
   ) => {
     // Only allow hover for days that belong to the month (count >= 0)
     if (day.count < 0) return;
@@ -254,8 +256,6 @@ export default function ActivityGraph({
     );
   }
 
-  const currentYear = new Date().getFullYear();
-
   return (
     <div
       className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 ${className}`}
@@ -264,7 +264,7 @@ export default function ActivityGraph({
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {activityData.totalCompletions} contribution
-          {activityData.totalCompletions !== 1 ? "s" : ""} in {currentYear}
+          {activityData.totalCompletions !== 1 ? "s" : ""} in the last 12 months
         </h3>
         {/* Legend */}
         <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
@@ -318,7 +318,7 @@ export default function ActivityGraph({
                           className={`w-[11px] h-[11px] ${getColorClass(
                             day.count,
                             activityData.maxCount,
-                            day.date
+                            day.date,
                           )} ${
                             day.count >= 0
                               ? "cursor-pointer hover:ring-1 hover:ring-gray-400 dark:hover:ring-gray-500"

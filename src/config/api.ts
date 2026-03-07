@@ -150,6 +150,10 @@ export const API_ENDPOINTS = {
     MARK_ALL_READ: `${API_BASE_URL}/api/notifications/read-all`,
     CLAIM: (id: string) => `${API_BASE_URL}/api/notifications/${id}/claim`,
   },
+  // Badge endpoints
+  BADGES: {
+    PROGRESS: `${API_BASE_URL}/api/badges/progress`,
+  },
   // Notes endpoints
   NOTES: {
     LIST: `${API_BASE_URL}/api/notes`,

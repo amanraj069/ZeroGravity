@@ -19,6 +19,14 @@ import {
 } from "@/services/shopService";
 import { BorderPreview } from "@/components/borders";
 import PhotoEditor from "@/components/PhotoEditor";
+import {
+  fetchBadgeProgress,
+  getDefaultSelectedBadges,
+  getHighestBadge,
+  getSelectedBadges,
+  BADGE_VISUALS,
+  BadgeData,
+} from "@/services/badgeService";
 
 interface StreakInfo {
   currentStreak: number;
@@ -46,12 +54,25 @@ export default function Profile() {
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [copied, setCopied] = useState(false);
+  const [badgeData, setBadgeData] = useState<BadgeData | null>(null);
+  const [selectedBadgeIds, setSelectedBadgeIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
     } else if (isLoggedIn && user) {
       fetchStreakInfo();
+      fetchBadgeProgress().then((data) => {
+        if (data) {
+          setBadgeData(data);
+          const saved = getSelectedBadges(user.userId);
+          if (saved.length > 0) {
+            setSelectedBadgeIds(saved);
+          } else {
+            setSelectedBadgeIds(getDefaultSelectedBadges(data.badges));
+          }
+        }
+      });
     }
   }, [isLoggedIn, authLoading, user, router]);
 
@@ -59,7 +80,7 @@ export default function Profile() {
     setStreakLoading(true);
     try {
       const response = await apiCallWithAuth(
-        API_ENDPOINTS.DAILY_TASKS.STREAK_INFO
+        API_ENDPOINTS.DAILY_TASKS.STREAK_INFO,
       );
       if (response.ok) {
         const data = await response.json();
@@ -168,7 +189,7 @@ export default function Profile() {
           prev.map((b) => ({
             ...b,
             equipped: b.id === borderId,
-          }))
+          })),
         );
         // Refresh user data to get updated equippedBorder
         await refreshPoints();
@@ -330,7 +351,7 @@ export default function Profile() {
               </button>
               <div
                 className={`w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${getAnimationClass(
-                  user.equippedBorder || ""
+                  user.equippedBorder || "",
                 )}`}
                 style={getBorderStyle(user.equippedBorder || "default")}
               >
@@ -404,14 +425,41 @@ export default function Profile() {
 
             {/* Name and Username - grows to fill space */}
             <div className="flex-1 min-w-0 text-right md:text-left">
-              <h2 className="text-lg md:text-2xl font-semibold text-black dark:text-white truncate">
-                {user.firstName} {user.lastName}
-              </h2>
+              <div className="flex items-start justify-end md:justify-start gap-2 flex-wrap">
+                <h2 className="text-lg md:text-2xl font-semibold text-black dark:text-white truncate">
+                  {user.firstName} {user.lastName}
+                </h2>
+                {/* Highest badge pill — shown beside name */}
+                {badgeData &&
+                  (() => {
+                    const highest = getHighestBadge(badgeData.badges);
+                    if (!highest) return null;
+                    const v = BADGE_VISUALS[highest.id];
+                    return (
+                      <Link
+                        href="/badges"
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 border ${v.border} bg-gradient-to-r ${v.bgLight} ${v.bgDark} ${v.glow} rounded-sm whitespace-nowrap`}
+                        title={`Highest Badge: ${highest.name}`}
+                      >
+                        <span
+                          className={`text-xs font-bold bg-gradient-to-r ${v.gradient} bg-clip-text text-transparent`}
+                        >
+                          {v.icon}
+                        </span>
+                        <span
+                          className={`text-[10px] font-semibold ${v.textColor}`}
+                        >
+                          {highest.name}
+                        </span>
+                      </Link>
+                    );
+                  })()}
+              </div>
               <p className="text-sm md:text-base text-gray-500 dark:text-gray-400">
                 @{user.username}
               </p>
               {/* Mobile: Show stats below username */}
-              <div className="flex items-center gap-4 mt-2 md:hidden justify-end">
+              <div className="flex items-center gap-4 mt-2 md:hidden justify-end flex-wrap">
                 <div className="flex items-center gap-1.5">
                   {streakLoading ? (
                     <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
@@ -476,8 +524,8 @@ export default function Profile() {
         {/* Activity Graph */}
         <ActivityGraph joinedDate={user.createdAt} />
 
-        {/* Streak Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Streak Stats Grid — 3 columns: streak, highest, badges */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {/* Current Streak */}
           <div className="relative border border-orange-200 dark:border-orange-900/50 p-3 md:p-4 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
             {/* Fire effect background */}
@@ -533,6 +581,67 @@ export default function Profile() {
               )}
             </div>
           </div>
+
+          {/* Badges Strip — spans both columns on mobile, 1/3 on desktop */}
+          <Link
+            href="/badges"
+            className="col-span-2 md:col-span-1 relative border border-gray-200 dark:border-gray-800 p-3 md:p-4 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Badges
+              </div>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
+                View all →
+              </span>
+            </div>
+            {badgeData ? (
+              <div className="flex items-center gap-2">
+                {[0, 1, 2].map((slot) => {
+                  const badgeId = selectedBadgeIds[slot];
+                  const badge = badgeId
+                    ? badgeData.badges.find((b) => b.id === badgeId)
+                    : null;
+                  const visual = badge ? BADGE_VISUALS[badge.id] : null;
+                  return (
+                    <div
+                      key={slot}
+                      className={`flex-1 flex flex-col items-center gap-1 p-2 border rounded-sm transition-all
+                        ${
+                          badge && visual
+                            ? `${visual.border} bg-gradient-to-br ${visual.bgLight} ${visual.bgDark} ${visual.glow}`
+                            : "border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40"
+                        }`}
+                    >
+                      <div
+                        className={`w-7 h-7 flex items-center justify-center text-base font-bold rounded-sm
+                          ${badge && visual ? `bg-gradient-to-br ${visual.gradient} opacity-90` : "bg-gray-200 dark:bg-gray-700"}`}
+                      >
+                        <span className="text-white drop-shadow-sm">
+                          {badge && visual ? visual.icon : "·"}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[9px] text-center leading-tight truncate w-full
+                        ${badge && visual ? visual.textColor : "text-gray-400 dark:text-gray-600"}`}
+                      >
+                        {badge ? badge.name : "Empty"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                {[0, 1, 2].map((slot) => (
+                  <div
+                    key={slot}
+                    className="flex-1 h-14 border-dashed border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 rounded-sm animate-pulse"
+                  />
+                ))}
+              </div>
+            )}
+          </Link>
         </div>
 
         {/* Profile Details Card */}

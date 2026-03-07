@@ -40,7 +40,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       }`}
     >
       <LandingNavbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-16">{children}</main>
       <Footer />
     </div>
   );

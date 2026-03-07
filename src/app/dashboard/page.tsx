@@ -49,104 +49,36 @@ export default function Dashboard() {
     }));
   }, []);
 
-  // Generate random stars for Goals card
-  const goalsStars = useMemo(() => {
-    return Array.from({ length: 40 }, (_, i) => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 1, // Random size between 1-3px
-      mobileSize: Math.random() * 1 + 0.5, // Smaller on mobile: 0.5-1.5px
-      opacity: Math.random() * 0.8 + 0.2, // Random opacity between 0.2-1
-      delay: Math.random() * 2.5,
-      twinkleDuration: 4 + Math.random() * 4, // Slower twinkle: 4-8s
-      twinkleDelay: Math.random() * 3,
-      moveX: (Math.random() - 0.5) * 30,
-      moveY: (Math.random() - 0.5) * 30,
-      showOnMobile: i < 15, // Only show 15 stars on mobile (reduced from 40)
-    }));
-  }, []);
-
-  // Generate random stars for Academia card
-  const academiaStars = useMemo(() => {
-    return Array.from({ length: 40 }, (_, i) => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 1, // Random size between 1-3px
-      mobileSize: Math.random() * 1 + 0.5, // Smaller on mobile: 0.5-1.5px
-      opacity: Math.random() * 0.8 + 0.2, // Random opacity between 0.2-1
-      delay: Math.random() * 2.5,
-      twinkleDuration: 4 + Math.random() * 4, // Slower twinkle: 4-8s
-      twinkleDelay: Math.random() * 3,
-      moveX: (Math.random() - 0.5) * 30,
-      moveY: (Math.random() - 0.5) * 30,
-      showOnMobile: i < 15, // Only show 15 stars on mobile (reduced from 40)
-    }));
-  }, []);
-
-  // Generate random stars for Quizzes card
-  const quizzesStars = useMemo(() => {
-    return Array.from({ length: 40 }, (_, i) => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 1,
-      mobileSize: Math.random() * 1 + 0.5,
-      opacity: Math.random() * 0.8 + 0.2,
-      delay: Math.random() * 2.5,
-      twinkleDuration: 4 + Math.random() * 4,
-      twinkleDelay: Math.random() * 3,
-      moveX: (Math.random() - 0.5) * 30,
-      moveY: (Math.random() - 0.5) * 30,
-      showOnMobile: i < 15,
-    }));
-  }, []);
-
-  // Generate random stars for Notes card
-  const notesStars = useMemo(() => {
-    return Array.from({ length: 40 }, (_, i) => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 1,
-      mobileSize: Math.random() * 1 + 0.5,
-      opacity: Math.random() * 0.8 + 0.2,
-      delay: Math.random() * 2.5,
-      twinkleDuration: 4 + Math.random() * 4,
-      twinkleDelay: Math.random() * 3,
-      moveX: (Math.random() - 0.5) * 30,
-      moveY: (Math.random() - 0.5) * 30,
-      showOnMobile: i < 15,
-    }));
-  }, []);
-
-  // Navigation items array with styling
+  // Navigation items array with styling accent colors
   const navigationItems = [
     {
       name: "Daily Tasks & Goals",
       url: "/goals",
       description: "Set and track your daily tasks and goals",
-      stars: goalsStars,
+      accent: "from-sky-500/80 via-indigo-700/70 to-slate-900/80",
       id: "goals-card",
     },
     {
       name: "Academia",
       url: "/academia",
       description: "Store your academics in encrypted format",
-      stars: academiaStars,
+      accent: "from-fuchsia-500/80 via-purple-700/70 to-slate-900/80",
       id: "academia-card",
     },
-    // {
-    //   name: "Quizzes",
-    //   url: "/quizzes",
-    //   description: "Create and take quizzes to test your knowledge",
-    //   stars: quizzesStars,
-    //   id: "quizzes-card",
-    // },
-    // {
-    //   name: "Notes",
-    //   url: "/notes",
-    //   description: "Write, organize, and manage your markdown notes",
-    //   stars: notesStars,
-    //   id: "notes-card",
-    // },
+    {
+      name: "Quizzes",
+      url: "/quizzes",
+      description: "Create and take quizzes to test your knowledge",
+      accent: "from-amber-500/80 via-orange-600/70 to-slate-900/80",
+      id: "quizzes-card",
+    },
+    {
+      name: "Notes",
+      url: "/notes",
+      description: "Write, organize, and manage your notes",
+      accent: "from-emerald-500/80 via-teal-700/70 to-slate-900/80",
+      id: "notes-card",
+    },
   ];
 
   useEffect(() => {
@@ -372,130 +304,42 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-            @keyframes starTwinkle {
-              0%, 100% {
-                opacity: 0.3;
-              }
-              50% {
-                opacity: 1;
-              }
-            }
-            
-            @keyframes starTwinkleBloom {
-              0%, 100% {
-                opacity: 0.4;
-                box-shadow: 0 0 3px 1px rgba(59, 130, 246, 0.3), 0 0 6px 2px rgba(59, 130, 246, 0.15);
-              }
-              50% {
-                opacity: 0.9;
-                box-shadow: 0 0 4px 2px rgba(59, 130, 246, 0.4), 0 0 8px 3px rgba(59, 130, 246, 0.2);
-              }
-            }
-            
-            @keyframes starFadeIn {
-              0% {
-                opacity: 0;
-                transform: scale(0);
-              }
-              100% {
-                opacity: var(--star-opacity);
-                transform: scale(1);
-              }
-            }
-            
-            .card-star-base {
-              animation: starFadeIn 0.5s ease-out forwards, starTwinkleBloom var(--twinkle-duration) ease-in-out infinite;
-              animation-delay: var(--appear-delay), var(--twinkle-delay);
-              opacity: 0;
-              transform: scale(1) translate(0, 0);
-              transition: transform 0.3s ease-out;
-              width: var(--mobile-size);
-              height: var(--mobile-size);
-              box-shadow: 0 0 3px 1px rgba(59, 130, 246, 0.25), 0 0 6px 2px rgba(59, 130, 246, 0.1);
-            }
-            
-            .dark .card-star-base {
-              animation: starFadeIn 0.5s ease-out forwards, starTwinkle var(--twinkle-duration) ease-in-out infinite;
-              box-shadow: none;
-            }
-            
-            @media (min-width: 768px) {
-              .card-star-base {
-                width: var(--desktop-size);
-                height: var(--desktop-size);
-              }
-            }
-            
-            #goals-card:hover .card-star-base,
-            #academia-card:hover .card-star-base,
-            #quizzes-card:hover .card-star-base,
-            #notes-card:hover .card-star-base {
-              transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
-            }
-          `,
-          }}
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 mb-6">
-          {navigationItems.map((item) => {
-            return (
-              <Link
-                key={item.url}
-                href={item.url}
-                id={item.id}
-                className="group relative overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-black hover:border-blue-400 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-white/20 hover:scale-[1.02]"
-              >
-                {/* Starfield Background */}
-                <div className="absolute inset-0 bg-white dark:bg-black">
-                  {item.stars.map((star, index) => (
-                    <div
-                      key={index}
-                      className={`card-star-base absolute rounded-full bg-blue-500 dark:bg-white ${
-                        !star.showOnMobile
-                          ? "hidden md:dark:block"
-                          : "hidden dark:block"
-                      }`}
-                      style={
-                        {
-                          left: star.left,
-                          top: star.top,
-                          "--desktop-size": `${star.size}px`,
-                          "--mobile-size": `${star.mobileSize}px`,
-                          "--star-opacity": `${star.opacity}`,
-                          "--appear-delay": `${star.delay * 0.1}s`,
-                          "--twinkle-duration": `${star.twinkleDuration}s`,
-                          "--twinkle-delay": `${star.twinkleDelay}s`,
-                          "--move-x": `${star.moveX}px`,
-                          "--move-y": `${star.moveY}px`,
-                        } as React.CSSProperties
-                      }
-                    />
-                  ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-6">
+          {navigationItems.map((item) => (
+            <Link
+              key={item.url}
+              href={item.url}
+              id={item.id}
+              className="group overflow-hidden border border-gray-800 bg-[#050710] shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-blue-500/50 hover:shadow-[0_18px_35px_rgba(25,118,255,0.2)]"
+            >
+              <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 px-5 py-4 md:px-6 md:py-5">
+                <div className="flex items-center gap-4">
+                  <span
+                    className="block h-10 w-1 rounded-full"
+                    style={{
+                      background: "linear-gradient(180deg, #f5f1ff, #a47efe)",
+                    }}
+                  />
+                  <div>
+                    <p className="text-base md:text-lg font-semibold text-white tracking-wide">
+                      {item.name}
+                    </p>
+                    <p className="text-sm text-white/70 mt-1 max-w-sm">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-
-                {/* Content */}
-                <div className="relative z-10 p-5 md:p-8 flex flex-col items-center justify-center min-h-[120px] md:min-h-[180px]">
-                  {/* Title */}
-                  <h2 className="text-xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-2 md:mb-3 group-hover:scale-105 transition-transform duration-300">
-                    {item.name}
-                  </h2>
-
-                  {/* Description */}
-                  <p className="text-xs md:text-base text-gray-600 dark:text-gray-300 text-center mb-2 md:mb-4 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    {item.description}
-                  </p>
-
-                  {/* Arrow indicator */}
-                  <div className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transform group-hover:translate-x-2 transition-all duration-300 text-base md:text-lg">
+                <div className="flex flex-col items-end gap-1 text-white/70">
+                  <span className="text-[10px] uppercase tracking-[0.35em] text-white/50">
+                    Explore
+                  </span>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-lg font-semibold text-white transition duration-200 group-hover:bg-white/10">
                     →
                   </div>
                 </div>
-              </Link>
-            );
-          })}
+              </div>
+            </Link>
+          ))}
         </div>
 
         {/* Students Hub Section */}
@@ -567,7 +411,7 @@ export default function Dashboard() {
             `,
             }}
           />
-          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-blue-400 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-white/20 hover:scale-[1.02] relative overflow-hidden">
+          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-blue-400 dark:hover:border-white transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.01] hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-white/20 relative overflow-hidden">
             {/* Starfield Background */}
             <div className="absolute inset-0 bg-white dark:bg-black">
               {stars.map((star, index) => (
