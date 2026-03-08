@@ -5,7 +5,7 @@ import { memo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Home as HomeIcon, LayoutDashboard, Trophy, Target, BrainCircuit, FileText, GraduationCap, ShoppingBag, User, LogOut } from "lucide-react";
 
 function LandingNavbar() {
   const { isLoggedIn, isLoading, logout } = useAuth();
@@ -14,7 +14,7 @@ function LandingNavbar() {
   return (
     <>
       <header className="sticky top-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-20">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-4 py-3 lg:py-4 flex justify-between items-center">
           <Link
             href="/"
             className="text-xl sm:text-2xl font-light text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -126,46 +126,67 @@ function LandingNavbar() {
               <nav className="flex-1 p-4 overflow-y-auto">
                 <div className="space-y-2">
                   <Link
+                    href="/"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    <HomeIcon size={18} /> Home
+                  </Link>
+                  <Link
                     href="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
-                    Dashboard
+                    <LayoutDashboard size={18} /> Dashboard
                   </Link>
                   <Link
                     href="/leaderboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
-                    Leaderboard
+                    <Trophy size={18} /> Leaderboard
                   </Link>
                   <Link
                     href="/goals"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
-                    Goals
+                    <Target size={18} /> Goals
+                  </Link>
+                  <Link
+                    href="/quizzes"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    <BrainCircuit size={18} /> Quizzes
+                  </Link>
+                  <Link
+                    href="/notes"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  >
+                    <FileText size={18} /> Notes
                   </Link>
                   <Link
                     href="/academia"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
-                    Academia
+                    <GraduationCap size={18} /> Academia
                   </Link>
                   <Link
                     href="/shop"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
-                    Shop
+                    <ShoppingBag size={18} /> Shop
                   </Link>
                   <Link
                     href="/profile"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                   >
-                    Profile
+                    <User size={18} /> Profile
                   </Link>
                 </div>
               </nav>
@@ -177,9 +198,9 @@ function LandingNavbar() {
                     setIsMenuOpen(false);
                     logout();
                   }}
-                  className="w-full px-4 py-3 text-left text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
                 >
-                  Logout
+                  <LogOut size={18} /> Logout
                 </button>
               </div>
             </div>

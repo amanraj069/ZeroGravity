@@ -25,23 +25,35 @@ export default function AppLayout({ children }: AppLayoutProps) {
     "/quizzes",
     "/academia",
     "/studentsHub",
-    "/notes",
   ];
   const hasGrayBackground = grayBackgroundPages.some((page) =>
     pathname?.startsWith(page),
   );
+  
+  const isNotesPage = pathname?.startsWith("/notes");
 
   return (
     <div
       className={`min-h-screen flex flex-col ${
         hasGrayBackground
           ? "bg-gray-100 dark:bg-gray-900"
+          : isNotesPage
+          ? "bg-white dark:bg-[#0a0a0a]"
           : "bg-white dark:bg-gray-900"
       }`}
     >
       <LandingNavbar />
-      <main className="flex-1 pb-16">{children}</main>
-      <Footer />
+      <main className={`flex-1 ${isNotesPage ? "" : "pb-16"}`}>{children}</main>
+      
+      {isHomePage ? (
+        <Footer />
+      ) : isNotesPage ? (
+        <SimpleFooter className="bg-white dark:bg-[#0a0a0a] border-t border-gray-200 dark:border-gray-800" />
+      ) : hasGrayBackground ? (
+        <SimpleFooter className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800" />
+      ) : (
+        <SimpleFooter className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800" />
+      )}
     </div>
   );
 }

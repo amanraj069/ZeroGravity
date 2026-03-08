@@ -58,7 +58,6 @@ import {
   Type,
   Palette,
   ALargeSmall,
-
   CodeXml,
   Plus,
   X,
@@ -137,7 +136,6 @@ export default function NoteEditor({
   allNotes,
   onCreateCategory,
 }: NoteEditorProps) {
-  const [copied, setCopied] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [addingCatInEditor, setAddingCatInEditor] = useState(false);
@@ -329,14 +327,6 @@ export default function NoteEditor({
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-
-  const handleCopy = useCallback(() => {
-    if (!note || !editor) return;
-    const text = editor.getText();
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [note, editor]);
 
   const addLink = useCallback(() => {
     if (!editor) return;
@@ -627,7 +617,9 @@ export default function NoteEditor({
                 title={note.category || "No category"}
               >
                 <FolderOpen size={11} />
-                <span className="max-w-[80px] truncate">{note.category || "—"}</span>
+                <span className="max-w-[80px] truncate">
+                  {note.category || "—"}
+                </span>
               </button>
               {showCategoryDropdown && (
                 <>
@@ -673,7 +665,9 @@ export default function NoteEditor({
                             onKeyDown={(e) => {
                               if (e.key === "Enter" && newCatName.trim()) {
                                 onCreateCategory(newCatName.trim());
-                                onChange(note._id, { category: newCatName.trim() });
+                                onChange(note._id, {
+                                  category: newCatName.trim(),
+                                });
                                 setNewCatName("");
                                 setAddingCatInEditor(false);
                                 setShowCategoryDropdown(false);
@@ -691,7 +685,9 @@ export default function NoteEditor({
                             onClick={() => {
                               if (newCatName.trim()) {
                                 onCreateCategory(newCatName.trim());
-                                onChange(note._id, { category: newCatName.trim() });
+                                onChange(note._id, {
+                                  category: newCatName.trim(),
+                                });
                                 setNewCatName("");
                                 setAddingCatInEditor(false);
                                 setShowCategoryDropdown(false);
@@ -726,18 +722,6 @@ export default function NoteEditor({
               )}
             </div>
           )}
-
-          <button
-            onClick={handleCopy}
-            className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors"
-            title="Copy text"
-          >
-            {copied ? (
-              <Check size={15} className="text-green-500" />
-            ) : (
-              <Copy size={15} />
-            )}
-          </button>
 
           {!isTrash && (
             <button
@@ -1072,9 +1056,11 @@ export default function NoteEditor({
 
       {/* Main content area with optional outline */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Editor area */}
-        <div className="flex-1 overflow-y-auto">
-          <EditorContent editor={editor} className="h-full" />
+        {/* Editor area flex container */}
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <div className="flex-1 overflow-y-auto">
+            <EditorContent editor={editor} className="h-full" />
+          </div>
         </div>
 
         {/* Document outline panel */}
@@ -1128,8 +1114,8 @@ export default function NoteEditor({
       </div>
 
       {/* Status bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#111111] text-[10px] text-gray-400 flex-shrink-0">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-between px-6 h-[33px] border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0a0a0a] text-[10px] text-gray-400 flex-shrink-0">
+        <div className="flex items-center gap-2">
           <span>{charCount} chars</span>
           <span className="text-gray-300 dark:text-gray-600">·</span>
           <span>{wordCount} words</span>

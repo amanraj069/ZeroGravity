@@ -312,28 +312,26 @@ const Goals: React.FC = () => {
       <>
         {/* Mobile-optimized Header */}
         <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1">
-              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                Goals
-              </h1>
-              <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                <span>{goalsAnalytics?.totalCompleted || 0} completed</span>
-                <span>•</span>
-                <span>{goals.length} total</span>
-                <span>•</span>
-                <span>
-                  {goalsAnalytics?.completionRate || 0}% completion rate
-                </span>
-              </div>
-            </div>
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+              Goals
+            </h1>
             <button
               onClick={() => setShowAddGoal(true)}
-              className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto"
+              className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               Add Goal
             </button>
+          </div>
+          <div className="flex flex-nowrap gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <span>{goalsAnalytics?.totalCompleted || 0} completed</span>
+            <span>•</span>
+            <span>{goals.length} total</span>
+            <span>•</span>
+            <span>
+              {goalsAnalytics?.completionRate || 0}% completion rate
+            </span>
           </div>
         </div>
 
@@ -366,7 +364,7 @@ const Goals: React.FC = () => {
 
         {/* Mobile-optimized Filter */}
         <div className="bg-white dark:bg-gray-800 shadow-sm">
-          <div className="flex overflow-x-auto sm:overflow-visible">
+          <div className="flex overflow-x-auto sm:overflow-visible justify-end sm:justify-start">
             {(
               [
                 "current",
@@ -479,22 +477,6 @@ const Goals: React.FC = () => {
                             >
                               {goal.title}
                             </h3>
-                            <div className="flex flex-wrap items-center gap-2 mt-1">
-                              <span className="text-xs text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-700 px-2 py-0.5 ">
-                                {goal.category}
-                              </span>
-                              <span
-                                className={`text-xs px-2 py-0.5 rounded-md font-medium ${
-                                  goal.priority === "high"
-                                    ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
-                                    : goal.priority === "medium"
-                                    ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                                    : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
-                                }`}
-                              >
-                                {goal.priority}
-                              </span>
-                            </div>
                           </div>
 
                           <div className="flex items-center gap-1 ml-2">
@@ -514,7 +496,7 @@ const Goals: React.FC = () => {
                         </div>
 
                         {goal.description && (
-                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">
+                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 leading-relaxed">
                             {goal.description}
                           </p>
                         )}
@@ -564,6 +546,23 @@ const Goals: React.FC = () => {
                               </>
                             )}
                           </span>
+
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 border border-gray-200 dark:border-gray-600">
+                              {goal.category}
+                            </span>
+                            <span
+                              className={`text-[10px] px-1.5 py-0.5 font-medium ${
+                                goal.priority === "high"
+                                  ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
+                                  : goal.priority === "medium"
+                                  ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                                  : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                              }`}
+                            >
+                              {goal.priority}
+                            </span>
+                          </div>
 
                           {goal.milestones.length > 0 && (
                             <button
@@ -719,10 +718,10 @@ const Goals: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900  pb-12">
-      <div className="max-w-6xl mx-auto px-4 py-3 sm:py-6 space-y-2 sm:space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-3 sm:py-6 space-y-2 sm:space-y-6 ">
         {/* Main Navigation - Always visible */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
-          <div className="flex">
+        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden ">
+          <div className="flex ">
             <button
               onClick={() => handleViewChange("daily-tasks")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${

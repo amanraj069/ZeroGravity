@@ -23,7 +23,6 @@ import NotesSidebar from "./NotesSidebar";
 import NoteEditor from "./NoteEditor";
 import NotesGrid from "./NotesGrid";
 
-
 export type SidebarView = "notes" | "favorites" | "trash";
 
 const TAB_MAP: Record<string, SidebarView> = {
@@ -155,20 +154,26 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
     }
   }, [activeCategory]);
 
-  const handleCreateNoteInCategory = useCallback(async (categoryName: string | null) => {
-    try {
-      const body: Partial<Note> = {
-        title: "Untitled",
-        content: "",
-        category: categoryName && categoryName !== "__uncategorised" ? categoryName : null,
-      };
-      const note = await createNote(body);
-      setAllNotes((prev) => [note, ...prev]);
-      setActiveNoteId(note._id);
-    } catch (err) {
-      console.error("Failed to create note:", err);
-    }
-  }, []);
+  const handleCreateNoteInCategory = useCallback(
+    async (categoryName: string | null) => {
+      try {
+        const body: Partial<Note> = {
+          title: "Untitled",
+          content: "",
+          category:
+            categoryName && categoryName !== "__uncategorised"
+              ? categoryName
+              : null,
+        };
+        const note = await createNote(body);
+        setAllNotes((prev) => [note, ...prev]);
+        setActiveNoteId(note._id);
+      } catch (err) {
+        console.error("Failed to create note:", err);
+      }
+    },
+    [],
+  );
 
   const handleUpdateNote = useCallback((id: string, changes: Partial<Note>) => {
     // Optimistically update local state
@@ -398,7 +403,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-64px)] overflow-hidden bg-white dark:bg-[#0a0a0a]">
+    <div className="flex flex-1 h-[calc(100dvh-64px)] overflow-hidden bg-white dark:bg-[#0a0a0a]">
       {/* Click overlay to close sidebar on mobile */}
       {sidebarOpen && (
         <div
@@ -492,7 +497,6 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
           />
         )}
       </div>
-
     </div>
   );
 }

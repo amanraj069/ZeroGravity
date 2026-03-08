@@ -304,7 +304,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-4">
           {navigationItems.map((item) => (
             <Link
               key={item.url}
@@ -312,10 +312,10 @@ export default function Dashboard() {
               id={item.id}
               className="group overflow-hidden border border-gray-800 bg-[#050710] shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-blue-500/50 hover:shadow-[0_18px_35px_rgba(25,118,255,0.2)]"
             >
-              <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 px-5 py-4 md:px-6 md:py-5">
-                <div className="flex items-center gap-4">
+              <div className="relative flex flex-row items-center justify-between gap-5 px-4 py-4 md:px-6 md:py-5">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <span
-                    className="block h-10 w-1 rounded-full"
+                    className="block h-12 w-1 rounded-full"
                     style={{
                       background: "linear-gradient(180deg, #f5f1ff, #a47efe)",
                     }}
@@ -324,16 +324,13 @@ export default function Dashboard() {
                     <p className="text-base md:text-lg font-semibold text-white tracking-wide">
                       {item.name}
                     </p>
-                    <p className="text-sm text-white/70 mt-1 max-w-sm">
+                    <p className="text-[10px] sm:text-sm text-white/60 mt-0.5 truncate max-w-[240px] sm:max-w-sm">
                       {item.description}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-1 text-white/70">
-                  <span className="text-[10px] uppercase tracking-[0.35em] text-white/50">
-                    Explore
-                  </span>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-lg font-semibold text-white transition duration-200 group-hover:bg-white/10">
+                <div className="flex-shrink-0">
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-base sm:text-lg font-semibold text-white transition duration-200 group-hover:bg-white/10">
                     →
                   </div>
                 </div>

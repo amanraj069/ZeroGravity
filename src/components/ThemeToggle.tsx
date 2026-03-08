@@ -21,7 +21,7 @@ export default function ThemeToggle() {
   const ClassicComponent = Classic as unknown as ComponentType<ClassicProps>;
 
   return (
-    <div suppressHydrationWarning>
+    <div className="flex items-center" suppressHydrationWarning>
       <ClassicComponent
         duration={750}
         toggled={isDark}

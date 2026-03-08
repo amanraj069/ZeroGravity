@@ -662,8 +662,13 @@ export default function NotesSidebar({
       </div>
 
       {/* ── Footer ──────────────────────────────────────── */}
-      <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 text-[10px] text-gray-400 dark:text-gray-600 hidden lg:flex items-center gap-3 flex-shrink-0">
-        <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-800 rounded text-[9px] font-mono">⌘N</kbd> New note</span>
+      <div className="px-4 h-[33px] border-t border-gray-200 dark:border-gray-800 text-[10px] text-gray-400 dark:text-gray-600 hidden lg:flex items-center gap-3 flex-shrink-0">
+        <span className="flex items-center gap-1">
+          <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-800 rounded text-[9px] font-mono">
+            ⌘N
+          </kbd>{" "}
+          New note
+        </span>
       </div>
     </div>
   );

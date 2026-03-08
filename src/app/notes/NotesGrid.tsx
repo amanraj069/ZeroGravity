@@ -135,85 +135,90 @@ export default function NotesGrid({
   return (
     <div className="flex flex-col h-full bg-white dark:bg-[#0a0a0a]">
       {/* Header bar */}
-      <div className="flex items-center justify-between px-4 sm:px-6 min-h-[80px] py-3 border-b border-gray-200 dark:border-gray-800 flex-shrink-0 flex-wrap gap-2">
-        <div className="flex items-center gap-3">
-          {!sidebarOpen && (
-            <button
-              onClick={onToggleSidebar}
-              className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors"
-              title="Show sidebar"
-            >
-              <PanelLeft size={16} />
-            </button>
-          )}
-          <div>
-            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {viewTitle}
-            </h1>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-              {filteredNotes.length}{" "}
-              {filteredNotes.length === 1 ? "note" : "notes"}
-              {!isTrash && ` · sorted by ${sortLabel.toLowerCase()}`}
-            </p>
+      <div className="flex flex-row items-center justify-between px-4 sm:px-6 min-h-[80px] py-3 border-b border-gray-200 dark:border-gray-800 flex-shrink-0 flex-wrap gap-4">
+        <div className="flex flex-row items-center justify-between w-full">
+          {/* Leftside: Title & Context */}
+          <div className="flex items-center gap-3">
+            {!sidebarOpen && (
+              <button
+                onClick={onToggleSidebar}
+                className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors block sm:hidden"
+                title="Show sidebar"
+              >
+                <PanelLeft size={16} />
+              </button>
+            )}
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {viewTitle}
+              </h1>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                {filteredNotes.length}{" "}
+                {filteredNotes.length === 1 ? "note" : "notes"}
+                {!isTrash && ` · sorted by ${sortLabel.toLowerCase()}`}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {/* Sort dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowSortMenu((s) => !s)}
-              className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-2.5 py-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              title="Sort by"
-            >
-              <ArrowUpDown size={13} />
-              {sortLabel}
-              <ChevronDown size={11} />
-            </button>
-            {showSortMenu && (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowSortMenu(false)}
-                />
-                <div className="absolute right-0 top-full mt-1 z-20 min-w-[130px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg py-1 rounded-md">
-                  {(["recent", "title", "oldest"] as SortOption[]).map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => {
-                        setSortBy(opt);
-                        setShowSortMenu(false);
-                      }}
-                      className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                        sortBy === opt
-                          ? "text-gray-900 dark:text-white font-medium"
-                          : "text-gray-600 dark:text-gray-400"
-                      }`}
-                    >
-                      {opt === "recent" ? "Recent" : opt === "title" ? "Title A-Z" : "Oldest first"}
-                    </button>
-                  ))}
-                </div>
-              </>
+          
+          {/* Rightside: Action Buttons */}
+          <div className="flex flex-row items-center gap-2 mt-0 ml-auto">
+            {/* Sort dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowSortMenu((s) => !s)}
+                className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-2.5 py-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                title="Sort by"
+              >
+                <ArrowUpDown size={13} />
+                {sortLabel}
+                <ChevronDown size={11} />
+              </button>
+              {showSortMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowSortMenu(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-1 z-20 min-w-[130px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg py-1 rounded-md">
+                    {(["recent", "title", "oldest"] as SortOption[]).map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => {
+                          setSortBy(opt);
+                          setShowSortMenu(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                          sortBy === opt
+                            ? "text-gray-900 dark:text-white font-medium"
+                            : "text-gray-600 dark:text-gray-400"
+                        }`}
+                      >
+                        {opt === "recent" ? "Recent" : opt === "title" ? "Title A-Z" : "Oldest first"}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+            {isTrash && filteredNotes.length > 0 && (
+              <button
+                onClick={onEmptyTrash}
+                className="flex items-center gap-1.5 text-xs font-medium text-red-500 hover:text-red-600 px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900/40 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+              >
+                <Trash size={13} />
+                Empty Trash
+              </button>
+            )}
+            {!isTrash && (
+              <button
+                onClick={onCreateNote}
+                className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <Plus size={13} />
+                New Note
+              </button>
             )}
           </div>
-          {isTrash && filteredNotes.length > 0 && (
-            <button
-              onClick={onEmptyTrash}
-              className="flex items-center gap-1.5 text-xs font-medium text-red-500 hover:text-red-600 px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900/40 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
-            >
-              <Trash size={13} />
-              Empty Trash
-            </button>
-          )}
-          {!isTrash && (
-            <button
-              onClick={onCreateNote}
-              className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <Plus size={13} />
-              New Note
-            </button>
-          )}
         </div>
       </div>
 
@@ -244,7 +249,7 @@ export default function NotesGrid({
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             {/* New note card (not in trash) */}
             {!isTrash && (
               <button
