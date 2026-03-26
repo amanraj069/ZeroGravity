@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
@@ -19,12 +19,18 @@ export const metadata: Metadata = {
   description: "Goals without gravity",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 // Get Google Client ID from environment variables
 const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 if (!googleClientId) {
   console.error(
-    "WARNING: NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set in environment variables. Google OAuth will not work."
+    "WARNING: NEXT_PUBLIC_GOOGLE_CLIENT_ID is not set in environment variables. Google OAuth will not work.",
   );
 }
 

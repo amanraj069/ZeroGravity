@@ -11,6 +11,7 @@ import {
 } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { Save, Rocket, ChevronUp } from "lucide-react";
 
 const emptyQuestion = (): QuizQuestion => ({
   text: "",
@@ -39,6 +40,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
   const [loadingExisting, setLoadingExisting] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isQuestionPanelOpen, setIsQuestionPanelOpen] = useState(false);
   const [modifiedQuestions, setModifiedQuestions] = useState<Set<number>>(
     new Set(),
   );
@@ -332,7 +334,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Full-width header matching website design theme */}
       <div className="bg-white dark:bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-start gap-2 flex-1">
               <button
@@ -385,22 +387,53 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                     animation: shake 0.5s ease-in-out;
                   }
                 `}</style>
-                <input
-                  type="text"
-                  className={`text-2xl sm:text-3xl font-light text-black dark:text-white bg-transparent outline-none w-full placeholder-gray-400 dark:placeholder-gray-500 border-b-2 pb-1 transition-colors duration-300 ${
-                    titleError
-                      ? "border-red-500 shake-animation"
-                      : title.trim()
-                        ? "border-transparent"
-                        : "border-gray-200 dark:border-gray-700"
-                  }`}
-                  placeholder="Enter Quiz Title..."
-                  value={title}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                    if (titleError) setTitleError(false);
-                  }}
-                />
+                <div className="flex items-start gap-2">
+                  <input
+                    type="text"
+                    className={`text-xl sm:text-3xl font-light text-black dark:text-white bg-transparent outline-none w-full placeholder-gray-400 dark:placeholder-gray-500 border-b-2 pb-1 transition-colors duration-300 ${
+                      titleError
+                        ? "border-red-500 shake-animation"
+                        : title.trim()
+                          ? "border-transparent"
+                          : "border-gray-200 dark:border-gray-700"
+                    }`}
+                    placeholder="Enter Quiz Title..."
+                    value={title}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                      if (titleError) setTitleError(false);
+                    }}
+                  />
+
+                  <div className="flex items-center gap-2 sm:hidden shrink-0">
+                    <button
+                      className="h-10 w-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                      onClick={saveCurrent}
+                      disabled={saving}
+                      aria-label="Save Progress"
+                      title="Save Progress"
+                    >
+                      {saving ? (
+                        <div className="w-4 h-4 border-2 border-gray-500 dark:border-gray-300 border-t-transparent animate-spin" />
+                      ) : (
+                        <Save className="w-4 h-4" />
+                      )}
+                    </button>
+                    <button
+                      className="h-10 w-10 flex items-center justify-center bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      onClick={onPublish}
+                      disabled={publishing || !title || questions.length === 0}
+                      aria-label="Publish & Host"
+                      title="Publish & Host"
+                    >
+                      {publishing ? (
+                        <div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent animate-spin" />
+                      ) : (
+                        <Rocket className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
                 <input
                   type="text"
                   className="text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none w-full max-w-2xl text-sm mt-1 placeholder-gray-400 dark:placeholder-gray-500"
@@ -410,16 +443,16 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-3 sm:ml-4">
+            <div className="hidden sm:flex sm:ml-4 items-center gap-3">
               <button
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium"
                 onClick={saveCurrent}
                 disabled={saving}
               >
                 {saving ? "Saving..." : "Save Progress"}
               </button>
               <button
-                className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50"
+                className="w-full sm:w-auto px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50"
                 onClick={onPublish}
                 disabled={publishing || !title || questions.length === 0}
               >
@@ -430,16 +463,16 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         </div>
       </div>
 
-      <main className="flex-1 pt-4 pb-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 px-4">
-          <aside className="md:col-span-3 lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-[650px]">
-              <div className="p-6 pb-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
+      <main className="flex-1 pt-3 sm:pt-4 pb-24 sm:pb-8">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 px-3 sm:px-4">
+          <aside className="hidden md:block order-2 md:order-1 md:col-span-3 lg:col-span-3">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[650px]">
+              <div className="p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  Questions
+                  Question Panel
                 </span>
               </div>
-              <div className="flex-1 overflow-y-auto p-6 pt-4">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 pt-3 sm:pt-4">
                 <div className="grid grid-cols-3 gap-2">
                   {questions.map((_, i) => (
                     <button
@@ -488,26 +521,26 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
             </div>
           </aside>
 
-          <section className="md:col-span-9 lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[650px] flex flex-col">
+          <section className="order-1 md:order-2 md:col-span-9 lg:col-span-9">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-250px)] min-h-[460px] md:h-[650px] flex flex-col">
               {/* Question Header */}
-              <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-6 py-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <span className="text-lg font-medium text-gray-900 dark:text-white">
-                        Question {currentIndex + 1}
-                      </span>
-                    </div>
+              <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-2.5 sm:py-4">
+                <div className="flex items-center justify-between gap-2 sm:gap-4">
+                  <div className="min-w-0">
+                    <span className="text-base sm:text-lg font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                      Question {currentIndex + 1}
+                    </span>
                   </div>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                      <span className="font-medium">Time (seconds)</span>
+                  <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
+                    <label className="flex items-center gap-1 sm:gap-2 text-[11px] sm:text-sm text-gray-700 dark:text-gray-300">
+                      <span className="font-medium whitespace-nowrap tracking-wide">
+                        Time
+                      </span>
                       <input
                         type="number"
                         min={5}
                         max={600}
-                        className="w-20 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-1.5 text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
+                        className="h-7 sm:h-auto w-12 sm:w-20 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
                         value={q?.timeLimitSeconds || 60}
                         onChange={(e) =>
                           updateQuestion(currentIndex, {
@@ -518,14 +551,16 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                         title="Time limit (seconds)"
                       />
                     </label>
-                    <div className="flex items-center gap-2">
-                      <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                        <span className="font-medium">Marks</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <label className="flex items-center gap-1 sm:gap-2 text-[11px] sm:text-sm text-gray-700 dark:text-gray-300">
+                        <span className="font-medium whitespace-nowrap tracking-wide">
+                          Marks
+                        </span>
                         <input
                           type="number"
                           min={1}
                           max={1000}
-                          className="w-16 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-1.5 text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
+                          className="h-7 sm:h-auto w-11 sm:w-16 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
                           value={q?.maxMarks || 10}
                           onChange={(e) =>
                             updateQuestion(currentIndex, {
@@ -539,11 +574,11 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                       {questions.length > 1 && (
                         <button
                           onClick={() => deleteQuestion(currentIndex)}
-                          className="p-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                          className="p-1 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
                           title="Delete this question"
                         >
                           <svg
-                            className="w-4 h-4"
+                            className="w-3.5 h-3.5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -563,14 +598,14 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
               </div>
 
               {/* Question Content */}
-              <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
                 {/* Sticky Question Text Input */}
-                <div className="p-6 pb-4 flex-shrink-0 bg-white dark:bg-gray-800">
+                <div className="p-4 sm:p-6 pb-3 sm:pb-4 flex-shrink-0 bg-white dark:bg-gray-800">
                   <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                     Question Text
                   </label>
                   <input
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-3 text-base focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white transition-all placeholder-gray-400 dark:placeholder-gray-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white transition-all placeholder-gray-400 dark:placeholder-gray-500"
                     placeholder="Enter your question here..."
                     value={q?.text || ""}
                     onChange={(e) =>
@@ -580,19 +615,19 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                 </div>
 
                 {/* Sticky Answer Options Label */}
-                <div className="px-6 pb-3 flex-shrink-0 bg-white dark:bg-gray-800">
+                <div className="px-4 sm:px-6 pb-3 flex-shrink-0 bg-white dark:bg-gray-800">
                   <label className="block text-sm font-medium text-gray-900 dark:text-white">
                     Answer Options
                   </label>
                 </div>
 
                 {/* Scrollable Options List */}
-                <div className="flex-1 overflow-y-auto px-6">
+                <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 overscroll-contain">
                   <div className="space-y-3">
                     {(q?.options || []).map((o, oi) => (
                       <div
                         key={o.key}
-                        className={`flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors ${
+                        className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors ${
                           o.isCorrect
                             ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
                             : "bg-white dark:bg-gray-700"
@@ -607,7 +642,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                           className="w-4 h-4 text-green-600 focus:ring-green-500 focus:ring-2 cursor-pointer"
                         />
                         <input
-                          className="flex-1 border-none bg-transparent focus:outline-none text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                          className="flex-1 border-none bg-transparent focus:outline-none text-sm sm:text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                           placeholder={`Enter Option ${o.key}`}
                           value={o.text}
                           onChange={(e) =>
@@ -666,17 +701,22 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
 
                 {/* Sticky Action Buttons at Bottom */}
                 <div className="p-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 bg-white dark:bg-gray-800">
-                  <div className="flex items-center justify-end gap-3">
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:justify-end sm:gap-3">
                     <button
-                      className="px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
+                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[11px] sm:text-sm font-medium"
                       onClick={addQuestion}
                       disabled={questions.length >= 100}
                       title="Add question"
                     >
-                      Add Question ({questions.length}/100)
+                      <span className="sm:hidden">
+                        Add ({questions.length}/100)
+                      </span>
+                      <span className="hidden sm:inline">
+                        Add Question ({questions.length}/100)
+                      </span>
                     </button>
                     <button
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[11px] sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={saveCurrent}
                       disabled={saving || !q?.options?.some((o) => o.isCorrect)}
                       title={
@@ -685,7 +725,12 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                           : ""
                       }
                     >
-                      {saving ? "Saving..." : "Save this question"}
+                      <span className="sm:hidden">
+                        {saving ? "Saving..." : "Save"}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {saving ? "Saving..." : "Save this question"}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -694,6 +739,74 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
           </section>
         </div>
       </main>
+
+      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
+        <div className="mx-3 mb-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
+          <button
+            onClick={() => setIsQuestionPanelOpen((prev) => !prev)}
+            className="w-full px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between"
+          >
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              Question Panel
+            </span>
+            <ChevronUp
+              className={`w-4 h-4 text-gray-600 dark:text-gray-300 transition-transform duration-200 ${
+                isQuestionPanelOpen ? "rotate-180" : "rotate-0"
+              }`}
+            />
+          </button>
+
+          {isQuestionPanelOpen && (
+            <div className="max-h-[42vh] overflow-y-auto p-4">
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {questions.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`border-2 p-2 text-sm transition-all ${
+                      i === currentIndex
+                        ? modifiedQuestions.has(i)
+                          ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
+                          : "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
+                        : modifiedQuestions.has(i)
+                          ? "bg-white dark:bg-gray-700 border-orange-400 dark:border-orange-500 text-gray-900 dark:text-gray-100 hover:border-orange-500"
+                          : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    }`}
+                    onClick={() => {
+                      setCurrentIndex(i);
+                      setIsQuestionPanelOpen(false);
+                    }}
+                    title={`Go to question ${i + 1}${modifiedQuestions.has(i) ? " (unsaved changes)" : ""}`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2"
+                onClick={addQuestion}
+                disabled={questions.length >= 100}
+                title="Add question"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Add Question
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
