@@ -43,6 +43,8 @@ function JoinQuizContent() {
     "Avatar12.png",
   ];
   const STORAGE_KEY = "zg_current_quiz";
+  const REJOIN_TOKEN_KEY = "zg_quiz_rejoin_token";
+  const [rejoinToken, setRejoinToken] = useState<string>("");
   const [joined, setJoined] = useState<{
     quizId: string;
     quizUserId: string;
@@ -98,6 +100,18 @@ function JoinQuizContent() {
       // Ignore errors
     }
 
+    // Initialize join code from localStorage for quick rejoin
+    try {
+      const savedJoinCode = localStorage.getItem("zg_join_code");
+      if (savedJoinCode) {
+        setJoinCode((prev) =>
+          prev && prev.trim() ? prev : savedJoinCode.toUpperCase(),
+        );
+      }
+    } catch {
+      // Ignore errors
+    }
+
     // Initialize avatar from localStorage
     try {
       const savedAvatar = localStorage.getItem("zg_avatar");
@@ -117,6 +131,16 @@ function JoinQuizContent() {
           setJoined(parsed);
           setIsRestoredSession(true);
         }
+      }
+    } catch {
+      // Ignore errors
+    }
+
+    // Initialize rejoin token for resume flow
+    try {
+      const savedRejoinToken = localStorage.getItem(REJOIN_TOKEN_KEY);
+      if (savedRejoinToken) {
+        setRejoinToken(savedRejoinToken);
       }
     } catch {
       // Ignore errors
@@ -417,11 +441,16 @@ function JoinQuizContent() {
       joinCode.trim().toUpperCase(),
       name.trim(),
       selectedAvatar,
+      rejoinToken || undefined,
     );
     if (res?.success) {
       setJoined({ quizId: res.quizId, quizUserId: res.quizUserId });
       setIsRestoredSession(false); // This is a fresh join, not a restored session
       try {
+        if (res.rejoinToken) {
+          setRejoinToken(res.rejoinToken);
+          localStorage.setItem(REJOIN_TOKEN_KEY, res.rejoinToken);
+        }
         localStorage.setItem(
           STORAGE_KEY,
           JSON.stringify({ quizId: res.quizId, quizUserId: res.quizUserId }),
@@ -481,9 +510,6 @@ function JoinQuizContent() {
       // User is already kicked out, just redirect without confirmation
       try {
         localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem("zg_join_code");
-        localStorage.removeItem("zg_participant_name");
-        localStorage.removeItem("zg_avatar");
       } catch {}
       window.location.href = "/joinQuiz";
       return;
@@ -504,11 +530,8 @@ function JoinQuizContent() {
       }
 
       try {
-        // Clear all quiz-related data from localStorage
+        // Clear active session only; keep profile data for quick rejoin
         localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem("zg_join_code");
-        localStorage.removeItem("zg_name_obf");
-        localStorage.removeItem("zg_avatar");
       } catch {}
 
       // Reset all state to take user back to entry screen
@@ -602,7 +625,7 @@ function JoinQuizContent() {
                     onClick={handleJoin}
                     disabled={!joinCode.trim() || !name.trim()}
                   >
-                    Launch Into Quiz
+                    {rejoinToken ? "Join Quiz Again" : "Launch Into Quiz"}
                   </button>
                 </div>
               </div>

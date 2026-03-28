@@ -72,10 +72,11 @@ export const joinQuiz = async (
   joinCode: string,
   name: string,
   avatar?: string,
+  rejoinToken?: string,
 ) => {
   const res = await apiCall(API_ENDPOINTS.QUIZZES.JOIN, {
     method: "POST",
-    body: JSON.stringify({ joinCode, name, avatar }),
+    body: JSON.stringify({ joinCode, name, avatar, rejoinToken }),
   });
   return res.json();
 };

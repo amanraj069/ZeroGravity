@@ -93,14 +93,7 @@ export default function QuizzesPage() {
   };
 
   const handleQuizClick = (quiz: Quiz) => {
-    if (quiz.status === "draft") {
-      router.push(`/quizzes/create?quizId=${quiz.quizId}&savedStatus=true`);
-    } else if (quiz.status === "published") {
-      router.push(`/quizzes/host/${quiz.quizId}`);
-    } else {
-      // For ended quizzes, maybe show results/analytics in the future
-      router.push(`/quizzes/host/${quiz.quizId}`);
-    }
+    router.push(`/quizzes/create?edit=${quiz.quizId}`);
   };
 
   const handleDeleteQuiz = async (quizId: string, event: React.MouseEvent) => {
@@ -496,24 +489,21 @@ export default function QuizzesPage() {
                 <div
                   key={quiz.quizId}
                   onClick={() => handleQuizClick(quiz)}
-                  className="bg-white dark:bg-gray-800 shadow-sm p-4 sm:p-6 hover:shadow-lg transition-all cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group"
+                  className="bg-white dark:bg-gray-800 shadow-sm p-3 sm:p-5 hover:shadow-lg transition-all cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group"
                 >
-                  {/* Header with Status, Date and Actions */}
-                  <div className="flex items-start justify-between gap-3 mb-3 sm:mb-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                        <span
-                          className={`px-3 py-1 text-xs font-medium ${getStatusColor(
-                            quiz.status,
-                          )}`}
-                        >
-                          {getStatusText(quiz.status)}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Created{" "}
-                          {new Date(quiz.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
+                  {/* Header with Status + Title and Actions */}
+                  <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+                    <div className="min-w-0 flex items-center gap-2 sm:gap-3 flex-1">
+                      <span
+                        className={`shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium ${getStatusColor(
+                          quiz.status,
+                        )}`}
+                      >
+                        {getStatusText(quiz.status)}
+                      </span>
+                      <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-1 sm:line-clamp-2 min-w-0">
+                        {quiz.title}
+                      </h3>
                     </div>
                     <button
                       onClick={(e) => handleDeleteQuiz(quiz.quizId, e)}
@@ -541,57 +531,37 @@ export default function QuizzesPage() {
                     </button>
                   </div>
 
-                  {(quiz.joinCode && quiz.status === "published") ||
-                  quiz.status === "ended" ? (
-                    <div className="mb-3 sm:mb-4 flex items-center justify-between gap-2">
-                      {quiz.joinCode && quiz.status === "published" ? (
-                        <div className="min-w-0">
-                          <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 mb-1">
-                            Join Code
-                          </div>
-                          <span className="text-xs sm:text-sm font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2.5 sm:px-3 py-1 inline-block">
-                            {quiz.joinCode}
-                          </span>
-                        </div>
-                      ) : (
-                        <div />
-                      )}
-
-                      {quiz.status === "ended" && (
-                        <span className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-1 whitespace-nowrap">
-                          Code Expired
-                        </span>
-                      )}
-                    </div>
-                  ) : null}
-
-                  {/* Quiz Title */}
-                  <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-3 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2">
-                    {quiz.title}
-                  </h3>
+                  <div className="hidden sm:flex mb-3 items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <span className="truncate">
+                      Created {new Date(quiz.createdAt).toLocaleDateString()}
+                    </span>
+                    <span className="shrink-0">
+                      Updated {new Date(quiz.updatedAt).toLocaleDateString()}
+                    </span>
+                  </div>
 
                   {/* Quiz Description */}
                   {quiz.description && (
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+                    <p className="hidden sm:block text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
                       {quiz.description}
                     </p>
                   )}
 
                   {/* Quiz Stats */}
-                  <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-gray-100 dark:border-gray-700">
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black dark:text-white">
+                      <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
                         {quiz.questions.length}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
                         Questions
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black dark:text-white">
+                      <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
                         {quiz.participants || 0}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
                         Participants
                       </div>
                     </div>

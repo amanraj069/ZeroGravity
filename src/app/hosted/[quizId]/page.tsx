@@ -268,18 +268,18 @@ export default function HostedQuizPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      <main className="flex-1 flex flex-col items-center px-4 py-10">
-        <div className="w-full max-w-6xl space-y-6">
+      <main className="flex-1 flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10">
+        <div className="w-full max-w-6xl space-y-3 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-start justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-start justify-between gap-3 sm:gap-6">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                 <button
                   onClick={handleBackToPortal}
-                  className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-colors"
+                  className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-colors flex-shrink-0"
                 >
                   <svg
-                    className="w-4 h-4 mr-1"
+                    className="w-4 h-4 sm:w-5 sm:h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -292,11 +292,11 @@ export default function HostedQuizPage() {
                     />
                   </svg>
                 </button>
-                <h1 className="text-2xl md:text-3xl font-light text-black dark:text-white tracking-tight">
+                <h1 className="text-lg sm:text-2xl md:text-3xl font-light text-black dark:text-white tracking-tight truncate">
                   {quiz.title}
                 </h1>
               </div>
-              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400 pl-6 sm:pl-7">
                 <span>
                   {participants.length} participant
                   {participants.length !== 1 ? "s" : ""}
@@ -309,45 +309,47 @@ export default function HostedQuizPage() {
             </div>
 
             {/* Top Right Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col items-end gap-1.5 sm:gap-2 flex-shrink-0">
               {currentQuestion && (
-                <>
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   {isQuestionActive ? (
                     <button
                       onClick={handleStopQuestion}
-                      className="px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
+                      className="px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
                     >
                       Stop Question
                     </button>
                   ) : currentIndex + 1 < questions.length ? (
                     <button
                       onClick={handlePushNext}
-                      className="px-4 py-2 text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
+                      className="px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
                     >
                       Next Question
                     </button>
                   ) : (
                     <button
                       onClick={handleEndQuiz}
-                      className="px-4 py-2 text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
+                      className="px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
                     >
                       End Quiz
                     </button>
                   )}
-                </>
+                </div>
               )}
-              <button
-                onClick={handleBackToPortal}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
-              >
-                Portal
-              </button>
-              <button
-                onClick={handleViewLeaderboard}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
-              >
-                Leaderboard
-              </button>
+              <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-3 w-full">
+                <button
+                  onClick={handleBackToPortal}
+                  className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap text-center"
+                >
+                  Portal
+                </button>
+                <button
+                  onClick={handleViewLeaderboard}
+                  className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap text-center"
+                >
+                  Leaderboard
+                </button>
+              </div>
             </div>
           </div>
 
@@ -355,26 +357,26 @@ export default function HostedQuizPage() {
             /* Question Box */
             <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
               {/* Question Header with Timer */}
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-start justify-between gap-4">
+              <div className="p-3 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
                   <div className="flex-1">
-                    <h2 className="text-xl md:text-2xl font-light text-gray-900 dark:text-white leading-relaxed">
+                    <h2 className="text-base sm:text-xl md:text-2xl font-light text-gray-900 dark:text-white leading-relaxed">
                       {currentQuestion.text}
                     </h2>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                     {/* Show Correct Answer Button - Only when question ended */}
                     {!isQuestionActive && !showCorrectAnswer && (
                       <button
                         onClick={() => setShowCorrectAnswer(true)}
-                        className="h-10 px-4 bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors flex items-center"
+                        className="h-8 sm:h-10 px-2.5 sm:px-4 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium transition-colors flex items-center"
                       >
                         Show Correct
                       </button>
                     )}
                     {/* Timer */}
                     <div
-                      className={`h-10 px-4 font-mono text-lg font-medium flex items-center ${
+                      className={`h-8 sm:h-10 px-2.5 sm:px-4 font-mono text-sm sm:text-lg font-medium flex items-center ${
                         currentQuestionTimeLeft <= 10
                           ? "bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400"
                           : currentQuestionTimeLeft <= 30
@@ -386,7 +388,7 @@ export default function HostedQuizPage() {
                     </div>
                     {/* Status Badge */}
                     <div
-                      className={`h-10 px-4 text-sm font-medium flex items-center ${
+                      className={`h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm font-medium flex items-center ${
                         isQuestionActive
                           ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400"
                           : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
@@ -399,8 +401,8 @@ export default function HostedQuizPage() {
               </div>
 
               {/* Vertical Histogram Options */}
-              <div className="p-6 md:p-8">
-                <div className="flex items-end justify-center gap-6 md:gap-10 min-h-[400px]">
+              <div className="p-3 sm:p-6 md:p-8">
+                <div className="flex items-end justify-center gap-3 sm:gap-6 md:gap-10 min-h-[250px] sm:min-h-[400px]">
                   {currentQuestion.options.map((option) => {
                     const total = Object.values(voteCounts).reduce(
                       (sum, c) => sum + (c as number),
@@ -480,7 +482,7 @@ export default function HostedQuizPage() {
                 </div>
 
                 {/* Response Stats */}
-                <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
+                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   <div>
                     <span className="font-medium text-gray-900 dark:text-white">
                       {Object.values(voteCounts).reduce(
@@ -501,10 +503,10 @@ export default function HostedQuizPage() {
             </div>
           ) : quizStatus === "ended" ? (
             /* Quiz Ended */
-            <div className="text-center py-12 min-h-[500px] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
-              <div className="w-16 h-16 mx-auto mb-6 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <div className="text-center py-8 sm:py-12 min-h-[90dvh] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-green-600 dark:text-green-400"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -515,20 +517,20 @@ export default function HostedQuizPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-3">
+              <h2 className="text-lg sm:text-2xl font-light text-gray-900 dark:text-white mb-2 sm:mb-3">
                 Quiz Completed
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-8 max-w-md mx-auto">
+              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8 max-w-md mx-auto px-4">
                 All questions have been answered. View the final results and
                 leaderboard.
               </p>
             </div>
           ) : !isActive ? (
             /* Quiz Not Started Yet */
-            <div className="text-center py-12 min-h-[500px] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
-              <div className="w-16 h-16 mx-auto mb-6 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <div className="text-center py-8 sm:py-12 min-h-[90dvh] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-blue-600 dark:text-blue-400"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -539,20 +541,20 @@ export default function HostedQuizPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
+              <h2 className="text-lg sm:text-xl font-light text-gray-900 dark:text-white mb-2 sm:mb-3">
                 Quiz Not Started
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6 px-4">
                 Go back to the portal to start the quiz and begin pushing
                 questions.
               </p>
             </div>
           ) : (
             /* Quiz Active - Waiting for First Question */
-            <div className="text-center py-12 min-h-[500px] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
-              <div className="w-16 h-16 mx-auto mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+            <div className="text-center py-8 sm:py-12 min-h-[90dvh] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-yellow-600 dark:text-yellow-400"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -563,10 +565,10 @@ export default function HostedQuizPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
+              <h2 className="text-lg sm:text-xl font-light text-gray-900 dark:text-white mb-2 sm:mb-3">
                 Quiz Active - Ready to Start
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6 px-4">
                 {participants.length} participant
                 {participants.length !== 1 ? "s" : ""} waiting. Go back to push
                 the first question.

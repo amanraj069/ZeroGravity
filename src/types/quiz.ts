@@ -50,6 +50,7 @@ export interface QuizLeaderboardEntry {
   totalResponses?: number;
   accuracy?: number;
   pointsEarned?: number;
+  isDeleted?: boolean;
 }
 
 export interface AdminQuizDetails {

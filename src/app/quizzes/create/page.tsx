@@ -463,10 +463,10 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
         </div>
       </div>
 
-      <main className="flex-1 pt-3 sm:pt-4 pb-24 sm:pb-8">
+      <main className="flex-1 pt-2 sm:pt-2 pb-24 sm:pb-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 px-3 sm:px-4">
           <aside className="hidden md:block order-2 md:order-1 md:col-span-3 lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[650px]">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[580px]">
               <div className="p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
                   Question Panel
@@ -522,7 +522,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
           </aside>
 
           <section className="order-1 md:order-2 md:col-span-9 lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-250px)] min-h-[460px] md:h-[650px] flex flex-col">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-240px)] md:min-h-[520px] md:h-[580px] flex flex-col">
               {/* Question Header */}
               <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-2.5 sm:py-4">
                 <div className="flex items-center justify-between gap-2 sm:gap-4">
