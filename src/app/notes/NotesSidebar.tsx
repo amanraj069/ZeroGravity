@@ -38,7 +38,6 @@ interface NotesSidebarProps {
   onTrashNote: (id: string) => void;
   onRestoreNote: (id: string) => void;
   onDeleteNote: (id: string) => void;
-  onEmptyTrash: () => void;
   onCreateNoteInCategory: (categoryName: string | null) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
@@ -76,7 +75,6 @@ export default function NotesSidebar({
   onTrashNote,
   onRestoreNote,
   onDeleteNote,
-  onEmptyTrash,
   onCreateNoteInCategory,
   searchQuery,
   onSearchChange,
@@ -129,13 +127,6 @@ export default function NotesSidebar({
           .includes(q),
     );
   }, [allNotes, searchQuery]);
-
-  const viewNotes = useMemo(() => {
-    if (view === "trash") return searchFiltered.filter((n) => n.trash);
-    const nonTrash = searchFiltered.filter((n) => !n.trash);
-    if (view === "favorites") return nonTrash.filter((n) => n.favorite);
-    return nonTrash;
-  }, [searchFiltered, view]);
 
   // Categories always show non-trash notes, independent of the nav view
   const categoryNotes = useMemo(() => {

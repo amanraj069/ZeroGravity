@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Note,
   NoteCategory,
@@ -41,7 +41,6 @@ interface NotesAppProps {
 }
 
 export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   // ─── State ────────────────────────────────────────────────
@@ -454,7 +453,6 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
             onTrashNote={handleTrashNote}
             onRestoreNote={handleRestoreNote}
             onDeleteNote={handleDeleteNote}
-            onEmptyTrash={handleEmptyTrash}
             onCreateNoteInCategory={handleCreateNoteInCategory}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -477,7 +475,6 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
             sidebarOpen={sidebarOpen}
             categories={categories}
             isTrash={sidebarView === "trash"}
-            onBack={() => setActiveNoteId(null)}
             allNotes={allNotes}
             onCreateCategory={handleCreateCategory}
           />

@@ -258,22 +258,22 @@ export default function ActivityGraph({
 
   return (
     <div
-      className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 ${className}`}
+      className={`border border-gray-200 dark:border-gray-800 p-3 md:p-4 bg-white dark:bg-gray-800 ${className}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-3">
+        <h3 className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
           {activityData.totalCompletions} contribution
           {activityData.totalCompletions !== 1 ? "s" : ""} in the last 12 months
         </h3>
         {/* Legend */}
-        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex items-center gap-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
           <span>Less</span>
-          <div className="w-[10px] h-[10px] bg-gray-200 dark:bg-gray-700"></div>
-          <div className="w-[10px] h-[10px] bg-green-200 dark:bg-green-900"></div>
-          <div className="w-[10px] h-[10px] bg-green-400 dark:bg-green-700"></div>
-          <div className="w-[10px] h-[10px] bg-green-600 dark:bg-green-500"></div>
-          <div className="w-[10px] h-[10px] bg-green-800 dark:bg-green-300"></div>
+          <div className="w-2 h-2 sm:w-[10px] sm:h-[10px] bg-gray-200 dark:bg-gray-700"></div>
+          <div className="w-2 h-2 sm:w-[10px] sm:h-[10px] bg-green-200 dark:bg-green-900"></div>
+          <div className="w-2 h-2 sm:w-[10px] sm:h-[10px] bg-green-400 dark:bg-green-700"></div>
+          <div className="w-2 h-2 sm:w-[10px] sm:h-[10px] bg-green-600 dark:bg-green-500"></div>
+          <div className="w-2 h-2 sm:w-[10px] sm:h-[10px] bg-green-800 dark:bg-green-300"></div>
           <span>More</span>
         </div>
       </div>
@@ -281,18 +281,18 @@ export default function ActivityGraph({
       {/* Graph Container */}
       <div
         ref={scrollContainerRef}
-        className="w-full overflow-x-auto pb-2 scrollbar-thin"
+        className="w-full overflow-x-auto pb-1 sm:pb-2 scrollbar-thin"
       >
         <div className="flex min-w-fit w-full">
           {/* Day Labels Column */}
-          <div className="flex flex-col gap-[3px] pr-4 lg:pr-8 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 pt-0">
-            <div className="h-[11px]"></div>
-            <div className="h-[11px] flex items-center">Mon</div>
-            <div className="h-[11px]"></div>
-            <div className="h-[11px] flex items-center">Wed</div>
-            <div className="h-[11px]"></div>
-            <div className="h-[11px] flex items-center">Fri</div>
-            <div className="h-[11px]"></div>
+          <div className="flex flex-col gap-[2px] sm:gap-[3px] pr-2 sm:pr-4 lg:pr-8 text-[9px] sm:text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 pt-0">
+            <div className="h-[9px] sm:h-[11px]"></div>
+            <div className="h-[9px] sm:h-[11px] flex items-center">Mon</div>
+            <div className="h-[9px] sm:h-[11px]"></div>
+            <div className="h-[9px] sm:h-[11px] flex items-center">Wed</div>
+            <div className="h-[9px] sm:h-[11px]"></div>
+            <div className="h-[9px] sm:h-[11px] flex items-center">Fri</div>
+            <div className="h-[9px] sm:h-[11px]"></div>
           </div>
 
           {/* Months Container */}
@@ -303,19 +303,22 @@ export default function ActivityGraph({
                 className={`flex flex-col ${
                   monthIdx > 0
                     ? month.startsOnSunday
-                      ? "ml-4"
-                      : "ml-[6px]"
+                      ? "ml-2 sm:ml-4"
+                      : "ml-[3px] sm:ml-[6px]"
                     : ""
                 }`}
               >
                 {/* Grid for this month */}
-                <div className="flex gap-[3px]">
+                <div className="flex gap-[2px] sm:gap-[3px]">
                   {month.weeks.map((week, weekIdx) => (
-                    <div key={weekIdx} className="flex flex-col gap-[3px]">
+                    <div
+                      key={weekIdx}
+                      className="flex flex-col gap-[2px] sm:gap-[3px]"
+                    >
                       {week.map((day, dayIdx) => (
                         <div
                           key={`${monthIdx}-${weekIdx}-${dayIdx}`}
-                          className={`w-[11px] h-[11px] ${getColorClass(
+                          className={`w-[9px] h-[9px] sm:w-[11px] sm:h-[11px] ${getColorClass(
                             day.count,
                             activityData.maxCount,
                             day.date,
@@ -332,7 +335,7 @@ export default function ActivityGraph({
                   ))}
                 </div>
                 {/* Month Label */}
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center font-medium">
+                <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1 text-center font-medium">
                   {month.name}
                 </div>
               </div>

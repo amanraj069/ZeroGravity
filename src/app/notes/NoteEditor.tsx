@@ -24,11 +24,9 @@ import {
   Star,
   Trash2,
   Download,
-  Edit3,
   PanelLeftClose,
   PanelLeft,
   Loader2,
-  Copy,
   Check,
   Bold,
   Italic,
@@ -116,7 +114,6 @@ interface NoteEditorProps {
   sidebarOpen: boolean;
   categories: NoteCategory[];
   isTrash: boolean;
-  onBack: () => void;
   allNotes: Note[];
   onCreateCategory: (name: string) => void;
 }
@@ -132,7 +129,6 @@ export default function NoteEditor({
   sidebarOpen,
   categories,
   isTrash,
-  onBack,
   allNotes,
   onCreateCategory,
 }: NoteEditorProps) {

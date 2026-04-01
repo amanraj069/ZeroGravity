@@ -8,21 +8,12 @@ import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import {
   fetchBadgeProgress,
-  getDefaultSelectedBadges,
-  getSelectedBadges,
-  saveSelectedBadges,
   BADGE_VISUALS,
   BadgeProgress,
   BadgeData,
 } from "@/services/badgeService";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Lock,
-  Unlock,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+import { ArrowLeft, Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
+import { RandomStars } from "@/components/RandomStars";
 
 // --- Stat card ---
 function StatCard({
@@ -50,45 +41,23 @@ function StatCard({
 }
 
 // --- Badge card ---
-function BadgeCard({
-  badge,
-  isSelected,
-  onToggleSelect,
-  selectionMode,
-}: {
-  badge: BadgeProgress;
-  isSelected: boolean;
-  onToggleSelect: (id: string) => void;
-  selectionMode: boolean;
-}) {
+function BadgeCard({ badge }: { badge: BadgeProgress }) {
   const visual = BADGE_VISUALS[badge.id];
   const pct = Math.round(badge.progress * 100);
 
   return (
     <div
-      onClick={() =>
-        selectionMode && badge.unlocked && onToggleSelect(badge.id)
-      }
-      className={`relative p-5 flex flex-col gap-3 transition-all group overflow-hidden border bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_6px_20px_rgba(0,0,0,0.4)]
+      className={`relative p-4 sm:p-5 flex flex-col gap-2.5 sm:gap-3 transition-all group overflow-hidden border bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_6px_20px_rgba(0,0,0,0.4)]
         ${
           badge.unlocked
             ? "border-gray-200 dark:border-gray-800 hover:border-blue-400/40 dark:hover:border-blue-500/50 hover:shadow-md dark:hover:shadow-[0_8px_25px_rgba(30,120,255,0.15)]"
             : "border-gray-200 dark:border-gray-800 opacity-80"
         }
-        ${selectionMode && badge.unlocked ? "cursor-pointer" : ""}
-        ${isSelected ? "border-blue-500 dark:border-blue-500 scale-[1.02]" : ""}
       `}
     >
       {/* Top Right State Icon */}
       <div className="absolute top-4 right-4 flex items-center justify-center z-10">
-        {selectionMode && badge.unlocked ? (
-          <div
-            className={`w-5 h-5 border-2 flex items-center justify-center transition-colors
-              ${isSelected ? "bg-blue-500 border-blue-500" : "border-gray-300 dark:border-gray-600"}`}
-          >
-            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-          </div>
-        ) : badge.unlocked ? (
+        {badge.unlocked ? (
           <Unlock className="w-4 h-4 text-gray-900 dark:text-white" />
         ) : (
           <Lock className="w-4 h-4 text-gray-500 dark:text-gray-500" />
@@ -96,31 +65,50 @@ function BadgeCard({
       </div>
 
       {/* Icon + name */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
         {/* Filled shape icon */}
         <div
-          className={`w-12 h-12 flex items-center justify-center text-2xl font-bold shrink-0 bg-gradient-to-br ${visual.gradient}
-            ${badge.unlocked ? "shadow-sm" : "opacity-40"}`}
+          className={`w-12 h-12 sm:w-14 sm:h-14 relative flex items-center justify-center text-3xl sm:text-4xl font-bold shrink-0 rounded-xl transition-all duration-300 overflow-hidden
+            ${badge.unlocked ? "bg-[#050b14] border border-gray-800/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.05)]" : "bg-gray-100 dark:bg-gray-800 opacity-40 border border-transparent"}`}
         >
-          <span className="text-white drop-shadow-sm">{visual.icon}</span>
+          {badge.unlocked && <RandomStars />}
+          <div
+            className={
+              (badge.unlocked && visual.dropShadow ? visual.dropShadow : "") +
+              " relative z-10"
+            }
+          >
+            <span
+              className={`bg-gradient-to-br ${visual.gradient} bg-clip-text text-transparent`}
+              style={
+                badge.id === "the-perfectionist" || badge.id === "full-house"
+                  ? { fontSize: "1.15em" }
+                  : badge.id === "the-keeper" || badge.id === "goal-crusher"
+                    ? { WebkitTextStroke: "1px transparent" }
+                    : {}
+              }
+            >
+              {visual.icon}
+            </span>
+          </div>
         </div>
-        <div className="pr-6">
-          <div className="text-base font-semibold text-gray-900 dark:text-white">
+        <div className="pr-2 sm:pr-6">
+          <div className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white leading-tight">
             {badge.name}
           </div>
-          <div className="text-[11px] text-gray-500 dark:text-gray-400 capitalize font-medium mt-0.5">
+          <div className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 capitalize font-medium mt-0.5">
             {badge.category}
           </div>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mt-1">
+      <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-300 leading-relaxed mt-0.5 sm:mt-1 line-clamp-2">
         {badge.description}
       </p>
 
       {/* Progress bar */}
-      <div className="space-y-1.5 mt-auto pt-2">
+      <div className="space-y-1.5 mt-auto pt-1 sm:pt-2">
         <div className="flex items-center justify-between text-[11px] font-medium text-gray-500 dark:text-gray-400">
           <span>
             {badge.current.toLocaleString()} /{" "}
@@ -145,8 +133,6 @@ export default function BadgesPage() {
 
   const [badgeData, setBadgeData] = useState<BadgeData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectionMode, setSelectionMode] = useState(false);
-  const [selectedBadges, setSelectedBadges] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showStats, setShowStats] = useState(false);
 
@@ -160,30 +146,10 @@ export default function BadgesPage() {
     fetchBadgeProgress().then((data) => {
       if (data) {
         setBadgeData(data);
-        const saved = getSelectedBadges(user.userId);
-        if (saved.length > 0) {
-          setSelectedBadges(saved);
-        } else {
-          setSelectedBadges(getDefaultSelectedBadges(data.badges));
-        }
       }
       setLoading(false);
     });
   }, [isLoggedIn, user]);
-
-  const handleToggleSelect = (id: string) => {
-    setSelectedBadges((prev) => {
-      if (prev.includes(id)) return prev.filter((b) => b !== id);
-      if (prev.length >= 3) return [...prev.slice(1), id]; // rotate
-      return [...prev, id];
-    });
-  };
-
-  const handleSaveSelection = () => {
-    if (!user) return;
-    saveSelectedBadges(user.userId, selectedBadges);
-    setSelectionMode(false);
-  };
 
   if (authLoading || (!badgeData && loading)) {
     return (
@@ -198,7 +164,6 @@ export default function BadgesPage() {
   if (!isLoggedIn || !user || !badgeData) return null;
 
   const { badges, metrics } = badgeData;
-  const unlockedCount = badges.filter((b) => b.unlocked).length;
 
   const categories = [
     { id: "all", label: "All" },
@@ -229,9 +194,6 @@ export default function BadgesPage() {
               <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
                 Badges
               </h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {unlockedCount}/{badges.length} unlocked
-              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -246,41 +208,8 @@ export default function BadgesPage() {
                 <ChevronDown className="w-3.5 h-3.5" />
               )}
             </button>
-            {selectionMode ? (
-              <>
-                <span className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
-                  {selectedBadges.length}/3 selected
-                </span>
-                <button
-                  onClick={() => setSelectionMode(false)}
-                  className="px-3 py-1.5 text-xs text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSaveSelection}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-                >
-                  Save Display
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setSelectionMode(true)}
-                className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                Choose 3 to Display
-              </button>
-            )}
           </div>
         </div>
-
-        {selectionMode && (
-          <div className="border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 px-4 py-3 text-xs text-gray-600 dark:text-gray-400">
-            Select up to 3 unlocked badges to show on your profile. Tap a badge
-            to toggle selection.
-          </div>
-        )}
 
         {/* Stats */}
         {showStats && (
@@ -336,15 +265,9 @@ export default function BadgesPage() {
         </div>
 
         {/* Badge grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
           {filteredBadges.map((badge) => (
-            <BadgeCard
-              key={badge.id}
-              badge={badge}
-              isSelected={selectedBadges.includes(badge.id)}
-              onToggleSelect={handleToggleSelect}
-              selectionMode={selectionMode}
-            />
+            <BadgeCard key={badge.id} badge={badge} />
           ))}
         </div>
       </div>

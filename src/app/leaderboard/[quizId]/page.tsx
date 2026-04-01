@@ -196,8 +196,7 @@ export default function LeaderboardPage() {
                 board
                   .slice()
                   .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
-                  .map((entry, index) => {
-                    const rank = index + 1;
+                  .map((entry) => {
                     const isDeleted = !!entry.isDeleted;
                     const accuracy = entry.accuracy || 0;
                     const correctAnswers = entry.correctAnswers || 0;
@@ -383,8 +382,7 @@ export default function LeaderboardPage() {
               board
                 .slice()
                 .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
-                .map((entry, index) => {
-                  const rank = index + 1;
+                .map((entry) => {
                   const isDeleted = !!entry.isDeleted;
                   const accuracy = entry.accuracy || 0;
                   const correctAnswers = entry.correctAnswers || 0;
