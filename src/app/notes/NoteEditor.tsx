@@ -259,15 +259,22 @@ export default function NoteEditor({
   // Sync content when active note changes
   useEffect(() => {
     if (editor && note) {
-      const currentHTML = editor.getHTML();
-      if (currentHTML !== note.content) {
-        editor.commands.setContent(note.content || "", { emitUpdate: false });
-      }
-      editor.setEditable(!isTrash);
-      extractHeadings(editor);
+      // Use setTimeout to defer the flushSync/update logic out of the current render cycle.
+      setTimeout(() => {
+        if (!editor || editor.isDestroyed) return;
+        const currentHTML = editor.getHTML();
+        if (currentHTML !== note.content) {
+          editor.commands.setContent(note.content || "", { emitUpdate: false });
+        }
+        editor.setEditable(!isTrash);
+        extractHeadings(editor);
+      }, 0);
     } else if (editor && !note) {
-      editor.commands.setContent("", { emitUpdate: false });
-      setHeadings([]);
+      setTimeout(() => {
+        if (!editor || editor.isDestroyed) return;
+        editor.commands.setContent("", { emitUpdate: false });
+        setHeadings([]);
+      }, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note?._id, isTrash]);

@@ -318,203 +318,331 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Profile Info Card */}
-        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 relative">
-          {/* Share Icon - Top Right on Desktop */}
-          <button
-            onClick={handleShareProfile}
-            className="hidden md:flex absolute top-3 right-3 w-8 h-8 items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group p-0"
-            title="Share profile link"
-          >
-            <Share2 className="w-4 h-4 m-0" />
-            {copied && (
-              <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded whitespace-nowrap z-20">
-                Copied!
-              </span>
-            )}
-          </button>
-          <div className="flex items-center gap-4 md:gap-6">
-            {/* Profile Picture */}
-            <div className="relative group flex-shrink-0">
-              {/* Share Icon - Bottom Right, beside Profile Picture on Mobile */}
-              <button
-                onClick={handleShareProfile}
-                className="md:hidden absolute bottom-0 -right-9 w-7 h-7 flex items-center justify-center bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border-2 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group shadow-sm p-0"
-                title="Share profile link"
-              >
-                <Share2 className="w-3.5 h-3.5 m-0" />
-                {copied && (
-                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded whitespace-nowrap z-20">
-                    Copied!
-                  </span>
-                )}
-              </button>
-              <div
-                className={`w-20 h-20 md:w-32 md:h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${getAnimationClass(
-                  user.equippedBorder || "",
-                )}`}
-                style={getBorderStyle(user.equippedBorder || "default")}
-              >
-                {user.profilePicture ? (
-                  <Image
-                    src={user.profilePicture}
-                    alt={`${user.firstName} ${user.lastName}`}
-                    width={128}
-                    height={128}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="text-2xl md:text-4xl font-light text-gray-400 dark:text-gray-500">
-                    {user.firstName.charAt(0).toUpperCase()}
-                    {user.lastName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-              {/* Edit Button */}
-              <button
-                onClick={handleImageClick}
-                disabled={uploading}
-                className="absolute bottom-1 right-1 w-6 h-6 md:w-8 md:h-8 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
-                title="Edit profile picture"
-              >
-                {uploading ? (
-                  <svg
-                    className="animate-spin h-3 w-3 md:h-4 md:w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                ) : (
-                  <svg
-                    className="h-3 w-3 md:h-4 md:w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                    />
-                  </svg>
-                )}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </div>
+        {/* Top Sections: 60% / 40% Split */}
+        <div className="flex flex-col lg:flex-row gap-3 md:gap-4 mb-4">
+          {/* Left Section (60%) */}
+          <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-4 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center">
+            {/* Share Share Icon - Top Right on Desktop */}
+            <button
+              onClick={handleShareProfile}
+              className="hidden lg:flex absolute top-3 right-3 w-7 h-7 items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group p-0"
+              title="Share profile link"
+            >
+              <Share2 className="w-3.5 h-3.5 m-0" />
+              {copied && (
+                <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded whitespace-nowrap z-20">
+                  Copied!
+                </span>
+              )}
+            </button>
 
-            {/* Name and Username - grows to fill space */}
-            <div className="flex-1 min-w-0 text-right md:text-left">
-              <div className="flex items-start justify-end md:justify-start gap-2 flex-wrap">
-                <h2 className="text-lg md:text-2xl font-semibold text-black dark:text-white truncate">
-                  {user.firstName} {user.lastName}
-                </h2>
-                {/* Highest badge pill — shown beside name */}
-                {badgeData &&
-                  (() => {
-                    const highest = getHighestBadge(badgeData.badges);
-                    if (!highest) return null;
-                    const v = BADGE_VISUALS[highest.id];
-                    return (
-                      <Link
-                        href="/badges"
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 border ${v.border} bg-gradient-to-r ${v.bgLight} ${v.bgDark} ${v.glow} rounded-sm whitespace-nowrap`}
-                        title={`Highest Badge: ${highest.name}`}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full h-full">
+              <div className="flex items-center gap-4 md:gap-5 w-full sm:w-auto">
+                {/* Profile Picture */}
+                <div className="relative group flex-shrink-0">
+                  <button
+                    onClick={handleShareProfile}
+                    className="lg:hidden absolute bottom-0 -right-8 w-6 h-6 flex items-center justify-center bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group shadow-sm p-0"
+                    title="Share profile link"
+                  >
+                    <Share2 className="w-3 h-3 m-0" />
+                    {copied && (
+                      <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded whitespace-nowrap z-20">
+                        Copied!
+                      </span>
+                    )}
+                  </button>
+                  <div
+                    className={`w-20 h-20 md:w-24 md:h-24 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${getAnimationClass(
+                      user.equippedBorder || "",
+                    )}`}
+                    style={getBorderStyle(user.equippedBorder || "default")}
+                  >
+                    {user.profilePicture ? (
+                      <Image
+                        src={user.profilePicture}
+                        alt={`${user.firstName} ${user.lastName}`}
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-2xl md:text-3xl font-light text-gray-400 dark:text-gray-500">
+                        {user.firstName.charAt(0).toUpperCase()}
+                        {user.lastName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleImageClick}
+                    disabled={uploading}
+                    className="absolute bottom-1 right-1 w-6 h-6 md:w-7 md:h-7 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
+                    title="Edit profile picture"
+                  >
+                    {uploading ? (
+                      <svg
+                        className="animate-spin h-3 w-3 md:h-3 md:w-3"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
                       >
-                        <span
-                          className={`text-xs font-bold bg-gradient-to-r ${v.gradient} bg-clip-text text-transparent`}
-                        >
-                          {v.icon}
-                        </span>
-                        <span
-                          className={`text-[10px] font-semibold ${v.textColor}`}
-                        >
-                          {highest.name}
-                        </span>
-                      </Link>
-                    );
-                  })()}
-              </div>
-              <p className="text-sm md:text-base text-gray-500 dark:text-gray-400">
-                @{user.username}
-              </p>
-              {/* Mobile: Show stats below username */}
-              <div className="flex items-center gap-4 mt-2 md:hidden justify-end flex-wrap">
-                <div className="flex items-center gap-1.5">
-                  {streakLoading ? (
-                    <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-                  ) : (
-                    <span className="text-base font-semibold text-black dark:text-white">
-                      {streakInfo?.totalActiveTasks ?? 0}
-                    </span>
-                  )}
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Active
-                  </span>
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-3 w-3 md:h-3 md:w-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
                 </div>
-                <div className="flex items-center gap-1.5">
+
+                {/* Name and Username */}
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <h2 className="text-lg md:text-xl font-semibold text-black dark:text-white truncate">
+                      {user.firstName} {user.lastName}
+                    </h2>
+                    {badgeData &&
+                      (() => {
+                        const highest = getHighestBadge(badgeData.badges);
+                        if (!highest) return null;
+                        const v = BADGE_VISUALS[highest.id];
+                        return (
+                          <Link
+                            href="/badges"
+                            className={`inline-flex flex-shrink-0 items-center gap-1 px-1.5 py-0.5 border ${v.border} bg-gradient-to-r ${v.bgLight} ${v.bgDark} ${v.glow} rounded-sm whitespace-nowrap`}
+                            title={`Highest Badge: ${highest.name}`}
+                          >
+                            <span
+                              className={`text-[10px] font-bold bg-gradient-to-r ${v.gradient} bg-clip-text text-transparent`}
+                            >
+                              {v.icon}
+                            </span>
+                            <span
+                              className={`text-[9px] font-semibold ${v.textColor}`}
+                            >
+                              {highest.name}
+                            </span>
+                          </Link>
+                        );
+                      })()}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    @{user.username}
+                  </p>
+                  {/* Mobile stats */}
+                  <div className="flex sm:hidden items-center gap-4 mt-2 flex-wrap">
+                    <div className="flex items-center gap-1.5">
+                      {streakLoading ? (
+                        <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                      ) : (
+                        <span className="text-sm font-semibold text-black dark:text-white">
+                          {streakInfo?.totalActiveTasks ?? 0}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        Active
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      {streakLoading ? (
+                        <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                      ) : (
+                        <span className="text-sm font-semibold text-black dark:text-white">
+                          {streakInfo?.completedToday ?? 0}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        Today
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop Stats block */}
+              <div className="hidden sm:flex gap-5 lg:gap-6 items-center justify-end w-full lg:w-auto h-full border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-800 pt-3 sm:pt-0 sm:pl-5">
+                <div className="text-center flex flex-col items-center">
                   {streakLoading ? (
-                    <div className="w-3 h-3 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    <div className="flex items-center justify-center h-8">
+                      <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    </div>
                   ) : (
-                    <span className="text-base font-semibold text-black dark:text-white">
-                      {streakInfo?.completedToday ?? 0}
-                    </span>
+                    <div className="text-2xl md:text-3xl font-light text-black dark:text-white">
+                      {streakInfo?.totalActiveTasks ?? 0}
+                    </div>
                   )}
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    Today
-                  </span>
+                  <div className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Active Tasks
+                  </div>
+                </div>
+                <div className="text-center flex flex-col items-center">
+                  {streakLoading ? (
+                    <div className="flex items-center justify-center h-8">
+                      <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <div className="text-2xl md:text-3xl font-light text-black dark:text-white">
+                      {streakInfo?.completedToday ?? 0}
+                    </div>
+                  )}
+                  <div className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Completed Today
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Desktop: Active Tasks & Completed Today on far right */}
-            <div className="hidden md:flex gap-6 pr-4">
-              <div className="text-center">
-                {streakLoading ? (
-                  <div className="flex items-center justify-center h-10">
-                    <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+          {/* Right Section (40%) */}
+          <div className="w-full lg:w-[40%] flex flex-col gap-3 md:gap-4 justify-between">
+            {/* Badges Strip (matching badges page visual style) */}
+            <Link
+              href="/badges"
+              className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center"
+            >
+              <div className="flex items-center justify-between mb-2 w-full">
+                <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                  Badges
+                </div>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
+                  View all →
+                </span>
+              </div>
+              {badgeData ? (
+                <div className="flex items-stretch gap-2 h-full">
+                  {[0, 1, 2].map((slot) => {
+                    const badgeId = selectedBadgeIds[slot];
+                    const badge = badgeId
+                      ? badgeData.badges.find((b) => b.id === badgeId)
+                      : null;
+                    const visual = badge ? BADGE_VISUALS[badge.id] : null;
+                    return (
+                      <div
+                        key={slot}
+                        className={`flex-1 flex flex-col items-center justify-center gap-1.5 p-2 border transition-all bg-white dark:bg-[#050710] shadow-sm
+                          ${badge ? "border-gray-200 dark:border-gray-800" : "border-dashed border-gray-300 dark:border-gray-700"}`}
+                      >
+                        <div
+                          className={`w-8 h-8 flex items-center justify-center text-lg font-bold shrink-0 transition-opacity
+                            ${badge && visual ? `bg-gradient-to-br ${visual.gradient} shadow-sm` : "bg-gray-100 dark:bg-gray-800 opacity-40 mx-auto rounded-sm"}`}
+                        >
+                          <span className="text-white drop-shadow-sm">
+                            {badge && visual ? visual.icon : "·"}
+                          </span>
+                        </div>
+                        <div className="text-center w-full overflow-hidden">
+                          <div
+                            className="text-[10px] md:text-xs font-semibold text-gray-900 dark:text-white truncate"
+                            title={badge?.name}
+                          >
+                            {badge ? badge.name : "Empty"}
+                          </div>
+                          {badge && (
+                            <div
+                              className="text-[9px] text-gray-500 dark:text-gray-400 capitalize font-medium mt-[1px] truncate"
+                              title={badge.category}
+                            >
+                              {badge.category}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex items-stretch gap-2 h-full">
+                  {[0, 1, 2].map((slot) => (
+                    <div
+                      key={slot}
+                      className="flex-1 min-h-[64px] border-dashed border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 rounded-sm animate-pulse"
+                    />
+                  ))}
+                </div>
+              )}
+            </Link>
+
+            {/* Streak Grid 2 Columns */}
+            <div className="grid grid-cols-2 gap-3 h-auto">
+              {/* Current Streak */}
+              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center">
+                <div className="absolute inset-0 opacity-10 dark:opacity-5">
+                  <div className="absolute top-0 left-1/4 w-12 h-12 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
+                  <div
+                    className="absolute bottom-0 right-1/4 w-16 h-16 bg-red-400 rounded-full blur-3xl animate-pulse"
+                    style={{ animationDelay: "0.5s" }}
+                  ></div>
+                </div>
+                <div className="relative z-10 flex items-center justify-between w-full">
+                  <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
+                    Current Streak
                   </div>
-                ) : (
-                  <div className="text-3xl font-light text-black dark:text-white">
-                    {streakInfo?.totalActiveTasks ?? 0}
-                  </div>
-                )}
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Active Tasks
+                  {streakLoading ? (
+                    <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
+                        {streakInfo?.currentStreak ?? 0}
+                      </div>
+                      <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400 animate-pulse" />
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="text-center">
-                {streakLoading ? (
-                  <div className="flex items-center justify-center h-10">
-                    <div className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+
+              {/* Highest Streak */}
+              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center">
+                <div className="absolute inset-0 opacity-10 dark:opacity-5">
+                  <div className="absolute top-0 right-1/4 w-12 h-12 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
+                  <div
+                    className="absolute bottom-0 left-1/4 w-16 h-16 bg-pink-400 rounded-full blur-3xl animate-pulse"
+                    style={{ animationDelay: "0.5s" }}
+                  ></div>
+                </div>
+                <div className="relative z-10 flex items-center justify-between w-full">
+                  <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
+                    Highest Streak
                   </div>
-                ) : (
-                  <div className="text-3xl font-light text-black dark:text-white">
-                    {streakInfo?.completedToday ?? 0}
-                  </div>
-                )}
-                <div className="text-sm text-gray-500 dark:text-gray-400">
-                  Completed Today
+                  {streakLoading ? (
+                    <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                        {streakInfo?.longestStreak ?? 0}
+                      </div>
+                      <Flame className="w-4 h-4 text-purple-500 dark:text-purple-400 animate-pulse" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -523,126 +651,6 @@ export default function Profile() {
 
         {/* Activity Graph */}
         <ActivityGraph joinedDate={user.createdAt} />
-
-        {/* Streak Stats Grid — 3 columns: streak, highest, badges */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {/* Current Streak */}
-          <div className="relative border border-orange-200 dark:border-orange-900/50 p-3 md:p-4 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
-            {/* Fire effect background */}
-            <div className="absolute inset-0 opacity-10 dark:opacity-5">
-              <div className="absolute top-0 left-1/4 w-16 h-16 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
-              <div
-                className="absolute bottom-0 right-1/4 w-20 h-20 bg-red-400 rounded-full blur-3xl animate-pulse"
-                style={{ animationDelay: "0.5s" }}
-              ></div>
-            </div>
-
-            <div className="relative z-10 flex items-center justify-between">
-              <div className="text-sm md:text-base font-medium text-orange-700 dark:text-orange-400">
-                Current Streak
-              </div>
-              {streakLoading ? (
-                <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <div className="flex items-center gap-1 md:gap-2">
-                  <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
-                    {streakInfo?.currentStreak ?? 0}
-                  </div>
-                  <Flame className="w-5 h-5 md:w-6 md:h-6 text-orange-500 dark:text-orange-400 animate-pulse" />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Highest Streak */}
-          <div className="relative border border-purple-200 dark:border-purple-900/50 p-3 md:p-4 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow">
-            {/* Fire effect background */}
-            <div className="absolute inset-0 opacity-10 dark:opacity-5">
-              <div className="absolute top-0 right-1/4 w-16 h-16 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
-              <div
-                className="absolute bottom-0 left-1/4 w-20 h-20 bg-pink-400 rounded-full blur-3xl animate-pulse"
-                style={{ animationDelay: "0.5s" }}
-              ></div>
-            </div>
-
-            <div className="relative z-10 flex items-center justify-between">
-              <div className="text-sm md:text-base font-medium text-purple-700 dark:text-purple-400">
-                Highest Streak
-              </div>
-              {streakLoading ? (
-                <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <div className="flex items-center gap-1 md:gap-2">
-                  <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-                    {streakInfo?.longestStreak ?? 0}
-                  </div>
-                  <Flame className="w-5 h-5 md:w-6 md:h-6 text-purple-500 dark:text-purple-400 animate-pulse" />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Badges Strip — spans both columns on mobile, 1/3 on desktop */}
-          <Link
-            href="/badges"
-            className="col-span-2 md:col-span-1 relative border border-gray-200 dark:border-gray-800 p-3 md:p-4 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Badges
-              </div>
-              <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
-                View all →
-              </span>
-            </div>
-            {badgeData ? (
-              <div className="flex items-center gap-2">
-                {[0, 1, 2].map((slot) => {
-                  const badgeId = selectedBadgeIds[slot];
-                  const badge = badgeId
-                    ? badgeData.badges.find((b) => b.id === badgeId)
-                    : null;
-                  const visual = badge ? BADGE_VISUALS[badge.id] : null;
-                  return (
-                    <div
-                      key={slot}
-                      className={`flex-1 flex flex-col items-center gap-1 p-2 border rounded-sm transition-all
-                        ${
-                          badge && visual
-                            ? `${visual.border} bg-gradient-to-br ${visual.bgLight} ${visual.bgDark} ${visual.glow}`
-                            : "border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40"
-                        }`}
-                    >
-                      <div
-                        className={`w-7 h-7 flex items-center justify-center text-base font-bold rounded-sm
-                          ${badge && visual ? `bg-gradient-to-br ${visual.gradient} opacity-90` : "bg-gray-200 dark:bg-gray-700"}`}
-                      >
-                        <span className="text-white drop-shadow-sm">
-                          {badge && visual ? visual.icon : "·"}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-[9px] text-center leading-tight truncate w-full
-                        ${badge && visual ? visual.textColor : "text-gray-400 dark:text-gray-600"}`}
-                      >
-                        {badge ? badge.name : "Empty"}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                {[0, 1, 2].map((slot) => (
-                  <div
-                    key={slot}
-                    className="flex-1 h-14 border-dashed border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 rounded-sm animate-pulse"
-                  />
-                ))}
-              </div>
-            )}
-          </Link>
-        </div>
 
         {/* Profile Details Card */}
         <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">

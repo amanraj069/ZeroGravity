@@ -44,7 +44,7 @@ export default function GoalsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col pb-12 sm:pb-16">
       <main className="flex-1">
         <Suspense fallback={<GoalsLoadingFallback />}>
           <GoalsContent />

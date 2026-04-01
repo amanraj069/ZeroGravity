@@ -107,17 +107,22 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
     if (!initializedRef.current) return;
 
     if (activeNoteId) {
-      const url = `/notes/${activeNoteId}`;
-      router.replace(url, { scroll: false });
+      if (window.location.pathname !== `/notes/${activeNoteId}`) {
+        const url = `/notes/${activeNoteId}`;
+        window.history.pushState(null, "", url);
+      }
     } else {
       const params = new URLSearchParams();
       params.set("tab", VIEW_TO_TAB[sidebarView]);
       if (activeCategory) {
         params.set("category", activeCategory);
       }
-      router.replace(`/notes?${params.toString()}`, { scroll: false });
+      const newUrl = `/notes?${params.toString()}`;
+      if (window.location.pathname + window.location.search !== newUrl) {
+        window.history.pushState(null, "", newUrl);
+      }
     }
-  }, [activeNoteId, sidebarView, activeCategory, router]);
+  }, [activeNoteId, sidebarView, activeCategory]);
 
   // If user arrives with initialDocId, switch to correct sidebar view
   // after data loads (e.g. show trash tab if the note is trashed)
