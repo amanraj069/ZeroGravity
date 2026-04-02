@@ -12,7 +12,14 @@ import {
   BadgeProgress,
   BadgeData,
 } from "@/services/badgeService";
-import { ArrowLeft, Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ArrowLeft,
+  Lock,
+  Unlock,
+  ChevronDown,
+  ChevronUp,
+  ArrowUpDown,
+} from "lucide-react";
 import { RandomStars } from "@/components/RandomStars";
 
 // --- Stat card ---
@@ -135,6 +142,10 @@ export default function BadgesPage() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [showStats, setShowStats] = useState(false);
+  const [sortBy, setSortBy] = useState<"prestige" | "progress" | "name">(
+    "prestige",
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) router.push("/login");
@@ -173,10 +184,41 @@ export default function BadgesPage() {
     { id: "goals", label: "Goals" },
   ];
 
-  const filteredBadges =
-    activeCategory === "all"
+  const filteredBadges = [
+    ...(activeCategory === "all"
       ? badges
-      : badges.filter((b) => b.category === activeCategory);
+      : badges.filter((b) => b.category === activeCategory)),
+  ].sort((a, b) => {
+    // Top-level sort: unlocked mostly come first (or progress-based)
+    // Wait, let's sort strictly by unlocked status first, so users can see what they have
+    if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
+
+    let result = 0;
+    // Secondary sort based on user selection
+    if (sortBy === "prestige") {
+      const rankA = BADGE_VISUALS[a.id]?.prestigeRank ?? 999;
+      const rankB = BADGE_VISUALS[b.id]?.prestigeRank ?? 999;
+      // ascending prestige means lower rank number (so better prestige) at bottom
+      // wait, lower rank number = rarer.
+      // So if asc, we want rarer at bottom -> larger rank number at top
+      result = rankB - rankA;
+    } else if (sortBy === "progress") {
+      const progA = a.progress ?? 0;
+      const progB = b.progress ?? 0;
+      if (progB !== progA) {
+        result = progA - progB; // ascending progress = 0% to 100%
+      } else {
+        // fallback to prestige if progress is tied
+        const rankA = BADGE_VISUALS[a.id]?.prestigeRank ?? 999;
+        const rankB = BADGE_VISUALS[b.id]?.prestigeRank ?? 999;
+        result = rankB - rankA;
+      }
+    } else if (sortBy === "name") {
+      result = a.name.localeCompare(b.name);
+    }
+
+    return sortOrder === "asc" ? result : -result;
+  });
 
   return (
     <DashboardLayout>
@@ -197,6 +239,55 @@ export default function BadgesPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="relative">
+              <select
+                title="Sort Badges"
+                value={`${sortBy}-${sortOrder}`}
+                onChange={(e) => {
+                  const [newSortBy, newSortOrder] = e.target.value.split(
+                    "-",
+                  ) as ["prestige" | "progress" | "name", "asc" | "desc"];
+                  setSortBy(newSortBy);
+                  setSortOrder(newSortOrder);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors appearance-none pr-8 bg-transparent cursor-pointer outline-none"
+              >
+                <option
+                  className="bg-white dark:bg-gray-900"
+                  value="prestige-asc"
+                >
+                  Sort: Prestige (Asc)
+                </option>
+                <option
+                  className="bg-white dark:bg-gray-900"
+                  value="prestige-desc"
+                >
+                  Sort: Prestige (Desc)
+                </option>
+                <option
+                  className="bg-white dark:bg-gray-900"
+                  value="progress-desc"
+                >
+                  Sort: Progress (High to Low)
+                </option>
+                <option
+                  className="bg-white dark:bg-gray-900"
+                  value="progress-asc"
+                >
+                  Sort: Progress (Low to High)
+                </option>
+                <option className="bg-white dark:bg-gray-900" value="name-asc">
+                  Sort: Name (A-Z)
+                </option>
+                <option className="bg-white dark:bg-gray-900" value="name-desc">
+                  Sort: Name (Z-A)
+                </option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                <ChevronDown className="h-3.5 w-3.5" />
+              </div>
+            </div>
+
             <button
               onClick={() => setShowStats(!showStats)}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -265,7 +356,7 @@ export default function BadgesPage() {
         </div>
 
         {/* Badge grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
           {filteredBadges.map((badge) => (
             <BadgeCard key={badge.id} badge={badge} />
           ))}

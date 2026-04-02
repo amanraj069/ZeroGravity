@@ -43,6 +43,36 @@ export interface BadgeVisual {
 }
 
 export const BADGE_VISUALS: Record<string, BadgeVisual> = {
+  // COSMIC TIER
+  "zero-gravity": {
+    id: "zero-gravity",
+    icon: "⌬",
+    gradient: "from-purple-400 via-fuchsia-400 to-pink-500",
+    border: "border-purple-400/60",
+    glow: "shadow-[0_0_22px_4px_rgba(192,132,252,0.5)]",
+    dropShadow:
+      "drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] drop-shadow-[0_0_15px_rgba(192,132,252,0.8)] drop-shadow-[0_0_25px_rgba(216,180,254,0.6)]",
+    textColor: "text-purple-300",
+    bgDark:
+      "dark:from-fuchsia-950/50 dark:via-purple-950/40 dark:to-pink-950/50",
+    bgLight: "from-fuchsia-50 via-purple-50 to-pink-100",
+    prestigeRank: -1,
+  },
+  // COSMIC TIER
+  "the-infinite": {
+    id: "the-infinite",
+    icon: "∞",
+    gradient: "from-purple-400 via-fuchsia-400 to-pink-500",
+    border: "border-purple-400/60",
+    glow: "shadow-[0_0_22px_4px_rgba(192,132,252,0.5)]",
+    dropShadow:
+      "drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] drop-shadow-[0_0_15px_rgba(192,132,252,0.8)] drop-shadow-[0_0_25px_rgba(216,180,254,0.6)]",
+    textColor: "text-purple-300",
+    bgDark:
+      "dark:from-fuchsia-950/50 dark:via-purple-950/40 dark:to-pink-950/50",
+    bgLight: "from-fuchsia-50 via-purple-50 to-pink-100",
+    prestigeRank: 0,
+  },
   // DIAMOND TIER
   "the-immortal": {
     id: "the-immortal",
@@ -103,7 +133,7 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
   // GOLD TIER
   "full-house": {
     id: "full-house",
-    icon: "⬡",
+    icon: "❖",
     gradient: "from-yellow-500 via-amber-400 to-yellow-600",
     border: "border-yellow-400/60",
     glow: "shadow-[0_0_18px_2px_rgba(250,204,21,0.45)]",
@@ -161,7 +191,7 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
   // SILVER TIER
   "night-owl": {
     id: "night-owl",
-    icon: "◑",
+    icon: "🌙",
     gradient: "from-gray-300 via-slate-300 to-gray-400",
     border: "border-gray-300/60",
     glow: "shadow-[0_0_18px_2px_rgba(209,213,219,0.4)]",
@@ -175,7 +205,7 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
   // SILVER TIER
   "early-bird": {
     id: "early-bird",
-    icon: "◐",
+    icon: "☀️",
     gradient: "from-gray-300 via-slate-300 to-gray-400",
     border: "border-gray-300/60",
     glow: "shadow-[0_0_18px_2px_rgba(209,213,219,0.4)]",
@@ -189,6 +219,8 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
 };
 
 export const PRESTIGE_ORDER = [
+  "zero-gravity",
+  "the-infinite",
   "the-immortal",
   "the-guardian",
   "the-perfectionist",
