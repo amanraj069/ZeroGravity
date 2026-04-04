@@ -93,7 +93,7 @@ export default function QuizzesPage() {
   };
 
   const handleQuizClick = (quiz: Quiz) => {
-    router.push(`/quizzes/create?edit=${quiz.quizId}`);
+    router.push(`/quizzes/create?quizId=${quiz.quizId}&edit=true`);
   };
 
   const handleDeleteQuiz = async (quizId: string, event: React.MouseEvent) => {

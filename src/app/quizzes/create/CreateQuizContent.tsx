@@ -45,10 +45,11 @@ export default function CreateQuizContent({
   // Load existing quiz or prefill from /createQuiz
   useEffect(() => {
     const existingQuizId = searchParams?.quizId as string;
+    const isEdit = searchParams?.edit === "true";
     const initTitle = searchParams?.title as string;
     const initDesc = searchParams?.desc as string;
 
-    if (existingQuizId && !isLoading && user) {
+    if (existingQuizId && isEdit && !isLoading && user) {
       // Load existing quiz data
       setLoadingExisting(true);
       setQuizId(existingQuizId);

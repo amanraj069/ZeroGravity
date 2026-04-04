@@ -34,6 +34,7 @@ export default function HostedQuizPage() {
     useState<number>(0);
   const [isQuestionActive, setIsQuestionActive] = useState<boolean>(false);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState<boolean>(false);
+  const [isPresentationMode, setIsPresentationMode] = useState<boolean>(false);
 
   useEffect(() => {
     if (!quizId) return;
@@ -203,10 +204,8 @@ export default function HostedQuizPage() {
       setCurrentQuestionTimeLeft(0);
       setIsQuestionActive(false);
 
-      if (r.isLastQuestion) {
-        setIsActive(false);
-        setCurrentIndex(-1);
-      }
+      // We keep the current index so the host can show the correct answer
+      // and see the histogram. The host will have to manually click "End Quiz".
 
       const p = await listParticipants(quizId);
       if (p?.success) setParticipants(p.participants);
@@ -309,100 +308,132 @@ export default function HostedQuizPage() {
             </div>
 
             {/* Top Right Controls */}
-            <div className="flex flex-col items-end gap-1.5 sm:gap-2 flex-shrink-0">
-              {currentQuestion && (
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  {isQuestionActive ? (
-                    <button
-                      onClick={handleStopQuestion}
-                      className="px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
-                    >
-                      Stop Question
-                    </button>
-                  ) : currentIndex + 1 < questions.length ? (
-                    <button
-                      onClick={handlePushNext}
-                      className="px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
-                    >
-                      Next Question
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleEndQuiz}
-                      className="px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-medium bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black transition-colors"
-                    >
-                      End Quiz
-                    </button>
-                  )}
+            <div className="flex flex-col items-end gap-2 sm:gap-3 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full">
+                <label className="flex items-center cursor-pointer group px-2 sm:px-0">
+                  <div className="relative flex items-center">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={isPresentationMode}
+                      onChange={(e) => setIsPresentationMode(e.target.checked)}
+                    />
+                    <div
+                      className={`block w-10 h-6 rounded-full transition-colors ${
+                        isPresentationMode
+                          ? "bg-blue-600 dark:bg-blue-500"
+                          : "bg-gray-300 dark:bg-gray-600"
+                      }`}
+                    />
+                    <div
+                      className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${
+                        isPresentationMode ? "transform translate-x-4" : ""
+                      }`}
+                    />
+                  </div>
+                  <span className="ml-2 sm:ml-3 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                    Presentation Mode
+                  </span>
+                </label>
+                <div className="h-4 hidden sm:block w-px bg-gray-300 dark:bg-gray-700" />
+                <div className="flex gap-2 sm:gap-3">
+                  <button
+                    onClick={handleBackToPortal}
+                    className="px-3 sm:px-5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium uppercase tracking-wider bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white transition-colors whitespace-nowrap text-center rounded-sm"
+                  >
+                    Portal
+                  </button>
+                  <button
+                    onClick={handleViewLeaderboard}
+                    className="px-3 sm:px-5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium uppercase tracking-wider border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white transition-colors whitespace-nowrap text-center rounded-sm"
+                  >
+                    Leaderboard
+                  </button>
                 </div>
-              )}
-              <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-3 w-full">
-                <button
-                  onClick={handleBackToPortal}
-                  className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap text-center"
-                >
-                  Portal
-                </button>
-                <button
-                  onClick={handleViewLeaderboard}
-                  className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap text-center"
-                >
-                  Leaderboard
-                </button>
               </div>
             </div>
           </div>
 
           {currentQuestion ? (
             /* Question Box */
-            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
-              {/* Question Header with Timer */}
-              <div className="p-3 sm:p-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
-                  <div className="flex-1">
-                    <h2 className="text-base sm:text-xl md:text-2xl font-light text-gray-900 dark:text-white leading-relaxed">
+            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 overflow-hidden shadow-sm">
+              {/* Question Header with Timer and Actions */}
+              <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                  <div className="flex-1 min-w-0 pr-4">
+                    <h2 className="text-lg sm:text-2xl font-normal text-gray-900 dark:text-white leading-snug">
                       {currentQuestion.text}
                     </h2>
                   </div>
-                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    {/* Show Correct Answer Button - Only when question ended */}
-                    {!isQuestionActive && !showCorrectAnswer && (
-                      <button
-                        onClick={() => setShowCorrectAnswer(true)}
-                        className="h-8 sm:h-10 px-2.5 sm:px-4 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-medium transition-colors flex items-center"
-                      >
-                        Show Correct
-                      </button>
-                    )}
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 flex-shrink-0">
                     {/* Timer */}
                     <div
-                      className={`h-8 sm:h-10 px-2.5 sm:px-4 font-mono text-sm sm:text-lg font-medium flex items-center ${
+                      className={`h-9 sm:h-11 px-3 sm:px-5 font-mono text-sm sm:text-lg font-medium flex items-center justify-center min-w-[80px] sm:min-w-[100px] border ${
                         currentQuestionTimeLeft <= 10
-                          ? "bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400"
+                          ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/30"
                           : currentQuestionTimeLeft <= 30
-                            ? "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400"
-                            : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                            ? "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/30"
+                            : "bg-gray-100 dark:bg-gray-800/80 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700"
                       }`}
                     >
                       {formatTime(currentQuestionTimeLeft)}
                     </div>
                     {/* Status Badge */}
                     <div
-                      className={`h-8 sm:h-10 px-2.5 sm:px-4 text-xs sm:text-sm font-medium flex items-center ${
+                      className={`h-9 sm:h-11 px-3 sm:px-4 text-xs sm:text-sm font-semibold flex items-center border ${
                         isQuestionActive
-                          ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                          ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/30"
+                          : "bg-gray-100 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700"
                       }`}
                     >
-                      {isQuestionActive ? "● Live" : "Ended"}
+                      <span
+                        className={`mr-2 h-2 w-2 rounded-none ${isQuestionActive ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}
+                      ></span>
+                      {isQuestionActive ? "Live" : "Ended"}
                     </div>
+
+                    <div className="w-px h-8 bg-gray-200 dark:bg-gray-700 hidden sm:block mx-1"></div>
+
+                    {/* Show Correct Answer Button - Only when question ended */}
+                    {!isQuestionActive && !showCorrectAnswer && (
+                      <button
+                        onClick={() => setShowCorrectAnswer(true)}
+                        className="h-9 sm:h-11 px-4 sm:px-5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-medium transition-all shadow-sm flex items-center"
+                      >
+                        Show Correct
+                      </button>
+                    )}
+
+                    {/* Question Flow Actions */}
+                    {isQuestionActive ? (
+                      <button
+                        onClick={handleStopQuestion}
+                        className="h-9 sm:h-11 px-4 sm:px-6 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center"
+                      >
+                        Stop Question
+                      </button>
+                    ) : currentIndex + 1 < questions.length ? (
+                      <button
+                        onClick={handlePushNext}
+                        className="h-9 sm:h-11 px-4 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center"
+                      >
+                        Next Question
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleEndQuiz}
+                        className="h-9 sm:h-11 px-4 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center"
+                      >
+                        End Quiz
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* Vertical Histogram Options */}
-              <div className="p-3 sm:p-6 md:p-8">
-                <div className="flex items-end justify-center gap-3 sm:gap-6 md:gap-10 min-h-[250px] sm:min-h-[400px]">
+              <div className="p-4 sm:p-6 md:p-8 overflow-hidden">
+                <div className="flex items-end justify-center gap-3 sm:gap-6 md:gap-14 min-h-[250px] sm:min-h-[400px]">
                   {currentQuestion.options.map((option) => {
                     const total = Object.values(voteCounts).reduce(
                       (sum, c) => sum + (c as number),
@@ -416,63 +447,79 @@ export default function HostedQuizPage() {
                     const isCorrect = option.isCorrect;
                     const shouldHighlight = showCorrectAnswer && isCorrect;
 
+                    const displayCount = isPresentationMode ? "?" : count;
+                    const displayPercentage = isPresentationMode
+                      ? "?"
+                      : `${percentage}%`;
+                    const displayBarHeight = isPresentationMode
+                      ? total > 0
+                        ? 100
+                        : 4
+                      : barHeight;
+
                     return (
                       <div
                         key={option.key}
-                        className="flex flex-col items-center flex-1 max-w-40"
+                        className="flex flex-col items-center flex-1 max-w-[120px]"
                       >
                         {/* Vote count */}
                         <div
-                          className={`text-2xl font-semibold mb-3 ${
-                            shouldHighlight
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-gray-900 dark:text-white"
+                          className={`text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 ${
+                            isPresentationMode
+                              ? "text-gray-400 dark:text-gray-600 opacity-50"
+                              : shouldHighlight
+                                ? "text-emerald-600 dark:text-emerald-400 scale-110 transition-transform"
+                                : "text-gray-900 dark:text-white"
                           }`}
                         >
-                          {count}
+                          {displayCount}
                         </div>
 
                         {/* Bar Container */}
-                        <div className="w-full h-64 md:h-72 flex items-end justify-center bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                        <div className="w-full h-64 md:h-72 flex items-end justify-center bg-gray-100/50 dark:bg-gray-800/50 overflow-hidden mb-1 relative">
                           <div
-                            className={`w-full transition-all duration-500 ease-out ${
-                              shouldHighlight
-                                ? "bg-green-500 dark:bg-green-500"
-                                : "bg-blue-500 dark:bg-blue-400"
-                            }`}
-                            style={{ height: `${barHeight}%` }}
+                            className={`w-full transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                              isPresentationMode
+                                ? "bg-gray-300 dark:bg-gray-600"
+                                : shouldHighlight
+                                  ? "bg-emerald-500 dark:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                                  : "bg-blue-500 dark:bg-blue-500"
+                            } ${isPresentationMode ? "opacity-30" : ""}`}
+                            style={{ height: `${displayBarHeight}%` }}
                           />
                         </div>
 
                         {/* Option Label */}
                         <div
-                          className={`mt-4 text-center ${
+                          className={`mt-4 w-full text-center transition-colors duration-300 ${
                             shouldHighlight
-                              ? "text-green-600 dark:text-green-400"
+                              ? "text-emerald-600 dark:text-emerald-400"
                               : "text-gray-700 dark:text-gray-300"
                           }`}
                         >
                           <div
-                            className={`w-10 h-10 mx-auto mb-2 flex items-center justify-center text-base font-semibold ${
+                            className={`w-12 h-12 mx-auto mb-3 flex items-center justify-center text-lg font-bold shadow-sm transition-colors duration-300 ${
                               shouldHighlight
-                                ? "bg-green-500 text-white"
-                                : "bg-black dark:bg-white text-white dark:text-black"
+                                ? "bg-emerald-500 text-white border-2 border-emerald-500"
+                                : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700"
                             }`}
                           >
                             {option.key}
                           </div>
-                          <div className="text-sm font-medium">
+                          <div className="text-sm sm:text-base font-medium px-2 break-words">
                             {option.text}
                           </div>
                           {total > 0 && (
                             <div
-                              className={`text-sm mt-1 font-medium ${
-                                shouldHighlight
-                                  ? "text-green-600 dark:text-green-400"
-                                  : "text-gray-500 dark:text-gray-400"
+                              className={`text-sm mt-2 font-bold ${
+                                isPresentationMode
+                                  ? "text-gray-400 dark:text-gray-600 opacity-50"
+                                  : shouldHighlight
+                                    ? "text-emerald-600 dark:text-emerald-400"
+                                    : "text-gray-500 dark:text-gray-400"
                               }`}
                             >
-                              {percentage}%
+                              {displayPercentage}
                             </div>
                           )}
                         </div>
@@ -482,21 +529,23 @@ export default function HostedQuizPage() {
                 </div>
 
                 {/* Response Stats */}
-                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                  <div>
-                    <span className="font-medium text-gray-900 dark:text-white">
+                <div className="mt-8 pt-5 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center gap-6 sm:gap-12 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                    <span className="text-gray-900 dark:text-white text-base">
                       {Object.values(voteCounts).reduce(
                         (sum, c) => sum + (c as number),
                         0,
                       )}
                     </span>
-                    <span className="ml-1">responses</span>
+                    <span>responses</span>
                   </div>
-                  <div>
-                    <span className="font-medium text-gray-900 dark:text-white">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-purple-500"></div>
+                    <span className="text-gray-900 dark:text-white text-base">
                       {participants.length}
                     </span>
-                    <span className="ml-1">participants</span>
+                    <span>participants</span>
                   </div>
                 </div>
               </div>
@@ -524,6 +573,20 @@ export default function HostedQuizPage() {
                 All questions have been answered. View the final results and
                 leaderboard.
               </p>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <button
+                  onClick={handleViewLeaderboard}
+                  className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                >
+                  View Leaderboard
+                </button>
+                <button
+                  onClick={handleBackToPortal}
+                  className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-medium hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                >
+                  Back to Portal
+                </button>
+              </div>
             </div>
           ) : !isActive ? (
             /* Quiz Not Started Yet */
@@ -548,6 +611,12 @@ export default function HostedQuizPage() {
                 Go back to the portal to start the quiz and begin pushing
                 questions.
               </p>
+              <button
+                onClick={handleBackToPortal}
+                className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              >
+                Back to Portal
+              </button>
             </div>
           ) : (
             /* Quiz Active - Waiting for First Question */
@@ -573,6 +642,12 @@ export default function HostedQuizPage() {
                 {participants.length !== 1 ? "s" : ""} waiting. Go back to push
                 the first question.
               </p>
+              <button
+                onClick={handleBackToPortal}
+                className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              >
+                Back to Portal
+              </button>
             </div>
           )}
         </div>

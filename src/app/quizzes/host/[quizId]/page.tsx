@@ -83,6 +83,7 @@ export default function HostQuizPage() {
         setIsHosted(
           q.quiz?.status === "published" || q.quiz?.status === "active",
         );
+        setCurrentIndex(q.quiz?.currentQuestionIndex ?? -1);
         setGeneratedJoinCode(q.quiz?.joinCode || "");
       }
       const p = await listParticipants(quizId);
@@ -726,7 +727,9 @@ export default function HostQuizPage() {
                   <div className="space-y-2 sm:space-y-3">
                     <button
                       onClick={() =>
-                        router.push(`/quizzes/create?edit=${quizId}`)
+                        router.push(
+                          `/quizzes/create?quizId=${quizId}&edit=true`,
+                        )
                       }
                       className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
                       disabled={isActive}
@@ -838,76 +841,26 @@ export default function HostQuizPage() {
                   </div>
                 </div>
 
-                {/* Control mode: single CTA to push/stop with timer */}
+                {/* Control mode: single CTA to control flow in the dedicated panel */}
                 {viewMode === "control" && (
-                  <div className="space-y-3 sm:space-y-5 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-auto">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">
-                        Question Control
-                      </h2>
-                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-light">
-                        {questions.length} question
-                        {questions.length !== 1 ? "s" : ""}
-                      </span>
-                    </div>
-
-                    {/* Push first or next question */}
-                    {currentIndex < 0 ? (
-                      <div className="flex justify-center">
-                        <button
-                          className={`px-4 sm:px-6 py-2 sm:py-3 font-light text-xs sm:text-sm ${
-                            isActive
-                              ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                          }`}
-                          onClick={() => push(0)}
-                          disabled={!isActive || questions.length === 0}
-                        >
-                          Push first question to users
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center gap-4">
-                        <button
-                          className={`px-4 sm:px-6 py-2 sm:py-3 font-light text-xs sm:text-sm ${
-                            currentQuestionTimeLeft > 0
-                              ? "bg-red-600 text-white hover:bg-red-700"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
-                          }`}
-                          onClick={endCurrentQuestion}
-                          disabled={currentQuestionTimeLeft === 0}
-                          title="Stop current question"
-                        >
-                          Stop
-                        </button>
-                        <div className="text-lg sm:text-xl font-mono font-light text-gray-900 dark:text-white">
-                          {formatTime(currentQuestionTimeLeft)}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* After a question ended, show Next CTA */}
-                    {currentIndex >= 0 && currentQuestionTimeLeft === 0 && (
-                      <div className="flex items-center justify-center gap-3">
-                        <button
-                          className={`px-4 sm:px-6 py-2 sm:py-3 font-light text-xs sm:text-sm ${
-                            currentIndex + 1 < questions.length
-                              ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
-                              : "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
-                          }`}
-                          onClick={pushNextQuestion}
-                          disabled={currentIndex + 1 >= questions.length}
-                        >
-                          Push next question
-                        </button>
-                        <button
-                          className="px-4 sm:px-6 py-2 sm:py-3 font-light text-xs sm:text-sm border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                          onClick={() => setViewMode("results")}
-                        >
-                          View responses
-                        </button>
-                      </div>
-                    )}
+                  <div className="space-y-3 sm:space-y-5 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-auto text-center flex flex-col items-center justify-center">
+                    <h2 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mt-4 sm:mt-6 mb-1 sm:mb-2">
+                      Quiz Flow Control
+                    </h2>
+                    <p className="text-xs sm:text-sm font-light text-gray-600 dark:text-gray-400 max-w-sm mb-4 sm:mb-6">
+                      Go to the Control Panel to manage questions, view live responses, and control the pace of the quiz.
+                    </p>
+                    <button
+                      className={`px-6 sm:px-8 py-3 sm:py-4 font-light text-sm sm:text-base border transition-colors ${
+                        isActive
+                          ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 border-black dark:border-white"
+                          : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                      }`}
+                      onClick={() => router.push(`/hosted/${quizId}`)}
+                      disabled={!isActive}
+                    >
+                      Go to Control Panel
+                    </button>
                   </div>
                 )}
 
