@@ -16,6 +16,7 @@ interface User {
   isVerified: boolean;
   profilePicture?: string;
   phoneNumber?: string;
+  autoStopQuizDuration?: number;
   createdAt: string;
   updatedAt: string;
   // Gamification fields
@@ -51,7 +52,7 @@ interface AuthContextType {
   setUser: (user: User | null) => void;
   login: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{
     success: boolean;
     message: string;
@@ -62,18 +63,18 @@ interface AuthContextType {
   }>;
   logout: () => Promise<void>;
   signup: (
-    userData: SignupData
+    userData: SignupData,
   ) => Promise<{ success: boolean; message: string }>;
   loginWithGoogle: (
-    credential: string
+    credential: string,
   ) => Promise<{ success: boolean; message: string; streakInfo?: StreakInfo }>;
   checkSession: () => Promise<void>;
   sendOtp: (
-    userData: SignupData
+    userData: SignupData,
   ) => Promise<{ success: boolean; message: string; email?: string }>;
   verifyOtp: (
     email: string,
-    otp: string
+    otp: string,
   ) => Promise<{ success: boolean; message: string }>;
   resendOtp: (email: string) => Promise<{ success: boolean; message: string }>;
   refreshPoints: () => Promise<void>;
@@ -124,7 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         API_ENDPOINTS.AUTH.SESSION_STATUS,
         {
           method: "GET",
-        }
+        },
       );
 
       const data = await response.json();
@@ -159,7 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Login function
   const login = async (
     email: string,
-    password: string
+    password: string,
   ): Promise<{
     success: boolean;
     message: string;
@@ -196,7 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         ) {
           localStorage.setItem(
             "pendingStreakInfo",
-            JSON.stringify(data.streakInfo)
+            JSON.stringify(data.streakInfo),
           );
         }
 
@@ -229,7 +230,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Signup function
   const signup = async (
-    userData: SignupData
+    userData: SignupData,
   ): Promise<{ success: boolean; message: string }> => {
     try {
       const response = await apiCall(API_ENDPOINTS.AUTH.SIGNUP, {
@@ -259,7 +260,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Send OTP function
   const sendOtp = async (
-    userData: SignupData
+    userData: SignupData,
   ): Promise<{ success: boolean; message: string; email?: string }> => {
     try {
       const response = await apiCall(API_ENDPOINTS.AUTH.SEND_OTP, {
@@ -290,7 +291,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Verify OTP function
   const verifyOtp = async (
     email: string,
-    otp: string
+    otp: string,
   ): Promise<{ success: boolean; message: string }> => {
     try {
       const response = await apiCall(API_ENDPOINTS.AUTH.VERIFY_OTP, {
@@ -329,7 +330,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Resend OTP function
   const resendOtp = async (
-    email: string
+    email: string,
   ): Promise<{ success: boolean; message: string }> => {
     try {
       const response = await apiCall(API_ENDPOINTS.AUTH.RESEND_OTP, {
@@ -359,7 +360,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Google OAuth login function
   const loginWithGoogle = async (
-    credential: string
+    credential: string,
   ): Promise<{
     success: boolean;
     message: string;
@@ -393,7 +394,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         ) {
           localStorage.setItem(
             "pendingStreakInfo",
-            JSON.stringify(data.streakInfo)
+            JSON.stringify(data.streakInfo),
           );
         }
 

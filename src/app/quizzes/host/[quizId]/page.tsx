@@ -10,7 +10,6 @@ import {
   startQuiz,
   leaderboard,
   endQuiz,
-  endQuestion,
   hostQuiz,
   unhostQuiz,
 } from "@/services/quizzesService";
@@ -36,12 +35,7 @@ export default function HostQuizPage() {
   const [isHosted, setIsHosted] = useState<boolean>(false);
   const [generatedJoinCode, setGeneratedJoinCode] = useState<string>("");
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
-  const [currentQuestionTimeLeft, setCurrentQuestionTimeLeft] =
-    useState<number>(0);
-  const [currentQuestionStartTime, setCurrentQuestionStartTime] =
-    useState<Date | null>(null);
-  const [currentQuestionTimeLimit, setCurrentQuestionTimeLimit] =
-    useState<number>(0);
+  const [, setCurrentQuestionTimeLimit] = useState<number>(0);
   const [viewMode, setViewMode] = useState<
     "control" | "results" | "leaderboard"
   >("control");
@@ -79,12 +73,20 @@ export default function HostQuizPage() {
       const q = await getQuiz(quizId);
       if (q?.success) {
         setQuiz(q.quiz);
+        const hosted =
+          q.quiz?.status === "published" || q.quiz?.status === "active";
         setIsActive(q.quiz?.status === "active");
-        setIsHosted(
-          q.quiz?.status === "published" || q.quiz?.status === "active",
-        );
+        setIsHosted(hosted);
         setCurrentIndex(q.quiz?.currentQuestionIndex ?? -1);
         setGeneratedJoinCode(q.quiz?.joinCode || "");
+
+        // Recovery path: if quiz is hosted but join code is missing, generate one again.
+        if (hosted && !q.quiz?.joinCode) {
+          const hostedAgain = await hostQuiz(quizId);
+          if (hostedAgain?.success && hostedAgain?.joinCode) {
+            setGeneratedJoinCode(hostedAgain.joinCode);
+          }
+        }
       }
       const p = await listParticipants(quizId);
       if (p?.success) setParticipants(p.participants);
@@ -115,9 +117,9 @@ export default function HostQuizPage() {
       });
     };
 
-    // Fallback: Poll for participants every 5 seconds when quiz is hosted but not active
+    // Fallback: Poll for participants every 5 seconds whenever quiz is hosted.
     const pollParticipants = async () => {
-      if (isHosted && !isActive) {
+      if (isHosted) {
         try {
           const p = await listParticipants(quizId);
           if (p?.success) {
@@ -143,14 +145,7 @@ export default function HostQuizPage() {
       setViewMode("control");
 
       if (payload.startTime && payload.timeLimit) {
-        setCurrentQuestionStartTime(new Date(payload.startTime));
         setCurrentQuestionTimeLimit(payload.timeLimit);
-        // Calculate initial remaining time
-        const elapsed = Math.floor(
-          (new Date().getTime() - new Date(payload.startTime).getTime()) / 1000,
-        );
-        const remaining = Math.max(0, payload.timeLimit - elapsed);
-        setCurrentQuestionTimeLeft(remaining);
       }
     };
     const onVotes = (payload: {
@@ -172,10 +167,20 @@ export default function HostQuizPage() {
     const onEnded = () => {
       setCurrentIndex(-1);
       setIsActive(false);
-      setGeneratedJoinCode("");
+      setViewMode("control");
       (async () => {
-        const b = await leaderboard(quizId);
+        const [b, q] = await Promise.all([
+          leaderboard(quizId),
+          getQuiz(quizId),
+        ]);
         if (b?.success) setBoard(b.leaderboard);
+        if (q?.success) {
+          setQuiz(q.quiz);
+          const hosted =
+            q.quiz?.status === "published" || q.quiz?.status === "active";
+          setIsHosted(hosted);
+          setGeneratedJoinCode(q.quiz?.joinCode || "");
+        }
       })();
     };
     const onUnhosted = (payload: { quizId: string }) => {
@@ -195,7 +200,6 @@ export default function HostQuizPage() {
     };
     const onQuestionTimeUp = () => {
       // Instantly update leaderboard and participants when question timer ends
-      setCurrentQuestionTimeLeft(0);
       setViewMode("results");
       (async () => {
         const [b, p] = await Promise.all([
@@ -233,21 +237,6 @@ export default function HostQuizPage() {
     }
   }, [isLoggedIn, authLoading, router]);
 
-  // Timer for host display
-  useEffect(() => {
-    if (currentQuestionStartTime && currentQuestionTimeLimit > 0) {
-      const timer = setInterval(() => {
-        const elapsed = Math.floor(
-          (new Date().getTime() - currentQuestionStartTime.getTime()) / 1000,
-        );
-        const remaining = Math.max(0, currentQuestionTimeLimit - elapsed);
-        setCurrentQuestionTimeLeft(remaining);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-  }, [currentQuestionStartTime, currentQuestionTimeLimit]);
-
   if (authLoading) {
     return (
       <ZeroGravityLoading
@@ -267,7 +256,15 @@ export default function HostQuizPage() {
       alert("Failed to host quiz");
     } else {
       setIsHosted(true);
-      setGeneratedJoinCode(r.joinCode);
+      setGeneratedJoinCode(r.joinCode || "");
+
+      // If API response misses joinCode, fetch latest quiz snapshot as fallback.
+      if (!r.joinCode) {
+        const q = await getQuiz(quizId);
+        if (q?.success) {
+          setGeneratedJoinCode(q.quiz?.joinCode || "");
+        }
+      }
     }
   };
 
@@ -322,6 +319,12 @@ export default function HostQuizPage() {
     }
   };
 
+  const pushNextQuestion = async () => {
+    const nextIndex = currentIndex < 0 ? 0 : currentIndex + 1;
+    if (nextIndex >= questions.length) return;
+    await push(nextIndex);
+  };
+
   const stop = async () => {
     const r = await endQuiz(quizId);
     if (!r?.success) alert("Failed to stop quiz");
@@ -342,46 +345,6 @@ export default function HostQuizPage() {
       setVoteCounts({});
       setBoard([]);
     }
-  };
-
-  const endCurrentQuestion = async () => {
-    const r = await endQuestion(quizId);
-    if (!r?.success) {
-      alert("Failed to end question");
-    } else {
-      // Instantly update UI
-      setCurrentQuestionTimeLeft(0);
-      setViewMode("results");
-
-      // Check if this was the last question (quiz auto-ended)
-      if (r.isLastQuestion) {
-        // Quiz was automatically ended, update UI accordingly
-        setIsActive(false);
-        setCurrentIndex(-1);
-      }
-
-      // Update leaderboard and participants immediately
-      const [b, p] = await Promise.all([
-        leaderboard(quizId),
-        listParticipants(quizId),
-      ]);
-      if (b?.success) setBoard(b.leaderboard);
-      if (p?.success) setParticipants(p.participants);
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(1, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
-
-  const pushNextQuestion = async () => {
-    const nextIndex = currentIndex < 0 ? 0 : currentIndex + 1;
-    if (nextIndex >= questions.length) return;
-    await push(nextIndex);
   };
 
   const refreshParticipants = async () => {
@@ -567,9 +530,9 @@ export default function HostQuizPage() {
 
             {/* Right Panel - Quiz Info and Controls - 45% width */}
             <div className="w-full lg:w-[45%]">
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-3 sm:p-6 h-[calc(100dvh-155px)] lg:min-h-[560px] lg:h-[85dvh] flex flex-col overflow-auto">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-3 sm:p-4 h-[calc(100dvh-155px)] lg:min-h-[560px] lg:h-[85dvh] flex flex-col overflow-auto">
                 {/* Quiz Info (moved from top header) */}
-                <div className="space-y-3 sm:space-y-5">
+                <div className="space-y-2 sm:space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h2 className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white tracking-tight">
@@ -626,20 +589,20 @@ export default function HostQuizPage() {
                   </div>
 
                   {activeJoinCode && (
-                    <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 border border-gray-200 dark:border-gray-700">
+                    <div className="bg-gray-50 dark:bg-gray-900 p-2 sm:p-3 border border-gray-200 dark:border-gray-700">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <p className="text-xs font-light text-gray-700 dark:text-gray-400 mb-1">
+                          <p className="text-xs font-light text-gray-700 dark:text-gray-400 mb-0.5">
                             Quiz Join Code
                           </p>
-                          <p className="text-xl sm:text-2xl tracking-widest font-mono font-light text-gray-900 dark:text-white">
+                          <p className="text-lg sm:text-xl tracking-widest font-mono font-light text-gray-900 dark:text-white">
                             {activeJoinCode}
                           </p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             onClick={copyJoinCode}
-                            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm border transition-colors font-light ${
+                            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs border transition-colors font-light ${
                               copySuccess
                                 ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400"
                                 : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white"
@@ -650,12 +613,12 @@ export default function HostQuizPage() {
                           </button>
                           <button
                             onClick={generateQRCode}
-                            className="px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white transition-colors font-light bg-white dark:bg-gray-800"
+                            className="px-2 sm:px-2.5 py-1 sm:py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white transition-colors font-light bg-white dark:bg-gray-800"
                             aria-label="Show QR code"
                             title="Show QR code for easy joining"
                           >
                             <svg
-                              className="w-5 h-5"
+                              className="w-4 h-4"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -670,7 +633,7 @@ export default function HostQuizPage() {
                           </button>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-600 dark:text-gray-500 mt-3 font-light">
+                      <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-500 mt-1 sm:mt-1.5 font-light">
                         Share this code with participants to join your quiz
                       </p>
                     </div>
@@ -701,10 +664,10 @@ export default function HostQuizPage() {
                 </div>
 
                 {/* Admin Settings Section */}
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-4 sm:mt-5">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center gap-2">
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3 sm:pt-4 mt-3 sm:mt-4">
+                  <h3 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white mb-2 sm:mb-3 flex items-center gap-2">
                     <svg
-                      className="w-4 h-4"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -724,14 +687,14 @@ export default function HostQuizPage() {
                     </svg>
                     Quiz Settings
                   </h3>
-                  <div className="space-y-2 sm:space-y-3">
+                  <div className="space-y-1.5 sm:space-y-2">
                     <button
                       onClick={() =>
                         router.push(
                           `/quizzes/create?quizId=${quizId}&edit=true`,
                         )
                       }
-                      className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                      className="w-full flex items-center justify-between px-3 sm:px-4 py-2 text-[11px] sm:text-xs text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
                       disabled={isActive}
                     >
                       <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
@@ -771,7 +734,7 @@ export default function HostQuizPage() {
                         navigator.clipboard.writeText(link);
                         alert("Quiz link copied to clipboard!");
                       }}
-                      className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                      className="w-full flex items-center justify-between px-3 sm:px-4 py-2 text-[11px] sm:text-xs text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
                       disabled={!activeJoinCode}
                     >
                       <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
@@ -806,7 +769,7 @@ export default function HostQuizPage() {
                     </button>
                     <button
                       onClick={() => router.push(`/leaderboard/${quizId}`)}
-                      className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                      className="w-full flex items-center justify-between px-3 sm:px-4 py-2 text-[11px] sm:text-xs text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
                     >
                       <span className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
                         <svg
@@ -843,23 +806,32 @@ export default function HostQuizPage() {
 
                 {/* Control mode: single CTA to control flow in the dedicated panel */}
                 {viewMode === "control" && (
-                  <div className="space-y-3 sm:space-y-5 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-auto text-center flex flex-col items-center justify-center">
-                    <h2 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mt-4 sm:mt-6 mb-1 sm:mb-2">
+                  <div className="space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-3 sm:pt-4 mt-auto text-center flex flex-col items-center justify-center">
+                    <h2 className="text-sm sm:text-base font-medium text-gray-900 dark:text-white mt-2 sm:mt-4 mb-1">
                       Quiz Flow Control
                     </h2>
-                    <p className="text-xs sm:text-sm font-light text-gray-600 dark:text-gray-400 max-w-sm mb-4 sm:mb-6">
-                      Go to the Control Panel to manage questions, view live responses, and control the pace of the quiz.
+                    <p className="text-[11px] sm:text-xs font-light text-gray-600 dark:text-gray-400 max-w-sm mb-2 sm:mb-4">
+                      Go to the Control Panel to manage questions, view live
+                      responses, and control the pace of the quiz.
                     </p>
                     <button
-                      className={`px-6 sm:px-8 py-3 sm:py-4 font-light text-sm sm:text-base border transition-colors ${
-                        isActive
+                      className={`px-5 sm:px-6 py-2.5 sm:py-3 font-light text-xs sm:text-sm border transition-colors ${
+                        isHosted
                           ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 border-black dark:border-white"
                           : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                       }`}
-                      onClick={() => router.push(`/hosted/${quizId}`)}
-                      disabled={!isActive}
+                      onClick={() => {
+                        if (currentIndex < 0 && isActive) {
+                          pushNextQuestion();
+                        } else {
+                          router.push(`/hosted/${quizId}`);
+                        }
+                      }}
+                      disabled={!isHosted}
                     >
-                      Go to Control Panel
+                      {currentIndex < 0 && isActive
+                        ? "Push First Question"
+                        : "Go to Control Panel"}
                     </button>
                   </div>
                 )}

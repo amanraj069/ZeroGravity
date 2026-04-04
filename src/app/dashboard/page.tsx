@@ -330,7 +330,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-base sm:text-lg font-semibold text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900">
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-base sm:text-lg font-semibold text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900 dark:group-hover:text-white">
                     →
                   </div>
                 </div>

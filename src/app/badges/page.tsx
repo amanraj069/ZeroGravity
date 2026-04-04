@@ -12,14 +12,7 @@ import {
   BadgeProgress,
   BadgeData,
 } from "@/services/badgeService";
-import {
-  ArrowLeft,
-  Lock,
-  Unlock,
-  ChevronDown,
-  ChevronUp,
-  ArrowUpDown,
-} from "lucide-react";
+import { ArrowLeft, Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
 import { RandomStars } from "@/components/RandomStars";
 
 // --- Stat card ---

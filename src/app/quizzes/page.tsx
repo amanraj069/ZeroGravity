@@ -20,6 +20,10 @@ export default function QuizzesPage() {
   const [deletingQuizId, setDeletingQuizId] = useState<string | null>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
     } else if (isLoggedIn && user?.subscription === "pro") {
@@ -74,6 +78,8 @@ export default function QuizzesPage() {
         return "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300";
       case "ended":
         return "bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300";
+      case "active":
+        return "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300";
       default:
         return "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
     }
@@ -87,6 +93,8 @@ export default function QuizzesPage() {
         return "Published";
       case "ended":
         return "Ended";
+      case "active":
+        return "Active";
       default:
         return "Unknown";
     }
@@ -96,8 +104,17 @@ export default function QuizzesPage() {
     router.push(`/quizzes/create?quizId=${quiz.quizId}&edit=true`);
   };
 
-  const handleDeleteQuiz = async (quizId: string, event: React.MouseEvent) => {
+  const handleDeleteQuiz = async (
+    quizId: string,
+    event: React.MouseEvent,
+    status: string,
+  ) => {
     event.stopPropagation(); // Prevent triggering the quiz click
+
+    if (status === "active") {
+      alert("Cannot delete an active quiz. Please end the quiz first.");
+      return;
+    }
 
     const confirmMessage =
       user?.subscription === "pro"
@@ -506,10 +523,19 @@ export default function QuizzesPage() {
                       </h3>
                     </div>
                     <button
-                      onClick={(e) => handleDeleteQuiz(quiz.quizId, e)}
-                      disabled={deletingQuizId === quiz.quizId}
+                      onClick={(e) =>
+                        handleDeleteQuiz(quiz.quizId, e, quiz.status)
+                      }
+                      disabled={
+                        deletingQuizId === quiz.quizId ||
+                        quiz.status === "active"
+                      }
                       className="shrink-0 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                      title="Delete quiz"
+                      title={
+                        quiz.status === "active"
+                          ? "Cannot delete an active quiz"
+                          : "Delete quiz"
+                      }
                     >
                       {deletingQuizId === quiz.quizId ? (
                         <div className="w-4 h-4 border-2 border-red-500 dark:border-red-400 border-t-transparent animate-spin"></div>

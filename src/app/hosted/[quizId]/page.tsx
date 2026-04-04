@@ -7,7 +7,6 @@ import {
   listParticipants,
   pushQuestion,
   endQuestion,
-  endQuiz,
 } from "@/services/quizzesService";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
@@ -125,8 +124,8 @@ export default function HostedQuizPage() {
     const onEnded = () => {
       setCurrentIndex(-1);
       setIsActive(false);
-      setQuizStatus("ended");
-      // Don't redirect - stay on hosted page
+      setQuizStatus("published");
+      router.push(`/quizzes/host/${quizId}`);
     };
 
     s.on("question:pushed", onQuestion);
@@ -222,20 +221,7 @@ export default function HostedQuizPage() {
     }
   };
 
-  const handleEndQuiz = async () => {
-    const ok = confirm("Are you sure you want to end the quiz?");
-    if (!ok) return;
-
-    const r = await endQuiz(quizId);
-    if (!r?.success) {
-      alert("Failed to end quiz");
-    } else {
-      setIsActive(false);
-      setCurrentIndex(-1);
-      setQuizStatus("ended");
-      // Stay on hosted page - don't redirect
-    }
-  };
+  // Function handleEndQuiz removed because finishing presentation serves similar logic on hosted presenter screen.
 
   const handleViewLeaderboard = () => {
     router.push(`/leaderboard/${quizId}`);
@@ -267,10 +253,10 @@ export default function HostedQuizPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      <main className="flex-1 flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10">
-        <div className="w-full max-w-6xl space-y-3 sm:space-y-6">
+      <main className="flex-1 flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10 h-full w-full">
+        <div className="w-full max-w-6xl space-y-3 sm:space-y-6 flex-1 flex flex-col">
           {/* Header */}
-          <div className="flex items-start justify-between gap-3 sm:gap-6">
+          <div className="flex items-start justify-between gap-3 sm:gap-6 flex-shrink-0">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
                 <button
@@ -354,7 +340,36 @@ export default function HostedQuizPage() {
             </div>
           </div>
 
-          {currentQuestion ? (
+          {currentIndex === -1 && isActive && quizStatus !== "ended" ? (
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white mb-2 sm:mb-3">
+                Quiz Active - Ready to Start
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 sm:mb-8 max-w-md mx-auto px-4">
+                {participants.length} participant
+                {participants.length !== 1 ? "s" : ""} waiting.
+              </p>
+              <button
+                onClick={handlePushNext}
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              >
+                Push First Question
+              </button>
+            </div>
+          ) : currentQuestion ? (
             /* Question Box */
             <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 overflow-hidden shadow-sm">
               {/* Question Header with Timer and Actions */}
@@ -421,10 +436,13 @@ export default function HostedQuizPage() {
                       </button>
                     ) : (
                       <button
-                        onClick={handleEndQuiz}
+                        onClick={() => {
+                          setCurrentIndex(-1);
+                          setQuizStatus("ended");
+                        }}
                         className="h-9 sm:h-11 px-4 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-xs sm:text-sm font-semibold transition-all shadow-sm flex items-center"
                       >
-                        End Quiz
+                        Finish Presentation
                       </button>
                     )}
                   </div>
@@ -478,7 +496,7 @@ export default function HostedQuizPage() {
                         {/* Bar Container */}
                         <div className="w-full h-64 md:h-72 flex items-end justify-center bg-gray-100/50 dark:bg-gray-800/50 overflow-hidden mb-1 relative">
                           <div
-                            className={`w-full transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
+                            className={`w-full transition-all [transition-duration:800ms] [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
                               isPresentationMode
                                 ? "bg-gray-300 dark:bg-gray-600"
                                 : shouldHighlight
@@ -552,7 +570,7 @@ export default function HostedQuizPage() {
             </div>
           ) : quizStatus === "ended" ? (
             /* Quiz Ended */
-            <div className="text-center py-8 sm:py-12 min-h-[90dvh] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
               <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                 <svg
                   className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400"
@@ -590,7 +608,7 @@ export default function HostedQuizPage() {
             </div>
           ) : !isActive ? (
             /* Quiz Not Started Yet */
-            <div className="text-center py-8 sm:py-12 min-h-[90dvh] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
               <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                 <svg
                   className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400"
@@ -620,7 +638,7 @@ export default function HostedQuizPage() {
             </div>
           ) : (
             /* Quiz Active - Waiting for First Question */
-            <div className="text-center py-8 sm:py-12 min-h-[90dvh] flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
               <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
                 <svg
                   className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400"
@@ -639,14 +657,14 @@ export default function HostedQuizPage() {
               </h2>
               <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4 sm:mb-6 px-4">
                 {participants.length} participant
-                {participants.length !== 1 ? "s" : ""} waiting. Go back to push
-                the first question.
+                {participants.length !== 1 ? "s" : ""} waiting. Push the first
+                question to begin.
               </p>
               <button
-                onClick={handleBackToPortal}
+                onClick={handlePushNext}
                 className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
               >
-                Back to Portal
+                Push First Question
               </button>
             </div>
           )}

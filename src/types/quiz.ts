@@ -3,7 +3,7 @@ export interface Quiz {
   quizId: string;
   title: string;
   description?: string;
-  status: "draft" | "published" | "ended";
+  status: "draft" | "published" | "active" | "ended";
   joinCode?: string;
   ownerUserId: string;
   questions: Array<{

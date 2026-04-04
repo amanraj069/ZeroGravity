@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   createQuiz,
   publishQuiz,
@@ -23,12 +23,9 @@ const emptyQuestion = (): QuizQuestion => ({
   maxMarks: 10,
 });
 
-interface CreateQuizPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
+function CreateQuizContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isLoading } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -44,19 +41,20 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
   const [modifiedQuestions, setModifiedQuestions] = useState<Set<number>>(
     new Set(),
   );
+  const [showJsonModal, setShowJsonModal] = useState(false);
+  const [jsonInput, setJsonInput] = useState("");
 
   const isPro = user?.subscription === "pro";
 
   // Load existing quiz or prefill from /createQuiz
   useEffect(() => {
-    const loadSearchParams = async () => {
-      const params = await searchParams;
+    const loadSearchParams = () => {
       // Load quiz using 'quizId' or 'edit' parameter (support both)
-      const existingQuizId = (params?.quizId || params?.edit) as string;
-      const isEditing = !!params?.edit; // Track if we're in edit mode (from host page)
-      // const savedStatus = params?.savedStatus === "true";
-      const initTitle = params?.title as string;
-      const initDesc = params?.desc as string;
+      const existingQuizId =
+        searchParams?.get("quizId") || searchParams?.get("edit");
+      const isEditing = !!searchParams?.get("edit"); // Track if we're in edit mode (from host page)
+      const initTitle = searchParams?.get("title");
+      const initDesc = searchParams?.get("desc");
 
       if (existingQuizId && !isLoading && user) {
         // Load existing quiz data
@@ -338,15 +336,9 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-start gap-2 flex-1">
               <button
-                onClick={() =>
-                  router.push(
-                    isEditMode && quizId
-                      ? `/quizzes/host/${quizId}`
-                      : "/quizzes",
-                  )
-                }
+                onClick={() => router.back()}
                 className="mt-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                title={isEditMode ? "Back to Host" : "Back to Quizzes"}
+                title="Go Back"
               >
                 <svg
                   className="w-6 h-6"
@@ -495,7 +487,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                 </div>
               </div>
               {/* Add Question Button at Bottom */}
-              <div className="p-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0">
+              <div className="p-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex flex-col gap-2">
                 <button
                   className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2"
                   onClick={addQuestion}
@@ -516,6 +508,16 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                     />
                   </svg>
                   Add Question
+                </button>
+                <button
+                  className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center"
+                  onClick={() => {
+                    setJsonInput(JSON.stringify(questions, null, 2));
+                    setShowJsonModal(true);
+                  }}
+                  title="Add questions with JSON"
+                >
+                  Add questions with JSON
                 </button>
               </div>
             </div>
@@ -783,7 +785,7 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
               </div>
 
               <button
-                className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2"
+                className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 mb-2"
                 onClick={addQuestion}
                 disabled={questions.length >= 100}
                 title="Add question"
@@ -803,15 +805,155 @@ function CreateQuizContent({ searchParams }: CreateQuizPageProps) {
                 </svg>
                 Add Question
               </button>
+              <button
+                className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center"
+                onClick={() => {
+                  setJsonInput(JSON.stringify(questions, null, 2));
+                  setIsQuestionPanelOpen(false);
+                  setShowJsonModal(true);
+                }}
+                title="Add questions with JSON"
+              >
+                Add questions with JSON
+              </button>
             </div>
           )}
         </div>
       </div>
+
+      {showJsonModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
+                Add Questions with JSON
+              </h2>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-medium bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => {
+                  const prompt = `Here is the current set of questions in my quiz format. 
+Please generate new questions and add them to this array, maintaining the exact same JSON structure.
+
+Required structure for each question:
+- "text": The question text
+- "options": An array of at least 2 options, where each option has a "key", "text", and "isCorrect" boolean (ensure exactly one option is true)
+- "timeLimitSeconds": Number (e.g. 60)
+- "maxMarks": Number (e.g. 10)
+
+Make sure to return ONLY the final combined JSON array, with the previous questions included along with the new ones.
+
+Current questions:
+${JSON.stringify(questions, null, 2)}
+
+
+Give me the final combined JSON array with the new questions added:`;
+                  navigator.clipboard.writeText(prompt);
+                  alert(
+                    "Prompt with current questions copied to clipboard! Paste it to an LLM.",
+                  );
+                }}
+              >
+                Copy format for LLMs
+              </button>
+            </div>
+
+            <textarea
+              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto"
+              value={jsonInput}
+              onChange={(e) => setJsonInput(e.target.value)}
+              placeholder="Paste the array of questions JSON here..."
+            />
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                className="px-6 py-2 text-sm border border-gray-300 dark:border-gray-700 font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                onClick={() => setShowJsonModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                onClick={() => {
+                  try {
+                    const parsed = JSON.parse(jsonInput);
+                    if (!Array.isArray(parsed))
+                      throw new Error(
+                        "The submitted JSON must be an array of question objects.",
+                      );
+                    if (parsed.length > 0) {
+                      interface ParsedOption {
+                        key?: string;
+                        text?: string;
+                        isCorrect?: boolean;
+                      }
+                      interface ParsedQuestion {
+                        text?: string;
+                        timeLimitSeconds?: number;
+                        maxMarks?: number;
+                        options?: ParsedOption[];
+                      }
+                      // Basic structure validation
+                      const validated = parsed.map((pq: ParsedQuestion) => ({
+                        text: pq.text || "",
+                        timeLimitSeconds: Number(pq.timeLimitSeconds) || 60,
+                        maxMarks: Number(pq.maxMarks) || 10,
+                        options: Array.isArray(pq.options)
+                          ? pq.options.map((o: ParsedOption, oIdx: number) => ({
+                              key: o.key || String(oIdx + 1),
+                              text: o.text || "",
+                              isCorrect: !!o.isCorrect,
+                            }))
+                          : [{ key: "1", text: "", isCorrect: true }],
+                      }));
+                      setQuestions(validated);
+                      setCurrentIndex(0);
+                      setShowJsonModal(false);
+                      setModifiedQuestions(
+                        new Set(validated.map((_: unknown, i: number) => i)),
+                      );
+                    } else {
+                      alert("Question array cannot be empty.");
+                    }
+                  } catch (err: unknown) {
+                    alert(
+                      "Failed to parse JSON: " +
+                        (err instanceof Error ? err.message : String(err)),
+                    );
+                  }
+                }}
+              >
+                Replace & Apply JSON
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default function CreateQuizPage({ searchParams }: CreateQuizPageProps) {
+export default function CreateQuizPage() {
   return (
     <Suspense
       fallback={
@@ -822,7 +964,7 @@ export default function CreateQuizPage({ searchParams }: CreateQuizPageProps) {
         />
       }
     >
-      <CreateQuizContent searchParams={searchParams} />
+      <CreateQuizContent />
     </Suspense>
   );
 }

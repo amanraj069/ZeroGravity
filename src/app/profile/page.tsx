@@ -17,6 +17,7 @@ import {
   Eye,
   Plus,
   X,
+  Settings,
 } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
@@ -318,14 +319,23 @@ export default function Profile() {
             <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
               Profile
             </h1>
-            {/* Points Display - Right on mobile, next to Profile on desktop */}
-            <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-              <span className="text-sm font-semibold text-black dark:text-white">
-                {(user.points || 0).toLocaleString()}
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                points
-              </span>
+            {/* Points Display & Actions - Right on mobile, next to Profile on desktop */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <span className="text-sm font-semibold text-black dark:text-white">
+                  {(user.points || 0).toLocaleString()}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  points
+                </span>
+              </div>
+              <Link
+                href="/shop"
+                className="flex sm:hidden items-center justify-center p-1.5 bg-black dark:bg-white text-white dark:text-black transition-colors"
+                title="Shop"
+              >
+                <ShoppingBag className="w-4 h-4 flex-shrink-0" />
+              </Link>
             </div>
           </div>
           {/* History, Shop, Edit Card, Edit Profile - Full width on mobile, original on desktop */}
@@ -341,9 +351,9 @@ export default function Profile() {
             )}
             <Link
               href="/shop"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap min-w-0"
+              className="hidden sm:flex flex-none items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap min-w-0"
             >
-              <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+              <ShoppingBag className="w-3 h-3 flex-shrink-0" />
               Shop
             </Link>
             <button
@@ -359,6 +369,13 @@ export default function Profile() {
             >
               <Pencil className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Edit Profile
+            </Link>
+            <Link
+              href="/settings"
+              className="flex items-center justify-center px-2 sm:px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title="Settings"
+            >
+              <Settings className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600 dark:text-gray-300 flex-shrink-0" />
             </Link>
           </div>
         </div>

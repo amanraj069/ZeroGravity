@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import NextImage from "next/image";
 import {
   joinQuiz,
@@ -20,6 +20,7 @@ import { QuizQuestion } from "@/services/quizzesService";
 
 function JoinQuizContent() {
   const search = useSearchParams();
+  const router = useRouter();
   const prefill = search.get("code") || "";
   const [joinCode, setJoinCode] = useState(prefill);
   const [name, setName] = useState<string>("");
@@ -45,6 +46,8 @@ function JoinQuizContent() {
   const STORAGE_KEY = "zg_current_quiz";
   const REJOIN_TOKEN_KEY = "zg_quiz_rejoin_token";
   const [rejoinToken, setRejoinToken] = useState<string>("");
+  const [savedJoinCode, setSavedJoinCode] = useState<string>("");
+  const [savedName, setSavedName] = useState<string>("");
   const [joined, setJoined] = useState<{
     quizId: string;
     quizUserId: string;
@@ -53,6 +56,7 @@ function JoinQuizContent() {
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
     null,
   );
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(-1);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
   const [isTimeUp, setIsTimeUp] = useState<boolean>(false);
@@ -94,7 +98,9 @@ function JoinQuizContent() {
     try {
       const o = localStorage.getItem("zg_name_obf");
       if (o) {
-        setName(deobfuscate(o));
+        const decodedName = deobfuscate(o);
+        setName(decodedName);
+        setSavedName(decodedName);
       }
     } catch {
       // Ignore errors
@@ -104,6 +110,7 @@ function JoinQuizContent() {
     try {
       const savedJoinCode = localStorage.getItem("zg_join_code");
       if (savedJoinCode) {
+        setSavedJoinCode(savedJoinCode.toUpperCase());
         setJoinCode((prev) =>
           prev && prev.trim() ? prev : savedJoinCode.toUpperCase(),
         );
@@ -184,11 +191,13 @@ function JoinQuizContent() {
     const onQuestion = (payload: {
       quizId: string;
       question: QuizQuestion;
+      index?: number;
       startTime?: string;
       timeLimit?: number;
     }) => {
       if (payload?.quizId !== joined.quizId) return;
       setCurrentQuestion(payload.question);
+      setCurrentQuestionIndex(payload.index ?? -1);
       setHasAnswered(false);
       setIsTimeUp(false);
       setStoppedByHost(false);
@@ -325,9 +334,35 @@ function JoinQuizContent() {
 
     // On mount, also fetch current state in case we refreshed mid-question
     (async () => {
+      const invalidateLocalSession = () => {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch {}
+        setJoined(null);
+        setCurrentQuestion(null);
+        setHasAnswered(false);
+        setIsTimeUp(false);
+        setStoppedByHost(false);
+        setTimeLeft(0);
+        setShowQuizEnded(false);
+        setShowKickedOut(false);
+      };
+
       const cur = await getCurrentQuestion(joined.quizId, joined.quizUserId);
+      if (!cur?.success) {
+        if (cur?.message === "Participant not in quiz") {
+          invalidateLocalSession();
+          return;
+        }
+      }
+
       if (cur?.success && cur.index >= 0) {
         setCurrentQuestion(cur.question);
+        setCurrentQuestionIndex(cur.index);
         // Set hasAnswered and isTimeUp based on server response
         setHasAnswered(cur.hasAnswered || false);
         setIsTimeUp(cur.isTimeUp || false);
@@ -350,6 +385,18 @@ function JoinQuizContent() {
         const p = await listParticipantsPublic(joined.quizId);
         if (p?.success && p.participants) {
           setParticipants(p.participants);
+
+          // Hard guard: if current local session user is not in participant list,
+          // invalidate stale local session and send user back to join entry.
+          const isCurrentUserInQuiz = p.participants.some(
+            (participant: QuizParticipant) =>
+              participant.quizUserId === joined.quizUserId,
+          );
+
+          if (!isCurrentUserInQuiz) {
+            invalidateLocalSession();
+            return;
+          }
         }
       } catch (error) {
         console.error("Failed to fetch participants:", error);
@@ -428,6 +475,16 @@ function JoinQuizContent() {
     };
   }, [currentQuestion, serverStartTime, serverTimeLimit, isTimeUp]);
 
+  const normalizedJoinCode = joinCode.trim().toUpperCase();
+  const normalizedName = name.trim();
+  const canUseRejoinFlow = Boolean(
+    rejoinToken &&
+    savedJoinCode &&
+    savedName &&
+    normalizedJoinCode === savedJoinCode &&
+    normalizedName === savedName,
+  );
+
   const handleJoin = async () => {
     if (!joinCode || !name) return;
 
@@ -438,10 +495,10 @@ function JoinQuizContent() {
 
     setShowAvatarError(false);
     const res = await joinQuiz(
-      joinCode.trim().toUpperCase(),
-      name.trim(),
+      normalizedJoinCode,
+      normalizedName,
       selectedAvatar,
-      rejoinToken || undefined,
+      canUseRejoinFlow ? rejoinToken : undefined,
     );
     if (res?.success) {
       setJoined({ quizId: res.quizId, quizUserId: res.quizUserId });
@@ -507,11 +564,11 @@ function JoinQuizContent() {
   const handleExit = async () => {
     // Don't show confirmation dialog if user is already kicked out
     if (showKickedOut) {
-      // User is already kicked out, just redirect without confirmation
+      // User is already kicked out, just go back without confirmation
       try {
         localStorage.removeItem(STORAGE_KEY);
       } catch {}
-      window.location.href = "/joinQuiz";
+      router.back();
       return;
     }
 
@@ -567,30 +624,30 @@ function JoinQuizContent() {
     return (
       <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
         {/* Hero-style header */}
-        <div className="text-center py-8 lg:py-12 bg-white dark:bg-gray-900">
+        <div className="text-center pt-6 pb-4 sm:py-6 lg:pt-12 lg:pb-2 bg-white dark:bg-gray-900">
           <div className=" mx-auto px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-black dark:text-white mb-6 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-black dark:text-white mb-2 sm:mb-4 tracking-tight">
               Join Quiz
             </h1>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
               Enter the cosmic quiz realm and test your knowledge among the
               stars
             </p>
           </div>
         </div>
 
-        <main className="flex-1 flex items-center justify-center px-6 pt-4 pb-20 min-h-0">
+        <main className="flex-1 flex items-center justify-center px-4 sm:px-6 pt-2 pb-12 sm:pb-16 min-h-0">
           <div className="max-w-6xl mx-auto w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-stretch">
               {/* Form section - First on mobile, Second on desktop */}
-              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60dvh] flex flex-col justify-center order-1 lg:order-2">
-                <div className="space-y-8">
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-5 sm:p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60dvh] flex flex-col justify-center order-1 lg:order-2">
+                <div className="space-y-5 sm:space-y-6 lg:space-y-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-4">
+                    <label className="block text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-4">
                       Quiz Access Code
                     </label>
                     <input
-                      className="w-full border-2 border-gray-300 dark:border-gray-600 px-6 py-4 text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
+                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
                       placeholder="Enter 6-letter code"
                       value={joinCode}
                       onChange={(e) =>
@@ -601,11 +658,11 @@ function JoinQuizContent() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-800 dark:text-gray-200 mb-4">
+                    <label className="block text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-4">
                       Your Cosmic Identity
                     </label>
                     <input
-                      className="w-full border-2 border-gray-300 dark:border-gray-600 px-6 py-4 text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
+                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
                       placeholder="Enter your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -621,28 +678,28 @@ function JoinQuizContent() {
                   )}
 
                   <button
-                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 px-8 text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black dark:disabled:hover:bg-white shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
+                    className="w-full bg-black dark:bg-white text-white dark:text-black py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black dark:disabled:hover:bg-white shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
                     onClick={handleJoin}
                     disabled={!joinCode.trim() || !name.trim()}
                   >
-                    {rejoinToken ? "Join Quiz Again" : "Launch Into Quiz"}
+                    {canUseRejoinFlow ? "Join Quiz Again" : "Launch Into Quiz"}
                   </button>
                 </div>
               </div>
 
               {/* Avatar Selection - Second on mobile, First on desktop */}
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 lg:p-8 border border-black dark:border-gray-700 h-[50dvh] lg:h-[60dvh] flex flex-col order-2 lg:order-1">
-                <div className="mb-6">
-                  <h3 className="text-xl font-light text-gray-900 dark:text-white mb-2">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 lg:p-8 border border-black dark:border-gray-700 min-h-[350px] h-[40vh] sm:h-[50dvh] lg:h-[60dvh] flex flex-col order-2 lg:order-1">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-lg sm:text-xl font-light text-gray-900 dark:text-white mb-1 sm:mb-2">
                     Choose Your Avatar
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     Select an avatar to represent you in the quiz
                   </p>
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 p-4">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 gap-3 md:gap-6 p-2 sm:p-4">
                     {avatars.map((avatar) => (
                       <button
                         key={avatar}
@@ -652,7 +709,7 @@ function JoinQuizContent() {
                           e.stopPropagation();
                           setSelectedAvatar(avatar);
                         }}
-                        className={`relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300 dark:focus:ring-orange-600 ${
+                        className={`relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 md:w-28 md:h-28 rounded-full overflow-hidden transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-300 dark:focus:ring-orange-600 mx-auto ${
                           selectedAvatar === avatar
                             ? "border-4 border-orange-600 dark:border-orange-500 shadow-lg ring-2 ring-orange-200 dark:ring-orange-800"
                             : "border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
@@ -742,34 +799,36 @@ function JoinQuizContent() {
       <main className="flex-1 flex flex-col items-center px-4 pb-8">
         <div className="w-full max-w-6xl">
           {showKickedOut ? (
-            <div className="flex flex-col items-center justify-center min-h-[400px]">
-              <div className="w-16 h-16 mb-6 border-2 border-red-500 flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-red-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            <div className="flex flex-col items-center justify-center min-h-[500px] py-12">
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 sm:p-12 max-w-md w-full text-center">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 dark:bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                  <svg
+                    className="w-10 h-10 text-red-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-light text-gray-900 dark:text-white mb-3 tracking-tight">
+                  Removed from Quiz
+                </h2>
+                <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-8 font-light">
+                  The host has removed you from this quiz
+                </p>
+                <button
+                  onClick={() => router.back()}
+                  className="w-full bg-black dark:bg-white text-white dark:text-black py-3 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                  Go Back
+                </button>
               </div>
-              <h2 className="text-2xl font-light text-gray-900 dark:text-white mb-2">
-                Removed from Quiz
-              </h2>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
-                The host has removed you from this quiz
-              </p>
-              <button
-                onClick={handleExit}
-                className="h-10 px-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-              >
-                Return to Quiz Entry
-              </button>
             </div>
           ) : showQuizEnded ? (
             <div className="flex flex-col items-center justify-center min-h-[400px]">
@@ -835,7 +894,10 @@ function JoinQuizContent() {
                       Answer submitted
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                      Waiting for host to push next question
+                      {totalQuestions > 0 &&
+                      currentQuestionIndex === totalQuestions - 1
+                        ? "Quiz has ended, contact your Host to know the results."
+                        : "Waiting for host to push next question"}
                     </p>
                   </div>
                 ) : isTimeUp ? (
@@ -847,7 +909,10 @@ function JoinQuizContent() {
                         : "Time's up"}
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                      Waiting for next question
+                      {totalQuestions > 0 &&
+                      currentQuestionIndex === totalQuestions - 1
+                        ? "Quiz has ended, contact your Host to know the results."
+                        : "Waiting for next question"}
                     </p>
                   </div>
                 ) : (

@@ -49,9 +49,9 @@ export default function EditProfile() {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
     } else if (user) {
-      setFirstName(user.firstName);
-      setLastName(user.lastName);
-      setUsername(user.username);
+      setFirstName(user.firstName || "");
+      setLastName(user.lastName || "");
+      setUsername(user.username || "");
       setPhoneNumber(user.phoneNumber || "");
     }
   }, [isLoggedIn, authLoading, user, router]);
@@ -61,7 +61,7 @@ export default function EditProfile() {
     if (resendCooldown > 0) {
       const timer = setTimeout(
         () => setResendCooldown(resendCooldown - 1),
-        1000
+        1000,
       );
       return () => clearTimeout(timer);
     }
@@ -153,7 +153,7 @@ export default function EditProfile() {
             username: username.trim(),
             phoneNumber: phoneNumber.trim() || null,
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -188,7 +188,7 @@ export default function EditProfile() {
         {
           method: "POST",
           body: JSON.stringify({ newEmail }),
-        }
+        },
       );
 
       // Check if response is ok before parsing JSON
@@ -224,7 +224,7 @@ export default function EditProfile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to send OTP. Please check your connection and try again."
+          : "Failed to send OTP. Please check your connection and try again.",
       );
     } finally {
       setSendingOtp(false);
@@ -255,7 +255,7 @@ export default function EditProfile() {
         API_ENDPOINTS.AUTH.SEND_PASSWORD_CHANGE_OTP,
         {
           method: "POST",
-        }
+        },
       );
 
       // Check if response is ok before parsing JSON
@@ -291,7 +291,7 @@ export default function EditProfile() {
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to send OTP. Please check your connection and try again."
+          : "Failed to send OTP. Please check your connection and try again.",
       );
     } finally {
       setSendingOtp(false);
@@ -324,7 +324,7 @@ export default function EditProfile() {
 
   const handleOtpKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpInputRefs.current[index - 1]?.focus();
@@ -351,7 +351,7 @@ export default function EditProfile() {
           {
             method: "POST",
             body: JSON.stringify({ otp: otpCode }),
-          }
+          },
         );
       } else {
         response = await apiCallWithAuth(
@@ -359,7 +359,7 @@ export default function EditProfile() {
           {
             method: "POST",
             body: JSON.stringify({ otp: otpCode, newPassword }),
-          }
+          },
         );
       }
 
@@ -395,7 +395,7 @@ export default function EditProfile() {
         setSuccess(
           editMode === "email"
             ? "Email updated successfully"
-            : "Password updated successfully"
+            : "Password updated successfully",
         );
         setTimeout(() => setSuccess(""), 3000);
       } else {
@@ -425,14 +425,14 @@ export default function EditProfile() {
           {
             method: "POST",
             body: JSON.stringify({ newEmail }),
-          }
+          },
         );
       } else {
         response = await apiCallWithAuth(
           API_ENDPOINTS.AUTH.SEND_PASSWORD_CHANGE_OTP,
           {
             method: "POST",
-          }
+          },
         );
       }
 

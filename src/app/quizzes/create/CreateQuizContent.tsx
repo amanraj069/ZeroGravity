@@ -39,6 +39,8 @@ export default function CreateQuizContent({
   const [publishing, setPublishing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingExisting, setLoadingExisting] = useState(false);
+  const [showJsonModal, setShowJsonModal] = useState(false);
+  const [jsonInput, setJsonInput] = useState("");
 
   const isPro = user?.subscription === "pro";
 
@@ -311,6 +313,17 @@ export default function CreateQuizContent({
                   +
                 </button>
               </div>
+              <div className="mt-4">
+                <button
+                  className="w-full border border-gray-200 dark:border-gray-700 p-2 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium"
+                  onClick={() => {
+                    setJsonInput(JSON.stringify(questions, null, 2));
+                    setShowJsonModal(true);
+                  }}
+                >
+                  Add questions with JSON
+                </button>
+              </div>
             </div>
           </aside>
 
@@ -506,6 +519,143 @@ export default function CreateQuizContent({
           </section>
         </div>
       </main>
+
+      {showJsonModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
+                Add Questions with JSON
+              </h2>
+              <button
+                onClick={() => setShowJsonModal(false)}
+                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-medium bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => {
+                  const format = [
+                    {
+                      text: "Sample Question?",
+                      options: [
+                        { key: "A", text: "Correct Option", isCorrect: true },
+                        {
+                          key: "B",
+                          text: "Incorrect Option 1",
+                          isCorrect: false,
+                        },
+                        {
+                          key: "C",
+                          text: "Incorrect Option 2",
+                          isCorrect: false,
+                        },
+                        {
+                          key: "D",
+                          text: "Incorrect Option 3",
+                          isCorrect: false,
+                        },
+                      ],
+                      timeLimitSeconds: 60,
+                      maxMarks: 10,
+                    },
+                  ];
+                  navigator.clipboard.writeText(
+                    JSON.stringify(format, null, 2),
+                  );
+                  alert(
+                    "Question structure copied to clipboard! You can ask an LLM to generate questions in this JSON format.",
+                  );
+                }}
+              >
+                Copy format for LLMs
+              </button>
+            </div>
+
+            <textarea
+              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto"
+              value={jsonInput}
+              onChange={(e) => setJsonInput(e.target.value)}
+              placeholder="Paste the array of questions JSON here..."
+            />
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                className="px-6 py-2 text-sm border border-gray-300 dark:border-gray-700 font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                onClick={() => setShowJsonModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                onClick={() => {
+                  try {
+                    const parsed = JSON.parse(jsonInput);
+                    if (!Array.isArray(parsed))
+                      throw new Error(
+                        "The submitted JSON must be an array of question objects.",
+                      );
+                    if (parsed.length > 0) {
+                      interface ParsedOption {
+                        key?: string;
+                        text?: string;
+                        isCorrect?: boolean;
+                      }
+                      interface ParsedQuestion {
+                        text?: string;
+                        timeLimitSeconds?: number;
+                        maxMarks?: number;
+                        options?: ParsedOption[];
+                      }
+                      // Basic structure validation
+                      const validated = parsed.map((pq: ParsedQuestion) => ({
+                        text: pq.text || "",
+                        timeLimitSeconds: Number(pq.timeLimitSeconds) || 60,
+                        maxMarks: Number(pq.maxMarks) || 10,
+                        options: Array.isArray(pq.options)
+                          ? pq.options.map((o: ParsedOption) => ({
+                              key: o.key || "A",
+                              text: o.text || "",
+                              isCorrect: !!o.isCorrect,
+                            }))
+                          : [{ key: "A", text: "", isCorrect: true }],
+                      }));
+                      setQuestions(validated);
+                      setCurrentIndex(0);
+                      setShowJsonModal(false);
+                    } else {
+                      alert("Question array cannot be empty.");
+                    }
+                  } catch (err: unknown) {
+                    alert(
+                      "Failed to parse JSON: " +
+                        (err instanceof Error ? err.message : String(err)),
+                    );
+                  }
+                }}
+              >
+                Replace & Apply JSON
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
