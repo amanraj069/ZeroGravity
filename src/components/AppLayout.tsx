@@ -47,11 +47,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
       {isHomePage ? (
         <Footer />
-      ) : isNotesPage ? (
-        <SimpleFooter />
-      ) : hasGrayBackground ? (
-        <SimpleFooter />
-      ) : (
+      ) : isNotesPage ? null : (
         <SimpleFooter />
       )}
     </div>

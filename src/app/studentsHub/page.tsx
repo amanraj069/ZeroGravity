@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { ChevronLeft } from "lucide-react";
 
 interface Category {
   title: string;
@@ -185,20 +186,22 @@ export default function StudentsHub() {
     <DashboardLayout>
       <div className="mt-2 sm:mt-4">
         <div className="mb-4 sm:mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-4">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-          >
-            <span className="mr-2">←</span>
-            Back to Dashboard
-          </Link>
-          <div className="text-left md:text-right">
-            <h1 className="text-3xl sm:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2">
-              Students Hub
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Discover all the amazing benefits available to you
-            </p>
+          <div className="flex items-center gap-3 text-left">
+            <button
+              onClick={() => router.back()}
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              title="Go back"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2">
+                Students Hub
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                Discover all the amazing benefits available to you
+              </p>
+            </div>
           </div>
         </div>
 

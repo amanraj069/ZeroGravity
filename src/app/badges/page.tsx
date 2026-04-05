@@ -12,7 +12,7 @@ import {
   BadgeProgress,
   BadgeData,
 } from "@/services/badgeService";
-import { ArrowLeft, Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronLeft, Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
 import { RandomStars } from "@/components/RandomStars";
 
 // --- Stat card ---
@@ -219,12 +219,12 @@ export default function BadgesPage() {
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-2 lg:mb-6">
           <div className="flex items-center gap-3">
-            <Link
-              href="/profile"
-              className="w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            <button
+              onClick={() => router.back()}
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
+              <ChevronLeft className="w-6 h-6" />
+            </button>
             <div>
               <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
                 Badges
@@ -235,45 +235,49 @@ export default function BadgesPage() {
             <div className="relative">
               <select
                 title="Sort Badges"
-                value={`${sortBy}-${sortOrder}`}
+                value=""
                 onChange={(e) => {
+                  if (!e.target.value) return;
                   const [newSortBy, newSortOrder] = e.target.value.split(
                     "-",
                   ) as ["prestige" | "progress" | "name", "asc" | "desc"];
                   setSortBy(newSortBy);
                   setSortOrder(newSortOrder);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors appearance-none pr-8 bg-transparent cursor-pointer outline-none"
+                className="w-20 flex items-center gap-1.5 pl-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors appearance-none pr-8 bg-transparent cursor-pointer outline-none"
               >
+                <option value="" disabled hidden>
+                  Sort
+                </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="prestige-asc"
                 >
-                  Sort: Prestige (Asc)
+                  {sortBy === "prestige" && sortOrder === "asc" ? "✓ " : ""}Prestige (Asc)
                 </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="prestige-desc"
                 >
-                  Sort: Prestige (Desc)
+                  {sortBy === "prestige" && sortOrder === "desc" ? "✓ " : ""}Prestige (Desc)
                 </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="progress-desc"
                 >
-                  Sort: Progress (High to Low)
+                  {sortBy === "progress" && sortOrder === "desc" ? "✓ " : ""}Progress (High to Low)
                 </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="progress-asc"
                 >
-                  Sort: Progress (Low to High)
+                  {sortBy === "progress" && sortOrder === "asc" ? "✓ " : ""}Progress (Low to High)
                 </option>
                 <option className="bg-white dark:bg-gray-900" value="name-asc">
-                  Sort: Name (A-Z)
+                  {sortBy === "name" && sortOrder === "asc" ? "✓ " : ""}Name (A-Z)
                 </option>
                 <option className="bg-white dark:bg-gray-900" value="name-desc">
-                  Sort: Name (Z-A)
+                  {sortBy === "name" && sortOrder === "desc" ? "✓ " : ""}Name (Z-A)
                 </option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">

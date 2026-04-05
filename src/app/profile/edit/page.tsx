@@ -9,6 +9,7 @@ import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
 import PhotoEditor from "@/components/PhotoEditor";
+import { ChevronLeft } from "lucide-react";
 
 type EditMode = "none" | "email" | "password";
 
@@ -516,25 +517,14 @@ export default function EditProfile() {
 
       <div className="mt-2 min-h-[calc(100dvh-12rem)]">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Link
-            href="/profile"
-            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+        <div className="flex items-center gap-4 mb-4 sm:mb-8">
+          <button
+            onClick={() => router.back()}
+            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+            title="Go back"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </Link>
+            <ChevronLeft className="w-6 h-6" />
+          </button>
           <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
             Edit Profile
           </h1>

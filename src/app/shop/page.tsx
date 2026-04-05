@@ -12,7 +12,7 @@ import {
   equipBorder,
 } from "@/services/shopService";
 import { BorderPreview } from "@/components/borders";
-import { Check } from "lucide-react";
+import { Check, ChevronLeft } from "lucide-react";
 
 export default function ShopPage() {
   const { user, isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
@@ -137,9 +137,18 @@ export default function ShopPage() {
         {/* Header */}
         <div className="space-y-2 md:space-y-0">
           <div className="flex flex-row items-center justify-between gap-4">
-            <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
-              Shop
-            </h1>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.back()}
+                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                title="Go back"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
+                Shop
+              </h1>
+            </div>
             <div className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1 md:py-2 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <span className="text-sm md:text-lg font-semibold text-black dark:text-white">
                 {userPoints.toLocaleString()}

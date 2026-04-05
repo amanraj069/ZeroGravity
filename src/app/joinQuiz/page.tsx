@@ -17,6 +17,7 @@ import { QuizParticipant } from "@/types/quiz";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { QuizQuestion } from "@/services/quizzesService";
+import { ChevronLeft } from "lucide-react";
 
 function JoinQuizContent() {
   const search = useSearchParams();
@@ -623,12 +624,20 @@ function JoinQuizContent() {
   if (!joined) {
     return (
       <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-        {/* Hero-style header */}
         <div className="text-center pt-6 pb-4 sm:py-6 lg:pt-12 lg:pb-2 bg-white dark:bg-gray-900">
-          <div className=" mx-auto px-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-black dark:text-white mb-2 sm:mb-4 tracking-tight">
-              Join Quiz
-            </h1>
+          <div className="mx-auto px-4">
+            <div className="flex items-center justify-center gap-3 mb-2 sm:mb-4">
+              <button
+                onClick={() => router.back()}
+                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                title="Go back"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-black dark:text-white tracking-tight">
+                Join Quiz
+              </h1>
+            </div>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto">
               Enter the cosmic quiz realm and test your knowledge among the
               stars

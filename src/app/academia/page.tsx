@@ -13,6 +13,7 @@ import {
   calculateSGPA,
   calculateCGPA,
 } from "@/services/academiaService";
+import { ChevronLeft } from "lucide-react";
 
 export default function AcademiaPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -271,17 +272,17 @@ export default function AcademiaPage() {
       <div className="mt-2 sm:mt-4">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mb-2 sm:mb-4 text-sm sm:text-base"
-          >
-            <span className="mr-2">←</span>
-            Back to Dashboard
-          </Link>
           <div className="mb-2">
             {/* Title and CGPA on same row on mobile */}
             <div className="flex items-start justify-between gap-3 mb-2">
-              <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <button
+                  onClick={() => router.back()}
+                  className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                  title="Go back"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
                 <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white">
                   Academia
                 </h1>

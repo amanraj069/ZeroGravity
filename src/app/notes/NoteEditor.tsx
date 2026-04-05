@@ -552,7 +552,7 @@ export default function NoteEditor({
 
   // ─── Render ───────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col flex-1 h-full min-h-0">
       {/* Top toolbar */}
       <div className="flex items-center justify-between px-3 min-h-[42px] border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0a0a0a] flex-shrink-0">
         <div className="flex items-center gap-1.5 min-w-0 flex-1">

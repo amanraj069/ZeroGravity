@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   CheckCircle,
   Plus,
@@ -9,6 +10,7 @@ import {
   Calendar,
   AlertCircle,
   TrendingUp,
+  ChevronLeft,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -431,6 +433,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
 };
 
 const DailyTasks: React.FC = () => {
+  const router = useRouter();
   const { isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -694,9 +697,18 @@ const DailyTasks: React.FC = () => {
       {/* Header with Analytics */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
         <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2">
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-            Daily Tasks
-          </h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.back()}
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              title="Go back"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+              Daily Tasks
+            </h1>
+          </div>
           <button
             onClick={() => setShowAddTask(true)}
             className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0"

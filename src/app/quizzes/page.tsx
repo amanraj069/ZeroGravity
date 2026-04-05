@@ -7,7 +7,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
 import Image from "next/image";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ChevronLeft } from "lucide-react";
 
 export default function QuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
@@ -281,13 +281,19 @@ export default function QuizzesPage() {
           <div className="mb-5 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
               <div className="flex items-start justify-between">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-1 sm:mb-2">
-                    My Quizzes
-                  </h1>
-                  {/* <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                    Manage and view all your created quizzes
-                  </p> */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => router.back()}
+                    className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                    title="Go back"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-0">
+                      My Quizzes
+                    </h1>
+                  </div>
                 </div>
 
                 {/* Mobile icon actions */}

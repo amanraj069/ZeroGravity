@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import { Note } from "@/services/notesService";
 import { SidebarView } from "./NotesApp";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   FileText,
   Star,
@@ -75,6 +77,7 @@ export default function NotesGrid({
   onToggleSidebar,
   searchQuery,
 }: NotesGridProps) {
+  const router = useRouter();
   const isTrash = view === "trash";
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [showSortMenu, setShowSortMenu] = useState(false);
@@ -133,7 +136,7 @@ export default function NotesGrid({
   }, [allNotes, view, activeCategory, sortBy, searchQuery]);
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-[#0a0a0a]">
+    <div className="flex flex-col flex-1 h-full min-h-0 bg-white dark:bg-[#0a0a0a]">
       {/* Header bar */}
       <div className="flex flex-row items-center justify-between px-4 sm:px-6 min-h-[80px] py-3 border-b border-gray-200 dark:border-gray-800 flex-shrink-0 flex-wrap gap-4">
         <div className="flex flex-row items-center justify-between w-full">
@@ -148,15 +151,24 @@ export default function NotesGrid({
                 <PanelLeft size={16} />
               </button>
             )}
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {viewTitle}
-              </h1>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                {filteredNotes.length}{" "}
-                {filteredNotes.length === 1 ? "note" : "notes"}
-                {!isTrash && ` · sorted by ${sortLabel.toLowerCase()}`}
-              </p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.back()}
+                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0 max-sm:hidden"
+                title="Go back"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {viewTitle}
+                </h1>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                  {filteredNotes.length}{" "}
+                  {filteredNotes.length === 1 ? "note" : "notes"}
+                  {!isTrash && ` · sorted by ${sortLabel.toLowerCase()}`}
+                </p>
+              </div>
             </div>
           </div>
           
@@ -223,9 +235,9 @@ export default function NotesGrid({
       </div>
 
       {/* Grid */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 ${filteredNotes.length === 0 ? 'flex items-center justify-center' : ''}`}>
         {filteredNotes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-600 select-none">
+          <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-600 select-none py-20">
             <FileText size={48} strokeWidth={1} className="opacity-40" />
             <p className="mt-4 text-sm">
               {isTrash

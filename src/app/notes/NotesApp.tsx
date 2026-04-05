@@ -400,14 +400,14 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
   // ─── Render ───────────────────────────────────────────────
   if (loading && allNotes.length === 0) {
     return (
-      <div className="flex h-[calc(100dvh-64px)] items-center justify-center bg-white dark:bg-[#0a0a0a]">
+      <div className="flex flex-1 h-[calc(100vh-64px)] items-center justify-center bg-white dark:bg-[#0a0a0a]">
         <div className="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-gray-600 dark:border-t-gray-300 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 h-[calc(100dvh-64px)] overflow-hidden bg-white dark:bg-[#0a0a0a]">
+    <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden bg-white dark:bg-[#0a0a0a]">
       {/* Click overlay to close sidebar on mobile */}
       {sidebarOpen && (
         <div
@@ -462,7 +462,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       </div>
 
       {/* Main content: Grid or Editor */}
-      <div className="flex-1 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {activeNote ? (
           <NoteEditor
             note={activeNote}

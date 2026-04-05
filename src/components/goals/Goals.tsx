@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
+  ChevronLeft,
 } from "lucide-react";
 import AddGoalForm from "./AddGoalForm";
 import DailyTasks from "./DailyTasks";
@@ -310,12 +311,20 @@ const Goals: React.FC = () => {
     // Goals content
     return (
       <>
-        {/* Mobile-optimized Header */}
         <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-              Goals
-            </h1>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.back()}
+                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                title="Go back"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                Goals
+              </h1>
+            </div>
             <button
               onClick={() => setShowAddGoal(true)}
               className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"

@@ -11,6 +11,7 @@ import {
   ProfileVisitor,
 } from "@/services/profileVisitorsService";
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
+import { ChevronLeft } from "lucide-react";
 
 export default function ProfileVisitors() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
@@ -136,14 +137,23 @@ export default function ProfileVisitors() {
     <DashboardLayout>
       <div className="mt-4 space-y-3 md:space-y-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-base sm:text-xl md:text-3xl font-light text-black dark:text-white flex items-center gap-2">
-              Profile Visitors
-            </h1>
-            <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-1 mb-6">
-              People who viewed your profile
-            </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.back()}
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              title="Go back"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <div>
+              <h1 className="text-base sm:text-xl md:text-3xl font-light text-black dark:text-white flex items-center gap-2 leading-none mb-1">
+                Profile Visitors
+              </h1>
+              <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">
+                People who viewed your profile
+              </p>
+            </div>
           </div>
         </div>
 

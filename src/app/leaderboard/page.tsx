@@ -11,6 +11,7 @@ import {
   LeaderboardEntry,
 } from "@/services/leaderboardService";
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
+import { ChevronLeft } from "lucide-react";
 
 export default function Leaderboard() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -433,14 +434,23 @@ export default function Leaderboard() {
     <DashboardLayout>
       <div className="mt-4 space-y-3 md:space-y-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-base sm:text-xl md:text-3xl font-light text-black dark:text-white">
-              Weekly Leaderboard ({formatStartingDate(leaderboard.weekStart)})
-            </h1>
-            <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 mt-1 mb-6">
-              {formatDateRange(leaderboard.weekStart, leaderboard.weekEnd)}
-            </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.back()}
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              title="Go back"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <div>
+              <h1 className="text-base sm:text-xl md:text-3xl font-light text-black dark:text-white leading-none mb-1">
+                Weekly Leaderboard ({formatStartingDate(leaderboard.weekStart)})
+              </h1>
+              <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">
+                {formatDateRange(leaderboard.weekStart, leaderboard.weekEnd)}
+              </p>
+            </div>
           </div>
         </div>
 
