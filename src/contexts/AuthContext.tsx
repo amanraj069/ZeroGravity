@@ -29,6 +29,7 @@ interface User {
   loginStreakDay?: number;
   loginStreakCompleted?: boolean;
   loginStreakClaimed?: boolean;
+  aiGenerationCount?: number;
 }
 
 interface LoginReward {

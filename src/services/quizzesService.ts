@@ -29,6 +29,13 @@ export const createQuiz = async (draft: QuizDraft) => {
   return res.json();
 };
 
+export const generateQuizWithAI = async (prompt: string, numOptions: number, numQuestions: number) => {
+  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.GENERATE_AI, {
+    method: "POST",
+    body: JSON.stringify({ prompt, numOptions, numQuestions }),
+  });
+  return res.json();
+};
 export const updateDraft = async (
   quizId: string,
   draft: Partial<QuizDraft>,
