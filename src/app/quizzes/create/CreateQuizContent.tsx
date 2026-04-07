@@ -19,7 +19,7 @@ const emptyQuestion = (): QuizQuestion => ({
     { key: "B", text: "" },
   ],
   timeLimitSeconds: 60,
-  maxMarks: 10,
+  maxMarks: 100,
 });
 
 interface CreateQuizContentProps {
@@ -365,13 +365,13 @@ export default function CreateQuizContent({
                           min={1}
                           max={1000}
                           className="w-16 border border-gray-300 px-3 py-1.5 text-center focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
-                          value={q?.maxMarks || 10}
+                          value={q?.maxMarks || 100}
                           onChange={(e) =>
                             updateQuestion(currentIndex, {
                               maxMarks: Number(e.target.value),
                             })
                           }
-                          placeholder="10"
+                          placeholder="100"
                           title="Max marks"
                         />
                       </label>
@@ -573,7 +573,7 @@ export default function CreateQuizContent({
                         },
                       ],
                       timeLimitSeconds: 60,
-                      maxMarks: 10,
+                      maxMarks: 100,
                     },
                   ];
                   navigator.clipboard.writeText(
@@ -627,7 +627,7 @@ export default function CreateQuizContent({
                       const validated = parsed.map((pq: ParsedQuestion) => ({
                         text: pq.text || "",
                         timeLimitSeconds: Number(pq.timeLimitSeconds) || 60,
-                        maxMarks: Number(pq.maxMarks) || 10,
+                        maxMarks: Number(pq.maxMarks) || 100,
                         options: Array.isArray(pq.options)
                           ? pq.options.map((o: ParsedOption) => ({
                               key: o.key || "A",

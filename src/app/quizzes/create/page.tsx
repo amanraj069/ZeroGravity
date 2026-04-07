@@ -21,7 +21,7 @@ const emptyQuestion = (): QuizQuestion => ({
     { key: "2", text: "" },
   ],
   timeLimitSeconds: 60,
-  maxMarks: 10,
+  maxMarks: 100,
 });
 
 function CreateQuizContent() {
@@ -50,10 +50,28 @@ function CreateQuizContent() {
   const [aiNumOptions, setAiNumOptions] = useState("4");
   const [aiNumQuestions, setAiNumQuestions] = useState("5");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>([]);
+  const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>(
+    [],
+  );
   const [addedQuestions, setAddedQuestions] = useState<Set<number>>(new Set());
-  const [localAiCount, setLocalAiCount] = useState<number>(user?.aiGenerationCount || 0);
+  const [localAiCount, setLocalAiCount] = useState<number>(
+    user?.aiGenerationCount || 0,
+  );
   const [aiError, setAiError] = useState<string | null>(null);
+  const aiPromptRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize AI prompt textarea (only after generation)
+  useEffect(() => {
+    if (aiPromptRef.current && showAiModal) {
+      if (generatedQuestions.length > 0) {
+        aiPromptRef.current.style.height = "auto";
+        aiPromptRef.current.style.height = `${aiPromptRef.current.scrollHeight}px`;
+      } else {
+        // Reset to initial height when no questions are present
+        aiPromptRef.current.style.height = "";
+      }
+    }
+  }, [aiPrompt, showAiModal, generatedQuestions.length]);
 
   // Sync local count with user object
   useEffect(() => {
@@ -79,9 +97,9 @@ function CreateQuizContent() {
     setAddedQuestions(new Set());
     try {
       const response = await generateQuizWithAI(
-        aiPrompt, 
+        aiPrompt,
         parseInt(aiNumOptions, 10),
-        parseInt(aiNumQuestions, 10)
+        parseInt(aiNumQuestions, 10),
       );
       if (response.success && response.questions) {
         setGeneratedQuestions(response.questions);
@@ -101,32 +119,45 @@ function CreateQuizContent() {
   const handleAddAiQuestion = (index: number) => {
     const questionToAdd = generatedQuestions[index];
     if (!questionToAdd) return;
-    
+
     // Add to main question list
     setQuestions((prev) => {
       // If we only have one empty question, replace it, otherwise append.
-      if (prev.length === 1 && prev[0].text === "" && prev[0].options[0].text === "") {
+      if (
+        prev.length === 1 &&
+        prev[0].text === "" &&
+        prev[0].options[0].text === ""
+      ) {
         return [questionToAdd];
       }
       return [...prev, questionToAdd];
     });
-    
+
     // Auto-update modified status
     setModifiedQuestions((prev) => {
-      const nextIdx = questions.length === 1 && questions[0].text === "" ? 0 : questions.length;
+      const nextIdx =
+        questions.length === 1 && questions[0].text === ""
+          ? 0
+          : questions.length;
       return new Set(prev).add(nextIdx);
     });
-    
+
     setAddedQuestions((prev) => new Set(prev).add(index));
   };
 
   const handleAddAllAiQuestions = () => {
     // Collect all un-added questions
-    const unAdded = generatedQuestions.filter((_, idx) => !addedQuestions.has(idx));
+    const unAdded = generatedQuestions.filter(
+      (_, idx) => !addedQuestions.has(idx),
+    );
     if (unAdded.length === 0) return;
 
     setQuestions((prev) => {
-      if (prev.length === 1 && prev[0].text === "" && prev[0].options[0].text === "") {
+      if (
+        prev.length === 1 &&
+        prev[0].text === "" &&
+        prev[0].options[0].text === ""
+      ) {
         return [...unAdded];
       }
       return [...prev, ...unAdded];
@@ -136,7 +167,6 @@ function CreateQuizContent() {
     generatedQuestions.forEach((_, i) => newSet.add(i));
     setAddedQuestions(newSet);
   };
-
 
   const isPro = user?.subscription === "pro";
 
@@ -657,13 +687,13 @@ function CreateQuizContent() {
                           min={1}
                           max={1000}
                           className="h-7 sm:h-auto w-11 sm:w-16 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
-                          value={q?.maxMarks || 10}
+                          value={q?.maxMarks || 100}
                           onChange={(e) =>
                             updateQuestion(currentIndex, {
                               maxMarks: Number(e.target.value),
                             })
                           }
-                          placeholder="10"
+                          placeholder="100"
                           title="Max marks"
                         />
                       </label>
@@ -805,8 +835,18 @@ function CreateQuizContent() {
                         onClick={() => setShowAiModal(true)}
                         title="Generate with AI"
                       >
-                        <svg className="w-4 h-4 shrink-0 text-pink-500 dark:text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        <svg
+                          className="w-4 h-4 shrink-0 text-pink-500 dark:text-purple-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
                         </svg>
                         <span>Generate with AI</span>
                       </button>
@@ -966,7 +1006,7 @@ Required structure for each question:
 - "text": The question text
 - "options": An array of at least 2 options, where each option has a "key", "text", and "isCorrect" boolean (ensure exactly one option is true)
 - "timeLimitSeconds": Number (e.g. 60)
-- "maxMarks": Number (e.g. 10)
+- "maxMarks": Number (e.g. 100)
 
 Make sure to return ONLY the final combined JSON array, with the previous questions included along with the new ones.
 
@@ -1024,7 +1064,7 @@ Give me the final combined JSON array with the new questions added:`;
                       const validated = parsed.map((pq: ParsedQuestion) => ({
                         text: pq.text || "",
                         timeLimitSeconds: Number(pq.timeLimitSeconds) || 60,
-                        maxMarks: Number(pq.maxMarks) || 10,
+                        maxMarks: Number(pq.maxMarks) || 100,
                         options: Array.isArray(pq.options)
                           ? pq.options.map((o: ParsedOption, oIdx: number) => ({
                               key: o.key || String(oIdx + 1),
@@ -1062,8 +1102,18 @@ Give me the final combined JSON array with the new questions added:`;
           <div className="bg-white dark:bg-gray-900 w-full max-w-6xl p-6 sm:p-10 shadow-xl flex flex-col gap-6 max-h-[90vh]">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg
+                  className="w-5 h-5 text-gray-700 dark:text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
                 Generate Quiz with AI
               </h2>
@@ -1071,23 +1121,58 @@ Give me the final combined JSON array with the new questions added:`;
                 onClick={() => setShowAiModal(false)}
                 className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             {aiError && (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 p-3 flex items-start gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
-                <svg className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-red-800 dark:text-red-300">{aiError}</p>
+                  <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                    {aiError}
+                  </p>
                 </div>
-                <button onClick={() => setAiError(null)} className="text-red-400 hover:text-red-600 dark:hover:text-red-200 transition-colors">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <button
+                  onClick={() => setAiError(null)}
+                  className="text-red-400 hover:text-red-600 dark:hover:text-red-200 transition-colors"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -1096,56 +1181,77 @@ Give me the final combined JSON array with the new questions added:`;
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Prompt / Topic</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Prompt / Topic
+                  </label>
                   <span className="text-[10px] sm:text-xs font-medium px-0 sm:px-2 py-1 bg-transparent sm:bg-gray-100 sm:dark:bg-gray-800 border-none sm:border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
                     {localAiCount}/100 questions today
                   </span>
                 </div>
                 <textarea
-                  className="w-full p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-base resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
-                  rows={10}
+                  ref={aiPromptRef}
+                  className="w-full p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-base resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-y-auto transition-all duration-200"
+                  rows={generatedQuestions.length > 0 ? 1 : 10}
+                  style={{
+                    maxHeight:
+                      generatedQuestions.length > 0
+                        ? "calc(1.5em * 4 + 32px)"
+                        : "none",
+                  }}
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
-                  placeholder="E.g., Generate a 5 question quiz about the history of space exploration suitable for high school students."
+                  placeholder="E.g., Generate a 5 question quiz about history of space exploration suitable for high school students."
                   disabled={isGenerating}
                 />
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-4 items-end">
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Questions count</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Questions count
+                  </label>
                   <select
                     className="p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 w-full"
                     value={aiNumQuestions}
                     onChange={(e) => setAiNumQuestions(e.target.value)}
                     disabled={isGenerating}
                   >
-                    {[1, 5, 10, 15, 20].map(num => (
-                      <option key={num} value={num}>{num} questions</option>
+                    {[1, 5, 10, 15, 20].map((num) => (
+                      <option key={num} value={num}>
+                        {num} questions
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Options per question</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Options per question
+                  </label>
                   <select
                     className="p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 w-full"
                     value={aiNumOptions}
                     onChange={(e) => setAiNumOptions(e.target.value)}
                     disabled={isGenerating}
                   >
-                    {[2, 3, 4, 5, 6, 7, 8].map(num => (
-                      <option key={num} value={num}>{num} options</option>
+                    {[2, 3, 4, 5, 6, 7, 8].map((num) => (
+                      <option key={num} value={num}>
+                        {num} options
+                      </option>
                     ))}
                   </select>
                 </div>
-                
+
                 {generatedQuestions.length > 0 ? (
                   <>
                     <button
                       className="w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium h-[38px] disabled:opacity-50"
                       onClick={handleAddAllAiQuestions}
-                      disabled={addedQuestions.size === generatedQuestions.length}
+                      disabled={
+                        addedQuestions.size === generatedQuestions.length
+                      }
                     >
-                      {addedQuestions.size === generatedQuestions.length ? "All Added" : "Add All"}
+                      {addedQuestions.size === generatedQuestions.length
+                        ? "All Added"
+                        : "Add All"}
                     </button>
                     <button
                       className="w-full px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px]"
@@ -1172,42 +1278,51 @@ Give me the final combined JSON array with the new questions added:`;
               <div className="flex-1 mt-2 flex flex-col min-h-0">
                 <div className="flex-1 overflow-y-auto py-2 sm:py-4 px-0 sm:px-4 space-y-4">
                   {generatedQuestions.map((gq, idx) => {
-                  const isAdded = addedQuestions.has(idx);
-                  return (
-                    <div key={idx} className="border border-gray-200 dark:border-gray-700 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50">
-                      <div className="flex justify-between gap-4 items-start mb-3">
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm">{idx + 1}. {gq.text}</h4>
-                        {isAdded ? (
-                          <button
-                            className="px-3 py-1.5 text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 cursor-default"
-                            disabled
-                          >
-                            Added
-                          </button>
-                        ) : (
-                          <button
-                            className="px-3 py-1.5 text-xs font-medium bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-                            onClick={() => handleAddAiQuestion(idx)}
-                          >
-                            + Add
-                          </button>
-                        )}
+                    const isAdded = addedQuestions.has(idx);
+                    return (
+                      <div
+                        key={idx}
+                        className="border border-gray-200 dark:border-gray-700 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50"
+                      >
+                        <div className="flex justify-between gap-4 items-start mb-3">
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm">
+                            {idx + 1}. {gq.text}
+                          </h4>
+                          {isAdded ? (
+                            <button
+                              className="px-3 py-1.5 text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 cursor-default"
+                              disabled
+                            >
+                              Added
+                            </button>
+                          ) : (
+                            <button
+                              className="px-3 py-1.5 text-xs font-medium bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                              onClick={() => handleAddAiQuestion(idx)}
+                            >
+                              + Add
+                            </button>
+                          )}
+                        </div>
+                        <ul className="space-y-2">
+                          {gq.options.map((opt, oIdx) => (
+                            <li
+                              key={oIdx}
+                              className={`text-xs p-2 border ${opt.isCorrect ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300" : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"}`}
+                            >
+                              {opt.isCorrect && (
+                                <span className="font-bold mr-1">✓</span>
+                              )}
+                              {opt.text}
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <ul className="space-y-2">
-                        {gq.options.map((opt, oIdx) => (
-                          <li key={oIdx} className={`text-xs p-2 border ${opt.isCorrect ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300' : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300'}`}>
-                            {opt.isCorrect && <span className="font-bold mr-1">✓</span>}
-                            {opt.text}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 </div>
               </div>
             )}
-
           </div>
         </div>
       )}
