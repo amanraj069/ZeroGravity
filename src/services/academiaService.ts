@@ -6,6 +6,7 @@ export interface Course {
   grade: string;
   credits: number;
   additionalInfo: string;
+  absents: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -33,6 +34,7 @@ export interface CreateCourseData {
   grade?: string;
   credits?: number;
   additionalInfo?: string;
+  absents?: number;
 }
 
 export interface UpdateCourseData {
@@ -40,6 +42,7 @@ export interface UpdateCourseData {
   grade?: string;
   credits?: number;
   additionalInfo?: string;
+  absents?: number;
 }
 
 // Grade points mapping
@@ -66,7 +69,7 @@ export const GRADE_OPTIONS = [
 // Calculate SGPA for a semester
 export function calculateSGPA(courses: Course[]): number | null {
   const coursesWithGrades = courses.filter(
-    (course) => course.grade && course.grade.trim() !== ""
+    (course) => course.grade && course.grade.trim() !== "",
   );
 
   if (coursesWithGrades.length === 0) {
@@ -97,18 +100,19 @@ export function isSemesterComplete(courses: Course[]): boolean {
   if (courses.length === 0) {
     return false;
   }
-  return courses.every(
-    (course) => course.grade && course.grade.trim() !== ""
-  );
+  return courses.every((course) => course.grade && course.grade.trim() !== "");
 }
 
 // Calculate CGPA across all semesters
 // Only calculates if at least one complete semester exists
 // Returns both CGPA and the last complete semester name
-export function calculateCGPA(semesters: Semester[]): { cgpa: number | null; lastSemesterName: string | null } {
+export function calculateCGPA(semesters: Semester[]): {
+  cgpa: number | null;
+  lastSemesterName: string | null;
+} {
   // Find all complete semesters (all courses have grades)
   const completeSemesters = semesters.filter((semester) =>
-    isSemesterComplete(semester.courses)
+    isSemesterComplete(semester.courses),
   );
 
   // If no complete semester exists, return null
@@ -137,7 +141,9 @@ export function calculateCGPA(semesters: Semester[]): { cgpa: number | null; las
 
   // Get the last complete semester name (last in the order)
   const lastCompleteSemester = completeSemesters[completeSemesters.length - 1];
-  const lastSemesterName = lastCompleteSemester ? lastCompleteSemester.name : null;
+  const lastSemesterName = lastCompleteSemester
+    ? lastCompleteSemester.name
+    : null;
 
   return {
     cgpa: totalPoints / totalCredits,
@@ -154,7 +160,7 @@ class AcademiaService {
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -169,13 +175,13 @@ class AcademiaService {
   // Data is decrypted on the backend before being returned
   async getSemester(semesterId: string): Promise<Semester> {
     const response = await apiCallWithAuth(
-      API_ENDPOINTS.ACADEMIA.GET_SEMESTER(semesterId)
+      API_ENDPOINTS.ACADEMIA.GET_SEMESTER(semesterId),
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -194,13 +200,13 @@ class AcademiaService {
       {
         method: "POST",
         body: JSON.stringify(semesterData),
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -215,20 +221,20 @@ class AcademiaService {
   // Data is encrypted on the backend before being stored
   async updateSemester(
     semesterId: string,
-    semesterData: UpdateSemesterData
+    semesterData: UpdateSemesterData,
   ): Promise<Semester> {
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.UPDATE_SEMESTER(semesterId),
       {
         method: "PUT",
         body: JSON.stringify(semesterData),
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -245,13 +251,13 @@ class AcademiaService {
       API_ENDPOINTS.ACADEMIA.DELETE_SEMESTER(semesterId),
       {
         method: "DELETE",
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -267,13 +273,13 @@ class AcademiaService {
       {
         method: "POST",
         body: JSON.stringify({ semesterIds }),
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -290,13 +296,13 @@ class AcademiaService {
       API_ENDPOINTS.ACADEMIA.SET_CURRENT_SEMESTER(semesterId),
       {
         method: "PUT",
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -311,20 +317,20 @@ class AcademiaService {
   // Data is encrypted on the backend before being stored
   async addCourse(
     semesterId: string,
-    courseData: CreateCourseData
+    courseData: CreateCourseData,
   ): Promise<Course> {
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.ADD_COURSE(semesterId),
       {
         method: "POST",
         body: JSON.stringify(courseData),
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -340,20 +346,20 @@ class AcademiaService {
   async updateCourse(
     semesterId: string,
     courseId: string,
-    courseData: UpdateCourseData
+    courseData: UpdateCourseData,
   ): Promise<Course> {
     const response = await apiCallWithAuth(
       API_ENDPOINTS.ACADEMIA.UPDATE_COURSE(semesterId, courseId),
       {
         method: "PUT",
         body: JSON.stringify(courseData),
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 
@@ -370,13 +376,13 @@ class AcademiaService {
       API_ENDPOINTS.ACADEMIA.DELETE_COURSE(semesterId, courseId),
       {
         method: "DELETE",
-      }
+      },
     );
     const data = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Request failed with status ${response.status}`
+        data.message || `Request failed with status ${response.status}`,
       );
     }
 

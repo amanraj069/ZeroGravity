@@ -23,15 +23,15 @@ export default function AcademiaPage() {
   const [error, setError] = useState("");
   const [addingSemester, setAddingSemester] = useState(false);
   const [editingSemesterId, setEditingSemesterId] = useState<string | null>(
-    null
+    null,
   );
   const [editSemesterName, setEditSemesterName] = useState("");
   const [showCGPAError, setShowCGPAError] = useState(false);
   const [deletingSemesterId, setDeletingSemesterId] = useState<string | null>(
-    null
+    null,
   );
   const [draggedSemesterId, setDraggedSemesterId] = useState<string | null>(
-    null
+    null,
   );
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [justSwapped, setJustSwapped] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export default function AcademiaPage() {
 
       // Check if semester name already exists
       const existingSemester = semesters.find(
-        (s) => s.name.toLowerCase() === name.toLowerCase()
+        (s) => s.name.toLowerCase() === name.toLowerCase(),
       );
 
       if (existingSemester) {
@@ -76,7 +76,7 @@ export default function AcademiaPage() {
         while (
           semesters.find(
             (s) =>
-              s.name.toLowerCase() === `Semester ${newNumber}`.toLowerCase()
+              s.name.toLowerCase() === `Semester ${newNumber}`.toLowerCase(),
           )
         ) {
           newNumber++;
@@ -113,7 +113,7 @@ export default function AcademiaPage() {
     const existingSemester = semesters.find(
       (s) =>
         s.semesterId !== semesterId &&
-        s.name.toLowerCase() === editSemesterName.trim().toLowerCase()
+        s.name.toLowerCase() === editSemesterName.trim().toLowerCase(),
     );
 
     if (existingSemester) {
@@ -128,15 +128,15 @@ export default function AcademiaPage() {
       });
       setSemesters(
         semesters.map((s) =>
-          s.semesterId === semesterId ? updatedSemester : s
-        )
+          s.semesterId === semesterId ? updatedSemester : s,
+        ),
       );
       setEditingSemesterId(null);
       setEditSemesterName("");
     } catch (err: unknown) {
       console.error("Error updating semester:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to update semester"
+        err instanceof Error ? err.message : "Failed to update semester",
       );
     }
   };
@@ -149,7 +149,7 @@ export default function AcademiaPage() {
   const handleDeleteSemester = async (semesterId: string) => {
     if (
       !confirm(
-        "Are you sure you want to delete this semester? This will delete all courses in this semester."
+        "Are you sure you want to delete this semester? This will delete all courses in this semester.",
       )
     ) {
       return;
@@ -163,7 +163,7 @@ export default function AcademiaPage() {
     } catch (err: unknown) {
       console.error("Error deleting semester:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to delete semester"
+        err instanceof Error ? err.message : "Failed to delete semester",
       );
     } finally {
       setDeletingSemesterId(null);
@@ -172,7 +172,7 @@ export default function AcademiaPage() {
 
   const handleDragStart = (
     e: React.DragEvent<HTMLDivElement>,
-    semesterId: string
+    semesterId: string,
   ) => {
     setDraggedSemesterId(semesterId);
     e.dataTransfer.effectAllowed = "move";
@@ -189,7 +189,7 @@ export default function AcademiaPage() {
 
   const handleDragOver = (
     e: React.DragEvent<HTMLDivElement>,
-    index: number
+    index: number,
   ) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
@@ -198,7 +198,7 @@ export default function AcademiaPage() {
 
   const handleDrop = async (
     e: React.DragEvent<HTMLDivElement>,
-    dropIndex: number
+    dropIndex: number,
   ) => {
     e.preventDefault();
     setDragOverIndex(null);
@@ -206,7 +206,7 @@ export default function AcademiaPage() {
     if (!draggedSemesterId) return;
 
     const draggedIndex = semesters.findIndex(
-      (s) => s.semesterId === draggedSemesterId
+      (s) => s.semesterId === draggedSemesterId,
     );
 
     if (draggedIndex === dropIndex || draggedIndex === -1) {
@@ -236,7 +236,7 @@ export default function AcademiaPage() {
     } catch (err: unknown) {
       console.error("Error reordering semesters:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to reorder semesters"
+        err instanceof Error ? err.message : "Failed to reorder semesters",
       );
       // Revert on error
       fetchSemesters();
@@ -376,7 +376,7 @@ export default function AcademiaPage() {
                       if ("dataTransfer" in e && e.dataTransfer) {
                         handleDragStart(
                           e as unknown as React.DragEvent<HTMLDivElement>,
-                          semester.semesterId
+                          semester.semesterId,
                         );
                       }
                     }}
@@ -385,7 +385,7 @@ export default function AcademiaPage() {
                       if ("dataTransfer" in e && e.dataTransfer) {
                         handleDragOver(
                           e as unknown as React.DragEvent<HTMLDivElement>,
-                          index
+                          index,
                         );
                       }
                     }}
@@ -393,7 +393,7 @@ export default function AcademiaPage() {
                       if ("dataTransfer" in e && e.dataTransfer) {
                         handleDrop(
                           e as unknown as React.DragEvent<HTMLDivElement>,
-                          index
+                          index,
                         );
                       }
                     }}
@@ -527,6 +527,21 @@ export default function AcademiaPage() {
                           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
                             {semester.courses.length} course
                             {semester.courses.length !== 1 ? "s" : ""}
+                            {(() => {
+                              const coursesWithAbsents =
+                                semester.courses.filter((c) => c.absents > 0);
+                              if (coursesWithAbsents.length === 0) return null;
+                              const totalAbsents = coursesWithAbsents.reduce(
+                                (sum, c) => sum + c.absents,
+                                0,
+                              );
+                              return (
+                                <span className="ml-2 font-medium text-gray-600 dark:text-gray-400">
+                                  &middot; {totalAbsents} absent
+                                  {totalAbsents !== 1 ? "s" : ""}
+                                </span>
+                              );
+                            })()}
                           </p>
                           {(() => {
                             const sgpa = calculateSGPA(semester.courses);

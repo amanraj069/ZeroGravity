@@ -23,7 +23,7 @@ export default function SemesterDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [expandedCourses, setExpandedCourses] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   // New course form
@@ -33,6 +33,7 @@ export default function SemesterDetailPage() {
   const [newCourseGrade, setNewCourseGrade] = useState("");
   const [newCourseCredits, setNewCourseCredits] = useState(4);
   const [newCourseAdditionalInfo, setNewCourseAdditionalInfo] = useState("");
+  const [newCourseAbsents, setNewCourseAbsents] = useState(0);
 
   // Editing states
   const [editingCourse, setEditingCourse] = useState<string | null>(null);
@@ -40,6 +41,7 @@ export default function SemesterDetailPage() {
   const [editCourseGrade, setEditCourseGrade] = useState("");
   const [editCourseCredits, setEditCourseCredits] = useState(4);
   const [editCourseAdditionalInfo, setEditCourseAdditionalInfo] = useState("");
+  const [editCourseAbsents, setEditCourseAbsents] = useState(0);
 
   const fetchSemester = useCallback(async () => {
     if (!semesterId) return;
@@ -75,6 +77,7 @@ export default function SemesterDetailPage() {
     setNewCourseGrade("");
     setNewCourseCredits(4);
     setNewCourseAdditionalInfo("");
+    setNewCourseAbsents(0);
   };
 
   const handleAddCourse = async () => {
@@ -91,6 +94,7 @@ export default function SemesterDetailPage() {
         grade: newCourseGrade.trim() || undefined,
         credits: newCourseCredits,
         additionalInfo: newCourseAdditionalInfo.trim() || undefined,
+        absents: newCourseAbsents,
       });
       setSemester((prev) => {
         if (!prev) return prev;
@@ -103,6 +107,7 @@ export default function SemesterDetailPage() {
       setNewCourseGrade("");
       setNewCourseCredits(4);
       setNewCourseAdditionalInfo("");
+      setNewCourseAbsents(0);
       setShowAddCoursePrompt(false);
     } catch (err: unknown) {
       console.error("Error adding course:", err);
@@ -118,6 +123,7 @@ export default function SemesterDetailPage() {
     setNewCourseGrade("");
     setNewCourseCredits(4);
     setNewCourseAdditionalInfo("");
+    setNewCourseAbsents(0);
   };
 
   const handleUpdateCourse = async (courseId: string) => {
@@ -131,14 +137,15 @@ export default function SemesterDetailPage() {
           grade: editCourseGrade.trim(),
           credits: editCourseCredits,
           additionalInfo: editCourseAdditionalInfo.trim(),
-        }
+          absents: editCourseAbsents,
+        },
       );
       setSemester((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
           courses: prev.courses.map((c) =>
-            c.courseId === courseId ? updatedCourse : c
+            c.courseId === courseId ? updatedCourse : c,
           ),
         };
       });
@@ -147,6 +154,7 @@ export default function SemesterDetailPage() {
       setEditCourseGrade("");
       setEditCourseCredits(4);
       setEditCourseAdditionalInfo("");
+      setEditCourseAbsents(0);
     } catch (err: unknown) {
       console.error("Error updating course:", err);
       setError(err instanceof Error ? err.message : "Failed to update course");
@@ -197,6 +205,7 @@ export default function SemesterDetailPage() {
     setEditCourseGrade(course.grade || "");
     setEditCourseCredits(course.credits || 4);
     setEditCourseAdditionalInfo(course.additionalInfo || "");
+    setEditCourseAbsents(course.absents || 0);
   };
 
   const cancelEditing = () => {
@@ -205,6 +214,7 @@ export default function SemesterDetailPage() {
     setEditCourseGrade("");
     setEditCourseCredits(4);
     setEditCourseAdditionalInfo("");
+    setEditCourseAbsents(0);
   };
 
   if (authLoading) {
@@ -359,6 +369,22 @@ export default function SemesterDetailPage() {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                <div className="sm:col-span-12">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                    Absents
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newCourseAbsents}
+                    onChange={(e) =>
+                      setNewCourseAbsents(Number(e.target.value))
+                    }
+                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                   Additional Info
@@ -478,6 +504,22 @@ Assignment: 8/10
                         />
                       </div>
                     </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                      <div className="sm:col-span-12">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
+                          Absents
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={editCourseAbsents}
+                          onChange={(e) =>
+                            setEditCourseAbsents(Number(e.target.value))
+                          }
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                        />
+                      </div>
+                    </div>
                     <div>
                       <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                         Additional Info
@@ -544,6 +586,16 @@ Assignment: 8/10
                               {course.credits || 4}
                             </span>
                           </div>
+                          {course.absents > 0 && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
+                                Absents
+                              </span>
+                              <span className="text-gray-900 dark:text-gray-100 font-medium">
+                                {course.absents}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex gap-2">
