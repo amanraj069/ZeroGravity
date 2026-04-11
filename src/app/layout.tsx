@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://zerogravity.vercel.app"),
   title: "zeroGravity",
   description: "Goals without gravity",
   openGraph: {
@@ -22,19 +23,11 @@ export const metadata: Metadata = {
     description: "Goals without gravity",
     url: "https://zerogravity.vercel.app",
     siteName: "zeroGravity",
-    images: [
-      {
-        url: "https://zerogravity.vercel.app/opengraph-image",
-        width: 1200,
-        height: 630,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "zeroGravity",
     description: "Goals without gravity",
-    images: ["https://zerogravity.vercel.app/opengraph-image"],
   },
 };
 

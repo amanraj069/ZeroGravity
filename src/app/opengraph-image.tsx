@@ -23,6 +23,7 @@ export default async function Image() {
       >
         <img
           src="https://zerogravity.vercel.app/landing/zerogravity_bg.webp"
+          alt="ZeroGravity Background"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
         />
         <span style={{ position: "relative", zIndex: 1 }}>ZeroGravity</span>
