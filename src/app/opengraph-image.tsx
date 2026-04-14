@@ -5,6 +5,10 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
+  const bgData = await fetch(
+    new URL("../../public/landing/zerogravity_bg.jpg", import.meta.url)
+  ).then((res) => res.arrayBuffer());
+
   return new ImageResponse(
     (
       <div
@@ -22,7 +26,7 @@ export default async function Image() {
         }}
       >
         <img
-          src="https://zerogravity.vercel.app/landing/zerogravity_bg.webp"
+          src={bgData as unknown as string}
           alt="ZeroGravity Background"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
         />

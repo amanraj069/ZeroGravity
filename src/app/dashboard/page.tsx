@@ -10,8 +10,6 @@ import LoginStreakBonus from "@/components/LoginStreakBonus";
 import { ShoppingBag } from "lucide-react";
 import {
   DashboardLayout,
-  WaitlistUsersSection,
-  type WaitlistUser,
 } from "@/components/dashboard";
 
 export default function Dashboard() {
@@ -23,8 +21,7 @@ export default function Dashboard() {
     checkSession,
   } = useAuth();
   const router = useRouter();
-  const [waitlistUsers, setWaitlistUsers] = useState<WaitlistUser[]>([]);
-  const [waitlistLoading, setWaitlistLoading] = useState(false);
+
   const [showStreakBonus, setShowStreakBonus] = useState(false);
   const [pointsAnimation, setPointsAnimation] = useState<{
     points: number;
@@ -85,11 +82,6 @@ export default function Dashboard() {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
     } else if (isLoggedIn && user) {
-      // Only fetch admin-specific data if user is admin
-      if (user.role === "admin") {
-        fetchWaitlistUsers();
-      }
-
       // Check if we should show streak bonus immediately
       // Check both user object and localStorage for streak info from login
       const checkStreakInfo = () => {
@@ -134,23 +126,6 @@ export default function Dashboard() {
     await checkSession();
   };
 
-  const fetchWaitlistUsers = async () => {
-    setWaitlistLoading(true);
-    try {
-      const response = await apiCallWithAuth(API_ENDPOINTS.WAITLIST.LIST);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setWaitlistUsers(data.data.entries);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch waitlist users:", err);
-    } finally {
-      setWaitlistLoading(false);
-    }
-  };
 
   // const handleImageClick = () => {
   //   fileInputRef.current?.click();
@@ -736,13 +711,7 @@ export default function Dashboard() {
           </div>
         </Link>
 
-        {user?.role === "admin" && (
-          <WaitlistUsersSection
-            waitlistUsers={waitlistUsers}
-            waitlistLoading={waitlistLoading}
-            onRefresh={fetchWaitlistUsers}
-          />
-        )}
+
       </div>
     </DashboardLayout>
   );
