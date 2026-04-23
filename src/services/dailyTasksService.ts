@@ -73,6 +73,8 @@ export interface GenerateStudyPlanResponse {
   hoursPerDay?: number;
   quota?: StudyPlanQuota;
   message?: string;
+  fallbackOccurred?: boolean;
+  modelUsed?: string;
 }
 
 export interface BulkCreateResponse {

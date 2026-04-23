@@ -109,6 +109,15 @@ html.dark {
   scrollbar-color: rgba(75, 85, 99, 0.4) transparent;
 }
 
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 /* Thin scrollbar utility class - matches global scrollbar style */
 .scrollbar-thin::-webkit-scrollbar {
   height: 3px;

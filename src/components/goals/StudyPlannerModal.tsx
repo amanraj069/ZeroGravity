@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Check, AlertCircle, Sparkles } from "lucide-react";
 import {
   dailyTasksService,
@@ -42,26 +43,62 @@ export default function StudyPlannerModal({
   const [spIsGenerating, setSpIsGenerating] = useState(false);
   const [spPlan, setSpPlan] = useState<StudyPlanTask[]>([]);
   const [spError, setSpError] = useState<string | null>(null);
+  const [spNotice, setSpNotice] = useState<string | null>(null);
   const [spQuota, setSpQuota] = useState<StudyPlanQuota | null>(null);
   const [spIsCreating, setSpIsCreating] = useState(false);
   const [spCreatedCount, setSpCreatedCount] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  
+  // Rotating loading messages
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
+  const loadingMessages = [
+    "Calculating optimal study trajectories...",
+    "Synthesizing knowledge nodes...",
+    "Consulting the ZeroGravity AI core...",
+    "Assembling your unique roadmap...",
+    "Optimizing neural pathways...",
+    "Bending space-time for your schedule...",
+    "Mapping out your neural journey..."
+  ];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (spIsGenerating) {
+      interval = setInterval(() => {
+        setLoadingMsgIdx((prev) => (prev + 1) % loadingMessages.length);
+      }, 3000);
+    }
+    return () => clearInterval(interval);
+  }, [spIsGenerating]);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (spNotice) {
+      timeout = setTimeout(() => {
+        setSpNotice(null);
+      }, 5000);
+    }
+    return () => clearTimeout(timeout);
+  }, [spNotice]);
 
   // Fetch quota when modal opens
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && mounted) {
       dailyTasksService
         .getStudyPlanQuota()
         .then(setSpQuota)
         .catch(() => {});
-    } else {
-      // Reset state when strictly closed (optional, but good for fresh start or keep it if desired)
     }
-  }, [isOpen]);
+  }, [isOpen, mounted]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+  return createPortal(
+    <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-y-auto">
       <div className="bg-white dark:bg-gray-900 w-full max-w-3xl shadow-xl flex flex-col max-h-[90vh]">
         {/* Modal Header */}
         <div className="flex items-center justify-between p-5 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
@@ -85,7 +122,23 @@ export default function StudyPlannerModal({
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6">
+        <div className="flex-1 overflow-y-auto scrollbar-hide p-5 sm:p-6">
+          {/* Notice Banner (for fallback) */}
+          {spNotice && (
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 p-3 flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-1">
+              <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+              <p className="text-sm font-medium text-amber-800 dark:text-amber-300 flex-1">
+                {spNotice}
+              </p>
+              <button
+                onClick={() => setSpNotice(null)}
+                className="text-amber-400 hover:text-amber-600 dark:hover:text-amber-200 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           {/* Error Banner */}
           {spError && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 p-3 flex items-start gap-3 mb-4">
@@ -194,6 +247,7 @@ export default function StudyPlannerModal({
                       return;
                     }
                     setSpError(null);
+                    setSpNotice(null);
                     setSpIsGenerating(true);
                     setSpPlan([]);
                     setSpCreatedCount(null);
@@ -207,12 +261,16 @@ export default function StudyPlannerModal({
                       if (result.success && result.plan) {
                         setSpPlan(result.plan);
                         if (result.quota) setSpQuota(result.quota);
+                        if (result.fallbackOccurred) {
+                          setSpNotice("The primary model was busy. We've used our secondary AI to generate your plan without any delay.");
+                        }
                       } else {
-                        setSpError(result.message || "Failed to generate study plan.");
+                        // Suppress raw technical errors in Favor of user-friendly messages
+                        setSpError("Study plan generation failed due to high AI traffic. Please try again later or contact the administrator.");
                         if (result.quota) setSpQuota(result.quota);
                       }
                     } catch (e) {
-                      setSpError("An error occurred while generating the plan.");
+                      setSpError("A system connection error occurred. Please contact the administrator.");
                     } finally {
                       setSpIsGenerating(false);
                     }
@@ -227,14 +285,16 @@ export default function StudyPlannerModal({
 
           {/* Loading State */}
           {spIsGenerating && (
-            <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <div className="flex flex-col items-center justify-center py-12 gap-6 animate-in fade-in duration-500">
               <LoadingSpinner size="lg" showText={false} />
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Creating your study plan...
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
-                This may take a moment if the server is busy.
-              </p>
+              <div className="text-center space-y-2">
+                <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                  {loadingMessages[loadingMsgIdx]}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  This may take a moment while the AI initializes your plan.
+                </p>
+              </div>
             </div>
           )}
 
@@ -361,6 +421,7 @@ export default function StudyPlannerModal({
                   className="px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium"
                   onClick={async () => {
                     setSpError(null);
+                    setSpNotice(null);
                     setSpIsGenerating(true);
                     setSpPlan([]);
                     setSpCreatedCount(null);
@@ -374,12 +435,15 @@ export default function StudyPlannerModal({
                       if (result.success && result.plan) {
                         setSpPlan(result.plan);
                         if (result.quota) setSpQuota(result.quota);
+                        if (result.fallbackOccurred) {
+                          setSpNotice("The primary model was busy. We've used our secondary AI to generate your plan without any delay.");
+                        }
                       } else {
-                        setSpError(result.message || "Failed to generate.");
+                        setSpError("Regeneration failed. Please try again later or contact the administrator.");
                         if (result.quota) setSpQuota(result.quota);
                       }
                     } catch (e) {
-                      setSpError("An error occurred while regenerating.");
+                      setSpError("System communication failure. Please contact the administrator.");
                     } finally {
                       setSpIsGenerating(false);
                     }
@@ -443,6 +507,7 @@ export default function StudyPlannerModal({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

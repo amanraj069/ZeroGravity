@@ -343,7 +343,7 @@ const DailyTasks: React.FC = () => {
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+            <h1 className="text-lg sm:text-2xl font-semibold text-gray-900 dark:text-white">
               Daily Tasks
             </h1>
           </div>
