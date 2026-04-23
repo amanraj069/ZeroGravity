@@ -26,6 +26,7 @@ import {
 import { dailyTasksService } from "@/services/dailyTasksService";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type FilterType =
   | "current"
@@ -684,8 +685,8 @@ const Goals: React.FC = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin  h-8 w-8 border-b-2 border-black dark:border-white"></div>
-            <span className="ml-3 text-gray-600 dark:text-gray-400">
+            <LoadingSpinner size="md" showText={false} />
+            <span className="ml-4 text-gray-600 dark:text-gray-400">
               {authLoading ? "Checking authentication..." : "Loading goals..."}
             </span>
           </div>

@@ -4,38 +4,54 @@ export const runtime = "edge";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function Image() {
-  const bgData = await fetch(
-    new URL("../../public/landing/zerogravity_bg.jpg", import.meta.url)
-  ).then((res) => res.arrayBuffer());
-
+export default function Image() {
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #0b1120 0%, #111827 100%)",
+        color: "#ffffff",
+        padding: "0 80px",
+        textAlign: "center",
+      }}
+    >
       <div
         style={{
-          background: "black",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
+          display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "white",
-          fontSize: 64,
-          fontWeight: "bold",
+          width: 120,
+          height: 120,
+          borderRadius: 24,
+          background: "rgba(255,255,255,0.08)",
+          marginBottom: 40,
         }}
       >
-        <img
-          src={bgData as unknown as string}
-          alt="ZeroGravity Background"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-        />
-        <span style={{ position: "relative", zIndex: 1 }}>ZeroGravity</span>
-        <span style={{ position: "relative", zIndex: 1, fontSize: 28, fontWeight: "normal", marginTop: 12 }}>
-          Break free from gravity. Reach your goals.
+        <span
+          style={{ fontSize: 48, fontWeight: 700, letterSpacing: "-0.06em" }}
+        >
+          ZG
         </span>
       </div>
-    ),
-    size
+
+      <h1 style={{ fontSize: 84, margin: 0, fontWeight: 900 }}>zeroGravity</h1>
+      <p
+        style={{
+          fontSize: 32,
+          marginTop: 24,
+          maxWidth: 860,
+          lineHeight: 1.3,
+          opacity: 0.88,
+        }}
+      >
+        Break free from gravity. Reach your goals.
+      </p>
+    </div>,
+    size,
   );
 }

@@ -23,11 +23,23 @@ export const metadata: Metadata = {
     description: "Goals without gravity",
     url: "https://zerogravity.vercel.app",
     siteName: "zeroGravity",
+    images: [
+      new URL(
+        "/opengraph-image",
+        new URL("https://zerogravity.vercel.app"),
+      ).toString(),
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "zeroGravity",
     description: "Goals without gravity",
+    images: [
+      new URL(
+        "/opengraph-image",
+        new URL("https://zerogravity.vercel.app"),
+      ).toString(),
+    ],
   },
 };
 

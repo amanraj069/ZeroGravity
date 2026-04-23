@@ -3,14 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-  CheckCircle,
   Plus,
-  Edit2,
-  Trash2,
-  Calendar,
   AlertCircle,
   TrendingUp,
   ChevronLeft,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -21,6 +18,9 @@ import {
   DailyTasksAnalytics,
 } from "@/services/dailyTasksService";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import StudyPlannerModal from "./StudyPlannerModal";
+import AddTaskForm from "./AddTaskForm";
+import DailyTaskItem from "./DailyTaskItem";
 
 interface PointsAnimation {
   points: number;
@@ -66,371 +66,7 @@ const getUpcomingDays = (): {
   return days;
 };
 
-interface AddTaskFormProps {
-  editingTask: DailyTask | null;
-  onAddTask: (taskData: CreateDailyTaskData) => Promise<void>;
-  onUpdateTask?: (
-    taskId: string,
-    updateData: UpdateDailyTaskData
-  ) => Promise<void>;
-  onCancel: () => void;
-}
 
-const AddTaskForm: React.FC<AddTaskFormProps> = ({
-  editingTask,
-  onAddTask,
-  onUpdateTask,
-  onCancel,
-}) => {
-  const [formData, setFormData] = useState<CreateDailyTaskData>({
-    title: "",
-    description: "",
-    priority: "medium",
-    dateStarted: getLocalDateString(),
-    dateEnded: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof CreateDailyTaskData, string>>
-  >({});
-
-  useEffect(() => {
-    if (editingTask) {
-      setFormData({
-        title: editingTask.title,
-        description: editingTask.description || "",
-        priority: editingTask.priority || "medium",
-        dateStarted: getLocalDateString(new Date(editingTask.dateStarted)),
-        dateEnded: getLocalDateString(new Date(editingTask.dateEnded)),
-      });
-    } else {
-      const today = getLocalDateString();
-      const nextWeek = new Date();
-      nextWeek.setDate(nextWeek.getDate() + 7);
-
-      setFormData({
-        title: "",
-        description: "",
-        priority: "medium",
-        dateStarted: today,
-        dateEnded: getLocalDateString(nextWeek),
-      });
-    }
-    setErrors({});
-    setIsSubmitting(false);
-  }, [editingTask]);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    if (errors[name as keyof CreateDailyTaskData]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: undefined,
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof CreateDailyTaskData, string>> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = "Title is required";
-    }
-
-    if (!formData.dateStarted) {
-      newErrors.dateStarted = "Start date is required";
-    }
-
-    if (!formData.dateEnded) {
-      newErrors.dateEnded = "End date is required";
-    }
-
-    if (formData.dateStarted && formData.dateEnded) {
-      const startDate = new Date(formData.dateStarted);
-      const endDate = new Date(formData.dateEnded);
-
-      if (startDate > endDate) {
-        newErrors.dateEnded = "End date must be on or after start date";
-      }
-
-      // When editing, end date must be after today
-      if (editingTask) {
-        const today = new Date(getLocalDateString());
-        if (endDate <= today) {
-          newErrors.dateEnded = "End date must be after today";
-        }
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const taskData = {
-        ...formData,
-        title: formData.title.trim(),
-        description: formData.description?.trim(),
-      };
-
-      if (editingTask && onUpdateTask) {
-        await onUpdateTask(editingTask._id, taskData);
-      } else {
-        await onAddTask(taskData);
-      }
-    } catch (error) {
-      console.error("Error saving daily task:", error);
-      setErrors({
-        title: error instanceof Error ? error.message : "Failed to save task",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div
-      className="bg-white dark:bg-gray-800 p-4 shadow-sm border-t border-gray-200 dark:border-gray-700"
-      style={{ borderRadius: 0, position: "relative" }}
-    >
-      <div className="mb-4 flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-          {editingTask ? "Edit Daily Task" : "Add Daily Task"}
-        </h3>
-        <button
-          type="button"
-          aria-label="Cancel"
-          className="text-gray-400 hover:text-red-500 text-2xl font-bold"
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            position: "absolute",
-            top: 16,
-            right: 16,
-          }}
-          onClick={onCancel}
-        >
-          &times;
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left side: Title and Priority */}
-          <div className="space-y-4">
-            {/* Title */}
-            <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Title *
-              </label>
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
-                  errors.title
-                    ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
-                    : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
-                }`}
-                placeholder="Enter task title"
-                disabled={isSubmitting}
-              />
-              {errors.title && (
-                <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                  {errors.title}
-                </p>
-              )}
-            </div>
-
-            {/* Priority */}
-            <div>
-              <label
-                htmlFor="priority"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Priority
-              </label>
-              <select
-                id="priority"
-                name="priority"
-                value={formData.priority}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
-                disabled={isSubmitting}
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Right side: Description (single line) and Date Range */}
-          <div className="space-y-4">
-            {/* Description - single line */}
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Description
-              </label>
-              <input
-                type="text"
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
-                placeholder="Enter task description (optional)"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            {/* Date Range - side by side */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label
-                  htmlFor="dateStarted"
-                  className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  <Calendar className="w-4 h-4 mr-1.5" />
-                  Start Date *
-                </label>
-                <input
-                  type="date"
-                  id="dateStarted"
-                  name="dateStarted"
-                  value={formData.dateStarted}
-                  onChange={handleInputChange}
-                  onClick={(e) =>
-                    !editingTask &&
-                    (e.target as HTMLInputElement).showPicker?.()
-                  }
-                  className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none dark:[color-scheme:dark] ${
-                    errors.dateStarted
-                      ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
-                      : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
-                  } ${
-                    editingTask
-                      ? "opacity-60 cursor-not-allowed bg-gray-100 dark:bg-gray-800"
-                      : "cursor-pointer"
-                  }`}
-                  disabled={isSubmitting || !!editingTask}
-                  title={
-                    editingTask ? "Start date cannot be changed" : undefined
-                  }
-                />
-                {editingTask && (
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    Start date cannot be changed
-                  </p>
-                )}
-                {errors.dateStarted && (
-                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                    {errors.dateStarted}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="dateEnded"
-                  className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  <Calendar className="w-4 h-4 mr-1.5" />
-                  End Date *
-                </label>
-                <input
-                  type="date"
-                  id="dateEnded"
-                  name="dateEnded"
-                  value={formData.dateEnded}
-                  onChange={handleInputChange}
-                  onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                  min={
-                    editingTask
-                      ? (() => {
-                          const tomorrow = new Date();
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-                          return getLocalDateString(tomorrow);
-                        })()
-                      : undefined
-                  }
-                  className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
-                    errors.dateEnded
-                      ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
-                      : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
-                  }`}
-                  disabled={isSubmitting}
-                />
-                {editingTask && (
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    End date must be after today
-                  </p>
-                )}
-                {errors.dateEnded && (
-                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                    {errors.dateEnded}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
-            style={{ borderRadius: 0 }}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
-            style={{ borderRadius: 0 }}
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : editingTask
-              ? "Update Task"
-              : "Add Task"}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
 
 const DailyTasks: React.FC = () => {
   const router = useRouter();
@@ -454,6 +90,8 @@ const DailyTasks: React.FC = () => {
     useState<PointsAnimation | null>(null);
   const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  const [showStudyPlanner, setShowStudyPlanner] = useState(false);
 
   // Check if selected date is today
   const isToday = selectedDate === getLocalDateString();
@@ -709,14 +347,29 @@ const DailyTasks: React.FC = () => {
               Daily Tasks
             </h1>
           </div>
-          <button
-            onClick={() => setShowAddTask(true)}
-            className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0"
-            style={{ borderRadius: 0 }}
-          >
-            <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span>Add Task</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
+                <button
+                  onClick={() => setShowStudyPlanner(true)}
+                  className="relative flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0"
+                  style={{ borderRadius: 0 }}
+                  title="AI Study Planner"
+                >
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">AI Study Planner</span>
+                  <span className="sm:hidden">AI Plan</span>
+                </button>
+            </div>
+            <button
+              onClick={() => setShowAddTask(true)}
+              className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0"
+              style={{ borderRadius: 0 }}
+            >
+              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Add Task</span>
+            </button>
+          </div>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full">
           <span className="flex items-center gap-1 whitespace-nowrap">
@@ -791,24 +444,42 @@ const DailyTasks: React.FC = () => {
               };
               // Mobile format: "Sat (13D)", Desktop format: "Sat (13th Dec)"
               const formatted = isMobile
-                ? `${dayName} (${dayNumber}D)`
+                ? day.isToday
+                  ? "Today"
+                  : `${dayName} (${dayNumber}D)`
+                : day.isToday
+                ? `Today (${dayNumber}${suffix(dayNumber)} ${monthName})`
                 : `${dayName} (${dayNumber}${suffix(dayNumber)} ${monthName})`;
+
               // Border logic: match the Daily Tasks/Goals toggle style
-              // Selected days get white bottom border, unselected days have transparent border
+              // Selected days get black/white bottom border, today gets purple border, others transparent
               const borderClass = isSelected
                 ? "border-b-2 border-black dark:border-white"
+                : day.isToday
+                ? "border-b-2 border-purple-500"
                 : "border-b-2 border-transparent";
+
               return (
                 <button
                   key={day.date}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-colors ${borderClass} ${
+                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${borderClass} ${
                     isSelected
                       ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
+                      : day.isToday
+                      ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
                       : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                   }`}
                 >
-                  <span className="text-xs font-medium">{formatted}</span>
+                  <span
+                    className={`text-xs font-medium flex items-center gap-1 ${
+                      day.isToday && !isSelected
+                        ? "text-purple-600 dark:text-purple-400"
+                        : ""
+                    }`}
+                  >
+                    {formatted}
+                  </span>
                 </button>
               );
             })}
@@ -853,164 +524,29 @@ const DailyTasks: React.FC = () => {
           </div>
         ) : (
           tasks.map((task) => (
-            <div
+            <DailyTaskItem
               key={task._id}
-              className={`shadow-sm border p-4 transition-all duration-200 relative ${
-                togglingTaskId === task._id
-                  ? "opacity-75 pointer-events-none"
-                  : ""
-              } ${
-                task.isCompletedToday
-                  ? "ring-1 ring-green-200 dark:ring-green-800 bg-green-50/30 dark:bg-green-950/20 border-green-200 dark:border-green-800"
-                  : task.priority === "high"
-                  ? "bg-red-50/30 dark:bg-red-950/20 border-red-100 dark:border-red-900/50 hover:bg-red-50/40 dark:hover:bg-red-950/30 hover:shadow-md"
-                  : task.priority === "medium"
-                  ? "bg-amber-50/30 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/50 hover:bg-amber-50/40 dark:hover:bg-amber-950/30 hover:shadow-md"
-                  : "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 hover:shadow-md"
-              }`}
-            >
-              {togglingTaskId === task._id && (
-                <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 flex items-center justify-center z-10">
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-6 h-6 border-2 border-blue-500 dark:border-blue-400 border-t-transparent  animate-spin" />
-                    <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                      Updating...
-                    </span>
-                  </div>
-                </div>
-              )}
-              <div className="flex items-start gap-3">
-                <button
-                  onClick={() =>
-                    isToday && !togglingTaskId && toggleTaskCompletion(task._id)
-                  }
-                  disabled={
-                    !isToday || togglingTaskId === task._id || !!togglingTaskId
-                  }
-                  title={
-                    !isToday
-                      ? "You can only mark tasks for today"
-                      : togglingTaskId === task._id
-                      ? "Updating task..."
-                      : togglingTaskId
-                      ? "Please wait for the current update to complete"
-                      : undefined
-                  }
-                  className={`flex-shrink-0 w-6 h-6 border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
-                    togglingTaskId === task._id
-                      ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/30"
-                      : task.isCompletedToday
-                      ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
-                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  } ${
-                    !isToday || togglingTaskId
-                      ? "opacity-70 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }`}
-                >
-                  {togglingTaskId === task._id ? (
-                    <div className="w-4 h-4 border-2 border-blue-500 dark:border-blue-400 border-t-transparent animate-spin" />
-                  ) : (
-                    task.isCompletedToday && <CheckCircle className="w-4 h-4" />
-                  )}
-                </button>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className={`font-medium text-sm sm:text-base ${
-                          task.isCompletedToday
-                            ? "line-through text-gray-500 dark:text-gray-400"
-                            : "text-gray-900 dark:text-white"
-                        }`}
-                      >
-                        {task.title}
-                      </h3>
-                      {task.description && (
-                        <p
-                          className={`text-xs sm:text-sm mt-1 leading-relaxed ${
-                            task.isCompletedToday
-                              ? "text-gray-400 dark:text-gray-500"
-                              : "text-gray-600 dark:text-gray-400"
-                          }`}
-                        >
-                          {task.description}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-1 ml-2">
-                      <button
-                        onClick={() => setEditingTask(task)}
-                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteTask(task._id)}
-                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Task Details */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <div className="flex flex-wrap items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        <span>
-                          {new Date(task.dateStarted).toLocaleDateString()} -{" "}
-                          {new Date(task.dateEnded).toLocaleDateString()}
-                        </span>
-                      </div>
-                      {/* Desktop priority tag - original position and text */}
-                      <span
-                        className={`hidden md:inline-block px-2 py-0.5 text-xs font-medium ${
-                          task.priority === "high"
-                            ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
-                            : task.priority === "medium"
-                            ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                            : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
-                        }`}
-                      >
-                        {task.priority} priority
-                      </span>
-                      {!task.isActive && (
-                        <div className="text-orange-600 dark:text-orange-400 text-xs bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5">
-                          Inactive
-                        </div>
-                      )}
-                    </div>
-                    {task.lastCompletedDate && (
-                      <span className="text-green-600 dark:text-green-400">
-                        Last completed:{" "}
-                        {new Date(task.lastCompletedDate).toLocaleDateString()}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Mobile priority tag - bottom right, no rounded corners */}
-                  <span
-                    className={`md:hidden absolute bottom-4 right-4 px-2 py-0.5 text-xs font-medium ${
-                      task.priority === "high"
-                        ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
-                        : task.priority === "medium"
-                        ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                        : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
-                    }`}
-                  >
-                    {task.priority.charAt(0).toUpperCase() +
-                      task.priority.slice(1)}
-                  </span>
-                </div>
-              </div>
-            </div>
+              task={task}
+              togglingTaskId={togglingTaskId}
+              isToday={isToday}
+              onToggleCompletion={toggleTaskCompletion}
+              onEdit={setEditingTask}
+              onDelete={deleteTask}
+            />
           ))
         )}
       </div>
+      <StudyPlannerModal 
+        isOpen={showStudyPlanner}
+        onClose={() => setShowStudyPlanner(false)}
+        selectedDate={selectedDate}
+        onTasksCreated={async () => {
+          const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
+          setTasks(fetchedTasks);
+          const analyticsData = await dailyTasksService.getStreakInfo();
+          setAnalytics(analyticsData);
+        }}
+      />
     </>
   );
 };

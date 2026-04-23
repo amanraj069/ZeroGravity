@@ -155,6 +155,12 @@ export const API_ENDPOINTS = {
   BADGES: {
     PROGRESS: `${API_BASE_URL}/api/badges/progress`,
   },
+  // Study Planner endpoints
+  STUDY_PLANNER: {
+    GENERATE: `${API_BASE_URL}/api/study-planner/generate`,
+    BULK_CREATE: `${API_BASE_URL}/api/study-planner/bulk-create`,
+    QUOTA: `${API_BASE_URL}/api/study-planner/quota`,
+  },
   // Notes endpoints
   NOTES: {
     LIST: `${API_BASE_URL}/api/notes`,

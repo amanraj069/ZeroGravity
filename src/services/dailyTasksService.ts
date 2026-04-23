@@ -48,6 +48,40 @@ export interface CompletionHistory {
   }>;
 }
 
+// ─── Study Planner Types ───────────────────────────────────────────────────
+
+export interface StudyPlanTask {
+  date: string;
+  title: string;
+  description: string;
+  priority: "low" | "medium" | "high";
+  selected: boolean;
+}
+
+export interface StudyPlanQuota {
+  used: number;
+  limit: number;
+  remaining: number;
+}
+
+export interface GenerateStudyPlanResponse {
+  success: boolean;
+  plan?: StudyPlanTask[];
+  topic?: string;
+  startDate?: string;
+  endDate?: string;
+  hoursPerDay?: number;
+  quota?: StudyPlanQuota;
+  message?: string;
+}
+
+export interface BulkCreateResponse {
+  success: boolean;
+  data?: DailyTask[];
+  count?: number;
+  message?: string;
+}
+
 class DailyTasksService {
   // Get all daily tasks for a user (optionally for a specific date)
   async getDailyTasks(date?: string): Promise<DailyTask[]> {
@@ -251,6 +285,84 @@ class DailyTasksService {
     }
 
     return data.data;
+  }
+
+  // ─── Study Planner Methods ───────────────────────────────────────────────
+
+  // Generate an AI study plan
+  async generateStudyPlan(
+    topic: string,
+    startDate: string,
+    endDate: string,
+    hoursPerDay: number = 2
+  ): Promise<GenerateStudyPlanResponse> {
+    const response = await apiCallWithAuth(
+      API_ENDPOINTS.STUDY_PLANNER.GENERATE,
+      {
+        method: "POST",
+        body: JSON.stringify({ topic, startDate, endDate, hoursPerDay }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // Return the error with quota info for the UI to display
+      return {
+        success: false,
+        message: data.message || `Request failed with status ${response.status}`,
+        quota: data.quota,
+      };
+    }
+
+    return data;
+  }
+
+  // Bulk create study tasks from a generated plan
+  async bulkCreateStudyTasks(
+    tasks: Array<{ date: string; title: string; description: string; priority: string }>
+  ): Promise<BulkCreateResponse> {
+    const response = await apiCallWithAuth(
+      API_ENDPOINTS.STUDY_PLANNER.BULK_CREATE,
+      {
+        method: "POST",
+        body: JSON.stringify({ tasks }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `Request failed with status ${response.status}`
+      );
+    }
+
+    if (!data.success) {
+      throw new Error(data.message || "Request was not successful");
+    }
+
+    return data;
+  }
+
+  // Get study plan generation quota
+  async getStudyPlanQuota(): Promise<StudyPlanQuota> {
+    const response = await apiCallWithAuth(
+      API_ENDPOINTS.STUDY_PLANNER.QUOTA
+    );
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `Request failed with status ${response.status}`
+      );
+    }
+
+    if (!data.success) {
+      throw new Error(data.message || "Request was not successful");
+    }
+
+    return data.quota;
   }
 
   // Helper method to format time for display
