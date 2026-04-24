@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   createQuiz,
@@ -12,7 +12,8 @@ import {
 } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
-import { Save, Rocket, ChevronUp } from "lucide-react";
+import { Save, Rocket, ChevronUp, ChevronDown, Settings2, RefreshCw, Check } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const emptyQuestion = (): QuizQuestion => ({
   text: "",
@@ -27,7 +28,7 @@ const emptyQuestion = (): QuizQuestion => ({
 function CreateQuizContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isLoading, checkSession } = useAuth();
+  const { user, isLoading } = useAuth();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<QuizQuestion[]>([emptyQuestion()]);
@@ -37,7 +38,7 @@ function CreateQuizContent() {
   const [saving, setSaving] = useState(false);
   const [loadingExisting, setLoadingExisting] = useState(false);
   const [titleError, setTitleError] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+
   const [isQuestionPanelOpen, setIsQuestionPanelOpen] = useState(false);
   const [modifiedQuestions, setModifiedQuestions] = useState<Set<number>>(
     new Set(),
@@ -46,6 +47,7 @@ function CreateQuizContent() {
   const [jsonInput, setJsonInput] = useState("");
 
   const [showAiModal, setShowAiModal] = useState(false);
+  const [aiConfigExpanded, setAiConfigExpanded] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiNumOptions, setAiNumOptions] = useState("4");
   const [aiNumQuestions, setAiNumQuestions] = useState("5");
@@ -53,25 +55,34 @@ function CreateQuizContent() {
   const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>(
     [],
   );
-  const [addedQuestions, setAddedQuestions] = useState<Set<number>>(new Set());
+
+  const [selectedAiIndices, setSelectedAiIndices] = useState<Set<number>>(new Set());
   const [localAiCount, setLocalAiCount] = useState<number>(
     user?.aiGenerationCount || 0,
   );
   const [aiError, setAiError] = useState<string | null>(null);
-  const aiPromptRef = React.useRef<HTMLTextAreaElement>(null);
+  const aiPromptRef = useRef<HTMLTextAreaElement>(null);
+  const [quizLoadingMsgIdx, setQuizLoadingMsgIdx] = useState(0);
 
-  // Auto-resize AI prompt textarea (only after generation)
+  const quizLoadingMessages = [
+    "Crafting your quiz questions...",
+    "Analyzing the topic deeply...",
+    "Generating challenging options...",
+    "Fine-tuning difficulty levels...",
+    "Validating answer accuracy...",
+    "Polishing the final questions...",
+  ];
+
+  // Rotate loading messages during generation
   useEffect(() => {
-    if (aiPromptRef.current && showAiModal) {
-      if (generatedQuestions.length > 0) {
-        aiPromptRef.current.style.height = "auto";
-        aiPromptRef.current.style.height = `${aiPromptRef.current.scrollHeight}px`;
-      } else {
-        // Reset to initial height when no questions are present
-        aiPromptRef.current.style.height = "";
-      }
+    let interval: NodeJS.Timeout;
+    if (isGenerating) {
+      interval = setInterval(() => {
+        setQuizLoadingMsgIdx((prev) => (prev + 1) % quizLoadingMessages.length);
+      }, 3000);
     }
-  }, [aiPrompt, showAiModal, generatedQuestions.length]);
+    return () => clearInterval(interval);
+  }, [isGenerating, quizLoadingMessages.length]);
 
   // Sync local count with user object
   useEffect(() => {
@@ -80,12 +91,17 @@ function CreateQuizContent() {
     }
   }, [user?.aiGenerationCount]);
 
+  // Lock body scroll when modal is open
   useEffect(() => {
     if (showAiModal) {
-      checkSession();
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
     }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [showAiModal]);
-
   const handleGenerateAI = async () => {
     if (!aiPrompt.trim()) {
       setAiError("Please enter a prompt describing the quiz.");
@@ -94,7 +110,7 @@ function CreateQuizContent() {
     setAiError(null);
     setIsGenerating(true);
     setGeneratedQuestions([]);
-    setAddedQuestions(new Set());
+    setSelectedAiIndices(new Set());
     try {
       const response = await generateQuizWithAI(
         aiPrompt,
@@ -103,6 +119,7 @@ function CreateQuizContent() {
       );
       if (response.success && response.questions) {
         setGeneratedQuestions(response.questions);
+        setSelectedAiIndices(new Set(response.questions.map((_: unknown, i: number) => i)));
         if (response.aiGenerationCount !== undefined) {
           setLocalAiCount(response.aiGenerationCount);
         }
@@ -110,49 +127,20 @@ function CreateQuizContent() {
         setAiError(response.message || "Failed to generate questions.");
       }
     } catch (e) {
+      console.error(e);
       setAiError("An error occurred while generating questions.");
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleAddAiQuestion = (index: number) => {
-    const questionToAdd = generatedQuestions[index];
-    if (!questionToAdd) return;
-
-    // Add to main question list
-    setQuestions((prev) => {
-      // If we only have one empty question, replace it, otherwise append.
-      if (
-        prev.length === 1 &&
-        prev[0].text === "" &&
-        prev[0].options[0].text === ""
-      ) {
-        return [questionToAdd];
-      }
-      return [...prev, questionToAdd];
-    });
-
-    // Auto-update modified status
-    setModifiedQuestions((prev) => {
-      const nextIdx =
-        questions.length === 1 && questions[0].text === ""
-          ? 0
-          : questions.length;
-      return new Set(prev).add(nextIdx);
-    });
-
-    setAddedQuestions((prev) => new Set(prev).add(index));
-  };
-
-  const handleAddAllAiQuestions = () => {
-    // Collect all un-added questions
-    const unAdded = generatedQuestions.filter(
-      (_, idx) => !addedQuestions.has(idx),
-    );
+  const handleAddSelectedQuestions = () => {
+    // Collect all selected questions
+    const unAdded = generatedQuestions.filter((_, idx) => selectedAiIndices.has(idx));
     if (unAdded.length === 0) return;
 
     setQuestions((prev) => {
+      // If we only have one empty question, replace it, otherwise append.
       if (
         prev.length === 1 &&
         prev[0].text === "" &&
@@ -163,9 +151,24 @@ function CreateQuizContent() {
       return [...prev, ...unAdded];
     });
 
-    const newSet = new Set(addedQuestions);
-    generatedQuestions.forEach((_, i) => newSet.add(i));
-    setAddedQuestions(newSet);
+    // Auto-update modified status
+    setModifiedQuestions((prev) => {
+      const nextIdx =
+        questions.length === 1 && questions[0].text === ""
+          ? 0
+          : questions.length;
+      const next = new Set(prev);
+      unAdded.forEach((_, i) => next.add(nextIdx + i));
+      return next;
+    });
+
+    // Close the modal and reset states
+    setShowAiModal(false);
+    setGeneratedQuestions([]);
+    setAiPrompt("");
+    setSelectedAiIndices(new Set());
+    setAiError(null);
+    setAiConfigExpanded(false);
   };
 
   const isPro = user?.subscription === "pro";
@@ -176,7 +179,6 @@ function CreateQuizContent() {
       // Load quiz using 'quizId' or 'edit' parameter (support both)
       const existingQuizId =
         searchParams?.get("quizId") || searchParams?.get("edit");
-      const isEditing = !!searchParams?.get("edit"); // Track if we're in edit mode (from host page)
       const initTitle = searchParams?.get("title");
       const initDesc = searchParams?.get("desc");
 
@@ -184,7 +186,7 @@ function CreateQuizContent() {
         // Load existing quiz data
         setLoadingExisting(true);
         setQuizId(existingQuizId);
-        setIsEditMode(isEditing);
+
         getQuiz(existingQuizId)
           .then((response) => {
             if (response?.success && response?.quiz) {
@@ -969,8 +971,8 @@ function CreateQuizContent() {
       </div>
 
       {showJsonModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh]">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-full">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
                 Add Questions with JSON
@@ -1098,12 +1100,13 @@ Give me the final combined JSON array with the new questions added:`;
       )}
 
       {showAiModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-6xl p-6 sm:p-10 shadow-xl flex flex-col gap-6 max-h-[90vh]">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-6xl shadow-xl flex flex-col max-h-full">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-2">
+              <h2 className="text-base sm:text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
                 <svg
-                  className="w-5 h-5 text-gray-700 dark:text-gray-300"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 dark:text-gray-100 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1117,28 +1120,35 @@ Give me the final combined JSON array with the new questions added:`;
                 </svg>
                 Generate Quiz with AI
               </h2>
-              <button
-                onClick={() => setShowAiModal(false)}
-                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <span className="text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  {Math.max(0, 100 - localAiCount)} Ques left
+                </span>
+                <button
+                  onClick={() => setShowAiModal(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors p-1 -mr-1"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    className="w-4 h-4 sm:w-5 sm:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            {aiError && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 p-3 flex items-start gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+            {/* Modal Body */}
+            <div className="flex-1 overflow-hidden flex flex-col p-5 sm:p-6 min-h-0">
+              {aiError && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 p-3 flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-1 duration-200">
                 <svg
                   className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0"
                   fill="none"
@@ -1178,152 +1188,284 @@ Give me the final combined JSON array with the new questions added:`;
               </div>
             )}
 
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 flex-shrink-0">
+              {/* Topic */}
+              {/* Topic & Config Toggle */}
+              <div className="flex flex-col gap-2">
+                <div className="flex justify-between items-center">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Prompt / Topic
                   </label>
-                  <span className="text-[10px] sm:text-xs font-medium px-0 sm:px-2 py-1 bg-transparent sm:bg-gray-100 sm:dark:bg-gray-800 border-none sm:border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
-                    {localAiCount}/100 questions today
-                  </span>
+                  {generatedQuestions.length > 0 && !isGenerating && (
+                    <button
+                      className="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                      onClick={() => setAiConfigExpanded(!aiConfigExpanded)}
+                    >
+                      <Settings2 className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Configure settings</span>
+                      <span className="sm:hidden">Configure</span>
+                      {aiConfigExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                    </button>
+                  )}
                 </div>
+
+                {/* Collapsible Config Row — After Generation (Moved up above text area) */}
+                {generatedQuestions.length > 0 && !isGenerating && aiConfigExpanded && (
+                  <div className="grid grid-cols-2 gap-3 p-3 mb-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                        Questions
+                      </label>
+                      <select
+                        className="px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
+                        value={aiNumQuestions}
+                        onChange={(e) => setAiNumQuestions(e.target.value)}
+                      >
+                        {[1, 5, 10, 15, 20].map((num) => (
+                          <option key={num} value={num}>
+                            {num}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                        Options per Q
+                      </label>
+                      <select
+                        className="px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
+                        value={aiNumOptions}
+                        onChange={(e) => setAiNumOptions(e.target.value)}
+                      >
+                        {[2, 3, 4, 5, 6, 7, 8].map((num) => (
+                          <option key={num} value={num}>
+                            {num}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+
                 <textarea
                   ref={aiPromptRef}
-                  className="w-full p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-base resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-y-auto transition-all duration-200"
-                  rows={generatedQuestions.length > 0 ? 1 : 10}
-                  style={{
-                    maxHeight:
-                      generatedQuestions.length > 0
-                        ? "calc(1.5em * 4 + 32px)"
-                        : "none",
-                  }}
+                  className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out"
+                  rows={
+                    generatedQuestions.length > 0 || isGenerating
+                      ? Math.min(
+                          3,
+                          Math.max(
+                            1,
+                            aiPrompt
+                              .split("\n")
+                              .reduce(
+                                (acc, line) =>
+                                  acc + Math.max(1, Math.ceil(line.length / 80)),
+                                0
+                              )
+                          )
+                        )
+                      : 8
+                  }
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
                   placeholder="E.g., Generate a 5 question quiz about history of space exploration suitable for high school students."
                   disabled={isGenerating}
+                  maxLength={500}
                 />
               </div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-4 items-end">
-                <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Questions count
-                  </label>
-                  <select
-                    className="p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 w-full"
-                    value={aiNumQuestions}
-                    onChange={(e) => setAiNumQuestions(e.target.value)}
-                    disabled={isGenerating}
-                  >
-                    {[1, 5, 10, 15, 20].map((num) => (
-                      <option key={num} value={num}>
-                        {num} questions
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Options per question
-                  </label>
-                  <select
-                    className="p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 w-full"
-                    value={aiNumOptions}
-                    onChange={(e) => setAiNumOptions(e.target.value)}
-                    disabled={isGenerating}
-                  >
-                    {[2, 3, 4, 5, 6, 7, 8].map((num) => (
-                      <option key={num} value={num}>
-                        {num} options
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
-                {generatedQuestions.length > 0 ? (
-                  <>
-                    <button
-                      className="w-full px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium h-[38px] disabled:opacity-50"
-                      onClick={handleAddAllAiQuestions}
-                      disabled={
-                        addedQuestions.size === generatedQuestions.length
-                      }
+              {/* Config Row — Before Generation */}
+              {generatedQuestions.length === 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                      Questions
+                    </label>
+                    <select
+                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
+                      value={aiNumQuestions}
+                      onChange={(e) => setAiNumQuestions(e.target.value)}
+                      disabled={isGenerating}
                     >
-                      {addedQuestions.size === generatedQuestions.length
-                        ? "All Added"
-                        : "Add All"}
-                    </button>
+                      {[1, 5, 10, 15, 20].map((num) => (
+                        <option key={num} value={num}>
+                          {num} questions
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                      Options per Q
+                    </label>
+                    <select
+                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
+                      value={aiNumOptions}
+                      onChange={(e) => setAiNumOptions(e.target.value)}
+                      disabled={isGenerating}
+                    >
+                      {[2, 3, 4, 5, 6, 7, 8].map((num) => (
+                        <option key={num} value={num}>
+                          {num} options
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1 justify-end col-span-2">
                     <button
-                      className="w-full px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px]"
+                      className="w-full px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px]"
                       onClick={handleGenerateAI}
-                      disabled={isGenerating || !aiPrompt.trim()}
+                      disabled={isGenerating || !aiPrompt.trim() || localAiCount >= 100}
                     >
-                      {isGenerating ? "Generating..." : "Generate"}
+                      {localAiCount >= 100
+                        ? "Out of Credits"
+                        : isGenerating ? "Generating..." : "Generate"}
                     </button>
-                  </>
-                ) : (
-                  <button
-                    className="w-full col-span-2 px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px]"
-                    onClick={handleGenerateAI}
-                    disabled={isGenerating || !aiPrompt.trim()}
-                  >
-                    {isGenerating ? "Generating..." : "Generate"}
-                  </button>
-                )}
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Generated results area */}
-            {generatedQuestions.length > 0 && (
-              <div className="flex-1 mt-2 flex flex-col min-h-0">
-                <div className="flex-1 overflow-y-auto py-2 sm:py-4 px-0 sm:px-4 space-y-4">
-                  {generatedQuestions.map((gq, idx) => {
-                    const isAdded = addedQuestions.has(idx);
-                    return (
-                      <div
-                        key={idx}
-                        className="border border-gray-200 dark:border-gray-700 p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50"
-                      >
-                        <div className="flex justify-between gap-4 items-start mb-3">
-                          <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm">
-                            {idx + 1}. {gq.text}
-                          </h4>
-                          {isAdded ? (
-                            <button
-                              className="px-3 py-1.5 text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 cursor-default"
-                              disabled
-                            >
-                              Added
-                            </button>
-                          ) : (
-                            <button
-                              className="px-3 py-1.5 text-xs font-medium bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-                              onClick={() => handleAddAiQuestion(idx)}
-                            >
-                              + Add
-                            </button>
-                          )}
-                        </div>
-                        <ul className="space-y-2">
-                          {gq.options.map((opt, oIdx) => (
-                            <li
-                              key={oIdx}
-                              className={`text-xs p-2 border ${opt.isCorrect ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300" : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"}`}
-                            >
-                              {opt.isCorrect && (
-                                <span className="font-bold mr-1">✓</span>
-                              )}
-                              {opt.text}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  })}
+            {/* Loading State */}
+            {isGenerating && (
+              <div className="flex flex-col items-center justify-center py-6 sm:py-8 gap-4 animate-in fade-in zoom-in duration-500">
+                <LoadingSpinner size="lg" showText={false} />
+                <div className="text-center space-y-2">
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                    {quizLoadingMessages[quizLoadingMsgIdx]}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    This may take a moment while the AI generates your quiz.
+                  </p>
                 </div>
               </div>
             )}
+
+            {/* Generated results area */}
+            {generatedQuestions.length > 0 && !isGenerating && (
+              <div className="flex-1 mt-3 flex flex-col min-h-0">
+                <div className="flex items-center justify-between mb-3 flex-shrink-0">
+                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                    Generated Questions ({selectedAiIndices.size}/{generatedQuestions.length} selected)
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors underline"
+                      onClick={() => {
+                        if (selectedAiIndices.size === generatedQuestions.length) {
+                          setSelectedAiIndices(new Set());
+                        } else {
+                          setSelectedAiIndices(new Set(generatedQuestions.map((_, i) => i)));
+                        }
+                      }}
+                    >
+                      {selectedAiIndices.size === generatedQuestions.length ? "Deselect All" : "Select All"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3 overflow-y-auto flex-1 min-h-0 scrollbar-hide">
+                {generatedQuestions.map((gq, idx) => {
+                  return (
+                    <div
+                      key={idx}
+                      className={`border p-3 transition-all cursor-pointer ${
+                        selectedAiIndices.has(idx)
+                          ? "border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-950/20"
+                          : "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 opacity-60"
+                      }`}
+                      onClick={() => {
+                        setSelectedAiIndices((prev) => {
+                           const next = new Set(prev);
+                           if (next.has(idx)) next.delete(idx);
+                           else next.add(idx);
+                           return next;
+                        });
+                      }}
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Checkbox */}
+                        <div
+                          className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                            selectedAiIndices.has(idx)
+                              ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white"
+                              : "border-gray-300 dark:border-gray-600"
+                          }`}
+                        >
+                          {selectedAiIndices.has(idx) && <Check className="w-3 h-3" />}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 space-y-3">
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100 text-[13px] sm:text-sm">
+                            {idx + 1}. {gq.text}
+                          </h4>
+                          <ul className="space-y-2">
+                            {gq.options.map((opt, oIdx) => (
+                              <li
+                                key={oIdx}
+                                className={`text-xs p-2 border ${
+                                  opt.isCorrect
+                                    ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300"
+                                    : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                                }`}
+                              >
+                                {opt.isCorrect && <span className="font-bold mr-1">✓</span>}
+                                {opt.text}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            )}
           </div>
+
+          {/* Modal Footer */}
+          {generatedQuestions.length > 0 && !isGenerating && (
+            <div className="px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+              <div className="flex items-center gap-2">
+                {/* Generate New */}
+                <button
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium truncate"
+                  onClick={() => {
+                    setGeneratedQuestions([]);
+                    setAiPrompt("");
+                    setAiError(null);
+                    setSelectedAiIndices(new Set());
+                    setAiConfigExpanded(false);
+                  }}
+                >
+                  Generate New
+                </button>
+
+                {/* Regenerate */}
+                <button
+                  className="flex-shrink-0 w-9 h-9 sm:w-[38px] sm:h-[38px] flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white transition-colors"
+                  title="Regenerate quiz"
+                  onClick={handleGenerateAI}
+                  disabled={isGenerating || localAiCount >= 100}
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+
+                {/* Add X Questions */}
+                <button
+                  className="flex-1 sm:flex-none ml-auto px-3 sm:px-6 py-2 text-xs sm:text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 truncate"
+                  onClick={handleAddSelectedQuestions}
+                  disabled={selectedAiIndices.size === 0}
+                >
+                  Add {selectedAiIndices.size} Question{selectedAiIndices.size !== 1 ? 's' : ''}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
         </div>
       )}
     </div>

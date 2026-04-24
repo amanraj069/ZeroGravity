@@ -119,7 +119,7 @@ const Goals: React.FC = () => {
   // Update URL when activeView changes
   const updateURL = (view: ViewType) => {
     const tab = view === "goals" ? "all" : "daily";
-    router.push(`/goals?tab=${tab}`, { scroll: false });
+    window.history.pushState(null, "", `/goals?tab=${tab}`);
   };
 
   // Handle view change
@@ -141,10 +141,10 @@ const Goals: React.FC = () => {
   useEffect(() => {
     const tab = searchParams.get("tab");
     if (!tab) {
-      // Set default to daily tasks
-      router.replace("/goals?tab=daily", { scroll: false });
+      // Set default to daily tasks without triggering a full RSC fetch
+      window.history.replaceState(null, "", "/goals?tab=daily");
     }
-  }, [searchParams, router]);
+  }, [searchParams]);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -309,22 +309,72 @@ const Goals: React.FC = () => {
       return <DailyTasks />;
     }
 
+    if (authLoading || (activeView === "goals" && isLoading)) {
+      return (
+        <div className="flex items-center justify-center py-24">
+          <LoadingSpinner size="md" showText={false} />
+          <span className="ml-4 text-gray-600 dark:text-gray-400">
+            {authLoading ? "Checking authentication..." : "Loading goals..."}
+          </span>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="flex items-center justify-center py-24">
+          <div className="text-center">
+            <AlertCircle className="w-8 h-8 text-red-500 dark:text-red-400 mx-auto mb-3" />
+            <p className="text-red-600 dark:text-red-400 mb-3">{error}</p>
+            {!isLoggedIn ? (
+              <a
+                href="/login"
+                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
+              >
+                Go to Login
+              </a>
+            ) : (
+              <button
+                onClick={loadGoals}
+                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              >
+                Try Again
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     // Goals content
     return (
       <>
         <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.back()}
-                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-                title="Go back"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
-                Goals
-              </h1>
+          <div className="flex items-center justify-between mb-2 md:mb-0">
+            <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => router.back()}
+                  className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                  title="Go back"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                  Goals
+                </h1>
+              </div>
+              
+              {/* Desktop Stats */}
+              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <span className="whitespace-nowrap">{goalsAnalytics?.totalCompleted || 0} completed</span>
+                <span className="flex-shrink-0">•</span>
+                <span className="whitespace-nowrap">{goals.length} total</span>
+                <span className="flex-shrink-0">•</span>
+                <span className="whitespace-nowrap">
+                  {goalsAnalytics?.completionRate || 0}% completion rate
+                </span>
+              </div>
             </div>
             <button
               onClick={() => setShowAddGoal(true)}
@@ -334,12 +384,14 @@ const Goals: React.FC = () => {
               Add Goal
             </button>
           </div>
-          <div className="flex flex-nowrap gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
-            <span>{goalsAnalytics?.totalCompleted || 0} completed</span>
-            <span>•</span>
-            <span>{goals.length} total</span>
-            <span>•</span>
-            <span>
+          
+          {/* Mobile Stats */}
+          <div className="flex md:hidden items-center gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full mt-2">
+            <span className="whitespace-nowrap">{goalsAnalytics?.totalCompleted || 0} completed</span>
+            <span className="flex-shrink-0">•</span>
+            <span className="whitespace-nowrap">{goals.length} total</span>
+            <span className="flex-shrink-0">•</span>
+            <span className="whitespace-nowrap">
               {goalsAnalytics?.completionRate || 0}% completion rate
             </span>
           </div>
@@ -374,7 +426,7 @@ const Goals: React.FC = () => {
 
         {/* Mobile-optimized Filter */}
         <div className="bg-white dark:bg-gray-800 shadow-sm">
-          <div className="flex overflow-x-auto sm:overflow-visible justify-end sm:justify-start">
+          <div className="flex overflow-x-auto sm:overflow-visible justify-start scrollbar-hide">
             {(
               [
                 "current",
@@ -415,7 +467,7 @@ const Goals: React.FC = () => {
               <img
                 src="/goals/dGoals.png"
                 alt="No goals yet"
-                className="w-128 h-72 object-contain mx-auto mb-2"
+                className="w-full max-w-[280px] sm:max-w-[380px] h-auto object-contain mx-auto mb-4"
                 draggable={false}
               />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -679,55 +731,8 @@ const Goals: React.FC = () => {
     );
   };
 
-  // Show loading state
-  if (authLoading || (activeView === "goals" && isLoading)) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center py-12">
-            <LoadingSpinner size="md" showText={false} />
-            <span className="ml-4 text-gray-600 dark:text-gray-400">
-              {authLoading ? "Checking authentication..." : "Loading goals..."}
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <AlertCircle className="w-8 h-8 text-red-500 dark:text-red-400 mx-auto mb-3" />
-              <p className="text-red-600 dark:text-red-400 mb-3">{error}</p>
-              {!isLoggedIn ? (
-                <a
-                  href="/login"
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
-                >
-                  Go to Login
-                </a>
-              ) : (
-                <button
-                  onClick={loadGoals}
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-                >
-                  Try Again
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900  pb-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
       <div className="max-w-6xl mx-auto px-4 py-3 sm:py-6 space-y-2 sm:space-y-6 ">
         {/* Main Navigation - Always visible */}
         <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden ">

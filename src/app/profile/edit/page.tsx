@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
-import Link from "next/link";
+// Removed unused Link import
 import Image from "next/image";
 import PhotoEditor from "@/components/PhotoEditor";
 import { ChevronLeft } from "lucide-react";

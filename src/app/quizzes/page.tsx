@@ -54,11 +54,17 @@ export default function QuizzesPage() {
   const fetchQuizzes = async () => {
     setLoading(true);
     try {
-      console.log("Fetching user quizzes...");
+      if (process.env.NODE_ENV === "development") {
+        console.log("Fetching user quizzes...");
+      }
       const response = await listUserQuizzes();
-      console.log("API Response:", response);
+      if (process.env.NODE_ENV === "development") {
+        console.log("API Response:", response);
+      }
       if (response.success) {
-        console.log("Quizzes data:", response.data);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Quizzes data:", response.data);
+        }
         setQuizzes(response.data || []);
       } else {
         console.error("Failed to fetch quizzes:", response.message);

@@ -276,10 +276,16 @@ export const listUserQuizzes = async (params?: {
   const url = `${API_ENDPOINTS.QUIZZES.LIST}${
     qs.toString() ? `?${qs.toString()}` : ""
   }`;
-  console.log("Making API call to:", url);
+  if (process.env.NODE_ENV === "development") {
+    console.log("Making API call to:", url);
+  }
   const res = await apiCallWithAuth(url);
-  console.log("API response status:", res.status);
+  if (process.env.NODE_ENV === "development") {
+    console.log("API response status:", res.status);
+  }
   const data = await res.json();
-  console.log("API response data:", data);
+  if (process.env.NODE_ENV === "development") {
+    console.log("API response data:", data);
+  }
   return data;
 };

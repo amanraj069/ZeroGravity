@@ -52,11 +52,17 @@ export default function DeletedQuizzesPage() {
   const fetchDeletedQuizzes = async () => {
     setLoading(true);
     try {
-      console.log("Fetching deleted quizzes...");
+      if (process.env.NODE_ENV === "development") {
+        console.log("Fetching deleted quizzes...");
+      }
       const response = await listDeletedQuizzes();
-      console.log("API Response:", response);
+      if (process.env.NODE_ENV === "development") {
+        console.log("API Response:", response);
+      }
       if (response.success) {
-        console.log("Deleted quizzes data:", response.data);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Deleted quizzes data:", response.data);
+        }
         setQuizzes(response.data || []);
       } else {
         console.error("Failed to fetch deleted quizzes:", response.message);

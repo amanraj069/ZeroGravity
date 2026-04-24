@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Plus,
@@ -92,6 +92,15 @@ const DailyTasks: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const [showStudyPlanner, setShowStudyPlanner] = useState(false);
+
+  // Stable callbacks for the StudyPlannerModal to prevent re-renders
+  const handleCloseStudyPlanner = useCallback(() => setShowStudyPlanner(false), []);
+  const handleTasksCreated = useCallback(async () => {
+    const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
+    setTasks(fetchedTasks);
+    const analyticsData = await dailyTasksService.getStreakInfo();
+    setAnalytics(analyticsData);
+  }, [selectedDate]);
 
   // Check if selected date is today
   const isToday = selectedDate === getLocalDateString();
@@ -236,7 +245,9 @@ const DailyTasks: React.FC = () => {
 
       // Show success message if all tasks are completed
       if (result.allTasksCompleted && result.isCompleted) {
-        console.log("All daily tasks completed for today!");
+        if (process.env.NODE_ENV === "development") {
+          console.log("All daily tasks completed for today!");
+        }
       }
     } catch (error) {
       console.error("Error toggling task completion:", error);
@@ -334,21 +345,38 @@ const DailyTasks: React.FC = () => {
 
       {/* Header with Analytics */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
-        <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.back()}
-              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-              title="Go back"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-lg sm:text-2xl font-semibold text-gray-900 dark:text-white">
-              Daily Tasks
-            </h1>
+        <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2 md:mb-0">
+          <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.back()}
+                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                title="Go back"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                Daily Tasks
+              </h1>
+            </div>
+            {/* Desktop Stats */}
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="flex items-center gap-1 whitespace-nowrap">
+                <TrendingUp className="w-4 h-4 flex-shrink-0" />
+                {analytics.currentStreak} day streak
+              </span>
+              <span className="flex-shrink-0">•</span>
+              <span className="whitespace-nowrap">
+                {analytics.completedToday} completed today
+              </span>
+              <span className="flex-shrink-0">•</span>
+              <span className="whitespace-nowrap">
+                {analytics.totalActiveTasks} active tasks
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="relative group">
+            <div className="relative group hidden sm:block">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
                 <button
                   onClick={() => setShowStudyPlanner(true)}
@@ -371,7 +399,8 @@ const DailyTasks: React.FC = () => {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full">
+        {/* Mobile Stats */}
+        <div className="flex md:hidden items-center gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full mt-2">
           <span className="flex items-center gap-1 whitespace-nowrap">
             <TrendingUp className="w-3 h-3 flex-shrink-0" />
             {analytics.currentStreak} day streak
@@ -409,15 +438,31 @@ const DailyTasks: React.FC = () => {
       {/* Date Selector with Upcoming Days */}
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          {/* Date Picker */}
-          <input
-            type="date"
-            id="selectedDate"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark]"
-          />
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* AI Plan Button - Mobile Only */}
+            <div className="relative group sm:hidden flex-1">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
+                <button
+                  onClick={() => setShowStudyPlanner(true)}
+                  className="relative w-full flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black py-2 text-[13px] hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
+                  style={{ borderRadius: 0 }}
+                  title="AI Study Planner"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>AI Planner</span>
+                </button>
+            </div>
+
+            {/* Date Picker */}
+            <input
+              type="date"
+              id="selectedDate"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+              className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark] min-w-0"
+            />
+          </div>
           {/* Upcoming Days - full width */}
           <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-1">
             {getUpcomingDays().map((day) => {
@@ -507,7 +552,7 @@ const DailyTasks: React.FC = () => {
             <img
               src="/goals/dTasks.png"
               alt="Goals Art"
-              className="w-128 h-72 mx-auto object-contain"
+              className="w-full max-w-[280px] sm:max-w-[380px] h-auto mx-auto object-contain mb-4"
             />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               No daily tasks for this date
@@ -538,14 +583,8 @@ const DailyTasks: React.FC = () => {
       </div>
       <StudyPlannerModal 
         isOpen={showStudyPlanner}
-        onClose={() => setShowStudyPlanner(false)}
-        selectedDate={selectedDate}
-        onTasksCreated={async () => {
-          const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
-          setTasks(fetchedTasks);
-          const analyticsData = await dailyTasksService.getStreakInfo();
-          setAnalytics(analyticsData);
-        }}
+        onClose={handleCloseStudyPlanner}
+        onTasksCreated={handleTasksCreated}
       />
     </>
   );

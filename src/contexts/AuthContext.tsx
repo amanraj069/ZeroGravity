@@ -69,7 +69,7 @@ interface AuthContextType {
   loginWithGoogle: (
     credential: string,
   ) => Promise<{ success: boolean; message: string; streakInfo?: StreakInfo }>;
-  checkSession: () => Promise<void>;
+  checkSession: (silent?: boolean) => Promise<void>;
   sendOtp: (
     userData: SignupData,
   ) => Promise<{ success: boolean; message: string; email?: string }>;
@@ -116,10 +116,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // };
 
   // Check session status on component mount and when needed
-  const checkSession = async () => {
+  const checkSession = async (silent = false) => {
     try {
-      setIsLoading(true);
-      console.log("Checking session...");
+      if (!silent) setIsLoading(true);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Checking session...");
+      }
 
       // Use apiCallWithAuth to support both cookies and token-based auth
       const response = await apiCallWithAuth(
@@ -130,13 +132,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       const data = await response.json();
-      console.log("Session check response:", data);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Session check response:", data);
+      }
 
       if (data.success && data.isLoggedIn) {
         setUser(data.user);
         setUserId(data.userId);
         setIsLoggedIn(true);
-        console.log("User logged in:", data.user);
+        if (process.env.NODE_ENV === "development") {
+          console.log("User logged in:", data.user);
+        }
 
         // Ensure token is stored if available (in case it wasn't stored before)
         if (data.token) {
@@ -146,15 +152,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(null);
         setUserId(null);
         setIsLoggedIn(false);
-        console.log("User not logged in");
+        if (process.env.NODE_ENV === "development") {
+          console.log("User not logged in");
+        }
       }
     } catch (error) {
       console.error("Session check failed:", error);
-      setUser(null);
-      setUserId(null);
-      setIsLoggedIn(false);
+      // Only reset auth state on initial check, not periodic silent checks
+      if (!silent) {
+        setUser(null);
+        setUserId(null);
+        setIsLoggedIn(false);
+      }
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   };
 
@@ -171,14 +182,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     streakInfo?: StreakInfo;
   }> => {
     try {
-      console.log("Attempting login for:", email);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Attempting login for:", email);
+      }
       const response = await apiCall(API_ENDPOINTS.AUTH.LOGIN, {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log("Login response:", data);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Login response:", data);
+      }
 
       if (data.success) {
         setUser(data.user);
@@ -202,8 +217,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           );
         }
 
-        console.log("Login successful, user:", data.user);
-        console.log("UserId:", data.userId);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Login successful, user:", data.user);
+          console.log("UserId:", data.userId);
+        }
         return {
           success: true,
           message: data.message,
@@ -211,7 +228,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           streakInfo: data.streakInfo,
         };
       } else {
-        console.log("Login failed:", data.message);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Login failed:", data.message);
+        }
         return {
           success: false,
           message: data.message || "Login failed",
@@ -368,14 +387,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     streakInfo?: StreakInfo;
   }> => {
     try {
-      console.log("Attempting Google login");
+      if (process.env.NODE_ENV === "development") {
+        console.log("Attempting Google login");
+      }
       const response = await apiCall(API_ENDPOINTS.AUTH.GOOGLE, {
         method: "POST",
         body: JSON.stringify({ credential }),
       });
 
       const data = await response.json();
-      console.log("Google login response:", data);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Google login response:", data);
+      }
 
       if (data.success) {
         setUser(data.user);
@@ -399,14 +422,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           );
         }
 
-        console.log("Google login successful, user:", data.user);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Google login successful, user:", data.user);
+        }
         return {
           success: true,
           message: data.message,
           streakInfo: data.streakInfo,
         };
       } else {
-        console.log("Google login failed:", data.message);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Google login failed:", data.message);
+        }
         return {
           success: false,
           message: data.message || "Google login failed",
@@ -478,10 +505,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkSession();
   }, []);
 
-  // Optional: Set up periodic session checking
+  // Optional: Set up periodic session checking (silent — no loading state)
   useEffect(() => {
     if (isLoggedIn) {
-      const interval = setInterval(checkSession, 5 * 60 * 1000); // Check every 5 minutes
+      const interval = setInterval(() => checkSession(true), 5 * 60 * 1000); // Check every 5 minutes
       return () => clearInterval(interval);
     }
   }, [isLoggedIn]);

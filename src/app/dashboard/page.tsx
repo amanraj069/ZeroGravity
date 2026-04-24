@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
+// Removed unused API_ENDPOINTS import
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
 import { ShoppingBag } from "lucide-react";

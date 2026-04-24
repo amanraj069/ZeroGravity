@@ -200,20 +200,24 @@ export const apiCall = async (url: string, options: RequestInit = {}) => {
   };
 
   try {
-    console.log(`Making API call to: ${url}`, {
-      method: defaultOptions.method || "GET",
-      credentials: defaultOptions.credentials,
-      headers: defaultOptions.headers,
-    });
+    if (process.env.NODE_ENV === "development") {
+      console.log(`Making API call to: ${url}`, {
+        method: defaultOptions.method || "GET",
+        credentials: defaultOptions.credentials,
+        headers: defaultOptions.headers,
+      });
+    }
 
     const response = await fetch(url, defaultOptions);
 
-    console.log(`API response status: ${response.status}`, {
-      url,
-      status: response.status,
-      statusText: response.statusText,
-      headers: Object.fromEntries(response.headers.entries()),
-    });
+    if (process.env.NODE_ENV === "development") {
+      console.log(`API response status: ${response.status}`, {
+        url,
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+      });
+    }
 
     return response;
   } catch (error) {
@@ -240,7 +244,9 @@ export const apiCallWithAuth = async (
   if (response.status === 401) {
     const token = localStorage.getItem("authToken");
     if (token) {
-      console.log("Retrying with Authorization header...");
+      if (process.env.NODE_ENV === "development") {
+        console.log("Retrying with Authorization header...");
+      }
       const authOptions = {
         ...options,
         headers: {
