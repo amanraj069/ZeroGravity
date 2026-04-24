@@ -1,6 +1,7 @@
 "use client";
 
 import HeroSection from "@/components/landing/HeroSection";
+import HighlightsSection from "@/components/landing/HighlightsSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import WaitlistSection from "@/components/landing/WaitlistSection";
 
@@ -63,6 +64,7 @@ export default function Home() {
             </span>
           </div>
         </div>
+        <HighlightsSection />
         <FeaturesSection />
         <WaitlistSection />
       </div>

@@ -17,12 +17,12 @@
 }
 
 .dark {
-  --background: #0a0a0a;
+  --background: #111116;
   --foreground: #ffffff;
   --gray-50: #030712;
-  --gray-100: #111827;
-  --gray-200: #1f2937;
-  --gray-300: #374151;
+  --gray-100: #0d0b14;
+  --gray-200: #13111c;
+  --gray-300: #1f1d2b;
   --gray-400: #4b5563;
   --gray-500: #6b7280;
   --gray-600: #9ca3af;
@@ -55,7 +55,7 @@ html {
 }
 
 html.dark {
-  background-color: #0a0a0a; /* Dark theme background */
+  background-color: #111116; /* Dark theme background */
 }
 
 /* Custom scrollbar for webkit browsers - ZeroGravity Theme */
@@ -183,9 +183,9 @@ input:-webkit-autofill:active {
 .dark input:-webkit-autofill:hover,
 .dark input:-webkit-autofill:focus,
 .dark input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #111827 inset !important;
+  -webkit-box-shadow: 0 0 0 30px #111116 inset !important;
   -webkit-text-fill-color: #ffffff !important;
-  background-color: #111827 !important;
+  background-color: #111116 !important;
   background-clip: content-box !important;
 }
 
@@ -219,7 +219,7 @@ textarea::placeholder {
 .dark textarea,
 .dark select {
   color: #ffffff;
-  background-color: #111827;
+  background-color: #111116;
 }
 
 .dark input[type="text"]::placeholder,
