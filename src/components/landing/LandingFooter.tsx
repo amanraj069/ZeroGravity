@@ -51,7 +51,7 @@ export default function LandingFooter() {
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 py-4 lg:py-6">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 py-4 lg:pt-12 lg:pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_0.5fr] mb-2 lg:mb-6">
           <div className="text-center md:text-left mb-4 md:mb-0">
             <motion.div

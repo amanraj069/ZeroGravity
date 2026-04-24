@@ -2,18 +2,69 @@
 
 import Image from "next/image";
 import {
-  AnimatedFeatureGrid,
   AnimatedFeatureItem,
   AnimatedSection,
 } from "@/components/AnimatedSection";
 import { useEffect, useState } from "react";
+import { Target, TrendingUp, Bell, ShieldCheck, ArrowRight, Zap } from "lucide-react";
+
+const features = [
+  {
+    id: "goals",
+    title: "Master Your Goals",
+    description: "Transform ambitious dreams into achievable milestones with smart goal management that adapts to your unique journey.",
+    bullets: ["Contextual notes", "Smart categorization", "Real-time visualization"],
+    image: "/landing/zerogravity-goal.webp",
+    icon: Target,
+    gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
+    border: "group-hover:border-purple-500/30",
+    iconColor: "text-purple-400",
+    size: "lg:col-span-7"
+  },
+  {
+    id: "insights",
+    title: "Deep Insights",
+    description: "Beautiful tracking that learns from your patterns to keep you engaged.",
+    bullets: ["Habit tracking", "Achievement streaks", "Interactive checklists"],
+    image: "/landing/zerogravity-icecream.webp",
+    icon: TrendingUp,
+    gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
+    border: "group-hover:border-blue-500/30",
+    iconColor: "text-blue-400",
+    size: "lg:col-span-5"
+  },
+  {
+    id: "reminders",
+    title: "Smart Reminders",
+    description: "Intelligent nudges that turn procrastination into progress effortlessly.",
+    bullets: ["Flexible scheduling", "Motivation points", "Visual countdowns"],
+    image: "/landing/zerogravity-meditate.webp",
+    icon: Bell,
+    gradient: "from-violet-500/10 via-violet-500/5 to-transparent",
+    border: "group-hover:border-violet-500/30",
+    iconColor: "text-violet-400",
+    size: "lg:col-span-5"
+  },
+  {
+    id: "privacy",
+    title: "Complete Privacy",
+    description: "Granular control lets you decide exactly what to share and what to keep protected in your encrypted workspace.",
+    bullets: ["Encrypted storage", "One-click toggle", "Granular settings"],
+    image: "/landing/zerogravity-flex.webp",
+    icon: ShieldCheck,
+    gradient: "from-emerald-500/10 via-emerald-500/5 to-transparent",
+    border: "group-hover:border-emerald-500/30",
+    iconColor: "text-emerald-400",
+    size: "lg:col-span-7"
+  }
+];
 
 export default function FeaturesSection() {
   const [stars, setStars] = useState<{ id: number; top: string; left: string; size: number; delay: number; color: string }[]>([]);
 
   useEffect(() => {
     const starColors = ["bg-white", "bg-purple-100", "bg-blue-100"];
-    const newStars = Array.from({ length: 80 }, (_, i) => ({
+    const newStars = Array.from({ length: 60 }, (_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -25,181 +76,113 @@ export default function FeaturesSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-white dark:bg-[#111116] transition-colors duration-1000">
-      {/* Background Cosmic Atmosphere */}
+    <section className="relative py-20 lg:py-32 overflow-hidden bg-white dark:bg-[#0a0a0c] transition-colors duration-1000">
+      {/* Cosmic Atmosphere */}
       <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
-        <div className="absolute top-[20%] left-[-10%] w-[50%] h-[50%] bg-purple-600/[0.04] rounded-full blur-[120px]" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[50%] h-[50%] bg-violet-600/[0.04] rounded-full blur-[120px]" />
+        <div className="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-purple-600/[0.05] rounded-full blur-[140px]" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/[0.05] rounded-full blur-[140px]" />
         
         {stars.map((star) => (
           <div
             key={star.id}
-            className={`absolute rounded-full ${star.color} opacity-[0.2] animate-pulse`}
+            className={`absolute rounded-full ${star.color} opacity-[0.2]`}
             style={{
               top: star.top,
               left: star.left,
               width: `${star.size}px`,
               height: `${star.size}px`,
-              animationDelay: `${star.delay}s`,
-              animationDuration: `${4 + Math.random() * 4}s`
+              animation: `pulse ${3 + Math.random() * 4}s infinite ${star.delay}s`
             }}
           />
         ))}
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-16 sm:py-24 relative z-10">
-        <AnimatedSection className="text-center mb-10 sm:mb-20">
-          <h2 className="text-xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-3 tracking-tight px-4">
-            Everything You Need to Achieve Your Dreams
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-lg max-w-2xl mx-auto font-light px-6">
-            Discover what makes ZeroGravity the ultimate tool for your journey.
-          </p>
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 relative z-10">
+        <AnimatedSection className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-8 text-center md:text-left">
+          <div className="max-w-2xl mx-auto md:mx-0">
+            <div className="flex items-center justify-center md:justify-start gap-4 mb-6">
+              <span className="h-[1px] w-12 bg-black dark:bg-white/20" />
+              <span className="text-[10px] sm:text-xs uppercase tracking-[0.5em] font-bold text-gray-400 dark:text-gray-500">
+                Features Showcase
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white leading-[1.2] tracking-tight">
+              Everything You Need to <span className="font-normal italic bg-clip-text text-transparent bg-gradient-to-r from-black via-black to-black dark:from-white dark:via-purple-200 dark:to-blue-200">Achieve Your Dreams</span>
+            </h2>
+          </div>
+          <div className="md:max-w-[300px] mx-auto md:mx-0">
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-base font-light leading-relaxed">
+              Professional tools for clarity, motivation, and total control of your journey.
+            </p>
+          </div>
         </AnimatedSection>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center mb-16 lg:mb-32">
-          <AnimatedFeatureItem className="order-2 lg:order-1">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-              <Image
-                src="/landing/zerogravity-goal.webp"
-                alt="Goal Management Features"
-                width={500}
-                height={400}
-                className="relative rounded-xl border border-gray-100 dark:border-white/5 w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
-              />
-            </div>
-          </AnimatedFeatureItem>
-          <AnimatedFeatureItem className="order-1 lg:order-2 space-y-6">
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-light text-black dark:text-white">
-              Master Your Goals with Precision
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed font-light">
-              Transform ambitious dreams into achievable milestones with smart
-              goal management that adapts to your journey.
-            </p>
-            <ul className="space-y-3 sm:space-y-4">
-              {[
-                "Rich goal descriptions with context and notes",
-                "Smart categorization for work, health, and more",
-                "Real-time progress visualization with celebrations"
-              ].map((text, i) => (
-                <li key={i} className="flex items-start">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black dark:bg-white mr-3 mt-1.5 flex-shrink-0"></div>
-                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm lg:text-base">{text}</span>
-                </li>
-              ))}
-            </ul>
-          </AnimatedFeatureItem>
-        </AnimatedFeatureGrid>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          {features.map((feature) => (
+            <AnimatedFeatureItem 
+              key={feature.id} 
+              className={`group relative overflow-hidden bg-white/50 dark:bg-white/[0.02] backdrop-blur-md rounded-3xl border border-black/5 dark:border-white/[0.05] transition-all duration-500 ${feature.border} ${feature.size}`}
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+              
+              <div className="relative h-full flex flex-col p-8 sm:p-10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+                  <div className="space-y-3 max-w-md">
+                    <h3 className="text-2xl font-light text-black dark:text-white tracking-tight">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base leading-relaxed font-light">
+                      {feature.description}
+                    </p>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center mb-16 lg:mb-32">
-          <AnimatedFeatureItem className="space-y-6">
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-light text-black dark:text-white">
-              Stay Motivated with Intelligent Insights
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed font-light">
-              Beautiful visualizations and smart tracking that learns from your
-              patterns to keep you engaged and motivated.
-            </p>
-            <ul className="space-y-3 sm:space-y-4">
-              {[
-                "Progress bars with milestone celebrations",
-                "Interactive checklists for complex goals",
-                "Achievement streaks keep you on fire"
-              ].map((text, i) => (
-                <li key={i} className="flex items-start">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black dark:bg-white mr-3 mt-1.5 flex-shrink-0"></div>
-                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm lg:text-base">{text}</span>
-                </li>
-              ))}
-            </ul>
-          </AnimatedFeatureItem>
-          <AnimatedFeatureItem>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-violet-500/10 to-purple-500/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-              <Image
-                src="/landing/zerogravity-icecream.webp"
-                alt="Progress Tracking"
-                width={500}
-                height={400}
-                className="relative rounded-xl border border-gray-100 dark:border-white/5 w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
-              />
-            </div>
-          </AnimatedFeatureItem>
-        </AnimatedFeatureGrid>
+                    {/* Points below description for narrow cards (Insights & Reminders) */}
+                    {feature.size.includes("lg:col-span-5") && (
+                      <ul className="pt-4 space-y-3">
+                        {feature.bullets.map((bullet, i) => (
+                          <li key={i} className="flex items-center gap-3 text-xs sm:text-sm text-gray-400 dark:text-gray-500 font-light">
+                            <Zap className={`w-3 h-3 ${feature.iconColor}`} />
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center mb-16 lg:mb-32">
-          <AnimatedFeatureItem className="order-2 lg:order-1">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-              <Image
-                src="/landing/zerogravity-meditate.webp"
-                alt="Reminders and Notifications"
-                width={500}
-                height={400}
-                className="relative rounded-xl border border-gray-100 dark:border-white/5 w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
-              />
-            </div>
-          </AnimatedFeatureItem>
-          <AnimatedFeatureItem className="space-y-6 order-1 lg:order-2">
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-light text-black dark:text-white">
-              Never Miss a Moment
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed font-light">
-              Intelligent reminders that turn procrastination into progress with
-              gentle nudges and motivation points.
-            </p>
-            <ul className="space-y-3 sm:space-y-4">
-              {[
-                "Smart deadline management with flexible scheduling",
-                "Motivation points that fuel your progress",
-                "Visual countdown timers for positive urgency"
-              ].map((text, i) => (
-                <li key={i} className="flex items-start">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black dark:bg-white mr-3 mt-1.5 flex-shrink-0"></div>
-                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm lg:text-base">{text}</span>
-                </li>
-              ))}
-            </ul>
-          </AnimatedFeatureItem>
-        </AnimatedFeatureGrid>
+                  {/* Points on the side for wide cards (Goals & Privacy) */}
+                  {feature.size.includes("lg:col-span-7") && (
+                    <ul className="hidden xl:block space-y-3 shrink-0">
+                      {feature.bullets.map((bullet, i) => (
+                        <li key={i} className="flex items-center gap-3 text-xs sm:text-sm text-gray-400 dark:text-gray-500 font-light">
+                          <Zap className={`w-3 h-3 ${feature.iconColor}`} />
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-center">
-          <AnimatedFeatureItem className="space-y-6">
-            <h3 className="text-xl sm:text-2xl lg:text-3xl font-light text-black dark:text-white">
-              Complete Privacy Control
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed font-light">
-              Your journey, your choice. Granular privacy control lets you decide
-              what to share and what to keep private.
-            </p>
-            <ul className="space-y-3 sm:space-y-4">
-              {[
-                "Individual privacy settings for each goal",
-                "One-click toggle between private and public",
-                "Secure, encrypted workspace for sensitive goals"
-              ].map((text, i) => (
-                <li key={i} className="flex items-start">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-black dark:bg-white mr-3 mt-1.5 flex-shrink-0"></div>
-                  <span className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm lg:text-base">{text}</span>
-                </li>
-              ))}
-            </ul>
-          </AnimatedFeatureItem>
-          <AnimatedFeatureItem>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-              <Image
-                src="/landing/zerogravity-flex.webp"
-                alt="Privacy Controls"
-                width={500}
-                height={400}
-                className="relative rounded-xl border border-gray-100 dark:border-white/5 w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
-              />
-            </div>
-          </AnimatedFeatureItem>
-        </AnimatedFeatureGrid>
+                <div className="mt-auto relative">
+                  <div className="relative overflow-hidden rounded-2xl border border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.01]">
+                    <Image
+                      src={feature.image}
+                      alt={feature.title}
+                      width={800}
+                      height={500}
+                      className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                </div>
+              </div>
+            </AnimatedFeatureItem>
+          ))}
+        </div>
+        
+        {/* Quality Indicator */}
+        <AnimatedSection className="mt-16 text-center">
+          <p className="text-[10px] uppercase tracking-[0.4em] text-gray-500 dark:text-gray-600 font-bold">
+            Crafted for Perfection & Performance
+          </p>
+        </AnimatedSection>
       </div>
     </section>
   );

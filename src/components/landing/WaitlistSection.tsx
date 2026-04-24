@@ -88,7 +88,7 @@ export default function WaitlistSection() {
   };
 
   return (
-    <AnimatedCTA className="bg-gray-50 dark:bg-gray-800 py-16 sm:py-20">
+    <AnimatedCTA className="bg-gray-50 dark:bg-[#111114] py-16 sm:py-20 border-t border-gray-100 dark:border-white/[0.05] transition-colors duration-1000">
       <AnimatedSection className="max-w-4xl mx-auto text-center px-8">
         <AnimatedSection className="relative mb-6 sm:mb-8">
           <Image
@@ -135,7 +135,7 @@ export default function WaitlistSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="yourEmail@gmail.com"
-                  className="px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
+                  className="px-4 py-3 border border-gray-300 dark:border-white/10 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-white/20 transition-colors"
                   disabled={isLoading}
                   required
                 />
@@ -145,7 +145,7 @@ export default function WaitlistSection() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
-                    className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
+                    className="flex-1 px-4 py-3 border border-gray-300 dark:border-white/10 bg-white dark:bg-white/[0.03] text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-white/20 transition-colors"
                     disabled={isLoading}
                     required
                   />

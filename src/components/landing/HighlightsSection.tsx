@@ -14,27 +14,24 @@ const highlights = [
     title: "Interactive Quizzes",
     description: "Host live sessions for participants or join hosted quizzes to test your speed and knowledge in real-time.",
     icon: Puzzle,
-    badge: "Host & Join",
     href: "/quizzes",
     gradient: "from-blue-500/20 via-blue-500/5 to-transparent",
     accent: "bg-blue-500",
     glow: "dark:group-hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.2)]",
   },
   {
-    title: "AI Daily Planner",
+    title: "AI based Daily Planner",
     description: "Intelligent study and goal planning that dynamically adapts to your personal pace and productivity patterns.",
     icon: BrainCircuit,
-    badge: "Smart Planning",
-    href: "/dashboard",
+    href: "/goals?tab=daily",
     gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
     accent: "bg-purple-500",
     glow: "dark:group-hover:shadow-[0_0_30px_-5px_rgba(168,85,247,0.2)]",
   },
   {
-    title: "Badges",
+    title: "Achievement Badges",
     description: "Unlock distinctive badges to showcase your major milestones and celebrate your journey through ZeroGravity.",
     icon: Medal,
-    badge: "Milestones",
     href: "/badges",
     gradient: "from-amber-500/20 via-amber-500/5 to-transparent",
     accent: "bg-amber-500",
@@ -44,7 +41,6 @@ const highlights = [
     title: "Academic Manager",
     description: "Comprehensive academic management now featuring integrated attendance tracking for all your courses.",
     icon: GraduationCap,
-    badge: "Academic Hub",
     href: "/academia",
     gradient: "from-emerald-500/20 via-emerald-500/5 to-transparent",
     accent: "bg-emerald-500",
@@ -120,7 +116,7 @@ export default function HighlightsSection() {
         ))}
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 relative z-10">
         <AnimatedSection className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-8 text-center md:text-left">
           <div className="max-w-2xl mx-auto md:mx-0">
             <div className="flex items-center justify-center md:justify-start gap-4 mb-6">
@@ -129,13 +125,13 @@ export default function HighlightsSection() {
                 Beyond Beta 1
               </span>
             </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-light text-black dark:text-white leading-[1.2] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white leading-[1.2] tracking-tight">
               The Evolution of <span className="font-normal italic bg-clip-text text-transparent bg-gradient-to-r from-black via-black to-black dark:from-white dark:via-purple-200 dark:to-blue-200">ZeroGravity</span>
             </h2>
           </div>
           <div className="md:max-w-[300px] mx-auto md:mx-0">
-            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-lg font-light leading-relaxed">
-              Revolutionary upgrades engineered to elevate your dynamic productivity journey.
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-base font-light leading-relaxed">
+              Upgrades engineered to elevate your productivity journey.
             </p>
           </div>
         </AnimatedSection>
@@ -149,19 +145,13 @@ export default function HighlightsSection() {
                 
                 <div className="relative h-full p-5 sm:p-9 flex flex-col z-10">
                   {/* Header: Icon + (Badge & Title) */}
-                  <div className="flex items-start gap-4 mb-3 sm:mb-6">
-                    <div className="w-9 h-9 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-50 dark:bg-white/[0.03] rounded-xl border border-gray-100 dark:border-white/10 flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:border-gray-200 dark:group-hover:border-white/20">
+                  <div className="flex items-center gap-3 mb-3 sm:mb-6">
+                    <div className="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center bg-gray-50 dark:bg-white/[0.03] rounded-xl border border-gray-100 dark:border-white/10 flex-shrink-0 transition-all duration-500 group-hover:scale-110 group-hover:border-gray-200 dark:group-hover:border-white/20">
                       <item.icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-black dark:text-white stroke-[1.25px] transition-transform duration-500 group-hover:rotate-3" />
                     </div>
                     
-                    <div className="pt-0 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className={`w-1.5 h-1.5 rounded-full ${item.accent} dark:shadow-[0_0_12px_currentColor] opacity-40 dark:opacity-100 transition-transform duration-500 group-hover:scale-125`} />
-                        <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.3em] text-gray-400 dark:text-gray-400 font-bold truncate">
-                          {item.badge}
-                        </span>
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-light text-black dark:text-white tracking-tight group-hover:translate-x-1 transition-transform duration-500 truncate">
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-[1.1rem] font-medium text-black dark:text-white tracking-tight group-hover:translate-x-1 transition-transform duration-500 leading-tight">
                         {item.title}
                       </h3>
                     </div>
