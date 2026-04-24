@@ -103,7 +103,7 @@ function LandingNavbar() {
 
           {/* Slide-in Menu from Right */}
           <div
-            className={`fixed top-0 right-0 h-full w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 z-40 transform transition-transform duration-300 ease-in-out sm:hidden ${
+            className={`fixed top-0 right-0 h-full w-56 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 z-40 transform transition-transform duration-300 ease-in-out sm:hidden ${
               isMenuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >

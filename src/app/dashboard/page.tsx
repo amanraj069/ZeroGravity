@@ -264,7 +264,7 @@ export default function Dashboard() {
               {/* Shop Button - Right */}
               <Link
                 href="/shop"
-                className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:border-black dark:hover:border-gray-500 transition-colors whitespace-nowrap"
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-purple-900/20 border border-gray-300 dark:border-gray-700 hover:border-black dark:hover:border-purple-500/50 transition-colors whitespace-nowrap"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
                 Shop
@@ -285,7 +285,7 @@ export default function Dashboard() {
               key={item.url}
               href={item.url}
               id={item.id}
-              className="group overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-blue-500/30 dark:hover:border-blue-500/50 hover:shadow-md dark:hover:shadow-[0_18px_35px_rgba(25,118,255,0.2)] rounded-lg"
+              className="group overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-lg"
             >
               <div className="relative flex flex-row items-center justify-between gap-5 px-4 py-4 md:px-6 md:py-5">
                 <div className="flex items-center gap-2 sm:gap-4">
@@ -383,7 +383,7 @@ export default function Dashboard() {
             `,
             }}
           />
-          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-blue-400 dark:hover:border-white transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.01] hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-white/20 relative overflow-hidden">
+          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-purple-200 dark:hover:border-white transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.01] hover:shadow-xl hover:shadow-purple-400/20 dark:hover:shadow-[0_0_50px_rgba(240,230,255,0.2)] relative overflow-hidden">
             {/* Starfield Background */}
             <div className="absolute inset-0 bg-white dark:bg-black">
               {stars.map((star, index) => (
@@ -450,7 +450,7 @@ export default function Dashboard() {
           className="block mb-6 group w-full"
           id="leaderboard-link"
         >
-          <div className="border-2 border-yellow-400/60 dark:border-yellow-400/50 bg-gradient-to-br from-white via-yellow-50/30 to-amber-50/40 dark:from-gray-900 dark:via-yellow-950/30 dark:to-amber-950/20 px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-yellow-500 dark:hover:border-yellow-300 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/30 dark:hover:shadow-yellow-400/30 hover:scale-[1.02] relative overflow-hidden ring-1 ring-yellow-300/20 dark:ring-yellow-500/10 mb-24">
+          <div className="border-2 border-yellow-400/60 dark:border-yellow-400/50 bg-gradient-to-br from-white via-yellow-50/30 to-amber-50/40 dark:from-gray-900 dark:via-yellow-950/30 dark:to-amber-950/20 px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-yellow-500 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/30 dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.25)] hover:scale-[1.02] relative overflow-hidden ring-1 ring-yellow-300/20 dark:ring-yellow-500/10 mb-24">
             {/* Golden gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-amber-400/10 dark:from-yellow-500/5 dark:via-transparent dark:to-amber-500/5"></div>
 

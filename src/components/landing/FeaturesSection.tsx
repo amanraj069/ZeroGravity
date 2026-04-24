@@ -47,17 +47,17 @@ export default function FeaturesSection() {
         ))}
       </div>
 
-      <div className="max-w-6xl mx-auto px-8 py-16 sm:py-24 relative z-10">
-        <AnimatedSection className="text-center mb-12 sm:mb-20">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-4 tracking-tight">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-16 sm:py-24 relative z-10">
+        <AnimatedSection className="text-center mb-10 sm:mb-20">
+          <h2 className="text-xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-3 tracking-tight px-4">
             Everything You Need to Achieve Your Dreams
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-lg max-w-2xl mx-auto font-light">
+          <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-lg max-w-2xl mx-auto font-light px-6">
             Discover what makes ZeroGravity the ultimate tool for your journey.
           </p>
         </AnimatedSection>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-center mb-24 lg:mb-32">
+        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center mb-16 lg:mb-32">
           <AnimatedFeatureItem className="order-2 lg:order-1">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
@@ -93,7 +93,7 @@ export default function FeaturesSection() {
           </AnimatedFeatureItem>
         </AnimatedFeatureGrid>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-center mb-24 lg:mb-32">
+        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center mb-16 lg:mb-32">
           <AnimatedFeatureItem className="space-y-6">
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-light text-black dark:text-white">
               Stay Motivated with Intelligent Insights
@@ -129,7 +129,7 @@ export default function FeaturesSection() {
           </AnimatedFeatureItem>
         </AnimatedFeatureGrid>
 
-        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-center mb-24 lg:mb-32">
+        <AnimatedFeatureGrid className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center mb-16 lg:mb-32">
           <AnimatedFeatureItem className="order-2 lg:order-1">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-violet-500/10 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
