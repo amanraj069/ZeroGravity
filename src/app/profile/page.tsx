@@ -8,6 +8,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
+import ProfileSkeleton from "./ProfileSkeleton";
 import {
   Flame,
   Pencil,
@@ -78,8 +79,7 @@ export default function Profile() {
       fetchBadgeProgress().then((data) => {
         if (data) {
           setBadgeData(data);
-          // Use user.selectedBadges from backend if available, otherwise fallback to localStorage
-          // @ts-ignore - adding selectedBadges to User type contextually
+          // @ts-expect-error - adding selectedBadges to User type contextually
           const saved = getSelectedBadges(user.userId, user.selectedBadges);
           if (saved && saved.length > 0) {
             setSelectedBadgeIds(saved);
@@ -282,11 +282,9 @@ export default function Profile() {
 
   if (authLoading) {
     return (
-      <ZeroGravityLoading
-        title="Loading Profile"
-        subtitle="Fetching your profile..."
-        showNavigation={false}
-      />
+      <DashboardLayout>
+        <ProfileSkeleton />
+      </DashboardLayout>
     );
   }
 
@@ -524,7 +522,7 @@ export default function Profile() {
                         Active Tasks
                       </span>
                       {streakLoading ? (
-                        <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                        <div className="h-6 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
                       ) : (
                         <span className="text-lg md:text-2xl font-bold text-black dark:text-white leading-none">
                           {streakInfo?.totalActiveTasks ?? 0}
@@ -536,7 +534,7 @@ export default function Profile() {
                         Completed
                       </span>
                       {streakLoading ? (
-                        <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                        <div className="h-6 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
                       ) : (
                         <span className="text-lg md:text-2xl font-bold text-black dark:text-white leading-none">
                           {streakInfo?.completedToday ?? 0}
@@ -650,7 +648,7 @@ export default function Profile() {
                   {[0, 1, 2].map((slot) => (
                     <div
                       key={slot}
-                      className="flex-1 min-h-[64px] border-dashed border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 rounded-sm animate-pulse"
+                      className="flex-1 min-h-[90px] sm:min-h-[110px] md:min-h-[120px] border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/40 rounded-xl animate-pulse"
                     />
                   ))}
                 </div>
@@ -673,7 +671,7 @@ export default function Profile() {
                     Current Streak
                   </div>
                   {streakLoading ? (
-                    <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    <div className="h-6 w-12 bg-orange-200/50 dark:bg-orange-800/20 rounded animate-pulse" />
                   ) : (
                     <div className="flex items-center gap-1">
                       <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
@@ -699,7 +697,7 @@ export default function Profile() {
                     Highest Streak
                   </div>
                   {streakLoading ? (
-                    <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-black dark:border-t-white rounded-full animate-spin"></div>
+                    <div className="h-6 w-12 bg-purple-200/50 dark:bg-purple-800/20 rounded animate-pulse" />
                   ) : (
                     <div className="flex items-center gap-1">
                       <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">

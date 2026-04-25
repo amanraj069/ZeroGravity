@@ -21,6 +21,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import StudyPlannerModal from "./StudyPlannerModal";
 import AddTaskForm from "./AddTaskForm";
 import DailyTaskItem from "./DailyTaskItem";
+import GoalsSkeleton from "./GoalsSkeleton";
 
 interface PointsAnimation {
   points: number;
@@ -261,15 +262,7 @@ const DailyTasks: React.FC = () => {
 
   // Show loading state
   if (authLoading || isLoading) {
-    return (
-      <LoadingSpinner
-        size="lg"
-        text={
-          authLoading ? "Checking authentication..." : "Loading daily tasks..."
-        }
-        fullScreen
-      />
-    );
+    return <GoalsSkeleton includeTabs={false} />;
   }
 
   // Show error state

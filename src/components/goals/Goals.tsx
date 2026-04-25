@@ -27,6 +27,7 @@ import { dailyTasksService } from "@/services/dailyTasksService";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import GoalsSkeleton from "./GoalsSkeleton";
 
 type FilterType =
   | "current"
@@ -310,14 +311,7 @@ const Goals: React.FC = () => {
     }
 
     if (authLoading || (activeView === "goals" && isLoading)) {
-      return (
-        <div className="flex items-center justify-center py-24">
-          <LoadingSpinner size="md" showText={false} />
-          <span className="ml-4 text-gray-600 dark:text-gray-400">
-            {authLoading ? "Checking authentication..." : "Loading goals..."}
-          </span>
-        </div>
-      );
+      return <GoalsSkeleton includeTabs={false} />;
     }
 
     if (error) {

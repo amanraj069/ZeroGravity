@@ -4,6 +4,7 @@ import { useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Goals from "@/components/goals/Goals";
+import GoalsSkeleton from "@/components/goals/GoalsSkeleton";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 function GoalsContent() {
@@ -11,12 +12,7 @@ function GoalsContent() {
 }
 
 function GoalsLoadingFallback() {
-  return (
-    <ZeroGravityLoading
-      title="Loading Goals"
-      subtitle="Preparing your cosmic journey..."
-    />
-  );
+  return <GoalsSkeleton />;
 }
 
 export default function GoalsPage() {
@@ -31,11 +27,9 @@ export default function GoalsPage() {
 
   if (authLoading) {
     return (
-      <ZeroGravityLoading
-        title="Authenticating"
-        subtitle="Verifying your cosmic credentials..."
-        showNavigation={false}
-      />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
+        <GoalsSkeleton />
+      </div>
     );
   }
 

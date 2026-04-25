@@ -7,7 +7,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, Eye, ShoppingBag, Share2, ChevronLeft } from "lucide-react";
+import { Flame, ShoppingBag, Share2, ChevronLeft } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
   profileService,
@@ -16,7 +16,6 @@ import {
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
 import {
   fetchBadgeProgress,
-  getHighestBadge,
   BADGE_VISUALS,
   BadgeData,
 } from "@/services/badgeService";

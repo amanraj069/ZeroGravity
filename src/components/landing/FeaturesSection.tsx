@@ -6,7 +6,7 @@ import {
   AnimatedSection,
 } from "@/components/AnimatedSection";
 import { useEffect, useState } from "react";
-import { Target, TrendingUp, Bell, ShieldCheck, ArrowRight, Zap } from "lucide-react";
+import { Target, TrendingUp, Bell, ShieldCheck, Zap } from "lucide-react";
 
 const features = [
   {

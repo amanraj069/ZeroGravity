@@ -19,6 +19,7 @@ import {
 import {
   DashboardLayout,
 } from "@/components/dashboard";
+import DashboardSkeleton from "./DashboardSkeleton";
 
 export default function Dashboard() {
   const {
@@ -106,11 +107,9 @@ export default function Dashboard() {
 
   if (authLoading) {
     return (
-      <ZeroGravityLoading
-        title="Loading Dashboard"
-        subtitle="Preparing your workspace..."
-        showNavigation={false}
-      />
+      <DashboardLayout>
+        <DashboardSkeleton />
+      </DashboardLayout>
     );
   }
 

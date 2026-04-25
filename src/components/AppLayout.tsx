@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import LandingFooter from "@/components/landing/LandingFooter";
 import SimpleFooter from "@/components/landing/SimpleFooter";
-import CookieBanner from "@/components/CookieBanner";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -16,20 +15,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
   // Use LandingFooter for home page, SimpleFooter for all other pages
   const isHomePage = pathname === "/";
   const Footer = isHomePage ? LandingFooter : SimpleFooter;
-
-  // Pages that should have gray background
-  const grayBackgroundPages = [
-    "/profile",
-    "/goals",
-    "/dashboard",
-    "/shop",
-    "/quizzes",
-    "/academia",
-    "/studentsHub",
-  ];
-  const hasGrayBackground = grayBackgroundPages.some((page) =>
-    pathname?.startsWith(page),
-  );
 
   const isNotesPage = pathname?.startsWith("/notes");
 
@@ -43,7 +28,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
       ) : isNotesPage ? null : (
         <SimpleFooter />
       )}
-      {/* <CookieBanner /> */}
     </div>
   );
 }
