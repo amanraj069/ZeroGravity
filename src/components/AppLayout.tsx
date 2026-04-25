@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import LandingFooter from "@/components/landing/LandingFooter";
 import SimpleFooter from "@/components/landing/SimpleFooter";
+import CookieBanner from "@/components/CookieBanner";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -50,6 +51,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       ) : isNotesPage ? null : (
         <SimpleFooter />
       )}
+      {/* <CookieBanner /> */}
     </div>
   );
 }

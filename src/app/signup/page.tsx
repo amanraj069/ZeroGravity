@@ -281,7 +281,7 @@ export default function Signup() {
   // Show waitlist message when signup is disabled
   if (!signupEnabled) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
+      <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md p-6 sm:p-8 text-center">
           <div className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
@@ -328,7 +328,7 @@ export default function Signup() {
   // Show OTP verification screen
   if (showOtpScreen) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
+      <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md p-6 sm:p-8">
           <div className="text-center mb-6 sm:mb-8">
             {/* Email icon */}
@@ -434,7 +434,7 @@ export default function Signup() {
 
   // Show signup form when signup is enabled
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
+    <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md p-6 sm:p-8">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">

@@ -99,7 +99,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 sm:py-12 px-8 sm:px-12 lg:px-16">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <AnimatedSection className="mb-2 sm:mb-6">

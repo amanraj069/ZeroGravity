@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   AnimatedHero,
   AnimatedHeroElement,
@@ -23,86 +24,116 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative h-[88dvh] flex flex-col items-center justify-center overflow-hidden">
-      {/* Top Banner for Quiz Join */}
-      <div className="absolute top-4 lg:top-6 left-0 right-0 z-10 flex justify-center px-4">
-        <div className="bg-white/80 dark:bg-gray-900/70 backdrop-blur-md py-2.5 px-5 sm:px-6 border border-gray-200 dark:border-gray-700/80 shadow-sm flex items-center gap-3 sm:gap-4 transition-all hover:bg-white/95 dark:hover:bg-gray-900/90">
-          <p className="text-sm font-medium text-gray-800 dark:text-gray-200 whitespace-nowrap">
-            Here for a Quiz?
+    <div className="relative h-[92dvh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#111116]">
+      {/* Top Banner for Quiz Join - Redesigned as a floating glass bar */}
+      <div className="absolute top-8 lg:top-12 left-0 right-0 z-20 flex justify-center px-4">
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+          className="bg-white/10 dark:bg-white/[0.02] backdrop-blur-xl py-2 px-5 sm:px-7 border border-black/5 dark:border-white/[0.08] shadow-2xl flex items-center gap-4 sm:gap-6 transition-all hover:bg-white/20 dark:hover:bg-white/[0.05]"
+        >
+          <p className="text-[10px] sm:text-[11px] font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap tracking-[0.2em] uppercase opacity-70">
+            Here for a quiz?
           </p>
-          <form onSubmit={handleQuizJoin} className="flex items-center gap-2">
+          <div className="h-3 w-[1px] bg-black/10 dark:bg-white/10 mx-1" />
+          <form onSubmit={handleQuizJoin} className="flex items-center gap-3">
             <input
               type="text"
-              placeholder="Code"
+              placeholder="CODE"
               value={quizCode}
               onChange={(e) => setQuizCode(e.target.value.toUpperCase())}
               maxLength={6}
-              className="w-24 sm:w-28 bg-transparent border-b-2 border-gray-300 dark:border-gray-600 focus:border-black dark:focus:border-white text-black dark:text-white px-1 py-1 focus:outline-none transition-colors uppercase placeholder:normal-case placeholder:text-gray-500 tracking-widest text-center text-sm font-semibold"
+              className="w-16 sm:w-20 bg-transparent text-black dark:text-white px-0 py-1 focus:outline-none transition-colors uppercase placeholder:text-gray-400 dark:placeholder:text-white/20 tracking-[0.3em] text-center text-xs font-black border-b border-transparent focus:border-black/40 dark:focus:border-white/40"
             />
             <button
               type="submit"
               disabled={!quizCode.trim()}
-              className="bg-black dark:bg-white text-white dark:text-black px-5 py-1.5 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="text-black dark:text-white p-1 hover:scale-125 active:scale-95 transition-all disabled:opacity-20"
             >
-              Go
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
             </button>
           </form>
-        </div>
+        </motion.div>
       </div>
 
+      {/* Immersive Background */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/landing/zerogravity_bg.webp"
-          alt="ZeroGravity Background"
-          fill
-          className="object-cover opacity-25"
-          priority
-        />
+        <motion.div
+          initial={{ scale: 1.15, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.2 }}
+          transition={{ duration: 3, ease: "easeOut" }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/landing/zerogravity_bg.webp"
+            alt="ZeroGravity Background"
+            fill
+            className="object-cover"
+            priority
+          />
+        </motion.div>
+        
+        {/* Subtle Cosmic Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white dark:from-[#111116] dark:via-transparent dark:to-[#111116]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[150px] pointer-events-none" />
       </div>
 
-      <AnimatedHero className="relative z-10 text-center max-w-4xl mx-auto px-4">
+      <AnimatedHero className="relative z-10 text-center max-w-5xl mx-auto px-6">
         <AnimatedHeroElement>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-black dark:text-white mb-4 sm:mb-6">
-            ZeroGravity
+          <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-black dark:text-white mb-6 tracking-tighter leading-none select-none">
+            Zero<span className="font-normal italic">Gravity</span>
           </h1>
         </AnimatedHeroElement>
+        
         <AnimatedHeroElement>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 mb-8 sm:mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-            Break free from gravity. Reach your goals.
+          <p className="text-base sm:text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-12 sm:mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide opacity-90">
+            Break free from ordinary. <br className="hidden sm:block" />
+            Transcend your limits and reach your goals.
           </p>
         </AnimatedHeroElement>
+        
         <AnimatedHeroElement>
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <div className="flex flex-col sm:flex-row gap-5 items-center justify-center">
             {!isLoading && (
               <>
                 {isLoggedIn ? (
                   <>
                     <Link
                       href="/dashboard"
-                      className="bg-black dark:bg-white text-white dark:text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto text-center"
+                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto"
                     >
-                      Dashboard
+                      <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] shadow-xl dark:shadow-white/5" />
+                      <span className="relative">Go to Dashboard</span>
                     </Link>
                     <Link
                       href="/profile"
-                      className="border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-black dark:text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium transition-colors w-full sm:w-auto text-center"
+                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30"
                     >
-                      Profile
+                      <span className="relative">My Profile</span>
                     </Link>
                   </>
                 ) : (
                   <>
                     <Link
                       href="/login"
-                      className="bg-black dark:bg-white text-white dark:text-black px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors w-full sm:w-auto text-center"
+                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto shadow-2xl shadow-black/10 dark:shadow-white/5"
                     >
-                      Get Started
+                      <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98]" />
+                      <span className="relative flex items-center gap-3">
+                        Get Started
+                        <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </span>
                     </Link>
                     <Link
                       href="/login"
-                      className="border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-black dark:text-white px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-medium transition-colors w-full sm:w-auto text-center"
+                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
                     >
-                      Log In
+                      <span className="relative">Log In</span>
                     </Link>
                   </>
                 )}
@@ -111,6 +142,17 @@ export default function HeroSection() {
           </div>
         </AnimatedHeroElement>
       </AnimatedHero>
+
+      {/* Decorative scroll indicator */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.5, duration: 1.5 }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+      >
+        <span className="text-[9px] uppercase tracking-[0.5em] text-gray-400 dark:text-gray-600 font-bold">Discover</span>
+        <div className="w-[1px] h-16 bg-gradient-to-b from-black/20 dark:from-white/20 to-transparent" />
+      </motion.div>
     </div>
   );
 }

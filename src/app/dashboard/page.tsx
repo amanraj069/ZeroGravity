@@ -4,10 +4,18 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-// Removed unused API_ENDPOINTS import
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
-import { ShoppingBag } from "lucide-react";
+import { motion } from "framer-motion";
+import { 
+  ShoppingBag, 
+  Target, 
+  BookOpen, 
+  Trophy, 
+  FileText, 
+  ChevronRight,
+  Sparkles
+} from "lucide-react";
 import {
   DashboardLayout,
 } from "@/components/dashboard";
@@ -26,54 +34,49 @@ export default function Dashboard() {
   const [pointsAnimation, setPointsAnimation] = useState<{
     points: number;
   } | null>(null);
-  // const [uploading, setUploading] = useState(false);
-  // const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Generate random stars for Students Hub background
+  // Generate random stars for background atmosphere
   const stars = useMemo(() => {
-    return Array.from({ length: 80 }, (_, i) => ({
+    return Array.from({ length: 40 }, (_, i) => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
-      size: Math.random() * 3 + 1, // Random size between 1-4px
-      mobileSize: Math.random() * 1.5 + 0.5, // Smaller on mobile: 0.5-2px
-      opacity: Math.random() * 0.8 + 0.2, // Random opacity between 0.2-1
-      delay: Math.random() * 3, // Random animation delay for appearing
-      twinkleDuration: 4 + Math.random() * 4, // Slower twinkle: 4-8s
-      twinkleDelay: Math.random() * 3, // Random delay for twinkling animation
-      moveX: (Math.random() - 0.5) * 40, // Random X movement between -20px to 20px
-      moveY: (Math.random() - 0.5) * 40, // Random Y movement between -20px to 20px
-      showOnMobile: i < 30, // Only show 30 stars on mobile (reduced from 80)
+      size: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.5 + 0.1,
+      delay: Math.random() * 5,
     }));
   }, []);
 
-  // Navigation items array with styling accent colors
   const navigationItems = [
     {
       name: "Daily Tasks & Goals",
       url: "/goals",
       description: "Set and track your daily tasks and goals",
-      accent: "from-sky-500/80 via-indigo-700/70 to-slate-900/80",
+      icon: <Target className="w-5 h-5" />,
+      accent: "from-indigo-500 to-purple-500",
       id: "goals-card",
     },
     {
       name: "Academia",
       url: "/academia",
       description: "Store your academics in encrypted format",
-      accent: "from-fuchsia-500/80 via-purple-700/70 to-slate-900/80",
+      icon: <BookOpen className="w-5 h-5" />,
+      accent: "from-fuchsia-500 to-pink-500",
       id: "academia-card",
     },
     {
       name: "Quizzes",
       url: "/quizzes",
       description: "Create and take quizzes to test your knowledge",
-      accent: "from-amber-500/80 via-orange-600/70 to-slate-900/80",
+      icon: <Trophy className="w-5 h-5" />,
+      accent: "from-amber-500 to-orange-500",
       id: "quizzes-card",
     },
     {
       name: "Notes",
       url: "/notes",
       description: "Write, organize, and manage your notes",
-      accent: "from-emerald-500/80 via-teal-700/70 to-slate-900/80",
+      icon: <FileText className="w-5 h-5" />,
+      accent: "from-emerald-500 to-teal-500",
       id: "notes-card",
     },
   ];
@@ -82,108 +85,24 @@ export default function Dashboard() {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
     } else if (isLoggedIn && user) {
-      // Check if we should show streak bonus immediately
-      // Check both user object and localStorage for streak info from login
-      const checkStreakInfo = () => {
-        if (
-          user.loginStreakDay !== undefined &&
-          user.loginStreakDay > 0 &&
-          user.loginStreakClaimed === false
-        ) {
-          setShowStreakBonus(true);
-        } else {
-          // Also check localStorage for streak info from recent login
-          const storedStreakInfo = localStorage.getItem("pendingStreakInfo");
-          if (storedStreakInfo) {
-            try {
-              const streakInfo = JSON.parse(storedStreakInfo);
-              if (streakInfo.currentDay > 0 && streakInfo.claimed === false) {
-                setShowStreakBonus(true);
-                // Clear stored info after showing
-                localStorage.removeItem("pendingStreakInfo");
-              }
-            } catch {
-              // Invalid JSON, clear it
-              localStorage.removeItem("pendingStreakInfo");
-            }
-          }
-        }
-      };
-
-      // Check immediately
-      checkStreakInfo();
+      if (
+        user.loginStreakDay !== undefined &&
+        user.loginStreakDay > 0 &&
+        user.loginStreakClaimed === false
+      ) {
+        setShowStreakBonus(true);
+      }
     }
   }, [isLoggedIn, authLoading, user, router]);
 
   const handleClaimSuccess = async (pointsAwarded?: number) => {
-    // Show points animation if points were awarded
     if (pointsAwarded && pointsAwarded > 0) {
       setPointsAnimation({ points: pointsAwarded });
       setTimeout(() => setPointsAnimation(null), 2000);
     }
-    // Refresh user data to get updated points and streak status
     await refreshPoints();
     await checkSession();
   };
-
-
-  // const handleImageClick = () => {
-  //   fileInputRef.current?.click();
-  // };
-
-  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-
-  //   // Validate file type
-  //   if (!file.type.startsWith("image/")) {
-  //     alert("Please select an image file");
-  //     return;
-  //   }
-
-  //   // Validate file size (5MB)
-  //   if (file.size > 5 * 1024 * 1024) {
-  //     alert("File size must be less than 5MB");
-  //     return;
-  //   }
-
-  //   setUploading(true);
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("profilePicture", file);
-
-  //     const token = localStorage.getItem("authToken");
-  //     const response = await fetch(API_ENDPOINTS.AUTH.UPLOAD_PROFILE_PICTURE, {
-  //       method: "POST",
-  //       credentials: "include",
-  //       headers: token
-  //         ? {
-  //             Authorization: `Bearer ${token}`,
-  //           }
-  //         : {},
-  //       body: formData,
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       if (data.success && data.user) {
-  //         setUser(data.user);
-  //       }
-  //     } else {
-  //       const error = await response.json();
-  //       alert(error.message || "Failed to upload profile picture");
-  //     }
-  //   } catch (err) {
-  //     console.error("Error uploading profile picture:", err);
-  //     alert("Failed to upload profile picture");
-  //   } finally {
-  //     setUploading(false);
-  //     // Reset file input
-  //     if (fileInputRef.current) {
-  //       fileInputRef.current.value = "";
-  //     }
-  //   }
-  // };
 
   if (authLoading) {
     return (
@@ -207,20 +126,19 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      {/* Points Animation - Top Center Popup */}
+      {/* Points Animation Popup */}
       {pointsAnimation && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none animate-fade-in-down">
-          <div
-            className="px-6 py-3 shadow-lg bg-black dark:bg-white text-white dark:text-black"
-            style={{ borderRadius: 0 }}
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black shadow-2xl flex items-center gap-3"
           >
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold">
-                +{pointsAnimation.points}
-              </span>
-              <span className="text-sm">points</span>
-            </div>
-          </div>
+            <Sparkles className="w-5 h-5 text-yellow-400 fill-current" />
+            <span className="text-xl font-bold">+{pointsAnimation.points}</span>
+            <span className="text-sm uppercase tracking-widest opacity-70">Points</span>
+          </motion.div>
         </div>
       )}
 
@@ -238,480 +156,165 @@ export default function Dashboard() {
         />
       )}
 
-      <div className="my-2 lg:my-4 mb-24">
-        {/* Header with Points */}
-        <div className="mb-4 lg:mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
-                Dashboard
-              </h1>
-              {/* Light mode hint - same row on desktop only */}
-              <span className="hidden sm:inline text-sm text-gray-400 dark:hidden">
-                Turn off the light to see the stars
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              {/* Points Display - Left */}
-              <div className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                <span className="text-sm font-semibold text-black dark:text-white">
-                  {(user?.points || 0).toLocaleString()}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  points
-                </span>
-              </div>
-              {/* Shop Button - Right */}
-              <Link
-                href="/shop"
-                className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-purple-900/20 border border-gray-300 dark:border-gray-700 hover:border-black dark:hover:border-purple-500/50 transition-colors whitespace-nowrap"
-              >
-                <ShoppingBag className="w-3.5 h-3.5" />
-                Shop
-              </Link>
-            </div>
-          </div>
-          {/* Light mode hint - below on mobile only */}
-          <div className="sm:hidden">
-            <span className="text-[12px] text-gray-400 dark:hidden">
-              Turn off the light to see the stars
-            </span>
+      <div className="relative mt-4 mb-24 space-y-10">
+        {/* Background Atmosphere */}
+        <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[120px]" />
+          <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-blue-500/[0.02] dark:bg-blue-900/[0.03] rounded-full blur-[100px]" />
+          
+          {/* Subtle Stars in Dark Mode */}
+          <div className="hidden dark:block absolute inset-0">
+            {stars.map((star, i) => (
+              <div 
+                key={i}
+                className="absolute bg-white rounded-full animate-pulse"
+                style={{
+                  left: star.left,
+                  top: star.top,
+                  width: star.size,
+                  height: star.size,
+                  opacity: star.opacity,
+                  animationDelay: `${star.delay}s`
+                }}
+              />
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-4">
-          {navigationItems.map((item) => (
-            <Link
-              key={item.url}
-              href={item.url}
-              id={item.id}
-              className="group overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-lg"
-            >
-              <div className="relative flex flex-row items-center justify-between gap-5 px-4 py-4 md:px-6 md:py-5">
-                <div className="flex items-center gap-2 sm:gap-4">
-                  <span
-                    className="block h-12 w-1 rounded-full"
-                    style={{
-                      background: "linear-gradient(180deg, #f5f1ff, #a47efe)",
-                    }}
-                  />
-                  <div>
-                    <p className="text-base md:text-lg font-semibold text-gray-900 dark:text-white tracking-wide">
-                      {item.name}
-                    </p>
-                    <p className="text-[10px] sm:text-sm text-gray-500 dark:text-white/60 mt-0.5 truncate max-w-[240px] sm:max-w-sm">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex-shrink-0">
-                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-base sm:text-lg font-semibold text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900 dark:group-hover:text-white">
-                    →
-                  </div>
-                </div>
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-light text-black dark:text-white leading-none tracking-tight mb-2">
+              Dash<span className="font-normal italic">board</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-light flex items-center gap-2">
+              Welcome back, {user?.firstName}. Your workspace is optimized.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            {/* Points Branding */}
+            <div className="flex flex-col items-end px-3 sm:px-4 py-1.5 sm:py-2 border-r border-black/5 dark:border-white/5">
+              <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 dark:text-gray-600 mb-0.5">Energy Sync</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-base sm:text-lg font-bold text-black dark:text-white">
+                  {(user?.points || 0).toLocaleString()}
+                </span>
+                <span className="text-[8px] sm:text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-medium">Points</span>
               </div>
+            </div>
+
+            {/* Shop Button */}
+            <Link
+              href="/shop"
+              className="group relative inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 font-medium tracking-wide text-white dark:text-black transition-all duration-300"
+            >
+              <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.05]" />
+              <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 relative" />
+              <span className="relative text-xs sm:text-base">Shop</span>
             </Link>
+          </div>
+        </div>
+
+        {/* Navigation Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-4">
+          {navigationItems.map((item, idx) => (
+            <motion.div
+              key={item.url}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: idx * 0.1,
+                ease: [0.21, 0.47, 0.32, 0.98] 
+              }}
+              whileHover={{ y: -2, scale: 1.005 }}
+            >
+              <Link
+                href={item.url}
+                id={item.id}
+                className="group block overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-lg"
+              >
+                <div className="relative flex flex-row items-center justify-between gap-5 px-4 py-4 md:px-6 md:py-5">
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <span
+                      className="block h-12 w-1 rounded-full"
+                      style={{
+                        background: "linear-gradient(180deg, #f5f1ff, #a47efe)",
+                      }}
+                    />
+                    <div>
+                      <p className="text-xs md:text-lg font-semibold text-gray-900 dark:text-white tracking-wide">
+                        {item.name}
+                      </p>
+                      <p className="text-[8px] sm:text-sm text-gray-500 dark:text-white/60 mt-0.5 truncate max-w-[140px] sm:max-w-sm">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-base sm:text-lg font-semibold text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900 dark:group-hover:text-white">
+                      →
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
 
-        {/* Students Hub Section */}
-        <Link
-          href="/studentsHub"
-          className="block mb-6 group w-full"
-          id="students-hub-link"
+        {/* Global Interaction Point - Students Hub (Prominent) */}
+        <motion.div
+           initial={{ opacity: 0, scale: 0.98 }}
+           animate={{ opacity: 1, scale: 1 }}
+           transition={{ delay: 0.5 }}
         >
-          <style
-            dangerouslySetInnerHTML={{
-              __html: `
-              @keyframes starTwinkleHub {
-                0%, 100% {
-                  opacity: 0.3;
-                }
-                50% {
-                  opacity: 1;
-                }
-              }
-              
-              @keyframes starTwinkleBloomHub {
-                0%, 100% {
-                  opacity: 0.4;
-                  box-shadow: 0 0 3px 1px rgba(59, 130, 246, 0.3), 0 0 6px 2px rgba(59, 130, 246, 0.15);
-                }
-                50% {
-                  opacity: 0.9;
-                  box-shadow: 0 0 4px 2px rgba(59, 130, 246, 0.4), 0 0 8px 3px rgba(59, 130, 246, 0.2);
-                }
-              }
-              
-              @keyframes starFadeInHub {
-                0% {
-                  opacity: 0;
-                  transform: scale(0);
-                }
-                100% {
-                  opacity: var(--star-opacity);
-                  transform: scale(1);
-                }
-              }
-              
-              .star-base {
-                animation: starFadeInHub 0.5s ease-out forwards, starTwinkleBloomHub var(--twinkle-duration) ease-in-out infinite;
-                animation-delay: var(--appear-delay), var(--twinkle-delay);
-                opacity: 0;
-                transform: scale(1) translate(0, 0);
-                transition: transform 0.3s ease-out;
-                width: var(--mobile-size);
-                height: var(--mobile-size);
-                box-shadow: 0 0 3px 1px rgba(59, 130, 246, 0.25), 0 0 6px 2px rgba(59, 130, 246, 0.1);
-              }
-              
-              .dark .star-base {
-                animation: starFadeInHub 0.5s ease-out forwards, starTwinkleHub var(--twinkle-duration) ease-in-out infinite;
-                box-shadow: none;
-              }
-              
-              @media (min-width: 768px) {
-                .star-base {
-                  width: var(--desktop-size);
-                  height: var(--desktop-size);
-                }
-              }
-              
-              #students-hub-link:hover .star-base {
-                transform: scale(1) translate(var(--move-x), var(--move-y)) !important;
-              }
-            `,
-            }}
-          />
-          <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-black px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-purple-200 dark:hover:border-white transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.01] hover:shadow-xl hover:shadow-purple-400/20 dark:hover:shadow-[0_0_50px_rgba(240,230,255,0.2)] relative overflow-hidden">
-            {/* Starfield Background */}
-            <div className="absolute inset-0 bg-white dark:bg-black">
-              {stars.map((star, index) => (
-                <div
-                  key={index}
-                  className={`star-base absolute rounded-full bg-blue-500 dark:bg-white ${
-                    !star.showOnMobile
-                      ? "hidden md:dark:block"
-                      : "hidden dark:block"
-                  }`}
-                  style={
-                    {
-                      left: star.left,
-                      top: star.top,
-                      "--desktop-size": `${star.size}px`,
-                      "--mobile-size": `${star.mobileSize}px`,
-                      "--star-opacity": `${star.opacity}`,
-                      "--appear-delay": `${star.delay * 0.1}s`,
-                      "--twinkle-duration": `${star.twinkleDuration}s`,
-                      "--twinkle-delay": `${star.twinkleDelay}s`,
-                      "--move-x": `${star.moveX}px`,
-                      "--move-y": `${star.moveY}px`,
-                    } as React.CSSProperties
-                  }
-                />
-              ))}
+          <Link
+            href="/studentsHub"
+            className="group relative block w-full overflow-hidden border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-[#050710] py-10 px-8 group transition-all duration-500 hover:border-black/20 dark:hover:border-white/20"
+          >
+            {/* Immersive Star Layer */}
+            <div className="absolute inset-0 opacity-20 dark:opacity-40 pointer-events-none group-hover:opacity-40 dark:group-hover:opacity-70 transition-opacity">
+               {stars.slice(0, 20).map((star, i) => (
+                 <div 
+                  key={`hub-${i}`}
+                  className="absolute bg-blue-400 dark:bg-white rounded-full"
+                  style={{
+                    left: star.left,
+                    top: star.top,
+                    width: (star.size || 1) + 1,
+                    height: (star.size || 1) + 1,
+                    opacity: 0.3,
+                  }}
+                 />
+               ))}
             </div>
 
-            {/* Content */}
-            <div className="relative z-10">
-              {/* Rocket - Vertically centered, horizontally on right */}
-              <div className="flex absolute top-1/2 right-2 md:right-8 lg:right-12 transform -translate-y-1/2 z-0 pointer-events-none">
-                <div className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
+              <div className="text-center md:text-left">
+                <h2 className="text-2xl md:text-5xl font-light text-black dark:text-white mb-3 tracking-tight leading-none">
+                  Students <span className="font-normal italic">Hub</span>
+                </h2>
+                <p className="text-sm md:text-lg text-gray-500 dark:text-gray-400 font-light max-w-xl mx-auto md:mx-0">
+                  Transcend your student experience. Access premium tools, exclusive resources, and a network designed for growth.
+                </p>
+              </div>
+
+              <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:gap-6 shrink-0">
+                <div className="text-4xl md:text-7xl group-hover:scale-110 transition-transform duration-500 rotate-12 group-hover:rotate-0">
                   🚀
                 </div>
-              </div>
-
-              {/* Text Content */}
-              <div className="relative z-10 pr-16 md:pr-0">
-                <div className="mb-3 md:mb-6">
-                  <h2 className="text-2xl md:text-5xl lg:text-6xl font-light text-gray-900 dark:text-white mb-1 md:mb-3 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    Students Hub
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-300 text-xs md:text-lg mb-2 md:mb-4">
-                    Explore all the amazing benefits and features available to
-                    you
-                  </p>
-                </div>
-
-                <div className="flex items-center text-xs md:text-lg text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                  <span className="mr-2">Discover Benefits</span>
-                  <span className="transform group-hover:translate-x-2 transition-transform duration-300">
-                    →
-                  </span>
+                <div className="flex items-center gap-2 text-[10px] sm:text-sm uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-600 group-hover:text-black dark:group-hover:text-white transition-colors">
+                  <span>Enter Orbit</span>
+                  <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </motion.div>
 
-        {/* Leaderboard Section */}
-        <Link
-          href="/leaderboard"
-          className="block mb-6 group w-full"
-          id="leaderboard-link"
-        >
-          <div className="border-2 border-yellow-400/60 dark:border-yellow-400/50 bg-gradient-to-br from-white via-yellow-50/30 to-amber-50/40 dark:from-gray-900 dark:via-yellow-950/30 dark:to-amber-950/20 px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12 hover:border-yellow-500 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/30 dark:hover:shadow-[0_0_50px_rgba(255,255,255,0.25)] hover:scale-[1.02] relative overflow-hidden ring-1 ring-yellow-300/20 dark:ring-yellow-500/10 mb-24">
-            {/* Golden gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-amber-400/10 dark:from-yellow-500/5 dark:via-transparent dark:to-amber-500/5"></div>
-
-            {/* Content */}
-            <div className="relative z-10">
-              {/* Detailed Trophy Icon - Vertically centered, horizontally aligned with rocket */}
-              <div className="flex absolute top-1/2 right-2 md:right-8 lg:right-12 transform -translate-y-1/2 z-0 pointer-events-none">
-                <div className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 relative">
-                  {/* Glow effect */}
-                  <div className="absolute inset-0 bg-yellow-400/30 dark:bg-yellow-500/20 rounded-full blur-xl group-hover:bg-yellow-400/50 dark:group-hover:bg-yellow-500/30 transition-all duration-300"></div>
-
-                  {/* Detailed Trophy SVG */}
-                  <svg
-                    viewBox="0 0 200 250"
-                    className="w-full h-full relative z-10"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    {/* Defs for gradients and filters */}
-                    <defs>
-                      {/* Golden gradient */}
-                      <linearGradient
-                        id="trophyGold"
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
-                      >
-                        <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
-                        <stop
-                          offset="30%"
-                          stopColor="#FFA500"
-                          stopOpacity="1"
-                        />
-                        <stop
-                          offset="60%"
-                          stopColor="#FFD700"
-                          stopOpacity="1"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#B8860B"
-                          stopOpacity="1"
-                        />
-                      </linearGradient>
-
-                      {/* Highlight gradient */}
-                      <linearGradient
-                        id="trophyHighlight"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="100%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#FFF8DC"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#FFD700"
-                          stopOpacity="0.3"
-                        />
-                      </linearGradient>
-
-                      {/* Shadow gradient */}
-                      <linearGradient
-                        id="trophyShadow"
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#000000"
-                          stopOpacity="0.3"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#000000"
-                          stopOpacity="0.1"
-                        />
-                      </linearGradient>
-
-                      {/* Glow filter */}
-                      <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                        <feMerge>
-                          <feMergeNode in="coloredBlur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-
-                    {/* Base/Pedestal */}
-                    <ellipse
-                      cx="100"
-                      cy="240"
-                      rx="70"
-                      ry="15"
-                      fill="url(#trophyShadow)"
-                      opacity="0.4"
-                    />
-                    <rect
-                      x="60"
-                      y="200"
-                      width="80"
-                      height="40"
-                      rx="5"
-                      fill="url(#trophyGold)"
-                    />
-                    <rect
-                      x="65"
-                      y="205"
-                      width="70"
-                      height="30"
-                      rx="3"
-                      fill="url(#trophyHighlight)"
-                      opacity="0.4"
-                    />
-
-                    {/* Cup body */}
-                    <path
-                      d="M 80 60 Q 80 40 100 40 Q 120 40 120 60 L 120 180 Q 120 200 100 200 Q 80 200 80 180 Z"
-                      fill="url(#trophyGold)"
-                      filter="url(#glow)"
-                    />
-
-                    {/* Cup highlight */}
-                    <path
-                      d="M 85 65 Q 85 50 100 50 Q 115 50 115 65 L 115 175 Q 115 190 100 190 Q 85 190 85 175 Z"
-                      fill="url(#trophyHighlight)"
-                      opacity="0.6"
-                    />
-
-                    {/* Left handle */}
-                    <path
-                      d="M 80 80 Q 50 80 50 120 Q 50 160 80 160"
-                      fill="none"
-                      stroke="url(#trophyGold)"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M 75 85 Q 55 85 55 120 Q 55 155 75 155"
-                      fill="none"
-                      stroke="url(#trophyHighlight)"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      opacity="0.7"
-                    />
-
-                    {/* Right handle */}
-                    <path
-                      d="M 120 80 Q 150 80 150 120 Q 150 160 120 160"
-                      fill="none"
-                      stroke="url(#trophyGold)"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M 125 85 Q 145 85 145 120 Q 145 155 125 155"
-                      fill="none"
-                      stroke="url(#trophyHighlight)"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      opacity="0.7"
-                    />
-
-                    {/* Crown/Star on top */}
-                    <g transform="translate(100, 30)">
-                      {/* Center star */}
-                      <path
-                        d="M 0 -15 L 4 -4 L 15 -4 L 6 2 L 9 13 L 0 7 L -9 13 L -6 2 L -15 -4 L -4 -4 Z"
-                        fill="#FFD700"
-                        stroke="#FFA500"
-                        strokeWidth="1"
-                      />
-                      {/* Left small star */}
-                      <path
-                        d="M -20 -5 L -18 0 L -13 0 L -16 3 L -15 8 L -20 5 L -25 8 L -24 3 L -27 0 L -22 0 Z"
-                        fill="#FFD700"
-                        opacity="0.8"
-                      />
-                      {/* Right small star */}
-                      <path
-                        d="M 20 -5 L 22 0 L 27 0 L 24 3 L 25 8 L 20 5 L 15 8 L 16 3 L 13 0 L 18 0 Z"
-                        fill="#FFD700"
-                        opacity="0.8"
-                      />
-                    </g>
-
-                    {/* Sparkles/Shine effects */}
-                    <circle cx="90" cy="100" r="3" fill="#FFF8DC" opacity="0.9">
-                      <animate
-                        attributeName="opacity"
-                        values="0.3;1;0.3"
-                        dur="2s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <circle
-                      cx="110"
-                      cy="120"
-                      r="2.5"
-                      fill="#FFF8DC"
-                      opacity="0.8"
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.3;1;0.3"
-                        dur="2.5s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <circle cx="95" cy="140" r="2" fill="#FFF8DC" opacity="0.7">
-                      <animate
-                        attributeName="opacity"
-                        values="0.3;1;0.3"
-                        dur="1.8s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-
-                    {/* Rim highlight */}
-                    <ellipse
-                      cx="100"
-                      cy="60"
-                      rx="20"
-                      ry="3"
-                      fill="url(#trophyHighlight)"
-                      opacity="0.8"
-                    />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Text Content */}
-              <div className="relative z-10 pr-16 md:pr-0">
-                <div className="mb-3 md:mb-6">
-                  <h2 className="text-2xl md:text-5xl lg:text-6xl font-light text-yellow-900 dark:text-yellow-200 mb-1 md:mb-3 group-hover:text-yellow-800 dark:group-hover:text-yellow-100 transition-colors">
-                    Leaderboard
-                  </h2>
-                  <p className="text-yellow-700 dark:text-yellow-300 text-xs md:text-lg mb-2 md:mb-4">
-                    Compete with others and see who&apos;s on top this week
-                  </p>
-                </div>
-
-                <div className="flex items-center text-xs md:text-lg text-yellow-700 dark:text-yellow-300 group-hover:text-yellow-800 dark:group-hover:text-yellow-200 transition-colors">
-                  <span className="mr-2">View Rankings</span>
-                  <span className="transform group-hover:translate-x-2 transition-transform duration-300">
-                    →
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Link>
-
-
+        {/* Floating Background Glow (Corner) */}
+        <div className="fixed -bottom-40 -right-40 w-96 h-96 bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[120px] pointer-events-none" />
       </div>
     </DashboardLayout>
   );
