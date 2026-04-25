@@ -12,77 +12,61 @@ import Image from "next/image";
 export default function AboutPage() {
   const versions = [
     {
-      version: "Beta 1",
-      date: "December 15, 2025",
+      version: "1.0.0",
+      date: "April 25, 2026",
       status: "Current",
       features: [
-        "Enhanced dashboard with real-time updates",
-        "Advanced goal tracking and analytics",
-        "Student hub with category-based content",
-        "Shop integration with rewards",
-        "Leaderboard & Notification system",
-        "Academia management",
-        "Daily tasks & streaks",
-        "Profile customization & Dark mode support",
-        "Enhanced authentication system",
+        "Interactive Live Sessions & Knowledge Testing Quizzes",
+        "AI-Powered Daily Planner with Dynamic Goal Sequencing",
+        "Achievement Badge System & Milestone Showcasing",
+        "Academic Manager with Integrated Attendance Tracking",
       ],
     },
     {
-      version: "1.0.0",
-      date: "2023",
-      status: "Pre Beta",
+      version: "Beta 1",
+      date: "December 15, 2025",
+      status: "Completed",
       features: [
-        "Initial release",
-        "User authentication",
-        "Basic goal tracking",
-        "Landing page",
-        "Waitlist system",
+        "Cosmic 'Midnight Violet' Aesthetic & Ambient Animations",
+        "Deep Insights Dashboard for habit & trend monitoring",
+        "Enhanced Privacy Controls & Granular Workspace Settings",
+        "Real-time Notifications & Global Leaderboard System",
+        "Student Hub with Curated, Category-based Content",
+        "Shop & Rewards Integration for milestone celebrations",
+        "Advanced Goal Tracking & Interactive Checklists",
+        "Google OAuth & Secure Authentication System",
       ],
     },
   ];
 
   const upcomingFeatures = [
     {
-      title: "AI-Powered Insights",
+      title: "AI-Powered Success Insights",
       description:
-        "Get personalized recommendations and insights based on your goals and progress.",
+        "Personalized strategy recommendations and productivity forecasting based on your unique goal patterns.",
       status: "In Development",
-      eta: "Q1 2026",
+      eta: "Q4 2026",
     },
     {
-      title: "Custom Themes and Titles",
+      title: "Experience Customization Hub",
       description:
-        "Personalize your ZeroGravity experience with custom color themes, layouts and flex with titles.",
+        "Full control over themes, component layouts, and custom prestige titles to showcase your standing.",
       status: "In Development",
-      eta: "Q1 2026",
+      eta: "Q4 2026",
     },
     {
-      title: "Mobile App",
+      title: "Global Community Ecosystem",
       description:
-        "Native iOS and Android applications for on-the-go productivity",
-      status: "In Development",
-      eta: "Q2 2026",
-    },
-    {
-      title: "Social Features",
-      description:
-        "Connect with friends, share achievements, and compete in challenges",
+        "Competitive social leagues, friend networks, and worldwide productivity marathons.",
       status: "Planned",
-      eta: "Q2 2026",
+      eta: "Q4 2026",
     },
     {
-      title: "Advanced Analytics",
+      title: "External Integration Suite",
       description:
-        "Comprehensive analytics dashboard with detailed progress tracking and trends",
+        "Seamless synchronization with popular tools like Notion, Google Calendar, and Discord.",
       status: "Planned",
-      eta: "Q2 2026",
-    },
-    {
-      title: "Integration Hub",
-      description:
-        "Connect with popular productivity tools like Notion, Todoist, and Google Calendar",
-      status: "Planned",
-      eta: "Q3 2026",
+      eta: "Q4 2026",
     },
   ];
 

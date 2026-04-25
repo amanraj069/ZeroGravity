@@ -15,7 +15,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme, setThemeState] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
   // Initialize theme from localStorage or default to light
@@ -27,21 +27,42 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       setThemeState(savedTheme);
       applyTheme(savedTheme);
     } else {
-      // Default to light theme if nothing is stored
-      setThemeState("light");
-      applyTheme("light");
-      localStorage.setItem("theme", "light");
+      // Default to dark theme if nothing is stored
+      setThemeState("dark");
+      applyTheme("dark");
+      localStorage.setItem("theme", "dark");
     }
   }, []);
 
+  // Apply theme to document
   // Apply theme to document
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;
     if (newTheme === "dark") {
       root.classList.add("dark");
+      root.style.colorScheme = "dark";
+      // Manually update variables to force instant scrollbar update
+      root.style.setProperty("--scrollbar-thumb", "rgba(75, 85, 99, 0.4)");
+      root.style.setProperty(
+        "--scrollbar-thumb-hover",
+        "rgba(107, 114, 128, 0.6)",
+      );
     } else {
       root.classList.remove("dark");
+      root.style.colorScheme = "light";
+      // Manually update variables to force instant scrollbar update
+      root.style.setProperty("--scrollbar-thumb", "rgba(156, 163, 175, 0.3)");
+      root.style.setProperty(
+        "--scrollbar-thumb-hover",
+        "rgba(156, 163, 175, 0.5)",
+      );
     }
+
+    // Force a repaint of the scrollbar
+    const originalOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    root.offsetHeight;
+    root.style.overflow = originalOverflow;
   };
 
   // Toggle theme

@@ -81,25 +81,33 @@ export default function RootLayout({
                   if (savedTheme === 'light' || savedTheme === 'dark') {
                     if (savedTheme === 'dark') {
                       document.documentElement.classList.add('dark');
-                      document.documentElement.style.backgroundColor = '#0a0a0a';
-                      document.body.style.backgroundColor = '#0a0a0a';
+                      document.documentElement.style.colorScheme = 'dark';
+                      document.documentElement.style.backgroundColor = '#111116';
+                      document.body.style.backgroundColor = '#111116';
+                      document.documentElement.style.setProperty('--scrollbar-thumb', 'rgba(75, 85, 99, 0.4)');
                     } else {
                       document.documentElement.classList.remove('dark');
+                      document.documentElement.style.colorScheme = 'light';
                       document.documentElement.style.backgroundColor = '#ffffff';
                       document.body.style.backgroundColor = '#ffffff';
+                      document.documentElement.style.setProperty('--scrollbar-thumb', 'rgba(156, 163, 175, 0.3)');
                     }
                   } else {
-                    // Default to light theme if nothing is stored
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.style.backgroundColor = '#ffffff';
-                    document.body.style.backgroundColor = '#ffffff';
-                    localStorage.setItem('theme', 'light');
+                    // Default to dark theme if nothing is stored
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                    document.documentElement.style.backgroundColor = '#111116';
+                    document.body.style.backgroundColor = '#111116';
+                    document.documentElement.style.setProperty('--scrollbar-thumb', 'rgba(75, 85, 99, 0.4)');
+                    localStorage.setItem('theme', 'dark');
                   }
                 } catch (e) {
-                  // If localStorage fails, default to light
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.style.backgroundColor = '#ffffff';
-                  document.body.style.backgroundColor = '#ffffff';
+                  // If localStorage fails, default to dark
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.colorScheme = 'dark';
+                  document.documentElement.style.backgroundColor = '#111116';
+                  document.body.style.backgroundColor = '#111116';
+                  document.documentElement.style.setProperty('--scrollbar-thumb', 'rgba(75, 85, 99, 0.4)');
                 }
               })();
             `,

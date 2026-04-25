@@ -122,7 +122,7 @@ export default function HighlightsSection() {
             <div className="flex items-center justify-center md:justify-start gap-4 mb-6">
               <span className="h-[1px] w-12 bg-black dark:bg-white/20" />
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.5em] font-bold text-gray-400 dark:text-gray-500">
-                Beyond Beta 1
+                Beyond Beta
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white leading-[1.2] tracking-tight">
