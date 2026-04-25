@@ -246,31 +246,49 @@ export const fetchBadgeProgress = async (): Promise<BadgeData | null> => {
   }
 };
 
-/** Get the 3 selected badge IDs for a user from localStorage */
-export const getSelectedBadges = (userId: string): string[] => {
+/** Get the 3 selected badge IDs for a user (from localStorage fallback) */
+export const getSelectedBadges = (
+  userId: string,
+  fromUser?: string[],
+): string[] => {
+  if (fromUser && fromUser.length > 0) return fromUser;
   if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(`zg_selected_badges_${userId}`);
-    if (raw) {
-      const parsed = JSON.parse(raw);
+  const saved = localStorage.getItem(`zg_selected_badges_${userId}`);
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
       if (Array.isArray(parsed)) return parsed.slice(0, 3);
+    } catch (e) {
+      console.error("Error parsing selected badges:", e);
     }
-  } catch {
-    // ignore
   }
   return [];
 };
 
-/** Save the 3 selected badge IDs for a user to localStorage */
-export const saveSelectedBadges = (
+/** Save the 3 selected badge IDs for a user to localStorage and backend */
+export const saveSelectedBadges = async (
   userId: string,
   badgeIds: string[],
-): void => {
+): Promise<void> => {
   if (typeof window === "undefined") return;
+
+  // 1. Save to localStorage for backward compatibility/offline use
   localStorage.setItem(
     `zg_selected_badges_${userId}`,
     JSON.stringify(badgeIds.slice(0, 3)),
   );
+
+  // 2. Save to backend
+  try {
+    await apiCallWithAuth(API_ENDPOINTS.AUTH.UPDATE_PROFILE, {
+      method: "PUT",
+      body: JSON.stringify({
+        selectedBadges: badgeIds.slice(0, 3),
+      }),
+    });
+  } catch (error) {
+    console.error("Failed to save selected badges to backend:", error);
+  }
 };
 
 /** Get the default selection: the 3 highest-prestige unlocked badges */

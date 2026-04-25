@@ -12,6 +12,8 @@ export interface PublicUser {
   subscription: string;
   createdAt: string;
   isActive: boolean;
+  selectedBadges?: string[];
+  highestBadgeId?: string | null;
 }
 
 export interface PublicProfileStreakInfo {

@@ -24,16 +24,16 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative h-[92dvh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#111116]">
+    <div className="relative h-[92dvh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-gray-900">
       {/* Top Banner for Quiz Join - Redesigned as a floating glass bar */}
-      <div className="absolute top-8 lg:top-12 left-0 right-0 z-20 flex justify-center px-4">
+      <div className="absolute top-20 lg:top-12 left-0 right-0 z-10 flex justify-center px-4">
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
-          className="bg-white/10 dark:bg-white/[0.02] backdrop-blur-xl py-2 px-5 sm:px-7 border border-black/5 dark:border-white/[0.08] shadow-2xl flex items-center gap-4 sm:gap-6 transition-all hover:bg-white/20 dark:hover:bg-white/[0.05]"
+          className="rounded-full bg-white/10 dark:bg-white/[0.02] backdrop-blur-xl py-1.5 px-3 sm:px-7 border border-black/5 dark:border-white/[0.08] shadow-2xl flex items-center gap-2 sm:gap-6 transition-all hover:bg-white/20 dark:hover:bg-white/[0.05]"
         >
-          <p className="text-[10px] sm:text-[11px] font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap tracking-[0.2em] uppercase opacity-70">
+          <p className="text-[9px] sm:text-[11px] font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap tracking-[0.2em] uppercase opacity-70">
             Here for a quiz?
           </p>
           <div className="h-3 w-[1px] bg-black/10 dark:bg-white/10 mx-1" />
@@ -44,7 +44,7 @@ export default function HeroSection() {
               value={quizCode}
               onChange={(e) => setQuizCode(e.target.value.toUpperCase())}
               maxLength={6}
-              className="w-16 sm:w-20 bg-transparent text-black dark:text-white px-0 py-1 focus:outline-none transition-colors uppercase placeholder:text-gray-400 dark:placeholder:text-white/20 tracking-[0.3em] text-center text-xs font-black border-b border-transparent focus:border-black/40 dark:focus:border-white/40"
+              className="w-12 sm:w-20 bg-transparent text-black dark:text-white px-0 py-1 focus:outline-none transition-colors uppercase placeholder:text-gray-400 dark:placeholder:text-white/20 tracking-[0.3em] text-center text-[10px] sm:text-xs font-black border-b border-transparent focus:border-black/40 dark:focus:border-white/40"
             />
             <button
               type="submit"

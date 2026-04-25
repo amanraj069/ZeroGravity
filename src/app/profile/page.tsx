@@ -78,8 +78,10 @@ export default function Profile() {
       fetchBadgeProgress().then((data) => {
         if (data) {
           setBadgeData(data);
-          const saved = getSelectedBadges(user.userId);
-          if (saved.length > 0) {
+          // Use user.selectedBadges from backend if available, otherwise fallback to localStorage
+          // @ts-ignore - adding selectedBadges to User type contextually
+          const saved = getSelectedBadges(user.userId, user.selectedBadges);
+          if (saved && saved.length > 0) {
             setSelectedBadgeIds(saved);
           } else {
             setSelectedBadgeIds(getDefaultSelectedBadges(data.badges));

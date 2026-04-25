@@ -474,10 +474,10 @@ export default function Leaderboard() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.back()}
-              className="group flex items-center justify-center w-10 h-10 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white/30 transition-all rounded-full"
+              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
               title="Go back"
             >
-              <ChevronLeft className="w-6 h-6 transition-transform group-hover:-translate-x-0.5" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
             <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white leading-none tracking-tight">
               Leader<span className="font-normal italic">board</span>
@@ -676,7 +676,7 @@ export default function Leaderboard() {
               transition={{ delay: 0.8 }}
               className="mt-12 pb-12"
             >
-              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-6 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white my-6 tracking-tight">
                 Not <span className="font-normal italic">Eligible</span>
               </h2>
               <div className="border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#050710]/80 backdrop-blur-xl shadow-sm overflow-hidden transition-all duration-300">

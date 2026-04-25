@@ -34,15 +34,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const isNotesPage = pathname?.startsWith("/notes");
 
   return (
-    <div
-      className={`min-h-screen flex flex-col ${
-        hasGrayBackground
-          ? "bg-muted"
-          : isNotesPage
-            ? "bg-background"
-            : "bg-background"
-      }`}
-    >
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <LandingNavbar />
       <main className="flex-1 flex flex-col">{children}</main>
 
