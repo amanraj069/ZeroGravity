@@ -216,7 +216,16 @@ export default function Login() {
               {isLoading ? "Signing in..." : "Sign In"}
             </button>
 
-            <GoogleSignInButton
+            <div className="relative flex items-center justify-center my-4 sm:my-6">
+              <div className="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
+              <span className="flex-shrink mx-3 text-xs uppercase tracking-widest text-gray-400 dark:text-gray-500 font-medium">
+                or
+              </span>
+              <div className="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
+            </div>
+
+            <div className="w-full">
+              <GoogleSignInButton
               onSuccess={async (credential) => {
                 setIsGoogleLoading(true);
                 setError("");
@@ -259,7 +268,8 @@ export default function Login() {
               isLoading={isGoogleLoading}
             />
           </div>
-        </form>
+        </div>
+      </form>
 
         <div className="mt-6 sm:mt-8 text-center">
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">

@@ -36,6 +36,8 @@ interface GoogleButtonConfig {
   size?: string;
   text?: string;
   width?: number;
+  shape?: string;
+  logo_alignment?: string;
 }
 
 export default function GoogleSignInButton({
@@ -118,12 +120,11 @@ export default function GoogleSignInButton({
     // Re-render if theme changes (clear button)
     if (hasRenderedButton.current && buttonRef.current.innerHTML) {
       // Clear button if theme changed to allow re-render with new theme
-      const currentTheme = document.documentElement.classList.contains("dark") ? "dark" : "light";
       const storedTheme = buttonRef.current.dataset.theme;
-      if (storedTheme && storedTheme !== currentTheme) {
+      if (storedTheme && storedTheme !== theme) {
         buttonRef.current.innerHTML = "";
         hasRenderedButton.current = false;
-      } else if (storedTheme === currentTheme) {
+      } else if (storedTheme === theme) {
         return;
       }
     }
@@ -146,18 +147,18 @@ export default function GoogleSignInButton({
 
         // Render Google button with calculated width
         if (window.google?.accounts?.id) {
-          // Use outline (white) theme for light mode, filled_black for dark mode
-          const currentTheme = document.documentElement.classList.contains("dark") ? "dark" : "light";
           window.google.accounts.id.renderButton(buttonRef.current, {
             type: "standard",
-            theme: currentTheme === "dark" ? "filled_black" : "outline",
+            theme: theme === "dark" ? "filled_black" : "outline",
             size: "large",
             text: "signin_with",
             width: containerWidth,
+            shape: "rectangular",
+            logo_alignment: "left",
           });
           // Store current theme to detect changes
           if (buttonRef.current) {
-            buttonRef.current.dataset.theme = currentTheme;
+            buttonRef.current.dataset.theme = theme;
           }
           hasRenderedButton.current = true;
         }
@@ -282,21 +283,20 @@ export default function GoogleSignInButton({
     };
   }, [showGoogleButton, disabled, isLoading, isInitialized, theme, onError]); // Added theme and onError to dependencies
 
-  // Show disabled button if disabled, loading, or not initialized
   if (!showGoogleButton || disabled || isLoading || !isInitialized) {
     return (
       <button
         type="button"
         disabled
-        className="w-full bg-white dark:bg-red-700 text-gray-800 dark:text-white border border-gray-300 dark:border-none py-2 sm:py-3 px-4 font-medium cursor-not-allowed text-sm sm:text-base flex items-center justify-center gap-2 opacity-50"
+        className="w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-400 border border-gray-300 dark:border-gray-700 py-2.5 sm:py-3 px-4 font-medium cursor-not-allowed text-sm sm:text-base flex items-center justify-center gap-3 opacity-60 transition-opacity"
       >
         <svg
-          width="18"
-          height="18"
+          width="20"
+          height="20"
           viewBox="0 0 18 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="sm:w-5 sm:h-5 flex-shrink-0"
+          className="flex-shrink-0"
         >
           <path
             d="M17.64 9.20454C17.64 8.56636 17.5827 7.95272 17.4764 7.36363H9V10.8449H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.20454Z"
@@ -315,7 +315,7 @@ export default function GoogleSignInButton({
             fill="#EA4335"
           />
         </svg>
-        <span>Continue with Google</span>
+        <span>{isLoading ? "Connecting..." : "Sign in with Google"}</span>
       </button>
     );
   }
