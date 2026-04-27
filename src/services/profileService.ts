@@ -14,6 +14,7 @@ export interface PublicUser {
   isActive: boolean;
   selectedBadges?: string[];
   highestBadgeId?: string | null;
+  displayBadge?: string | null;
 }
 
 export interface PublicProfileStreakInfo {

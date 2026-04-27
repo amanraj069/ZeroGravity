@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   // Generate random stars for background atmosphere
   const stars = useMemo(() => {
-    return Array.from({ length: 40 }, (_, i) => ({
+    return Array.from({ length: 40 }, () => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       size: Math.random() * 2 + 1,

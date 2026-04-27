@@ -308,3 +308,40 @@ export const getHighestBadge = (
   const highestId = PRESTIGE_ORDER.find((id) => unlockedIds.includes(id));
   return badges.find((b) => b.id === highestId) ?? null;
 };
+
+/** Get the display badge ID for a user (from backend field, then localStorage fallback) */
+export const getDisplayBadge = (
+  userId: string,
+  fromUser?: string | null,
+): string | null => {
+  if (fromUser) return fromUser;
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(`zg_display_badge_${userId}`) || null;
+};
+
+/** Save the display badge ID for a user to localStorage and backend */
+export const saveDisplayBadge = async (
+  userId: string,
+  badgeId: string | null,
+): Promise<void> => {
+  if (typeof window === "undefined") return;
+
+  // 1. Save to localStorage
+  if (badgeId) {
+    localStorage.setItem(`zg_display_badge_${userId}`, badgeId);
+  } else {
+    localStorage.removeItem(`zg_display_badge_${userId}`);
+  }
+
+  // 2. Save to backend
+  try {
+    await apiCallWithAuth(API_ENDPOINTS.AUTH.UPDATE_PROFILE, {
+      method: "PUT",
+      body: JSON.stringify({
+        displayBadge: badgeId || "",
+      }),
+    });
+  } catch (error) {
+    console.error("Failed to save display badge to backend:", error);
+  }
+};

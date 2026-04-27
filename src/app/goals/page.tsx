@@ -1,21 +1,20 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Goals from "@/components/goals/Goals";
 import GoalsSkeleton from "@/components/goals/GoalsSkeleton";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
-
-function GoalsContent() {
-  return <Goals />;
-}
 
 function GoalsLoadingFallback() {
-  return <GoalsSkeleton />;
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
+  const mode = tab === "all" ? "goals" : "daily";
+  
+  return <GoalsSkeleton mode={mode} />;
 }
 
-export default function GoalsPage() {
+function GoalsPageContent() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
@@ -28,7 +27,7 @@ export default function GoalsPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
-        <GoalsSkeleton />
+        <GoalsLoadingFallback />
       </div>
     );
   }
@@ -40,10 +39,16 @@ export default function GoalsPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col pb-12 sm:pb-16">
       <main className="flex-1">
-        <Suspense fallback={<GoalsLoadingFallback />}>
-          <GoalsContent />
-        </Suspense>
+        <Goals />
       </main>
     </div>
+  );
+}
+
+export default function GoalsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12"><GoalsSkeleton /></div>}>
+      <GoalsPageContent />
+    </Suspense>
   );
 }

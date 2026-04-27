@@ -61,6 +61,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     // Force a repaint of the scrollbar
     const originalOverflow = root.style.overflow;
     root.style.overflow = "hidden";
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     root.offsetHeight;
     root.style.overflow = originalOverflow;
   };

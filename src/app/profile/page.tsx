@@ -37,6 +37,8 @@ import {
   getHighestBadge,
   getSelectedBadges,
   saveSelectedBadges,
+  getDisplayBadge,
+  saveDisplayBadge,
   BADGE_VISUALS,
   BadgeData,
 } from "@/services/badgeService";
@@ -70,6 +72,9 @@ export default function Profile() {
   const [badgeData, setBadgeData] = useState<BadgeData | null>(null);
   const [selectedBadgeIds, setSelectedBadgeIds] = useState<string[]>([]);
   const [editingBadgeSlot, setEditingBadgeSlot] = useState<number | null>(null);
+  const [displayBadgeId, setDisplayBadgeId] = useState<string | null>(null);
+  const [showDisplayBadgePicker, setShowDisplayBadgePicker] = useState(false);
+  const displayBadgePickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -79,17 +84,41 @@ export default function Profile() {
       fetchBadgeProgress().then((data) => {
         if (data) {
           setBadgeData(data);
-          // @ts-expect-error - adding selectedBadges to User type contextually
           const saved = getSelectedBadges(user.userId, user.selectedBadges);
           if (saved && saved.length > 0) {
             setSelectedBadgeIds(saved);
           } else {
             setSelectedBadgeIds(getDefaultSelectedBadges(data.badges));
           }
+          // Initialize display badge
+          const savedDisplay = getDisplayBadge(user.userId, user.displayBadge);
+          if (savedDisplay) {
+            setDisplayBadgeId(savedDisplay);
+          } else {
+            // Default to highest badge
+            const highest = getHighestBadge(data.badges);
+            if (highest) setDisplayBadgeId(highest.id);
+          }
         }
       });
     }
   }, [isLoggedIn, authLoading, user, router]);
+
+  // Close display badge picker on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        displayBadgePickerRef.current &&
+        !displayBadgePickerRef.current.contains(e.target as Node)
+      ) {
+        setShowDisplayBadgePicker(false);
+      }
+    };
+    if (showDisplayBadgePicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showDisplayBadgePicker]);
 
   const fetchStreakInfo = async () => {
     setStreakLoading(true);
@@ -477,24 +506,24 @@ export default function Profile() {
 
                 {/* Name and Username */}
                 <div className="flex-1 min-w-0 text-left flex flex-col justify-center h-full">
-                  <div className="flex flex-col gap-1 md:gap-1.5 mb-1 md:mb-1.5 py-1 items-start">
+                  <div className="flex flex-col gap-2 md:gap-2.5 mb-2 py-1 items-start">
                     <h2 className="text-lg md:text-2xl font-bold text-black dark:text-white truncate">
                       {user.firstName} {user.lastName}
                     </h2>
                     {badgeData &&
                       (() => {
-                        const highest = getHighestBadge(badgeData.badges);
-                        if (!highest) return null;
-                        const v = BADGE_VISUALS[highest.id];
+                        const displayBadge = displayBadgeId
+                          ? badgeData.badges.find((b) => b.id === displayBadgeId && b.unlocked)
+                          : null;
+                        const badge = displayBadge || getHighestBadge(badgeData.badges);
+                        if (!badge) return null;
+                        const v = BADGE_VISUALS[badge.id];
                         return (
-                          <div className="flex">
-                            <Link
-                              href="/badges"
-                              className={`inline-flex flex-shrink-0 items-center gap-1.5 px-2 py-0.5 bg-gradient-to-r ${v.bgLight} ${v.bgDark} rounded whitespace-nowrap`}
-                              title={
-                                highest.description ||
-                                `Highest Badge: ${highest.name}`
-                              }
+                          <div className="flex relative" ref={displayBadgePickerRef}>
+                            <button
+                              onClick={() => setShowDisplayBadgePicker(!showDisplayBadgePicker)}
+                              className={`inline-flex flex-shrink-0 items-center gap-2 px-2.5 py-1 bg-gradient-to-r ${v.bgLight} ${v.bgDark} rounded whitespace-nowrap group/title transition-all hover:ring-1 hover:ring-gray-400/30 dark:hover:ring-white/20`}
+                              title="Click to change display badge"
                             >
                               <span
                                 className={`text-[11px] font-bold bg-gradient-to-r ${v.gradient} bg-clip-text text-transparent`}
@@ -504,9 +533,63 @@ export default function Profile() {
                               <span
                                 className={`text-[10px] font-semibold ${v.textColor}`}
                               >
-                                {highest.name}
+                                {badge.name}
                               </span>
-                            </Link>
+                              <svg className={`w-2.5 h-2.5 ${v.textColor} opacity-50 group-hover/title:opacity-100 transition-all ${showDisplayBadgePicker ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+
+                            {/* Display Badge Picker Dropdown */}
+                            {showDisplayBadgePicker && (
+                              <div className="absolute top-full left-0 mt-1.5 z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[200px] max-w-[260px] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                                <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Display Badge</p>
+                                </div>
+                                <div className="max-h-[240px] overflow-y-auto py-1">
+                                  {badgeData.badges
+                                    .filter((b) => b.unlocked)
+                                    .sort((a, b) => {
+                                      const aV = BADGE_VISUALS[a.id];
+                                      const bV = BADGE_VISUALS[b.id];
+                                      return (aV?.prestigeRank ?? 99) - (bV?.prestigeRank ?? 99);
+                                    })
+                                    .map((b) => {
+                                      const bv = BADGE_VISUALS[b.id];
+                                      const isSelected = (displayBadgeId || badge.id) === b.id;
+                                      return (
+                                        <button
+                                          key={b.id}
+                                          onClick={() => {
+                                            setDisplayBadgeId(b.id);
+                                            saveDisplayBadge(user.userId, b.id);
+                                            setShowDisplayBadgePicker(false);
+                                          }}
+                                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors ${
+                                            isSelected
+                                              ? "bg-gray-100 dark:bg-gray-800"
+                                              : "hover:bg-gray-50 dark:hover:bg-gray-800/60"
+                                          }`}
+                                        >
+                                          <span
+                                            className={`text-sm font-bold bg-gradient-to-r ${bv.gradient} bg-clip-text text-transparent flex-shrink-0 w-5 text-center`}
+                                          >
+                                            {bv.icon}
+                                          </span>
+                                          <span className={`text-xs font-medium ${isSelected ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'} truncate`}>
+                                            {b.name}
+                                          </span>
+                                          {isSelected && (
+                                            <svg className="w-3.5 h-3.5 text-green-500 ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                          )}
+                                        </button>
+                                      );
+                                    })}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         );
                       })()}
@@ -516,7 +599,7 @@ export default function Profile() {
                   </p>
 
                   {/* Task counts below username (hidden on mobile) */}
-                  <div className="hidden sm:flex items-center justify-start gap-4 md:gap-8 mt-3 md:mt-5">
+                  <div className="hidden sm:flex items-center justify-start gap-4 md:gap-8 mt-2 md:mt-3">
                     <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
                       <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                         Active Tasks

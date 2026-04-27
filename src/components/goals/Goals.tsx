@@ -26,7 +26,7 @@ import {
 import { dailyTasksService } from "@/services/dailyTasksService";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import LoadingSpinner from "@/components/LoadingSpinner";
+
 import GoalsSkeleton from "./GoalsSkeleton";
 
 type FilterType =
@@ -311,7 +311,7 @@ const Goals: React.FC = () => {
     }
 
     if (authLoading || (activeView === "goals" && isLoading)) {
-      return <GoalsSkeleton includeTabs={false} />;
+      return <GoalsSkeleton includeTabs={false} mode="goals" />;
     }
 
     if (error) {

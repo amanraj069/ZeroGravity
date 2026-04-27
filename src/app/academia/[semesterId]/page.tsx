@@ -12,6 +12,7 @@ import {
   type Course,
   GRADE_OPTIONS,
 } from "@/services/academiaService";
+import { ChevronLeft } from "lucide-react";
 
 export default function SemesterDetailPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -255,15 +256,15 @@ export default function SemesterDetailPage() {
     return (
       <DashboardLayout>
         <div className="mt-4">
-          <div className="mb-8">
+          <div className="flex items-center gap-2 sm:gap-4 mb-8">
             <Link
               href="/academia"
-              className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mb-4"
+              className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              title="Back to Academia"
             >
-              <span className="mr-2">←</span>
-              Back to Academia
+              <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
             </Link>
-            <h1 className="text-4xl font-light text-black dark:text-white mb-2">
+            <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white">
               Semester Not Found
             </h1>
           </div>
@@ -277,16 +278,16 @@ export default function SemesterDetailPage() {
       <div className="mt-2 sm:mt-4">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
-          <Link
-            href="/academia"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mb-2 sm:mb-4 text-sm sm:text-base"
-          >
-            <span className="mr-2">←</span>
-            Back to Academia
-          </Link>
-          <div className="flex items-start sm:items-center justify-between gap-2 sm:gap-4 mb-2">
+          <div className="flex items-center gap-2 sm:gap-4 mb-2">
+            <Link
+              href="/academia"
+              className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              title="Back to Academia"
+            >
+              <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+            </Link>
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2">
+              <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white mb-0.5 sm:mb-1">
                 {semester.name}
               </h1>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">

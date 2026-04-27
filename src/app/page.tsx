@@ -4,8 +4,11 @@ import HeroSection from "@/components/landing/HeroSection";
 import HighlightsSection from "@/components/landing/HighlightsSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import LoginCTASection from "@/components/landing/LoginCTASection";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
+  const { isLoggedIn, isLoading } = useAuth();
+
   return (
     <div className="bg-white dark:bg-gray-900">
       <div className="relative">
@@ -66,7 +69,7 @@ export default function Home() {
         </div>
         <HighlightsSection />
         <FeaturesSection />
-        <LoginCTASection />
+        {!isLoading && !isLoggedIn && <LoginCTASection />}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ import {
   UpdateDailyTaskData,
   DailyTasksAnalytics,
 } from "@/services/dailyTasksService";
-import LoadingSpinner from "@/components/LoadingSpinner";
+
 import StudyPlannerModal from "./StudyPlannerModal";
 import AddTaskForm from "./AddTaskForm";
 import DailyTaskItem from "./DailyTaskItem";
@@ -262,7 +262,7 @@ const DailyTasks: React.FC = () => {
 
   // Show loading state
   if (authLoading || isLoading) {
-    return <GoalsSkeleton includeTabs={false} />;
+    return <GoalsSkeleton includeTabs={false} mode="daily" />;
   }
 
   // Show error state

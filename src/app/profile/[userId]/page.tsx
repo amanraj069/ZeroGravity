@@ -244,7 +244,7 @@ export default function PublicProfile() {
                     @{user.username}
                   </p>
 
-                  <div className="hidden sm:flex items-center justify-start gap-4 md:gap-8 mt-3 md:mt-5">
+                  <div className="hidden sm:flex items-center justify-start gap-4 md:gap-8 mt-2 md:mt-3">
                     <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
                       <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                         Active Tasks

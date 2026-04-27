@@ -6,13 +6,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   leaderboardService, 
   LeaderboardEntry 
 } from "@/services/leaderboardService";
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
-import { ChevronLeft, Trophy as TrophyIconLucide, Sparkles } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 export default function Leaderboard() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -28,7 +28,7 @@ export default function Leaderboard() {
 
   // Generate random stars for background atmosphere
   const stars = useMemo(() => {
-    return Array.from({ length: 30 }, (_, i) => ({
+    return Array.from({ length: 30 }, () => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
       size: Math.random() * 2 + 1,

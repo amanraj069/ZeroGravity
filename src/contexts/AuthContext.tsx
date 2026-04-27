@@ -30,6 +30,8 @@ interface User {
   loginStreakCompleted?: boolean;
   loginStreakClaimed?: boolean;
   aiGenerationCount?: number;
+  selectedBadges?: string[];
+  displayBadge?: string;
 }
 
 interface LoginReward {

@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Save, Rocket, ChevronUp, ChevronDown, Settings2, RefreshCw, Check } from "lucide-react";
+import CreateQuizSkeleton from "@/components/quizzes/CreateQuizSkeleton";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 const emptyQuestion = (): QuizQuestion => ({
@@ -434,13 +435,7 @@ function CreateQuizContent() {
   };
 
   if (isLoading || loadingExisting)
-    return (
-      <ZeroGravityLoading
-        title="Loading Quiz Creator"
-        subtitle="Preparing your quiz..."
-        showNavigation={false}
-      />
-    );
+    return <CreateQuizSkeleton />;
   if (!isPro)
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
@@ -460,10 +455,10 @@ function CreateQuizContent() {
       <div className="bg-white dark:bg-gray-900">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-start gap-2 flex-1">
+            <div className="flex items-center gap-3 flex-1 overflow-hidden">
               <button
                 onClick={() => router.back()}
-                className="mt-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
                 title="Go Back"
               >
                 <svg
@@ -480,35 +475,22 @@ function CreateQuizContent() {
                   />
                 </svg>
               </button>
-              <div className="flex-1">
+              
+              <div className="flex-1 min-w-0">
                 <style jsx>{`
                   @keyframes shake {
-                    0%,
-                    100% {
-                      transform: translateX(0);
-                    }
-                    10%,
-                    30%,
-                    50%,
-                    70%,
-                    90% {
-                      transform: translateX(-4px);
-                    }
-                    20%,
-                    40%,
-                    60%,
-                    80% {
-                      transform: translateX(4px);
-                    }
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+                    20%, 40%, 60%, 80% { transform: translateX(4px); }
                   }
                   .shake-animation {
                     animation: shake 0.5s ease-in-out;
                   }
                 `}</style>
-                <div className="flex items-start gap-2">
+                <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    className={`text-xl sm:text-3xl font-light text-black dark:text-white bg-transparent outline-none w-full placeholder-gray-400 dark:placeholder-gray-500 border-b-2 pb-1 transition-colors duration-300 ${
+                    className={`text-xl sm:text-3xl font-light text-black dark:text-white bg-transparent outline-none w-full placeholder-gray-300 dark:placeholder-gray-400 border-b-2 pb-1 transition-colors duration-300 ${
                       titleError
                         ? "border-red-500 shake-animation"
                         : title.trim()
@@ -554,7 +536,7 @@ function CreateQuizContent() {
                 </div>
                 <input
                   type="text"
-                  className="text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none w-full max-w-2xl text-sm mt-1 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="text-black dark:text-white bg-transparent border-b border-transparent focus:border-gray-200 dark:focus:border-gray-700 outline-none w-full text-sm mt-1 placeholder-gray-300 dark:placeholder-gray-400 transition-colors"
                   placeholder="Add a description (optional)"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}

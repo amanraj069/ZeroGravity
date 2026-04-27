@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
+import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import Image from "next/image";
-import { Plus, Trash2, ChevronLeft } from "lucide-react";
+import { Plus, ChevronLeft, Trash2 } from "lucide-react";
+import QuizzesSkeleton, { QuizCardsSkeleton } from "@/components/quizzes/QuizzesSkeleton";
 
 export default function QuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
@@ -161,12 +162,7 @@ export default function QuizzesPage() {
   };
 
   if (authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Authenticating"
-        subtitle="Verifying your cosmic credentials..."
-      />
-    );
+    return <QuizzesSkeleton />;
   }
 
   if (!isLoggedIn) {
@@ -367,16 +363,7 @@ export default function QuizzesPage() {
           </div>
 
           {/* Loading State */}
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="flex flex-col items-center justify-center">
-                <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-black dark:border-t-white rounded-full animate-spin mb-3"></div>
-                <p className="text-gray-600 dark:text-gray-400 font-light">
-                  Loading quizzes...
-                </p>
-              </div>
-            </div>
-          )}
+          {loading && <QuizCardsSkeleton />}
 
           {/* Empty State */}
           {!loading && filteredQuizzes.length === 0 && quizzes.length === 0 && (
