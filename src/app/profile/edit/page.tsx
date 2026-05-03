@@ -9,7 +9,7 @@ import { DashboardLayout } from "@/components/dashboard";
 // Removed unused Link import
 import Image from "next/image";
 import PhotoEditor from "@/components/PhotoEditor";
-import { ChevronLeft } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 type EditMode = "none" | "email" | "password";
 
@@ -518,13 +518,7 @@ export default function EditProfile() {
       <div className="mt-2 min-h-[calc(100dvh-12rem)]">
         {/* Header */}
         <div className="flex items-center gap-4 mb-4 sm:mb-8">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-            title="Go back"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
+          <BackButton />
           <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
             Edit Profile
           </h1>

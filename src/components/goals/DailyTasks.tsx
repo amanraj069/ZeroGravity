@@ -2,13 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Plus,
-  AlertCircle,
-  TrendingUp,
-  ChevronLeft,
-  Sparkles,
-} from "lucide-react";
+import { Plus, AlertCircle, TrendingUp, Sparkles } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   dailyTasksService,
@@ -67,15 +62,12 @@ const getUpcomingDays = (): {
   return days;
 };
 
-
-
 const DailyTasks: React.FC = () => {
   const router = useRouter();
   const { isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
   const [tasks, setTasks] = useState<DailyTask[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    getLocalDateString()
-  );
+  const [selectedDate, setSelectedDate] =
+    useState<string>(getLocalDateString());
   const [showAddTask, setShowAddTask] = useState(false);
   const [editingTask, setEditingTask] = useState<DailyTask | null>(null);
   const [analytics, setAnalytics] = useState<DailyTasksAnalytics>({
@@ -95,7 +87,10 @@ const DailyTasks: React.FC = () => {
   const [showStudyPlanner, setShowStudyPlanner] = useState(false);
 
   // Stable callbacks for the StudyPlannerModal to prevent re-renders
-  const handleCloseStudyPlanner = useCallback(() => setShowStudyPlanner(false), []);
+  const handleCloseStudyPlanner = useCallback(
+    () => setShowStudyPlanner(false),
+    [],
+  );
   const handleTasksCreated = useCallback(async () => {
     const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
     setTasks(fetchedTasks);
@@ -122,14 +117,13 @@ const DailyTasks: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const fetchedTasks = await dailyTasksService.getDailyTasks(
-          selectedDate
-        );
+        const fetchedTasks =
+          await dailyTasksService.getDailyTasks(selectedDate);
         setTasks(fetchedTasks);
       } catch (error) {
         console.error("Error loading daily tasks:", error);
         setError(
-          error instanceof Error ? error.message : "Failed to load daily tasks"
+          error instanceof Error ? error.message : "Failed to load daily tasks",
         );
       } finally {
         setIsLoading(false);
@@ -165,14 +159,14 @@ const DailyTasks: React.FC = () => {
     } catch (error) {
       console.error("Error creating daily task:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to create task"
+        error instanceof Error ? error.message : "Failed to create task",
       );
     }
   };
 
   const updateTask = async (
     taskId: string,
-    updateData: UpdateDailyTaskData
+    updateData: UpdateDailyTaskData,
   ) => {
     try {
       await dailyTasksService.updateDailyTask(taskId, updateData);
@@ -185,7 +179,7 @@ const DailyTasks: React.FC = () => {
     } catch (error) {
       console.error("Error updating daily task:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to update task"
+        error instanceof Error ? error.message : "Failed to update task",
       );
     }
   };
@@ -201,7 +195,7 @@ const DailyTasks: React.FC = () => {
     } catch (error) {
       console.error("Error deleting daily task:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to delete task"
+        error instanceof Error ? error.message : "Failed to delete task",
       );
     }
   };
@@ -211,7 +205,7 @@ const DailyTasks: React.FC = () => {
     try {
       const result = await dailyTasksService.toggleTaskCompletion(
         taskId,
-        selectedDate
+        selectedDate,
       );
       // Reload tasks and analytics
       const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
@@ -253,7 +247,7 @@ const DailyTasks: React.FC = () => {
     } catch (error) {
       console.error("Error toggling task completion:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to update task"
+        error instanceof Error ? error.message : "Failed to update task",
       );
     } finally {
       setTogglingTaskId(null);
@@ -295,7 +289,7 @@ const DailyTasks: React.FC = () => {
                       setError(
                         error instanceof Error
                           ? error.message
-                          : "Failed to load daily tasks"
+                          : "Failed to load daily tasks",
                       );
                     } finally {
                       setIsLoading(false);
@@ -341,13 +335,7 @@ const DailyTasks: React.FC = () => {
         <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2 md:mb-0">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.back()}
-                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-                title="Go back"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
+              <BackButton />
               <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
                 Daily Tasks
               </h1>
@@ -371,16 +359,16 @@ const DailyTasks: React.FC = () => {
           <div className="flex items-center gap-2">
             <div className="relative group hidden sm:block">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
-                <button
-                  onClick={() => setShowStudyPlanner(true)}
-                  className="relative flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0"
-                  style={{ borderRadius: 0 }}
-                  title="AI Study Planner"
-                >
-                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">AI Study Planner</span>
-                  <span className="sm:hidden">AI Plan</span>
-                </button>
+              <button
+                onClick={() => setShowStudyPlanner(true)}
+                className="relative flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0"
+                style={{ borderRadius: 0 }}
+                title="AI Study Planner"
+              >
+                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">AI Study Planner</span>
+                <span className="sm:hidden">AI Plan</span>
+              </button>
             </div>
             <button
               onClick={() => setShowAddTask(true)}
@@ -435,15 +423,15 @@ const DailyTasks: React.FC = () => {
             {/* AI Plan Button - Mobile Only */}
             <div className="relative group sm:hidden flex-1">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
-                <button
-                  onClick={() => setShowStudyPlanner(true)}
-                  className="relative w-full flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black py-2 text-[13px] hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
-                  style={{ borderRadius: 0 }}
-                  title="AI Study Planner"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>AI Planner</span>
-                </button>
+              <button
+                onClick={() => setShowStudyPlanner(true)}
+                className="relative w-full flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black py-2 text-[13px] hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
+                style={{ borderRadius: 0 }}
+                title="AI Study Planner"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>AI Planner</span>
+              </button>
             </div>
 
             {/* Date Picker */}
@@ -486,16 +474,16 @@ const DailyTasks: React.FC = () => {
                   ? "Today"
                   : `${dayName} (${dayNumber}D)`
                 : day.isToday
-                ? `Today (${dayNumber}${suffix(dayNumber)} ${monthName})`
-                : `${dayName} (${dayNumber}${suffix(dayNumber)} ${monthName})`;
+                  ? `Today (${dayNumber}${suffix(dayNumber)} ${monthName})`
+                  : `${dayName} (${dayNumber}${suffix(dayNumber)} ${monthName})`;
 
               // Border logic: match the Daily Tasks/Goals toggle style
               // Selected days get black/white bottom border, today gets purple border, others transparent
               const borderClass = isSelected
                 ? "border-b-2 border-black dark:border-white"
                 : day.isToday
-                ? "border-b-2 border-purple-500"
-                : "border-b-2 border-transparent";
+                  ? "border-b-2 border-purple-500"
+                  : "border-b-2 border-transparent";
 
               return (
                 <button
@@ -505,8 +493,8 @@ const DailyTasks: React.FC = () => {
                     isSelected
                       ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
                       : day.isToday
-                      ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                        ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                   }`}
                 >
                   <span
@@ -574,7 +562,7 @@ const DailyTasks: React.FC = () => {
           ))
         )}
       </div>
-      <StudyPlannerModal 
+      <StudyPlannerModal
         isOpen={showStudyPlanner}
         onClose={handleCloseStudyPlanner}
         onTasksCreated={handleTasksCreated}

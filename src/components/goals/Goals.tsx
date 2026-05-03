@@ -12,8 +12,8 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-  ChevronLeft,
 } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 import AddGoalForm from "./AddGoalForm";
 import DailyTasks from "./DailyTasks";
 import {
@@ -191,7 +191,7 @@ const Goals: React.FC = () => {
     if (goal.milestones.length === 0) return 0;
 
     const completedMilestones = goal.milestones.filter(
-      (m) => m.completed
+      (m) => m.completed,
     ).length;
     return Math.round((completedMilestones / goal.milestones.length) * 100);
   };
@@ -221,7 +221,7 @@ const Goals: React.FC = () => {
     } catch (error) {
       console.error("Error creating goal:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to create goal"
+        error instanceof Error ? error.message : "Failed to create goal",
       );
     }
   };
@@ -234,7 +234,7 @@ const Goals: React.FC = () => {
     } catch (error) {
       console.error("Error updating goal:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to update goal"
+        error instanceof Error ? error.message : "Failed to update goal",
       );
     }
   };
@@ -246,7 +246,7 @@ const Goals: React.FC = () => {
     } catch (error) {
       console.error("Error deleting goal:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to delete goal"
+        error instanceof Error ? error.message : "Failed to delete goal",
       );
     }
   };
@@ -258,14 +258,14 @@ const Goals: React.FC = () => {
     } catch (error) {
       console.error("Error toggling goal completion:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to update goal"
+        error instanceof Error ? error.message : "Failed to update goal",
       );
     }
   };
 
   const toggleMilestoneCompletion = async (
     goalId: string,
-    milestoneId: string
+    milestoneId: string,
   ) => {
     try {
       await goalsService.toggleMilestoneCompletion(goalId, milestoneId);
@@ -278,10 +278,10 @@ const Goals: React.FC = () => {
 
         if (updatedGoal) {
           const allMilestonesCompleted = updatedGoal.milestones.every(
-            (m) => m.completed
+            (m) => m.completed,
           );
           const anyMilestoneIncomplete = updatedGoal.milestones.some(
-            (m) => !m.completed
+            (m) => !m.completed,
           );
 
           // Auto-complete goal when all milestones are completed
@@ -299,7 +299,7 @@ const Goals: React.FC = () => {
     } catch (error) {
       console.error("Error toggling milestone completion:", error);
       setError(
-        error instanceof Error ? error.message : "Failed to update milestone"
+        error instanceof Error ? error.message : "Failed to update milestone",
       );
     }
   };
@@ -347,21 +347,17 @@ const Goals: React.FC = () => {
           <div className="flex items-center justify-between mb-2 md:mb-0">
             <div className="flex flex-col md:flex-row md:items-center md:gap-4">
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => router.back()}
-                  className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-                  title="Go back"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
+                <BackButton />
                 <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
                   Goals
                 </h1>
               </div>
-              
+
               {/* Desktop Stats */}
               <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <span className="whitespace-nowrap">{goalsAnalytics?.totalCompleted || 0} completed</span>
+                <span className="whitespace-nowrap">
+                  {goalsAnalytics?.totalCompleted || 0} completed
+                </span>
                 <span className="flex-shrink-0">•</span>
                 <span className="whitespace-nowrap">{goals.length} total</span>
                 <span className="flex-shrink-0">•</span>
@@ -378,10 +374,12 @@ const Goals: React.FC = () => {
               Add Goal
             </button>
           </div>
-          
+
           {/* Mobile Stats */}
           <div className="flex md:hidden items-center gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full mt-2">
-            <span className="whitespace-nowrap">{goalsAnalytics?.totalCompleted || 0} completed</span>
+            <span className="whitespace-nowrap">
+              {goalsAnalytics?.totalCompleted || 0} completed
+            </span>
             <span className="flex-shrink-0">•</span>
             <span className="whitespace-nowrap">{goals.length} total</span>
             <span className="flex-shrink-0">•</span>
@@ -499,12 +497,12 @@ const Goals: React.FC = () => {
                     goal.completed
                       ? "bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700"
                       : isGoalOverdue(goal)
-                      ? "bg-red-50/40 dark:bg-red-950/30 border-2 border-dashed border-red-400 dark:border-red-600"
-                      : goal.priority === "high"
-                      ? "bg-red-50/30 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50"
-                      : goal.priority === "medium"
-                      ? "bg-amber-50/30 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50"
-                      : "bg-emerald-50/30 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50"
+                        ? "bg-red-50/40 dark:bg-red-950/30 border-2 border-dashed border-red-400 dark:border-red-600"
+                        : goal.priority === "high"
+                          ? "bg-red-50/30 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50"
+                          : goal.priority === "medium"
+                            ? "bg-amber-50/30 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50"
+                            : "bg-emerald-50/30 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50"
                   }`}
                 >
                   {/* Goal Header - Mobile optimized */}
@@ -612,8 +610,8 @@ const Goals: React.FC = () => {
                                 goal.priority === "high"
                                   ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                                   : goal.priority === "medium"
-                                  ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                                  : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                                    ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                                    : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
                               }`}
                             >
                               {goal.priority}
@@ -680,7 +678,7 @@ const Goals: React.FC = () => {
                                 onClick={() =>
                                   toggleMilestoneCompletion(
                                     goal._id,
-                                    milestone.id
+                                    milestone.id,
                                   )
                                 }
                                 className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center transition-colors ${
@@ -707,7 +705,7 @@ const Goals: React.FC = () => {
                                   <span className="text-xs text-gray-500 dark:text-gray-400 ml-4 flex-shrink-0">
                                     Due:{" "}
                                     {new Date(
-                                      milestone.targetDate
+                                      milestone.targetDate,
                                     ).toLocaleDateString()}
                                   </span>
                                 )}

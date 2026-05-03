@@ -5,7 +5,20 @@ import { memo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
-import { Menu, X, Home as HomeIcon, LayoutDashboard, Trophy, Target, BrainCircuit, FileText, GraduationCap, ShoppingBag, User, LogOut } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home as HomeIcon,
+  LayoutDashboard,
+  Trophy,
+  Target,
+  BrainCircuit,
+  FileText,
+  GraduationCap,
+  ShoppingBag,
+  User,
+  LogOut,
+} from "lucide-react";
 
 function LandingNavbar() {
   const { isLoggedIn, isLoading, logout } = useAuth();
@@ -13,7 +26,7 @@ function LandingNavbar() {
 
   return (
     <>
-      <header className="sticky top-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-20">
+      <header className="sticky top-0 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-white/20 dark:border-white/10 z-20 shadow-lg shadow-black/5 dark:shadow-black/20">
         <div className="max-w-6xl mx-auto px-4 py-3 lg:py-4 flex justify-between items-center">
           <Link
             href="/"
@@ -103,13 +116,13 @@ function LandingNavbar() {
 
           {/* Slide-in Menu from Right */}
           <div
-            className={`fixed top-0 right-0 h-full w-56 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 z-40 transform transition-transform duration-300 ease-in-out sm:hidden ${
+            className={`fixed top-0 right-0 h-full w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-l border-white/20 dark:border-white/10 z-40 transform transition-transform duration-300 ease-in-out sm:hidden shadow-2xl shadow-black/20 ${
               isMenuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
             <div className="flex flex-col h-full">
               {/* Menu Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+              <div className="flex items-center justify-between p-4 border-b border-white/20 dark:border-white/10">
                 <h2 className="text-lg font-semibold text-black dark:text-white">
                   Menu
                 </h2>
@@ -192,7 +205,7 @@ function LandingNavbar() {
               </nav>
 
               {/* Logout Button at Bottom */}
-              <div className="border-t border-gray-200 dark:border-gray-800 p-4">
+              <div className="border-t border-white/20 dark:border-white/10 p-4">
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);

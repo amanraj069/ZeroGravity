@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
-import { ChevronLeft } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 export default function SettingsPage() {
   const { user, isLoggedIn, isLoading: authLoading, setUser } = useAuth();
@@ -77,13 +77,7 @@ export default function SettingsPage() {
       <div className="max-w-4xl mx-auto space-y-6 pb-20">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-            title="Go back"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
+          <BackButton />
           <div>
             <h1 className="text-2xl font-light text-black dark:text-white">
               Settings

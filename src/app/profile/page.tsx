@@ -513,15 +513,25 @@ export default function Profile() {
                     {badgeData &&
                       (() => {
                         const displayBadge = displayBadgeId
-                          ? badgeData.badges.find((b) => b.id === displayBadgeId && b.unlocked)
+                          ? badgeData.badges.find(
+                              (b) => b.id === displayBadgeId && b.unlocked,
+                            )
                           : null;
-                        const badge = displayBadge || getHighestBadge(badgeData.badges);
+                        const badge =
+                          displayBadge || getHighestBadge(badgeData.badges);
                         if (!badge) return null;
                         const v = BADGE_VISUALS[badge.id];
                         return (
-                          <div className="flex relative" ref={displayBadgePickerRef}>
+                          <div
+                            className="flex relative"
+                            ref={displayBadgePickerRef}
+                          >
                             <button
-                              onClick={() => setShowDisplayBadgePicker(!showDisplayBadgePicker)}
+                              onClick={() =>
+                                setShowDisplayBadgePicker(
+                                  !showDisplayBadgePicker,
+                                )
+                              }
                               className={`inline-flex flex-shrink-0 items-center gap-2 px-2.5 py-1 bg-gradient-to-r ${v.bgLight} ${v.bgDark} rounded whitespace-nowrap group/title transition-all hover:ring-1 hover:ring-gray-400/30 dark:hover:ring-white/20`}
                               title="Click to change display badge"
                             >
@@ -535,8 +545,18 @@ export default function Profile() {
                               >
                                 {badge.name}
                               </span>
-                              <svg className={`w-2.5 h-2.5 ${v.textColor} opacity-50 group-hover/title:opacity-100 transition-all ${showDisplayBadgePicker ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                              <svg
+                                className={`w-2.5 h-2.5 ${v.textColor} opacity-50 group-hover/title:opacity-100 transition-all ${showDisplayBadgePicker ? "rotate-180" : ""}`}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2.5}
+                                  d="M19 9l-7 7-7-7"
+                                />
                               </svg>
                             </button>
 
@@ -544,7 +564,9 @@ export default function Profile() {
                             {showDisplayBadgePicker && (
                               <div className="absolute top-full left-0 mt-1.5 z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[200px] max-w-[260px] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
                                 <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
-                                  <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Display Badge</p>
+                                  <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                                    Display Badge
+                                  </p>
                                 </div>
                                 <div className="max-h-[240px] overflow-y-auto py-1">
                                   {badgeData.badges
@@ -552,11 +574,15 @@ export default function Profile() {
                                     .sort((a, b) => {
                                       const aV = BADGE_VISUALS[a.id];
                                       const bV = BADGE_VISUALS[b.id];
-                                      return (aV?.prestigeRank ?? 99) - (bV?.prestigeRank ?? 99);
+                                      return (
+                                        (aV?.prestigeRank ?? 99) -
+                                        (bV?.prestigeRank ?? 99)
+                                      );
                                     })
                                     .map((b) => {
                                       const bv = BADGE_VISUALS[b.id];
-                                      const isSelected = (displayBadgeId || badge.id) === b.id;
+                                      const isSelected =
+                                        (displayBadgeId || badge.id) === b.id;
                                       return (
                                         <button
                                           key={b.id}
@@ -576,12 +602,22 @@ export default function Profile() {
                                           >
                                             {bv.icon}
                                           </span>
-                                          <span className={`text-xs font-medium ${isSelected ? 'text-black dark:text-white' : 'text-gray-600 dark:text-gray-400'} truncate`}>
+                                          <span
+                                            className={`text-xs font-medium ${isSelected ? "text-black dark:text-white" : "text-gray-600 dark:text-gray-400"} truncate`}
+                                          >
                                             {b.name}
                                           </span>
                                           {isSelected && (
-                                            <svg className="w-3.5 h-3.5 text-green-500 ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            <svg
+                                              className="w-3.5 h-3.5 text-green-500 ml-auto flex-shrink-0"
+                                              fill="currentColor"
+                                              viewBox="0 0 20 20"
+                                            >
+                                              <path
+                                                fillRule="evenodd"
+                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                clipRule="evenodd"
+                                              />
                                             </svg>
                                           )}
                                         </button>
@@ -600,7 +636,7 @@ export default function Profile() {
 
                   {/* Task counts below username (hidden on mobile) */}
                   <div className="hidden sm:flex items-center justify-start gap-4 md:gap-8 mt-2 md:mt-3">
-                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
+                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-transparent dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
                       <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                         Active Tasks
                       </span>
@@ -612,7 +648,7 @@ export default function Profile() {
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
+                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-transparent dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
                       <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                         Completed
                       </span>

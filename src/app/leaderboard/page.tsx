@@ -7,12 +7,12 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { 
-  leaderboardService, 
-  LeaderboardEntry 
+import {
+  leaderboardService,
+  LeaderboardEntry,
 } from "@/services/leaderboardService";
+import { BackButton } from "@/components/BackButton";
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
-import { ChevronLeft } from "lucide-react";
 
 export default function Leaderboard() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -54,7 +54,7 @@ export default function Leaderboard() {
     } catch (err) {
       console.error("Failed to fetch leaderboard:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to load leaderboard"
+        err instanceof Error ? err.message : "Failed to load leaderboard",
       );
     } finally {
       setLoading(false);
@@ -105,20 +105,20 @@ export default function Leaderboard() {
           glow: "#FFD700", // Golden glow
         }
       : isSilver
-      ? {
-          main: "#C0C0C0",
-          secondary: "#A8A8A8",
-          dark: "#808080",
-          highlight: "#E8E8E8",
-          glow: "#E8E8E8", // Silver glow
-        }
-      : {
-          main: "#CD7F32",
-          secondary: "#B87333",
-          dark: "#8B4513",
-          highlight: "#E6C19A",
-          glow: "#CD7F32", // Bronze glow
-        };
+        ? {
+            main: "#C0C0C0",
+            secondary: "#A8A8A8",
+            dark: "#808080",
+            highlight: "#E8E8E8",
+            glow: "#E8E8E8", // Silver glow
+          }
+        : {
+            main: "#CD7F32",
+            secondary: "#B87333",
+            dark: "#8B4513",
+            highlight: "#E6C19A",
+            glow: "#CD7F32", // Bronze glow
+          };
 
     const trophyId = `trophy-${rank}-${userId}`;
 
@@ -440,18 +440,20 @@ export default function Leaderboard() {
         <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[120px]" />
           <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-blue-500/[0.02] dark:bg-blue-900/[0.03] rounded-full blur-[100px]" />
-          
+
           {/* Subtle Stars in Dark Mode */}
           <div className="hidden dark:block absolute inset-0">
             {stars.map((star, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: [star.opacity, star.opacity * 2, star.opacity] }}
-                transition={{ 
-                  duration: 3 + Math.random() * 2, 
+                animate={{
+                  opacity: [star.opacity, star.opacity * 2, star.opacity],
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
                   repeat: Infinity,
-                  delay: star.delay 
+                  delay: star.delay,
                 }}
                 className="absolute bg-white rounded-full"
                 style={{
@@ -466,19 +468,13 @@ export default function Leaderboard() {
         </div>
 
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-6"
         >
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => router.back()}
-              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-              title="Go back"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
+            <BackButton />
             <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white leading-none tracking-tight">
               Leader<span className="font-normal italic">board</span>
             </h1>
@@ -495,11 +491,10 @@ export default function Leaderboard() {
               </p>
             </div>
           </div>
-
         </motion.div>
 
         {/* Leaderboard Table */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -512,165 +507,179 @@ export default function Leaderboard() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-                    <th className="pl-4 sm:pl-10 pr-2 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Rank</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Competitor</th>
+                    <th className="pl-4 sm:pl-10 pr-2 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                      Rank
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                      Competitor
+                    </th>
                     <th className="w-8 sm:w-12 p-0"></th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Streak</th>
-                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Points</th>
-                    <th className="pl-2 pr-4 sm:pr-10 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Reward</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                      Streak
+                    </th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                      Points
+                    </th>
+                    <th className="pl-2 pr-4 sm:pr-10 py-3 sm:py-4 text-center text-[9px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                      Reward
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                {leaderboard.entries.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="px-4 py-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400"
-                    >
-                      No entries yet for this week
-                    </td>
-                  </tr>
-                ) : (
-                  leaderboard.entries.map((entry) => {
-                    // Determine background color based on rank (only for top 3)
-                    let rowBgClass = "";
-                    let rewardPoints = null;
-
-                    if (entry.rank === 1) {
-                      rowBgClass =
-                        "bg-gradient-to-r from-yellow-500/10 to-transparent dark:from-yellow-400/10 dark:to-transparent border-l-4 border-yellow-500 underline-offset-4";
-                      rewardPoints = 1000;
-                    } else if (entry.rank === 2) {
-                      rowBgClass =
-                        "bg-gradient-to-r from-gray-400/10 to-transparent dark:from-gray-400/10 dark:to-transparent border-l-4 border-gray-400";
-                      rewardPoints = 500;
-                    } else if (entry.rank === 3) {
-                      rowBgClass =
-                        "bg-gradient-to-r from-orange-600/10 to-transparent dark:from-orange-500/10 dark:to-transparent border-l-4 border-orange-600";
-                      rewardPoints = 250;
-                    } else {
-                      // No special background for ranks 4 and below
-                      rowBgClass = "bg-transparent";
-                    }
-                    return (
-                      <motion.tr
-                        key={entry.userId}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + (entry.rank || 0) * 0.05 }}
-                        whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.03)" }}
-                        className={`${rowBgClass} transition-all duration-200 cursor-pointer border-l-[3px] border-transparent hover:border-purple-500/50`}
-                        onClick={() => {
-                          if (entry.user) {
-                            router.push(`/profile/${entry.user.userId}`);
-                          }
-                        }}
+                  {leaderboard.entries.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-8 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400"
                       >
-                        <td className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
-                          <div className="text-[10px] sm:text-sm font-semibold text-black dark:text-white">
-                            #{entry.rank}
-                          </div>
-                        </td>
-                        <td className="pl-2 pr-3 sm:pl-6 sm:pr-0 py-2.5 sm:py-6 text-left">
-                          {entry.user ? (
-                            <div className="flex items-center gap-3 sm:gap-8">
-                              <div
-                                className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
-                                  entry.user.equippedBorder || ""
-                                )}`}
-                                style={getBorderStyle(
-                                  entry.user.equippedBorder || "default",
-                                  56
-                                )}
-                              >
-                                {entry.user.profilePicture ? (
-                                  <Image
-                                    src={entry.user.profilePicture}
-                                    alt={`${entry.user.firstName} ${entry.user.lastName}`}
-                                    width={56}
-                                    height={56}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
-                                    {entry.user.firstName
-                                      .charAt(0)
-                                      .toUpperCase()}
-                                    {entry.user.lastName
-                                      .charAt(0)
-                                      .toUpperCase()}
+                        No entries yet for this week
+                      </td>
+                    </tr>
+                  ) : (
+                    leaderboard.entries.map((entry) => {
+                      // Determine background color based on rank (only for top 3)
+                      let rowBgClass = "";
+                      let rewardPoints = null;
+
+                      if (entry.rank === 1) {
+                        rowBgClass =
+                          "bg-gradient-to-r from-yellow-500/10 to-transparent dark:from-yellow-400/10 dark:to-transparent border-l-4 border-yellow-500 underline-offset-4";
+                        rewardPoints = 1000;
+                      } else if (entry.rank === 2) {
+                        rowBgClass =
+                          "bg-gradient-to-r from-gray-400/10 to-transparent dark:from-gray-400/10 dark:to-transparent border-l-4 border-gray-400";
+                        rewardPoints = 500;
+                      } else if (entry.rank === 3) {
+                        rowBgClass =
+                          "bg-gradient-to-r from-orange-600/10 to-transparent dark:from-orange-500/10 dark:to-transparent border-l-4 border-orange-600";
+                        rewardPoints = 250;
+                      } else {
+                        // No special background for ranks 4 and below
+                        rowBgClass = "bg-transparent";
+                      }
+                      return (
+                        <motion.tr
+                          key={entry.userId}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 + (entry.rank || 0) * 0.05 }}
+                          whileHover={{
+                            backgroundColor: "rgba(255, 255, 255, 0.03)",
+                          }}
+                          className={`${rowBgClass} transition-all duration-200 cursor-pointer border-l-[3px] border-transparent hover:border-purple-500/50`}
+                          onClick={() => {
+                            if (entry.user) {
+                              router.push(`/profile/${entry.user.userId}`);
+                            }
+                          }}
+                        >
+                          <td className="pl-4 sm:pl-10 pr-2 sm:pr-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
+                            <div className="text-[10px] sm:text-sm font-semibold text-black dark:text-white">
+                              #{entry.rank}
+                            </div>
+                          </td>
+                          <td className="pl-2 pr-3 sm:pl-6 sm:pr-0 py-2.5 sm:py-6 text-left">
+                            {entry.user ? (
+                              <div className="flex items-center gap-3 sm:gap-8">
+                                <div
+                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
+                                    entry.user.equippedBorder || "",
+                                  )}`}
+                                  style={getBorderStyle(
+                                    entry.user.equippedBorder || "default",
+                                    56,
+                                  )}
+                                >
+                                  {entry.user.profilePicture ? (
+                                    <Image
+                                      src={entry.user.profilePicture}
+                                      alt={`${entry.user.firstName} ${entry.user.lastName}`}
+                                      width={56}
+                                      height={56}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
+                                      {entry.user.firstName
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                      {entry.user.lastName
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
+                                    {entry.user.firstName} {entry.user.lastName}
                                   </div>
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
-                                  {entry.user.firstName} {entry.user.lastName}
-                                </div>
-                                <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
-                                  @{entry.user.username}
+                                  <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">
+                                    @{entry.user.username}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ) : (
-                            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                              User not found
-                            </div>
-                          )}
-                        </td>
-                        <td className="w-12 sm:w-14 p-0 text-center align-middle">
-                          {(entry.rank === 1 ||
-                            entry.rank === 2 ||
-                            entry.rank === 3) && (
-                            <div className="flex items-center justify-center">
-                              <TrophyIcon
-                                rank={entry.rank}
-                                userId={entry.userId}
-                              />
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-2 sm:px-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
-                          <div className="text-xs sm:text-sm text-black dark:text-white">
-                            {entry.user?.currentStreak || 0}{" "}
-                            {(entry.user?.currentStreak || 0) === 0 ||
-                            (entry.user?.currentStreak || 0) === 1
-                              ? "day"
-                              : "days"}
-                          </div>
-                        </td>
-                        <td className="px-2 sm:px-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
-                          <div className="text-xs sm:text-sm font-semibold text-black dark:text-white">
-                            {(entry.points || 0).toLocaleString()}
-                          </div>
-                        </td>
-                        <td className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-2.5 sm:py-6 whitespace-nowrap text-center">
-                          {rewardPoints ? (
-                            <div className="flex flex-col items-center">
-                              <div className="text-xs sm:text-sm font-bold text-green-600 dark:text-green-400">
-                                +{rewardPoints.toLocaleString()}
+                            ) : (
+                              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                                User not found
                               </div>
-                              <div className="text-[8px] uppercase tracking-tighter opacity-50">Points</div>
+                            )}
+                          </td>
+                          <td className="w-12 sm:w-14 p-0 text-center align-middle">
+                            {(entry.rank === 1 ||
+                              entry.rank === 2 ||
+                              entry.rank === 3) && (
+                              <div className="flex items-center justify-center">
+                                <TrophyIcon
+                                  rank={entry.rank}
+                                  userId={entry.userId}
+                                />
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-2 sm:px-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
+                            <div className="text-xs sm:text-sm text-black dark:text-white">
+                              {entry.user?.currentStreak || 0}{" "}
+                              {(entry.user?.currentStreak || 0) === 0 ||
+                              (entry.user?.currentStreak || 0) === 1
+                                ? "day"
+                                : "days"}
                             </div>
-                          ) : (
-                            <div className="text-xs sm:text-sm text-gray-400 dark:text-gray-600">
-                              -
+                          </td>
+                          <td className="px-2 sm:px-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
+                            <div className="text-xs sm:text-sm font-semibold text-black dark:text-white">
+                              {(entry.points || 0).toLocaleString()}
                             </div>
-                          )}
-                        </td>
-                      </motion.tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                          </td>
+                          <td className="pl-2 sm:pl-6 pr-4 sm:pr-10 py-2.5 sm:py-6 whitespace-nowrap text-center">
+                            {rewardPoints ? (
+                              <div className="flex flex-col items-center">
+                                <div className="text-xs sm:text-sm font-bold text-green-600 dark:text-green-400">
+                                  +{rewardPoints.toLocaleString()}
+                                </div>
+                                <div className="text-[8px] uppercase tracking-tighter opacity-50">
+                                  Points
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="text-xs sm:text-sm text-gray-400 dark:text-gray-600">
+                                -
+                              </div>
+                            )}
+                          </td>
+                        </motion.tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
         {/* Not Eligible Section */}
         {leaderboard.notEligibleEntries &&
           leaderboard.notEligibleEntries.length > 0 && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -684,12 +693,22 @@ export default function Leaderboard() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-                        <th className="pl-6 sm:pl-10 pr-2 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Rank</th>
-                        <th className="px-6 py-4 text-left text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Competitor</th>
+                        <th className="pl-6 sm:pl-10 pr-2 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                          Rank
+                        </th>
+                        <th className="px-6 py-4 text-left text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                          Competitor
+                        </th>
                         <th className="w-12 p-0"></th>
-                        <th className="px-6 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Streak</th>
-                        <th className="px-6 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Points</th>
-                        <th className="pl-6 pr-10 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">Reward</th>
+                        <th className="px-6 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                          Streak
+                        </th>
+                        <th className="px-6 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                          Points
+                        </th>
+                        <th className="pl-6 pr-10 py-4 text-center text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                          Reward
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -698,8 +717,12 @@ export default function Leaderboard() {
                           key={entry.userId}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ delay: 0.9 + leaderboard.entries.length * 0.05 }}
-                          whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.03)" }}
+                          transition={{
+                            delay: 0.9 + leaderboard.entries.length * 0.05,
+                          }}
+                          whileHover={{
+                            backgroundColor: "rgba(255, 255, 255, 0.03)",
+                          }}
                           className="bg-transparent hover:bg-gray-50/5 dark:hover:bg-white/[0.03] transition-all duration-200 cursor-pointer"
                           onClick={() => {
                             if (entry.user) {
@@ -717,11 +740,11 @@ export default function Leaderboard() {
                               <div className="flex items-center gap-3 sm:gap-8">
                                 <div
                                   className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
-                                    entry.user.equippedBorder || ""
+                                    entry.user.equippedBorder || "",
                                   )}`}
                                   style={getBorderStyle(
                                     entry.user.equippedBorder || "default",
-                                    56
+                                    56,
                                   )}
                                 >
                                   {entry.user.profilePicture ? (

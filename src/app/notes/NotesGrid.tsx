@@ -3,8 +3,8 @@
 import { useState, useMemo } from "react";
 import { Note } from "@/services/notesService";
 import { SidebarView } from "./NotesApp";
-import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { BackButton } from "@/components/BackButton";
 import {
   FileText,
   Star,
@@ -93,7 +93,12 @@ export default function NotesGrid({
             ? "Uncategorised"
             : "All Notes";
 
-  const sortLabel = sortBy === "recent" ? "Recent" : sortBy === "title" ? "Title A-Z" : "Oldest";
+  const sortLabel =
+    sortBy === "recent"
+      ? "Recent"
+      : sortBy === "title"
+        ? "Title A-Z"
+        : "Oldest";
 
   // Filter notes based on current view
   const filteredNotes = useMemo(() => {
@@ -123,15 +128,26 @@ export default function NotesGrid({
       notes = notes.filter(
         (n) =>
           (n.title || "").toLowerCase().includes(q) ||
-          (n.content || "").replace(/<[^>]*>/g, " ").toLowerCase().includes(q)
+          (n.content || "")
+            .replace(/<[^>]*>/g, " ")
+            .toLowerCase()
+            .includes(q),
       );
     }
 
     // Apply sorting
     return [...notes].sort((a, b) => {
-      if (sortBy === "title") return (a.title || "").localeCompare(b.title || "");
-      if (sortBy === "oldest") return new Date(a.lastUpdatedDate).getTime() - new Date(b.lastUpdatedDate).getTime();
-      return new Date(b.lastUpdatedDate).getTime() - new Date(a.lastUpdatedDate).getTime();
+      if (sortBy === "title")
+        return (a.title || "").localeCompare(b.title || "");
+      if (sortBy === "oldest")
+        return (
+          new Date(a.lastUpdatedDate).getTime() -
+          new Date(b.lastUpdatedDate).getTime()
+        );
+      return (
+        new Date(b.lastUpdatedDate).getTime() -
+        new Date(a.lastUpdatedDate).getTime()
+      );
     });
   }, [allNotes, view, activeCategory, sortBy, searchQuery]);
 
@@ -152,13 +168,7 @@ export default function NotesGrid({
               </button>
             )}
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.back()}
-                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0 max-sm:hidden"
-                title="Go back"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
+              <BackButton className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0 max-sm:hidden" />
               <div>
                 <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {viewTitle}
@@ -171,7 +181,7 @@ export default function NotesGrid({
               </div>
             </div>
           </div>
-          
+
           {/* Rightside: Action Buttons */}
           <div className="flex flex-row items-center gap-2 mt-0 ml-auto">
             {/* Sort dropdown */}
@@ -192,22 +202,28 @@ export default function NotesGrid({
                     onClick={() => setShowSortMenu(false)}
                   />
                   <div className="absolute right-0 top-full mt-1 z-20 min-w-[130px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg py-1 rounded-md">
-                    {(["recent", "title", "oldest"] as SortOption[]).map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => {
-                          setSortBy(opt);
-                          setShowSortMenu(false);
-                        }}
-                        className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                          sortBy === opt
-                            ? "text-gray-900 dark:text-white font-medium"
-                            : "text-gray-600 dark:text-gray-400"
-                        }`}
-                      >
-                        {opt === "recent" ? "Recent" : opt === "title" ? "Title A-Z" : "Oldest first"}
-                      </button>
-                    ))}
+                    {(["recent", "title", "oldest"] as SortOption[]).map(
+                      (opt) => (
+                        <button
+                          key={opt}
+                          onClick={() => {
+                            setSortBy(opt);
+                            setShowSortMenu(false);
+                          }}
+                          className={`w-full text-left px-3 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                            sortBy === opt
+                              ? "text-gray-900 dark:text-white font-medium"
+                              : "text-gray-600 dark:text-gray-400"
+                          }`}
+                        >
+                          {opt === "recent"
+                            ? "Recent"
+                            : opt === "title"
+                              ? "Title A-Z"
+                              : "Oldest first"}
+                        </button>
+                      ),
+                    )}
                   </div>
                 </>
               )}
@@ -235,7 +251,9 @@ export default function NotesGrid({
       </div>
 
       {/* Grid */}
-      <div className={`flex-1 overflow-y-auto p-4 sm:p-6 ${filteredNotes.length === 0 ? 'flex items-center justify-center' : ''}`}>
+      <div
+        className={`flex-1 overflow-y-auto p-4 sm:p-6 ${filteredNotes.length === 0 ? "flex items-center justify-center" : ""}`}
+      >
         {filteredNotes.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-gray-400 dark:text-gray-600 select-none py-20">
             <FileText size={48} strokeWidth={1} className="opacity-40" />
@@ -256,7 +274,8 @@ export default function NotesGrid({
             )}
             {view === "favorites" && (
               <p className="mt-3 text-xs text-gray-500">
-                Click the <Star size={11} className="inline -mt-0.5" /> star on any note to add it to your favorites
+                Click the <Star size={11} className="inline -mt-0.5" /> star on
+                any note to add it to your favorites
               </p>
             )}
           </div>

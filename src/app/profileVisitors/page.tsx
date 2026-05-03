@@ -10,8 +10,8 @@ import {
   profileVisitorsService,
   ProfileVisitor,
 } from "@/services/profileVisitorsService";
+import { BackButton } from "@/components/BackButton";
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
-import { ChevronLeft } from "lucide-react";
 
 export default function ProfileVisitors() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
@@ -40,7 +40,7 @@ export default function ProfileVisitors() {
     } catch (err) {
       console.error("Failed to fetch profile visitors:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to load profile visitors"
+        err instanceof Error ? err.message : "Failed to load profile visitors",
       );
     } finally {
       setLoading(false);
@@ -139,13 +139,7 @@ export default function ProfileVisitors() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.back()}
-              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-              title="Go back"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
+            <BackButton />
             <div>
               <h1 className="text-base sm:text-xl md:text-3xl font-light text-black dark:text-white flex items-center gap-2 leading-none mb-1">
                 Profile Visitors
@@ -208,11 +202,11 @@ export default function ProfileVisitors() {
                             <div className="flex items-center gap-6 sm:gap-8">
                               <div
                                 className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
-                                  visitor.equippedBorder || ""
+                                  visitor.equippedBorder || "",
                                 )}`}
                                 style={getBorderStyle(
                                   visitor.equippedBorder || "default",
-                                  56
+                                  56,
                                 )}
                               >
                                 {visitor.profilePicture ? (

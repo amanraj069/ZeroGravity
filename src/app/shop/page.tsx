@@ -12,7 +12,8 @@ import {
   equipBorder,
 } from "@/services/shopService";
 import { BorderPreview } from "@/components/borders";
-import { Check, ChevronLeft } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
+import { Check } from "lucide-react";
 
 export default function ShopPage() {
   const { user, isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
@@ -23,7 +24,7 @@ export default function ShopPage() {
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [equipping, setEquipping] = useState<string | null>(null);
   const [purchasedBorderId, setPurchasedBorderId] = useState<string | null>(
-    null
+    null,
   );
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -63,7 +64,7 @@ export default function ShopPage() {
         setMessage({ type: "success", text: result.message });
         setUserPoints(result.data?.newPoints || userPoints);
         setBorders((prev) =>
-          prev.map((b) => (b.id === borderId ? { ...b, owned: true } : b))
+          prev.map((b) => (b.id === borderId ? { ...b, owned: true } : b)),
         );
         // Trigger purchase animation
         setPurchasedBorderId(borderId);
@@ -96,7 +97,7 @@ export default function ShopPage() {
           prev.map((b) => ({
             ...b,
             equipped: b.id === borderId,
-          }))
+          })),
         );
         await refreshPoints();
         // Navigate to profile page after equipping
@@ -138,13 +139,7 @@ export default function ShopPage() {
         <div className="space-y-2 md:space-y-0">
           <div className="flex flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.back()}
-                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                title="Go back"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
+              <BackButton />
               <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
                 Shop
               </h1>
@@ -287,8 +282,8 @@ export default function ShopPage() {
                         {purchasing === border.id
                           ? "..."
                           : userPoints < border.price
-                          ? "Insufficient"
-                          : "Purchase"}
+                            ? "Insufficient"
+                            : "Purchase"}
                       </button>
                     )}
                   </div>

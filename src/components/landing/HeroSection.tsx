@@ -27,7 +27,7 @@ export default function HeroSection() {
     <div className="relative h-[92dvh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-gray-900">
       {/* Top Banner for Quiz Join - Redesigned as a floating glass bar */}
       <div className="absolute top-20 lg:top-12 left-0 right-0 z-10 flex justify-center px-4">
-        <motion.div 
+        <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
@@ -51,8 +51,18 @@ export default function HeroSection() {
               disabled={!quizCode.trim()}
               className="text-black dark:text-white p-1 hover:scale-125 active:scale-95 transition-all disabled:opacity-20"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
               </svg>
             </button>
           </form>
@@ -75,10 +85,10 @@ export default function HeroSection() {
             priority
           />
         </motion.div>
-        
+
         {/* Subtle Cosmic Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white dark:from-[#111116] dark:via-transparent dark:to-[#111116]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-white/5 dark:from-[#111116] dark:via-transparent dark:to-[#111116]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[160px] pointer-events-none" />
       </div>
 
       <AnimatedHero className="relative z-10 text-center max-w-5xl mx-auto px-6">
@@ -87,14 +97,14 @@ export default function HeroSection() {
             Zero<span className="font-normal italic">Gravity</span>
           </h1>
         </AnimatedHeroElement>
-        
+
         <AnimatedHeroElement>
           <p className="text-base sm:text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-12 sm:mb-16 max-w-2xl mx-auto font-light leading-relaxed tracking-wide opacity-90">
             Break free from ordinary. <br className="hidden sm:block" />
             Transcend your limits and reach your goals.
           </p>
         </AnimatedHeroElement>
-        
+
         <AnimatedHeroElement>
           <div className="flex flex-col sm:flex-row gap-5 items-center justify-center">
             {!isLoading && (
@@ -124,8 +134,18 @@ export default function HeroSection() {
                       <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98]" />
                       <span className="relative flex items-center gap-3">
                         Get Started
-                        <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        <svg
+                          className="w-5 h-5 transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
                         </svg>
                       </span>
                     </Link>
@@ -144,13 +164,15 @@ export default function HeroSection() {
       </AnimatedHero>
 
       {/* Decorative scroll indicator */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5, duration: 1.5 }}
         className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
       >
-        <span className="text-[9px] uppercase tracking-[0.5em] text-gray-400 dark:text-gray-600 font-bold">Discover</span>
+        <span className="text-[9px] uppercase tracking-[0.5em] text-gray-400 dark:text-gray-600 font-bold">
+          Discover
+        </span>
         <div className="w-[1px] h-16 bg-gradient-to-b from-black/20 dark:from-white/20 to-transparent" />
       </motion.div>
     </div>

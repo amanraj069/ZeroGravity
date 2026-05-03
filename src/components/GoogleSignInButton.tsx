@@ -169,21 +169,31 @@ export default function GoogleSignInButton({
 
           // Target the button and iframe elements created by Google
           const buttons = buttonRef.current.querySelectorAll(
-            'button, iframe, div[role="button"]'
+            'button, iframe, div[role="button"]',
           );
           buttons.forEach((element) => {
             (element as HTMLElement).style.borderRadius = "0";
+            // Remove border in dark mode for better appearance
+            if (theme === "dark") {
+              (element as HTMLElement).style.border = "none";
+              (element as HTMLElement).style.outline = "none";
+            }
           });
           // Also apply to any nested elements
           const allElements = buttonRef.current.querySelectorAll("*");
           allElements.forEach((element) => {
             (element as HTMLElement).style.borderRadius = "0";
+            // Remove border styling in dark mode
+            if (theme === "dark") {
+              (element as HTMLElement).style.border = "none";
+              (element as HTMLElement).style.outline = "none";
+            }
           });
 
           // Ensure Google logo appears before text
           // Find button content and ensure logo comes first
           const button = buttonRef.current.querySelector(
-            'button, div[role="button"]'
+            'button, div[role="button"]',
           );
           if (button) {
             // Ensure flex layout for proper alignment
@@ -212,15 +222,20 @@ export default function GoogleSignInButton({
 
           // Only apply styles, don't move elements during observer to avoid breaking handlers
           const buttons = buttonRef.current.querySelectorAll(
-            'button, iframe, div[role="button"]'
+            'button, iframe, div[role="button"]',
           );
           buttons.forEach((element) => {
             (element as HTMLElement).style.borderRadius = "0";
+            // Remove border in dark mode
+            if (theme === "dark") {
+              (element as HTMLElement).style.border = "none";
+              (element as HTMLElement).style.outline = "none";
+            }
           });
 
           // Apply flex styling if button exists
           const button = buttonRef.current.querySelector(
-            'button, div[role="button"]'
+            'button, div[role="button"]',
           );
           if (button) {
             (button as HTMLElement).style.display = "flex";
@@ -252,7 +267,7 @@ export default function GoogleSignInButton({
     const removeRoundedCorners = () => {
       if (!buttonRef.current) return;
       const buttons = buttonRef.current.querySelectorAll(
-        'button, iframe, div[role="button"]'
+        'button, iframe, div[role="button"]',
       );
       buttons.forEach((element) => {
         (element as HTMLElement).style.borderRadius = "0";
@@ -337,10 +352,10 @@ declare global {
           initialize: (config: GoogleIdConfiguration) => void;
           renderButton: (
             element: HTMLElement,
-            config: GoogleButtonConfig
+            config: GoogleButtonConfig,
           ) => void;
           prompt: (
-            callback: (notification: GooglePromptNotification) => void
+            callback: (notification: GooglePromptNotification) => void,
           ) => void;
         };
       };

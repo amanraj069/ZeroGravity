@@ -7,18 +7,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
 import { motion } from "framer-motion";
-import { 
-  ShoppingBag, 
-  Target, 
-  BookOpen, 
-  Trophy, 
-  FileText, 
-  ChevronRight,
-  Sparkles
-} from "lucide-react";
 import {
-  DashboardLayout,
-} from "@/components/dashboard";
+  ShoppingBag,
+  Target,
+  BookOpen,
+  Trophy,
+  FileText,
+  ChevronRight,
+  Sparkles,
+} from "lucide-react";
+import { DashboardLayout } from "@/components/dashboard";
 import DashboardSkeleton from "./DashboardSkeleton";
 
 export default function Dashboard() {
@@ -128,7 +126,7 @@ export default function Dashboard() {
       {/* Points Animation Popup */}
       {pointsAnimation && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] pointer-events-none">
-          <motion.div 
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
@@ -136,7 +134,9 @@ export default function Dashboard() {
           >
             <Sparkles className="w-5 h-5 text-yellow-400 fill-current" />
             <span className="text-xl font-bold">+{pointsAnimation.points}</span>
-            <span className="text-sm uppercase tracking-widest opacity-70">Points</span>
+            <span className="text-sm uppercase tracking-widest opacity-70">
+              Points
+            </span>
           </motion.div>
         </div>
       )}
@@ -160,11 +160,11 @@ export default function Dashboard() {
         <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[120px]" />
           <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-blue-500/[0.02] dark:bg-blue-900/[0.03] rounded-full blur-[100px]" />
-          
+
           {/* Subtle Stars in Dark Mode */}
           <div className="hidden dark:block absolute inset-0">
             {stars.map((star, i) => (
-              <div 
+              <div
                 key={i}
                 className="absolute bg-white rounded-full animate-pulse"
                 style={{
@@ -173,7 +173,7 @@ export default function Dashboard() {
                   width: star.size,
                   height: star.size,
                   opacity: star.opacity,
-                  animationDelay: `${star.delay}s`
+                  animationDelay: `${star.delay}s`,
                 }}
               />
             ))}
@@ -187,14 +187,16 @@ export default function Dashboard() {
               Dash<span className="font-normal italic">board</span>
             </h1>
           </div>
-          
+
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             {/* Points Branding */}
             <div className="hidden sm:flex items-baseline gap-1.5 px-3 py-1 border-r border-black/10 dark:border-white/10">
               <span className="text-lg md:text-2xl font-bold text-black dark:text-white">
                 {(user?.points || 0).toLocaleString()}
               </span>
-              <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] font-bold">pts</span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] font-bold">
+                pts
+              </span>
             </div>
 
             {/* Mobile Points (Smaller) */}
@@ -202,7 +204,9 @@ export default function Dashboard() {
               <span className="text-base font-bold text-black dark:text-white">
                 {(user?.points || 0).toLocaleString()}
               </span>
-              <span className="text-[8px] text-gray-500 dark:text-gray-400 uppercase font-medium">pts</span>
+              <span className="text-[8px] text-gray-500 dark:text-gray-400 uppercase font-medium">
+                pts
+              </span>
             </div>
 
             {/* Shop Button */}
@@ -212,7 +216,9 @@ export default function Dashboard() {
             >
               <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:opacity-90" />
               <ShoppingBag className="w-3.5 h-3.5 relative" />
-              <span className="relative text-[10px] sm:text-xs font-bold uppercase tracking-widest">Shop</span>
+              <span className="relative text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                Shop
+              </span>
             </Link>
           </div>
         </div>
@@ -224,10 +230,10 @@ export default function Dashboard() {
               key={item.url}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.5, 
+              transition={{
+                duration: 0.5,
                 delay: idx * 0.1,
-                ease: [0.21, 0.47, 0.32, 0.98] 
+                ease: [0.21, 0.47, 0.32, 0.98],
               }}
               whileHover={{ y: -2, scale: 1.005 }}
             >
@@ -266,18 +272,18 @@ export default function Dashboard() {
 
         {/* Global Interaction Point - Students Hub (Prominent) */}
         <motion.div
-           initial={{ opacity: 0, scale: 0.98 }}
-           animate={{ opacity: 1, scale: 1 }}
-           transition={{ delay: 0.5 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
         >
           <Link
             href="/studentsHub"
-            className="group relative block w-full overflow-hidden border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-[#050710] py-6 sm:py-10 px-6 sm:px-8 group transition-all duration-500 hover:border-black/20 dark:hover:border-white/20"
+            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 group transition-all duration-500 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)]"
           >
             {/* Immersive Star Layer */}
             <div className="absolute inset-0 opacity-20 dark:opacity-40 pointer-events-none group-hover:opacity-40 dark:group-hover:opacity-70 transition-opacity">
-               {stars.slice(0, 20).map((star, i) => (
-                 <div 
+              {stars.slice(0, 20).map((star, i) => (
+                <div
                   key={`hub-${i}`}
                   className="absolute bg-blue-400 dark:bg-white rounded-full"
                   style={{
@@ -287,25 +293,26 @@ export default function Dashboard() {
                     height: (star.size || 1) + 1,
                     opacity: 0.3,
                   }}
-                 />
-               ))}
+                />
+              ))}
             </div>
- 
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-10">
               <div className="text-center md:text-left">
                 <h2 className="text-xl sm:text-3xl md:text-5xl font-light text-black dark:text-white mb-2 tracking-tight leading-none">
                   Students <span className="font-normal italic">Hub</span>
                 </h2>
                 <p className="text-xs sm:text-base md:text-lg text-gray-500 dark:text-gray-400 font-light max-w-xl mx-auto md:mx-0 leading-relaxed">
-                  Transcend your student experience. Access premium tools, exclusive resources, and a network designed for growth.
+                  Transcend your student experience. Access premium tools,
+                  exclusive resources, and a network designed for growth.
                 </p>
               </div>
- 
+
               <div className="flex flex-row md:flex-col items-center md:items-end gap-4 sm:gap-6 shrink-0">
                 <div className="text-3xl sm:text-5xl md:text-7xl group-hover:scale-110 transition-transform duration-500 rotate-12 group-hover:rotate-0">
                   🚀
                 </div>
-                <div className="flex items-center gap-2 text-[9px] sm:text-sm uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-600 group-hover:text-black dark:group-hover:text-white transition-colors">
+                <div className="flex items-center gap-2 text-[9px] sm:text-sm uppercase tracking-[0.3em] font-bold text-gray-600 dark:text-gray-600 group-hover:text-black dark:group-hover:text-white transition-colors">
                   <span>Enter Orbit</span>
                   <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>

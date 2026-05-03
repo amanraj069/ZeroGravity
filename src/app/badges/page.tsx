@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { BackButton } from "@/components/BackButton";
 import {
   fetchBadgeProgress,
   BADGE_VISUALS,
   BadgeProgress,
   BadgeData,
 } from "@/services/badgeService";
-import { ChevronLeft, Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
+import { Lock, Unlock, ChevronDown, ChevronUp } from "lucide-react";
 import { RandomStars } from "@/components/RandomStars";
 
 // --- Stat card ---
@@ -219,12 +220,7 @@ export default function BadgesPage() {
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-2 lg:mb-6">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.back()}
-              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
+            <BackButton />
             <div>
               <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
                 Badges
@@ -253,31 +249,37 @@ export default function BadgesPage() {
                   className="bg-white dark:bg-gray-900"
                   value="prestige-asc"
                 >
-                  {sortBy === "prestige" && sortOrder === "asc" ? "✓ " : ""}Prestige (Asc)
+                  {sortBy === "prestige" && sortOrder === "asc" ? "✓ " : ""}
+                  Prestige (Asc)
                 </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="prestige-desc"
                 >
-                  {sortBy === "prestige" && sortOrder === "desc" ? "✓ " : ""}Prestige (Desc)
+                  {sortBy === "prestige" && sortOrder === "desc" ? "✓ " : ""}
+                  Prestige (Desc)
                 </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="progress-desc"
                 >
-                  {sortBy === "progress" && sortOrder === "desc" ? "✓ " : ""}Progress (High to Low)
+                  {sortBy === "progress" && sortOrder === "desc" ? "✓ " : ""}
+                  Progress (High to Low)
                 </option>
                 <option
                   className="bg-white dark:bg-gray-900"
                   value="progress-asc"
                 >
-                  {sortBy === "progress" && sortOrder === "asc" ? "✓ " : ""}Progress (Low to High)
+                  {sortBy === "progress" && sortOrder === "asc" ? "✓ " : ""}
+                  Progress (Low to High)
                 </option>
                 <option className="bg-white dark:bg-gray-900" value="name-asc">
-                  {sortBy === "name" && sortOrder === "asc" ? "✓ " : ""}Name (A-Z)
+                  {sortBy === "name" && sortOrder === "asc" ? "✓ " : ""}Name
+                  (A-Z)
                 </option>
                 <option className="bg-white dark:bg-gray-900" value="name-desc">
-                  {sortBy === "name" && sortOrder === "desc" ? "✓ " : ""}Name (Z-A)
+                  {sortBy === "name" && sortOrder === "desc" ? "✓ " : ""}Name
+                  (Z-A)
                 </option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">

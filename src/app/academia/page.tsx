@@ -7,13 +7,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { motion, AnimatePresence } from "framer-motion";
+import { BackButton } from "@/components/BackButton";
 import {
   academiaService,
   type Semester,
   calculateSGPA,
   calculateCGPA,
 } from "@/services/academiaService";
-import { ChevronLeft } from "lucide-react";
 
 export default function AcademiaPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -276,13 +276,7 @@ export default function AcademiaPage() {
             {/* Title and CGPA on same row on mobile */}
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <button
-                  onClick={() => router.back()}
-                  className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-                  title="Go back"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
+                <BackButton />
                 <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white">
                   Academia
                 </h1>
@@ -448,12 +442,19 @@ export default function AcademiaPage() {
                     ) : (
                       /* View Mode */
                       <>
-                        {/* Current Badge */}
-                        {index === semesters.length - 1 && (
+                        {/* Current Badge / Course Count */}
+                        {index === semesters.length - 1 ? (
                           <div className="absolute top-2 sm:top-4 right-2 sm:right-4 opacity-100 group-hover:opacity-0 transition-opacity duration-200 pointer-events-none">
                             <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border border-blue-300 dark:border-blue-700">
                               Current
                             </span>
+                          </div>
+                        ) : (
+                          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 opacity-100 group-hover:opacity-0 transition-opacity duration-200 pointer-events-none">
+                            <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
+                              {semester.courses.length} course
+                              {semester.courses.length !== 1 ? "s" : ""}
+                            </p>
                           </div>
                         )}
 
@@ -521,39 +522,40 @@ export default function AcademiaPage() {
                             }
                           }}
                         >
-                          <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-1 sm:mb-2 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors pr-16 sm:pr-20">
+                          <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-1 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors pr-16 sm:pr-20">
                             {semester.name}
                           </h3>
-                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
-                            {semester.courses.length} course
-                            {semester.courses.length !== 1 ? "s" : ""}
+                          <div className="mb-2">
                             {(() => {
-                              const coursesWithAbsents =
-                                semester.courses.filter((c) => c.absents > 0);
-                              if (coursesWithAbsents.length === 0) return null;
-                              const totalAbsents = coursesWithAbsents.reduce(
-                                (sum, c) => sum + c.absents,
-                                0,
-                              );
-                              return (
-                                <span className="ml-2 font-medium text-gray-600 dark:text-gray-400">
-                                  &middot; {totalAbsents} absent
-                                  {totalAbsents !== 1 ? "s" : ""}
-                                </span>
-                              );
-                            })()}
-                          </p>
-                          {(() => {
-                            const sgpa = calculateSGPA(semester.courses);
-                            return (
-                              sgpa !== null && (
-                                <p className="text-base sm:text-lg font-semibold text-black dark:text-white mb-2 sm:mb-4">
+                              const sgpa = calculateSGPA(semester.courses);
+                              return sgpa !== null ? (
+                                <p className="text-sm sm:text-base font-semibold text-black dark:text-white">
                                   SGPA: {sgpa.toFixed(2)}
                                 </p>
-                              )
+                              ) : (
+                                <p className="text-sm sm:text-base font-semibold text-gray-400 dark:text-gray-500">
+                                  No grades yet
+                                </p>
+                              );
+                            })()}
+                          </div>
+                          {(() => {
+                            const coursesWithAbsents = semester.courses.filter(
+                              (c) => c.absents > 0,
+                            );
+                            if (coursesWithAbsents.length === 0) return null;
+                            const totalAbsents = coursesWithAbsents.reduce(
+                              (sum, c) => sum + c.absents,
+                              0,
+                            );
+                            return (
+                              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                {totalAbsents} absent
+                                {totalAbsents !== 1 ? "s" : ""}
+                              </p>
                             );
                           })()}
-                          <div className="flex items-center text-gray-400 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">
+                          <div className="flex items-center text-gray-400 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors text-xs sm:text-sm">
                             <span className="mr-2">View Details</span>
                             <span className="transform group-hover:translate-x-1 transition-transform duration-300">
                               →

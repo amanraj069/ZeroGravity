@@ -17,11 +17,13 @@ import { QuizParticipant } from "@/types/quiz";
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { QuizQuestion } from "@/services/quizzesService";
-import { ChevronLeft } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
+import { useNavigation } from "@/contexts/NavigationContext";
 
 function JoinQuizContent() {
   const search = useSearchParams();
   const router = useRouter();
+  const { goBack } = useNavigation();
   const prefill = search.get("code") || "";
   const [joinCode, setJoinCode] = useState(prefill);
   const [name, setName] = useState<string>("");
@@ -569,7 +571,7 @@ function JoinQuizContent() {
       try {
         localStorage.removeItem(STORAGE_KEY);
       } catch {}
-      router.back();
+      goBack();
       return;
     }
 
@@ -627,13 +629,7 @@ function JoinQuizContent() {
         <div className="text-center pt-6 pb-4 sm:py-6 lg:pt-12 lg:pb-2 bg-white dark:bg-gray-900">
           <div className="mx-auto px-4">
             <div className="flex items-center justify-center gap-3 mb-2 sm:mb-4">
-              <button
-                onClick={() => router.back()}
-                className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-                title="Go back"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
+              <BackButton />
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-black dark:text-white tracking-tight">
                 Join Quiz
               </h1>
@@ -832,7 +828,7 @@ function JoinQuizContent() {
                   The host has removed you from this quiz
                 </p>
                 <button
-                  onClick={() => router.back()}
+                  onClick={() => goBack()}
                   className="w-full bg-black dark:bg-white text-white dark:text-black py-3 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
                 >
                   Go Back
@@ -878,12 +874,20 @@ function JoinQuizContent() {
                   {/* Progress Indicator */}
                   <div className="flex flex-col text-[10px] sm:text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-tight">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-gray-900 dark:text-white text-xs sm:text-sm">{currentQuestionIndex + 1}</span>
-                      <span className="opacity-60 text-[8px] sm:text-[10px]">Question</span>
+                      <span className="text-gray-900 dark:text-white text-xs sm:text-sm">
+                        {currentQuestionIndex + 1}
+                      </span>
+                      <span className="opacity-60 text-[8px] sm:text-[10px]">
+                        Question
+                      </span>
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-gray-900 dark:text-white text-xs sm:text-sm">{totalQuestions}</span>
-                      <span className="opacity-60 text-[8px] sm:text-[10px]">OF Total</span>
+                      <span className="text-gray-900 dark:text-white text-xs sm:text-sm">
+                        {totalQuestions}
+                      </span>
+                      <span className="opacity-60 text-[8px] sm:text-[10px]">
+                        OF Total
+                      </span>
                     </div>
                   </div>
 

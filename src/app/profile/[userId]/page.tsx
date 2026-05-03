@@ -7,7 +7,8 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, ShoppingBag, Share2, ChevronLeft } from "lucide-react";
+import { Flame, ShoppingBag, Share2 } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
   profileService,
@@ -28,7 +29,7 @@ export default function PublicProfile() {
   const userId = params?.userId as string;
 
   const [profileData, setProfileData] = useState<PublicProfileResponse | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -126,13 +127,7 @@ export default function PublicProfile() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2 lg:mb-6">
           <div className="flex items-center justify-between sm:justify-start sm:gap-3">
-            <button
-              onClick={() => router.back()}
-              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mr-1"
-              title="Go back"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
+            <BackButton className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mr-1" />
             <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
               Profile
             </h1>
@@ -193,7 +188,7 @@ export default function PublicProfile() {
                 <div className="relative group flex-shrink-0">
                   <div
                     className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 ${getAnimationClass(
-                      user.equippedBorder || ""
+                      user.equippedBorder || "",
                     )}`}
                     style={getBorderStyle(user.equippedBorder || "default")}
                   >
@@ -234,7 +229,12 @@ export default function PublicProfile() {
                           <span
                             className={`text-[10px] font-semibold ${BADGE_VISUALS[user.highestBadgeId].textColor}`}
                           >
-                            {badgeData?.badges.find(b => b.id === user.highestBadgeId)?.name || user.highestBadgeId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            {badgeData?.badges.find(
+                              (b) => b.id === user.highestBadgeId,
+                            )?.name ||
+                              user.highestBadgeId
+                                .replace(/-/g, " ")
+                                .replace(/\b\w/g, (l) => l.toUpperCase())}
                           </span>
                         </div>
                       </div>
@@ -280,9 +280,15 @@ export default function PublicProfile() {
                 {[0, 1, 2].map((slot) => {
                   const badgeId = user.selectedBadges?.[slot];
                   const badgeVisual = badgeId ? BADGE_VISUALS[badgeId] : null;
-                  
+
                   // Fallback name if badgeData is still loading
-                  const badgeName = badgeData?.badges.find(b => b.id === badgeId)?.name || (badgeId ? badgeId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "");
+                  const badgeName =
+                    badgeData?.badges.find((b) => b.id === badgeId)?.name ||
+                    (badgeId
+                      ? badgeId
+                          .replace(/-/g, " ")
+                          .replace(/\b\w/g, (l) => l.toUpperCase())
+                      : "");
 
                   return (
                     <div
@@ -294,8 +300,15 @@ export default function PublicProfile() {
                         <>
                           <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 relative flex items-center justify-center text-2xl sm:text-3xl font-bold shrink-0 transition-opacity rounded-lg overflow-hidden bg-[#050b14] border border-gray-800/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.05)]">
                             <RandomStars />
-                            <div className={(badgeVisual.dropShadow || "") + " relative z-10"}>
-                              <span className={`bg-gradient-to-br ${badgeVisual.gradient} bg-clip-text text-transparent`}>
+                            <div
+                              className={
+                                (badgeVisual.dropShadow || "") +
+                                " relative z-10"
+                              }
+                            >
+                              <span
+                                className={`bg-gradient-to-br ${badgeVisual.gradient} bg-clip-text text-transparent`}
+                              >
                                 {badgeVisual.icon || "·"}
                               </span>
                             </div>

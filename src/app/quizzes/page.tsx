@@ -7,8 +7,11 @@ import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import Image from "next/image";
-import { Plus, ChevronLeft, Trash2 } from "lucide-react";
-import QuizzesSkeleton, { QuizCardsSkeleton } from "@/components/quizzes/QuizzesSkeleton";
+import { Plus, Trash2 } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
+import QuizzesSkeleton, {
+  QuizCardsSkeleton,
+} from "@/components/quizzes/QuizzesSkeleton";
 
 export default function QuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
@@ -284,13 +287,7 @@ export default function QuizzesPage() {
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => router.back()}
-                    className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-                    title="Go back"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
+                  <BackButton />
                   <div>
                     <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-0">
                       My Quizzes

@@ -3,6 +3,7 @@
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SocketProvider } from "@/contexts/SocketContext";
+import { NavigationProvider } from "@/contexts/NavigationContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 interface ProvidersProps {
@@ -19,7 +20,9 @@ export default function Providers({
       <ThemeProvider>
         <GoogleOAuthProvider clientId={googleClientId}>
           <AuthProvider>
-            <SocketProvider>{children}</SocketProvider>
+            <NavigationProvider>
+              <SocketProvider>{children}</SocketProvider>
+            </NavigationProvider>
           </AuthProvider>
         </GoogleOAuthProvider>
       </ThemeProvider>
@@ -29,7 +32,9 @@ export default function Providers({
   return (
     <ThemeProvider>
       <AuthProvider>
-        <SocketProvider>{children}</SocketProvider>
+        <NavigationProvider>
+          <SocketProvider>{children}</SocketProvider>
+        </NavigationProvider>
       </AuthProvider>
     </ThemeProvider>
   );
