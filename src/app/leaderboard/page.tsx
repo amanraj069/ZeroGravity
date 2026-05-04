@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
+import LeaderboardSkeleton from "./LeaderboardSkeleton";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -391,13 +392,7 @@ export default function Leaderboard() {
   };
 
   if (authLoading || loading) {
-    return (
-      <ZeroGravityLoading
-        title="Loading Leaderboard"
-        subtitle="Fetching weekly leaderboard..."
-        showNavigation={false}
-      />
-    );
+    return <LeaderboardSkeleton />;
   }
 
   if (!isLoggedIn) {

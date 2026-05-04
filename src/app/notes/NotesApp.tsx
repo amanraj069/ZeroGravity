@@ -22,6 +22,7 @@ import {
 import NotesSidebar from "./NotesSidebar";
 import NoteEditor from "./NoteEditor";
 import NotesGrid from "./NotesGrid";
+import NotesSkeleton from "./NotesSkeleton";
 
 export type SidebarView = "notes" | "favorites" | "trash";
 
@@ -97,6 +98,20 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       initializedRef.current = true;
     });
   }, [loadData]);
+
+  // Ensure sidebar opens automatically when switching from mobile to desktop
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let prevWidth = window.innerWidth;
+    const handleResize = () => {
+      if (prevWidth < 1024 && window.innerWidth >= 1024) {
+        setSidebarOpen(true);
+      }
+      prevWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // ─── URL sync ─────────────────────────────────────────────
   // Keep the browser URL in sync with the current view state.
@@ -399,11 +414,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
 
   // ─── Render ───────────────────────────────────────────────
   if (loading && allNotes.length === 0) {
-    return (
-      <div className="flex flex-1 h-[calc(100vh-64px)] items-center justify-center bg-white dark:bg-[#0a0a0a]">
-        <div className="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-gray-600 dark:border-t-gray-300 rounded-full animate-spin" />
-      </div>
-    );
+    return <NotesSkeleton isDocumentView={!!initialDocId} />;
   }
 
   return (

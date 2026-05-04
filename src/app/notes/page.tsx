@@ -3,7 +3,7 @@
 import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import NotesSkeleton from "./NotesSkeleton";
 import NotesApp from "./NotesApp";
 
 function NotesPageInner() {
@@ -17,23 +17,11 @@ function NotesPageInner() {
   }, [isLoggedIn, authLoading, router]);
 
   if (authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Loading Notes"
-        subtitle="Preparing your workspace..."
-        showNavigation={false}
-      />
-    );
+    return <NotesSkeleton />;
   }
 
   if (!isLoggedIn) {
-    return (
-      <ZeroGravityLoading
-        title="Redirecting"
-        subtitle="Redirecting to login..."
-        showNavigation={false}
-      />
-    );
+    return <NotesSkeleton />;
   }
 
   return <NotesApp />;
@@ -41,15 +29,7 @@ function NotesPageInner() {
 
 export default function NotesPage() {
   return (
-    <Suspense
-      fallback={
-        <ZeroGravityLoading
-          title="Loading Notes"
-          subtitle="Preparing your workspace..."
-          showNavigation={false}
-        />
-      }
-    >
+    <Suspense fallback={<NotesSkeleton />}>
       <NotesPageInner />
     </Suspense>
   );

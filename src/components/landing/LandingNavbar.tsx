@@ -27,7 +27,7 @@ function LandingNavbar() {
   return (
     <>
       <header className="sticky top-0 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-white/20 dark:border-white/10 z-20 shadow-lg shadow-black/5 dark:shadow-black/20">
-        <div className="max-w-6xl mx-auto px-4 py-3 lg:py-4 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
           <Link
             href="/"
             className="text-xl sm:text-2xl font-light text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors"

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import NotesSkeleton from "../NotesSkeleton";
 import NotesApp from "../NotesApp";
 
 export default function NoteDocPage() {
@@ -19,23 +19,11 @@ export default function NoteDocPage() {
   }, [isLoggedIn, authLoading, router]);
 
   if (authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Loading Notes"
-        subtitle="Preparing your workspace..."
-        showNavigation={false}
-      />
-    );
+    return <NotesSkeleton isDocumentView />;
   }
 
   if (!isLoggedIn) {
-    return (
-      <ZeroGravityLoading
-        title="Redirecting"
-        subtitle="Redirecting to login..."
-        showNavigation={false}
-      />
-    );
+    return <NotesSkeleton isDocumentView />;
   }
 
   return <NotesApp initialDocId={docId} />;
