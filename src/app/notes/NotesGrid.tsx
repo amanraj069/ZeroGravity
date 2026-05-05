@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { Note } from "@/services/notesService";
 import { SidebarView } from "./NotesApp";
-import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/BackButton";
 import {
   FileText,
@@ -77,7 +76,6 @@ export default function NotesGrid({
   onToggleSidebar,
   searchQuery,
 }: NotesGridProps) {
-  const router = useRouter();
   const isTrash = view === "trash";
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [showSortMenu, setShowSortMenu] = useState(false);

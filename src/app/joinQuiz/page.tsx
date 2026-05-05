@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import NextImage from "next/image";
 import {
   joinQuiz,
@@ -22,7 +22,6 @@ import { useNavigation } from "@/contexts/NavigationContext";
 
 function JoinQuizContent() {
   const search = useSearchParams();
-  const router = useRouter();
   const { goBack } = useNavigation();
   const prefill = search.get("code") || "";
   const [joinCode, setJoinCode] = useState(prefill);

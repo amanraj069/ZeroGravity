@@ -108,7 +108,7 @@ interface NoteEditorProps {
   onChange: (id: string, changes: Partial<Note>) => void;
   onToggleFavorite: (id: string) => void;
   onTrashNote: (id: string) => void;
-  onDownloadNote: (id: string) => void;
+  onDownloadNote: (id: string, format: "pdf" | "docx") => void;
   saving: boolean;
   onToggleSidebar: () => void;
   sidebarOpen: boolean;
@@ -133,6 +133,7 @@ export default function NoteEditor({
   onCreateCategory,
 }: NoteEditorProps) {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showDownloadDropdown, setShowDownloadDropdown] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [addingCatInEditor, setAddingCatInEditor] = useState(false);
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
@@ -157,6 +158,7 @@ export default function NoteEditor({
   const highlightRef = useRef<HTMLDivElement>(null);
   const textColorRef = useRef<HTMLDivElement>(null);
   const titleErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const downloadRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -325,6 +327,12 @@ export default function NoteEditor({
         !textColorRef.current.contains(e.target as Node)
       ) {
         setShowTextColorPicker(false);
+      }
+      if (
+        downloadRef.current &&
+        !downloadRef.current.contains(e.target as Node)
+      ) {
+        setShowDownloadDropdown(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -743,13 +751,37 @@ export default function NoteEditor({
             </button>
           )}
 
-          <button
-            onClick={() => onDownloadNote(note._id)}
-            className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors"
-            title="Download as .doc"
-          >
-            <Download size={15} />
-          </button>
+          <div className="relative" ref={downloadRef}>
+            <button
+              onClick={() => setShowDownloadDropdown((s) => !s)}
+              className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors"
+              title="Download Note"
+            >
+              <Download size={15} />
+            </button>
+            {showDownloadDropdown && (
+              <div className="absolute right-0 top-full mt-1 z-20 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg py-1 rounded-md">
+                <button
+                  onClick={() => {
+                    onDownloadNote(note._id, "pdf");
+                    setShowDownloadDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Download PDF
+                </button>
+                <button
+                  onClick={() => {
+                    onDownloadNote(note._id, "docx");
+                    setShowDownloadDropdown(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Download DOCX
+                </button>
+              </div>
+            )}
+          </div>
 
           {!isTrash && (
             <button

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Target,
   CheckCircle,
@@ -91,7 +91,6 @@ const isGoalCurrent = (goal: Goal): boolean => {
 const Goals: React.FC = () => {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
   const { theme } = useTheme();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   // Get tab from URL params, default to "daily"

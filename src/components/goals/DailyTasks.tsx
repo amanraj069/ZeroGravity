@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { Plus, AlertCircle, TrendingUp, Sparkles } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
@@ -63,7 +62,6 @@ const getUpcomingDays = (): {
 };
 
 const DailyTasks: React.FC = () => {
-  const router = useRouter();
   const { isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [selectedDate, setSelectedDate] =

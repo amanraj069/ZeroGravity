@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@react-oauth/google": "^0.12.2",
     "@tailwindcss/typography": "^0.5.19",
     "@theme-toggles/react": "^4.1.0",
@@ -35,6 +36,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.0",
     "highlight.js": "^11.11.1",
+    "html2pdf.js": "^0.14.0",
     "jwt-decode": "^4.0.0",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.525.0",

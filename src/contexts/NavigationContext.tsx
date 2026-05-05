@@ -49,7 +49,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     });
     // Update previous page
     setPreviousPage(navigationStack[navigationStack.length - 1] || null);
-  }, [pathname]);
+  }, [pathname, navigationStack]);
 
   // Define logical parent pages for each route
   const getLogicalParent = (path: string): string => {

@@ -2,19 +2,11 @@
 
 import {
   NodeViewWrapper,
-  NodeViewContent,
   ReactNodeViewProps,
 } from "@tiptap/react";
-import { TextSelection } from "@tiptap/pm/state";
 import { useState, useCallback, useRef, useEffect } from "react";
-import { ChevronDown, Wand2, Copy, Check } from "lucide-react";
-
-const SUPPORTED_LANGUAGES = [
-  { id: "cpp", label: "C++", aliases: ["c++", "cpp"] },
-  { id: "c", label: "C", aliases: ["c"] },
-  { id: "java", label: "Java", aliases: ["java"] },
-  { id: "python", label: "Python", aliases: ["python", "py"] },
-] as const;
+import { ChevronDown, Copy, Check, Wand2 } from "lucide-react";
+import Editor from "@monaco-editor/react";
 
 // Simple formatters for each language
 function formatCode(code: string, language: string): string {
@@ -33,14 +25,12 @@ function formatCode(code: string, language: string): string {
 
 // ── Per-line formatter for C-style languages ────────────────────────
 function formatCLine(line: string): string {
-  // 1. Protect string & char literals
   const literals: string[] = [];
   let s = line.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, (m) => {
     literals.push(m);
     return `\x01${literals.length - 1}\x01`;
   });
 
-  // 2. Protect line comments
   let comment = "";
   const ci = s.indexOf("//");
   if (ci >= 0) {
@@ -48,15 +38,11 @@ function formatCLine(line: string): string {
     s = s.slice(0, ci);
   }
 
-  // 3. Normalize whitespace
   s = s.replace(/\s+/g, " ").trim();
   if (!s) return comment;
 
-  // 3b. Fix broken ++ and -- (e.g. from previous bad formatting: i + + → i++)
   s = s.replace(/\+\s+\+/g, "++");
   s = s.replace(/-\s+-/g, "--");
-
-  // 4. Protect multi-char tokens that must never be split
   s = s.replace(/\+\+/g, "\x02PP\x02");
   s = s.replace(/--/g, "\x02MM\x02");
   s = s.replace(/->/g, "\x02AR\x02");
@@ -64,78 +50,37 @@ function formatCLine(line: string): string {
   s = s.replace(/<</g, "\x02LS\x02");
   s = s.replace(/>>/g, "\x02RS\x02");
 
-  // 5. Space around compound operators
-  s = s.replace(
-    /\s*(==|!=|<=|>=|&&|\|\||\+=|-=|\*=|\/=|%=|&=|\|=|\^=)\s*/g,
-    " $1 ",
-  );
-
-  // 6. Space around << and >> (stream / shift)
+  s = s.replace(/\s*(==|!=|<=|>=|&&|\|\||\+=|-=|\*=|\/=|%=|&=|\|=|\^=)\s*/g, " $1 ");
   s = s.replace(/\s*\x02LS\x02\s*/g, " << ");
   s = s.replace(/\s*\x02RS\x02\s*/g, " >> ");
-
-  // 7. Single = (not part of ==, !=, <=, >=, += …)
   s = s.replace(/(?<![=!<>+\-*\/%&|^])=(?!=)/g, " = ");
-
-  // 8. Pointer / reference: keep * or & attached to the type
-  s = s.replace(
-    /\b(int|char|float|double|long|short|void|bool|string|auto|unsigned|signed|size_t|vector|map|set|list|array|pair|tuple|shared_ptr|unique_ptr|weak_ptr|FILE|wchar_t)\s*([*&]+)\s*/g,
-    "$1$2 ",
-  );
-
-  // 9. Binary + and - (between value-like tokens)
+  s = s.replace(/\b(int|char|float|double|long|short|void|bool|string|auto|unsigned|signed|size_t|vector|map|set|list|array|pair|tuple|shared_ptr|unique_ptr|weak_ptr|FILE|wchar_t)\s*([*&]+)\s*/g, "$1$2 ");
   s = s.replace(/(\w|\)|\])\s*\+\s*(\w|\(|\x01)/g, "$1 + $2");
   s = s.replace(/(\w|\)|\])\s*-\s*(\w|\(|\x01)/g, "$1 - $2");
-
-  // 10. Commas: space after, none before
   s = s.replace(/\s*,\s*/g, ", ");
-
-  // 11. Semicolons: no space before; space after (except at end of line)
   s = s.replace(/\s*;/g, ";");
   s = s.replace(/;(?!\s*$)/g, "; ");
-
-  // 12. Braces on same line
   s = s.replace(/\)\s*\{/g, ") {");
   s = s.replace(/\belse\s*\{/g, "else {");
-
-  // 13. Space after control-flow keywords before (
   s = s.replace(/\b(if|for|while|switch|catch)\s*\(/g, "$1 (");
-
-  // 14. Space after certain keywords (return x;  new Foo; etc.)
-  s = s.replace(
-    /\b(return|case|throw|delete|new|sizeof|typeof|class|struct|public|private|protected|virtual|override|const|static|template|typename|namespace|using)\b(?!\s|;|\(|:)/g,
-    "$1 ",
-  );
-
-  // 15. #include / #define: tidy up
+  s = s.replace(/\b(return|case|throw|delete|new|sizeof|typeof|class|struct|public|private|protected|virtual|override|const|static|template|typename|namespace|using)\b(?!\s|;|\(|:)/g, "$1 ");
   s = s.replace(/^#\s*(include|define|ifdef|ifndef|endif|pragma)\s*/g, "#$1 ");
-
-  // 16. Clean up multiple spaces
   s = s.replace(/\s+/g, " ").trim();
 
-  // 17. Restore protected tokens
   s = s.replace(/\x02PP\x02/g, "++");
   s = s.replace(/\x02MM\x02/g, "--");
   s = s.replace(/\x02AR\x02/g, "->");
   s = s.replace(/\x02SC\x02/g, "::");
-
-  // 18. Post-restore cleanup: attach ++ / -- to their operand, tighten parens
   s = s.replace(/(\w)\s+(\+\+|--)/g, "$1$2");
   s = s.replace(/(\+\+|--)\s+(\w)/g, "$1$2");
   s = s.replace(/\(\s+/g, "(");
   s = s.replace(/\s+\)/g, ")");
-
-  // 19. Restore string / char literals
   s = s.replace(/\x01(\d+)\x01/g, (_, idx) => literals[parseInt(idx)]);
-
-  // 20. Final space cleanup
   s = s.replace(/\s+/g, " ").trim();
 
-  // 21. Append comment
   if (comment) {
     s = s ? s + " " + comment : comment;
   }
-
   return s;
 }
 
@@ -153,17 +98,11 @@ function formatCStyle(code: string): string {
       }
       continue;
     }
-
-    // Decrease indent for closing braces
     if (line.startsWith("}") || line.startsWith(");")) {
       indentLevel = Math.max(0, indentLevel - 1);
     }
-
     line = formatCLine(line);
-
     formatted.push(indentStr.repeat(indentLevel) + line);
-
-    // Increase indent after opening braces
     if (line.endsWith("{")) {
       indentLevel++;
     }
@@ -188,48 +127,14 @@ function formatPython(code: string): string {
       }
       continue;
     }
-
-    // Decrease indent for dedent keywords
-    if (
-      line.startsWith("elif ") ||
-      line.startsWith("else:") ||
-      line.startsWith("except") ||
-      line.startsWith("finally:") ||
-      line.startsWith("return") ||
-      line.startsWith("break") ||
-      line.startsWith("continue") ||
-      line.startsWith("pass")
-    ) {
-      // Only dedent for elif/else/except/finally
-      if (
-        line.startsWith("elif ") ||
-        line.startsWith("else:") ||
-        line.startsWith("except") ||
-        line.startsWith("finally:")
-      ) {
+    if (line.startsWith("elif ") || line.startsWith("else:") || line.startsWith("except") || line.startsWith("finally:") || line.startsWith("return") || line.startsWith("break") || line.startsWith("continue") || line.startsWith("pass")) {
+      if (line.startsWith("elif ") || line.startsWith("else:") || line.startsWith("except") || line.startsWith("finally:")) {
         indentLevel = Math.max(0, indentLevel - 1);
       }
     }
-
-    // Add spacing around operators
-    let formatted_line = line
-      .replace(
-        /\s*(==|!=|<=|>=|<<|>>|\+=|-=|\*=|\/=|%=|\/\/=|\*\*=)\s*/g,
-        " $1 ",
-      )
-      .replace(/\s*,\s*/g, ", ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    // Add space after keywords
-    formatted_line = formatted_line.replace(
-      /\b(if|elif|else|for|while|def|class|return|import|from|as|with|try|except|finally|raise|yield|lambda|in|not|and|or|is|del|global|nonlocal|assert|pass|break|continue)\b(?!\s|:|\()/g,
-      "$1 ",
-    );
-
+    let formatted_line = line.replace(/\s*(==|!=|<=|>=|<<|>>|\+=|-=|\*=|\/=|%=|\/\/=|\*\*=)\s*/g, " $1 ").replace(/\s*,\s*/g, ", ").replace(/\s+/g, " ").trim();
+    formatted_line = formatted_line.replace(/\b(if|elif|else|for|while|def|class|return|import|from|as|with|try|except|finally|raise|yield|lambda|in|not|and|or|is|del|global|nonlocal|assert|pass|break|continue)\b(?!\s|:|\()/g, "$1 ");
     formatted.push(indentStr.repeat(indentLevel) + formatted_line);
-
-    // Increase indent after colon
     if (line.endsWith(":")) {
       indentLevel++;
     }
@@ -240,6 +145,15 @@ function formatPython(code: string): string {
   return result;
 }
 
+const SUPPORTED_LANGUAGES = [
+  { id: "cpp", label: "C++", aliases: ["c++", "cpp"] },
+  { id: "c", label: "C", aliases: ["c"] },
+  { id: "java", label: "Java", aliases: ["java"] },
+  { id: "python", label: "Python", aliases: ["python", "py"] },
+  { id: "javascript", label: "JavaScript", aliases: ["js", "javascript"] },
+  { id: "typescript", label: "TypeScript", aliases: ["ts", "typescript"] },
+] as const;
+
 export default function CodeBlockComponent({
   node,
   updateAttributes,
@@ -248,8 +162,9 @@ export default function CodeBlockComponent({
 }: ReactNodeViewProps) {
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [formattedFlag, setFormattedFlag] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const editorRef = useRef<any>(null);
 
   const language = (node.attrs.language as string) || "cpp";
   const currentLang =
@@ -278,45 +193,92 @@ export default function CodeBlockComponent({
     setTimeout(() => setCopied(false), 2000);
   }, [node.textContent]);
 
-  const handleFormat = useCallback(() => {
-    if (!editor.isEditable) return;
-    const code = node.textContent;
-    const formattedCode = formatCode(code, language);
+  const handleEditorChange = (value: string | undefined) => {
+    if (!editor.isEditable || value === undefined) return;
 
-    const view = editor.view;
-    if (!view) return;
-
+    const { state } = editor.view;
     const pos = typeof getPos === "function" ? getPos() : undefined;
     if (pos == null) return;
-    const { state } = view;
-    const nodeAt = state.doc.nodeAt(pos);
-    if (!nodeAt) return;
 
-    // Save cursor offset relative to the code block start
-    const blockStart = pos + 1;
-    const cursorOffset = Math.max(0, state.selection.$from.pos - blockStart);
-
+    const nodeSize = node.nodeSize;
+    // We update the internal text of the codeBlock
     const tr = state.tr.replaceWith(
-      blockStart,
-      pos + nodeAt.nodeSize - 1,
-      state.schema.text(formattedCode),
+      pos + 1,
+      pos + nodeSize - 1,
+      value ? state.schema.text(value) : []
     );
+    // Don't focus the TipTap editor back because the user is typing in Monaco
+    editor.view.dispatch(tr);
+  };
 
-    // Restore cursor: clamp to new text length
-    const newOffset = Math.min(cursorOffset, formattedCode.length);
-    tr.setSelection(TextSelection.create(tr.doc, blockStart + newOffset));
-    view.dispatch(tr);
+  // Prevent TipTap from stealing focus/events from Monaco
+  const stopPropagation = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    if (e.nativeEvent) {
+      e.nativeEvent.stopImmediatePropagation();
+    }
+  };
 
-    // Re-focus the editor so the cursor is visible
-    view.focus();
+  // Monaco's C++ language identifier is "cpp".
+  const monacoLanguage = currentLang.id === "c" ? "cpp" : currentLang.id;
 
-    setFormattedFlag(true);
-    setTimeout(() => setFormattedFlag(false), 1500);
-  }, [editor, node.textContent, language, getPos]);
+  // Auto-expanding height logic
+  const [editorHeight, setEditorHeight] = useState(120); // default to ~5 lines
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleEditorWillMount = (monaco: any) => {
+    // Explicitly enable strict syntax and semantic validation for JS/TS
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false,
+    });
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false,
+    });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleEditorDidMount = (editor: any) => {
+    editorRef.current = editor;
+    const updateHeight = () => {
+      const contentHeight = editor.getContentHeight();
+      // min ~5 lines (120px), max ~25 lines (500px)
+      const newHeight = Math.min(500, Math.max(120, contentHeight));
+      setEditorHeight(newHeight);
+      editor.layout();
+    };
+    editor.onDidContentSizeChange(updateHeight);
+    updateHeight();
+  };
+
+  const handleFormat = () => {
+    if (!editor.isEditable) return;
+    
+    // JS/TS use Monaco's built in formatter
+    if (monacoLanguage === "javascript" || monacoLanguage === "typescript") {
+      editorRef.current?.getAction("editor.action.formatDocument")?.run();
+      return;
+    }
+
+    // For other languages, use the custom format functions
+    const code = node.textContent;
+    const formattedCode = formatCode(code, language);
+    handleEditorChange(formattedCode);
+  };
+
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <NodeViewWrapper className="code-block-wrapper">
-      <div className="code-block-container">
+      <div 
+        className="code-block-container" 
+        style={{ zIndex: isFocused || showLangDropdown ? 60 : 0 }}
+        onKeyDown={stopPropagation}
+        onPaste={stopPropagation}
+        onCopy={stopPropagation}
+        onCut={stopPropagation}
+      >
         {/* Floating toolbar (appears on hover, right side) */}
         <div className="code-block-header">
           {/* Language selector */}
@@ -355,13 +317,10 @@ export default function CodeBlockComponent({
               className="code-block-action-btn"
               title="Format code"
             >
-              {formattedFlag ? (
-                <Check size={13} className="text-green-400" />
-              ) : (
-                <Wand2 size={13} />
-              )}
+              <Wand2 size={13} />
             </button>
           )}
+
           {/* Copy button */}
           <button
             onClick={handleCopy}
@@ -376,10 +335,33 @@ export default function CodeBlockComponent({
           </button>
         </div>
 
-        {/* Code content */}
-        <pre className="code-block-pre">
-          <NodeViewContent as="div" className="code-block-code" />
-        </pre>
+        {/* Code content using Monaco */}
+        <div className="pt-2 pb-2 bg-[#1e1e1e] rounded-b-md">
+          <Editor
+            height={editorHeight}
+            language={monacoLanguage}
+            value={node.textContent}
+            theme="vs-dark"
+            onChange={handleEditorChange}
+            beforeMount={handleEditorWillMount}
+            onMount={(editor) => {
+              handleEditorDidMount(editor);
+              editor.onDidFocusEditorWidget(() => setIsFocused(true));
+              editor.onDidBlurEditorWidget(() => setIsFocused(false));
+            }}
+            options={{
+              readOnly: !editor.isEditable,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              fontSize: 14,
+              fontFamily: 'var(--font-mono), "JetBrains Mono", "Fira Code", monospace',
+              padding: { top: 16, bottom: 16 },
+              formatOnPaste: true,
+              automaticLayout: true,
+              fixedOverflowWidgets: true,
+            }}
+          />
+        </div>
       </div>
     </NodeViewWrapper>
   );

@@ -354,60 +354,102 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
     return () => window.removeEventListener("keydown", handler);
   }, [handleCreateNote]);
 
-  // ─── Download note as .doc ────────────────────────────────
+  // ─── Download note ────────────────────────────────
   const handleDownloadNote = useCallback(
-    (id: string) => {
+    async (id: string, format: "pdf" | "docx" = "docx") => {
       const note = allNotes.find((n) => n._id === id);
       if (!note) return;
 
-      const docContent = `
-        <html xmlns:o="urn:schemas-microsoft-com:office:office"
-              xmlns:w="urn:schemas-microsoft-com:office:word"
-              xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-          <meta charset="utf-8">
-          <title>${note.title || "Untitled"}</title>
-          <!--[if gte mso 9]>
-          <xml>
-            <w:WordDocument>
-              <w:View>Print</w:View>
-              <w:Zoom>100</w:Zoom>
-              <w:DoNotOptimizeForBrowser/>
-            </w:WordDocument>
-          </xml>
-          <![endif]-->
-          <style>
-            body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #1a1a1a; margin: 1in; }
-            h1 { font-size: 20pt; font-weight: bold; margin-bottom: 12pt; }
-            h2 { font-size: 16pt; font-weight: bold; margin-bottom: 10pt; }
-            h3 { font-size: 13pt; font-weight: bold; margin-bottom: 8pt; }
-            table { border-collapse: collapse; width: 100%; margin: 12pt 0; }
-            th, td { border: 1px solid #999; padding: 6pt 8pt; text-align: left; }
-            th { background-color: #f0f0f0; font-weight: bold; }
-            blockquote { border-left: 3px solid #ccc; padding-left: 12pt; font-style: italic; color: #555; }
-            code { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 2pt 4pt; }
-            pre { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 8pt; border-radius: 4pt; }
-            mark { background-color: #fff3a8; }
-            a { color: #2563eb; }
-            img { max-width: 100%; }
-          </style>
-        </head>
-        <body>
-          <h1>${note.title || "Untitled"}</h1>
-          ${note.content}
-        </body>
-        </html>
-      `;
+      const title = note.title || "Untitled";
 
-      const blob = new Blob(["\ufeff", docContent], {
-        type: "application/msword",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${note.title || "untitled"}.doc`;
-      a.click();
-      URL.revokeObjectURL(url);
+      if (format === "pdf") {
+        try {
+          const html2pdf = (await import("html2pdf.js")).default;
+          
+          const container = document.createElement("div");
+          container.style.position = "absolute";
+          container.style.left = "-9999px";
+          container.style.top = "0";
+          container.style.width = "800px";
+          container.style.backgroundColor = "white";
+          container.style.color = "black";
+          container.style.padding = "40px";
+          
+          container.innerHTML = `
+            <div style="font-family: sans-serif;">
+              <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 24px; border-bottom: 2px solid #eaeaea; padding-bottom: 12px; color: #1a1a1a;">
+                ${title}
+              </h1>
+              <div class="prose max-w-none text-black prose-headings:text-black prose-p:text-black prose-a:text-blue-600 prose-pre:bg-gray-100 prose-pre:text-gray-900 prose-pre:p-4 prose-pre:rounded-lg prose-code:text-gray-800 prose-table:border-collapse prose-td:border prose-td:border-gray-300 prose-td:p-2 prose-th:border prose-th:border-gray-300 prose-th:p-2 prose-th:bg-gray-100">
+                ${note.content}
+              </div>
+            </div>
+          `;
+          document.body.appendChild(container);
+
+          const opt = {
+            margin: 15,
+            filename: `${title}.pdf`,
+            image: { type: 'jpeg' as const, quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+          };
+
+          await html2pdf().set(opt).from(container).save();
+          document.body.removeChild(container);
+        } catch (err) {
+          console.error("Failed to generate PDF:", err);
+        }
+      } else {
+        const docContent = `
+          <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                xmlns:w="urn:schemas-microsoft-com:office:word"
+                xmlns="http://www.w3.org/TR/REC-html40">
+          <head>
+            <meta charset="utf-8">
+            <title>${title}</title>
+            <!--[if gte mso 9]>
+            <xml>
+              <w:WordDocument>
+                <w:View>Print</w:View>
+                <w:Zoom>100</w:Zoom>
+                <w:DoNotOptimizeForBrowser/>
+              </w:WordDocument>
+            </xml>
+            <![endif]-->
+            <style>
+              body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #1a1a1a; margin: 1in; }
+              h1 { font-size: 20pt; font-weight: bold; margin-bottom: 12pt; border-bottom: 1px solid #ccc; padding-bottom: 6pt; }
+              h2 { font-size: 16pt; font-weight: bold; margin-bottom: 10pt; }
+              h3 { font-size: 13pt; font-weight: bold; margin-bottom: 8pt; }
+              table { border-collapse: collapse; width: 100%; margin: 12pt 0; }
+              th, td { border: 1px solid #999; padding: 6pt 8pt; text-align: left; }
+              th { background-color: #f0f0f0; font-weight: bold; }
+              blockquote { border-left: 3px solid #ccc; padding-left: 12pt; font-style: italic; color: #555; }
+              code { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 2pt 4pt; }
+              pre { font-family: Consolas, monospace; font-size: 10pt; background: #f5f5f5; padding: 8pt; border-radius: 4pt; }
+              mark { background-color: #fff3a8; }
+              a { color: #2563eb; }
+              img { max-width: 100%; }
+            </style>
+          </head>
+          <body>
+            <h1>${title}</h1>
+            ${note.content}
+          </body>
+          </html>
+        `;
+
+        const blob = new Blob(["\ufeff", docContent], {
+          type: "application/msword",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${title}.doc`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     },
     [allNotes],
   );
