@@ -6,6 +6,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
+import StreakBrokenPopup from "@/components/StreakBrokenPopup";
+import {
+  getPowerUpInventory,
+  StreakStatus,
+} from "@/services/shopService";
 import { motion } from "framer-motion";
 import {
   ShoppingBag,
@@ -30,6 +35,9 @@ export default function Dashboard() {
   const router = useRouter();
 
   const [showStreakBonus, setShowStreakBonus] = useState(false);
+  const [showStreakBroken, setShowStreakBroken] = useState(false);
+  const [streakStatus, setStreakStatus] = useState<StreakStatus | null>(null);
+  const [ticketCount, setTicketCount] = useState(0);
   const [pointsAnimation, setPointsAnimation] = useState<{
     points: number;
   } | null>(null);
@@ -91,6 +99,24 @@ export default function Dashboard() {
       ) {
         setShowStreakBonus(true);
       }
+
+      // Check for broken daily task streak
+      const checkStreakRestore = async () => {
+        try {
+          const data = await getPowerUpInventory();
+          if (data?.success && data.data?.streakStatus?.canUse) {
+            const lastDismissed = sessionStorage.getItem("streakBrokenDismissed");
+            if (!lastDismissed) {
+              setStreakStatus(data.data.streakStatus);
+              setTicketCount(data.data.timeTravelTickets.owned);
+              setShowStreakBroken(true);
+            }
+          }
+        } catch (err) {
+          console.error("Error checking streak restore:", err);
+        }
+      };
+      checkStreakRestore();
     }
   }, [isLoggedIn, authLoading, user, router]);
 
@@ -152,6 +178,22 @@ export default function Dashboard() {
           userName={user.firstName}
           onClose={() => setShowStreakBonus(false)}
           onClaimSuccess={handleClaimSuccess}
+        />
+      )}
+
+      {/* Streak Broken Popup */}
+      {showStreakBroken && streakStatus && !showStreakBonus && (
+        <StreakBrokenPopup
+          streakStatus={streakStatus}
+          ticketCount={ticketCount}
+          onClose={() => {
+            setShowStreakBroken(false);
+            sessionStorage.setItem("streakBrokenDismissed", "true");
+          }}
+          onRestoreSuccess={async () => {
+            await refreshPoints();
+            await checkSession();
+          }}
         />
       )}
 

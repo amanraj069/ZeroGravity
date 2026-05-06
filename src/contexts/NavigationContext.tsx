@@ -31,6 +31,13 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Update navigation stack when pathname changes
   useEffect(() => {
+    // The last page in the current stack is the "previous" page before we update
+    const currentLastPage = navigationStack[navigationStack.length - 1];
+
+    if (currentLastPage && currentLastPage !== pathname) {
+      setPreviousPage(currentLastPage);
+    }
+
     setNavigationStack((prevStack) => {
       // Check if pathname is already in stack (going back)
       const existingIndex = prevStack.indexOf(pathname);
@@ -47,9 +54,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
       // New page, add to stack
       return [...prevStack, pathname];
     });
-    // Update previous page
-    setPreviousPage(navigationStack[navigationStack.length - 1] || null);
-  }, [pathname, navigationStack]);
+  }, [pathname]); // Only depend on pathname to avoid infinite loops
 
   // Define logical parent pages for each route
   const getLogicalParent = (path: string): string => {

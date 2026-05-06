@@ -26,6 +26,8 @@ interface ActivityGraphProps {
   className?: string;
   joinedDate?: string;
   userId?: string; // Optional userId for viewing other users' activity
+  onDateClick?: (date: string) => void;
+  selectedDate?: string;
 }
 
 const MONTHS = [
@@ -47,6 +49,8 @@ export default function ActivityGraph({
   className = "",
   joinedDate,
   userId,
+  onDateClick,
+  selectedDate,
 }: ActivityGraphProps) {
   const [activityData, setActivityData] = useState<ActivityData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -318,7 +322,7 @@ export default function ActivityGraph({
                       {week.map((day, dayIdx) => (
                         <div
                           key={`${monthIdx}-${weekIdx}-${dayIdx}`}
-                          className={`w-[9px] h-[9px] sm:w-[11px] sm:h-[11px] ${getColorClass(
+                          className={`w-[9px] h-[9px] sm:w-[11px] sm:h-[11px] transition-transform ${getColorClass(
                             day.count,
                             activityData.maxCount,
                             day.date,
@@ -326,9 +330,12 @@ export default function ActivityGraph({
                             day.count >= 0
                               ? "cursor-pointer hover:ring-1 hover:ring-gray-400 dark:hover:ring-gray-500"
                               : ""
-                          }`}
+                          } ${day.count >= 0 && selectedDate === day.date ? "ring-2 ring-emerald-500 dark:ring-emerald-400 z-10 scale-[1.2]" : ""}`}
                           onMouseEnter={(e) => handleMouseEnter(day, e)}
                           onMouseLeave={() => setHoveredDay(null)}
+                          onClick={() => {
+                            if (day.count >= 0 && onDateClick) onDateClick(day.date);
+                          }}
                         />
                       ))}
                     </div>

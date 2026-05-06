@@ -133,6 +133,10 @@ export const API_ENDPOINTS = {
     EQUIP: `${API_BASE_URL}/api/shop/equip`,
     MY_BORDERS: `${API_BASE_URL}/api/shop/my-borders`,
     POINTS: `${API_BASE_URL}/api/shop/points`,
+    POWERUPS: `${API_BASE_URL}/api/shop/powerups`,
+    BUY_POWERUP: `${API_BASE_URL}/api/shop/powerups/buy`,
+    USE_TICKET: `${API_BASE_URL}/api/shop/powerups/use-ticket`,
+    USE_VOYAGER: `${API_BASE_URL}/api/shop/powerups/use-voyager`,
   },
   // Contact endpoints
   CONTACT: {

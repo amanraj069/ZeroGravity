@@ -204,6 +204,93 @@ export const getUserPoints = async (): Promise<PointsResponse | null> => {
   }
 };
 
+// ─── Power-Up Types & API ───────────────────────────────────────────────────
+
+export interface PowerUpItem {
+  owned: number;
+  max: number;
+  price: number;
+}
+
+export interface StreakStatus {
+  canUse: boolean;
+  missedDays: number;
+  previousStreak: number;
+  missedDates?: string[];
+}
+
+export interface PowerUpInventory {
+  timeTravelTickets: PowerUpItem;
+  futureVoyagers: PowerUpItem;
+  userPoints: number;
+  streakStatus: StreakStatus;
+}
+
+export const getPowerUpInventory = async (): Promise<{
+  success: boolean;
+  data: PowerUpInventory;
+} | null> => {
+  try {
+    const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.POWERUPS);
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching power-up inventory:", error);
+    return null;
+  }
+};
+
+export const buyPowerUp = async (
+  type: "timeTravelTicket" | "futureVoyager"
+): Promise<{ success: boolean; message: string; data?: { newPoints: number; owned: number } } | null> => {
+  try {
+    const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.BUY_POWERUP, {
+      method: "POST",
+      body: JSON.stringify({ type }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error buying power-up:", error);
+    return null;
+  }
+};
+
+export const consumeTimeTravelTicket = async (date: string): Promise<{
+  success: boolean;
+  message: string;
+  data?: { ticketsRemaining: number; restoredStreak: number; remainingGap: number; bridgedDate: string; tasksMarked: number; };
+} | null> => {
+  try {
+    const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.USE_TICKET, {
+      method: "POST",
+      body: JSON.stringify({ date }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error using time travel ticket:", error);
+    return null;
+  }
+};
+
+export const consumeFutureVoyager = async (
+  date: string
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: { voyagersRemaining: number; date: string; tasksMarked: number };
+} | null> => {
+  try {
+    const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.USE_VOYAGER, {
+      method: "POST",
+      body: JSON.stringify({ date }),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error using future voyager:", error);
+    return null;
+  }
+};
+
+
 /**
  * Get border style configuration for a given border ID
  * Uses a configuration-driven approach for maintainability
