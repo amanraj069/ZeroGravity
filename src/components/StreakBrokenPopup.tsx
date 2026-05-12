@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Flame } from "lucide-react";
+import { X, Flame, AlertCircle, ShoppingBag, CheckCircle2, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { consumeTimeTravelTicket, StreakStatus } from "@/services/shopService";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface StreakBrokenPopupProps {
   streakStatus: StreakStatus;
@@ -12,11 +13,18 @@ interface StreakBrokenPopupProps {
   onRestoreSuccess: () => void;
 }
 
-export default function StreakBrokenPopup({ streakStatus, ticketCount, onClose, onRestoreSuccess }: StreakBrokenPopupProps) {
+export default function StreakBrokenPopup({
+  streakStatus,
+  ticketCount,
+  onClose,
+  onRestoreSuccess,
+}: StreakBrokenPopupProps) {
   const [isRestoring, setIsRestoring] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [restored, setRestored] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(streakStatus.missedDates?.[0] || "");
+  const [selectedDate, setSelectedDate] = useState(
+    streakStatus.missedDates?.[0] || ""
+  );
 
   if (!streakStatus.canUse) return null;
 
@@ -29,81 +37,178 @@ export default function StreakBrokenPopup({ streakStatus, ticketCount, onClose, 
       if (result?.success) {
         if (result.data?.remainingGap === 0) {
           setRestored(true);
-          setTimeout(() => onClose(), 2000);
+          setTimeout(() => onClose(), 2500);
         }
         onRestoreSuccess();
-      } else setError(result?.message || "Failed");
-    } catch { setError("Network error."); }
-    finally { setIsRestoring(false); }
+      } else setError(result?.message || "Failed to restore streak");
+    } catch {
+      setError("Network error occurred.");
+    } finally {
+      setIsRestoring(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="relative w-[90%] max-w-md mx-4 bg-white dark:bg-gray-900 rounded-xl border-2 border-amber-400/40 dark:border-amber-600/40 shadow-2xl shadow-amber-500/10 overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500" />
-        <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-black dark:hover:text-white transition-colors z-10" aria-label="Close"><X size={18} /></button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="absolute inset-0 bg-black/80 backdrop-blur-md"
+        onClick={onClose}
+      />
+
+      {/* Popup Container */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="relative w-full max-w-md bg-[#050710] border border-white/10 rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] overflow-hidden"
+      >
+        {/* Top Accent Gradient - Using Violet/Indigo to match theme */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 md:top-5 md:right-5 p-2 text-white/40 hover:text-white hover:bg-white/5 rounded-full transition-all z-10"
+        >
+          <X size={18} className="md:w-5 md:h-5" />
+        </button>
 
         <div className="p-6 md:p-8">
-          {restored ? (
-            <div className="text-center py-4">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <Flame className="w-8 h-8 text-emerald-400" />
-              </div>
-              <h2 className="text-xl font-semibold text-black dark:text-white mb-2">Streak Restored! 🔥</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Your streak is back on track.</p>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                  <Flame className="w-6 h-6 text-amber-400" />
+          <AnimatePresence mode="wait">
+            {restored ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-4 md:py-6"
+              >
+                <div className="relative w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6">
+                  <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse" />
+                  <div className="relative w-full h-full bg-emerald-500/20 rounded-full flex items-center justify-center border border-emerald-500/30">
+                    <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-emerald-400" />
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-black dark:text-white">Streak at Risk!</h2>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{streakStatus.missedDays} day{streakStatus.missedDays > 1 ? "s" : ""} missed</p>
-                </div>
-              </div>
-
-              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-lg p-4 mb-5 space-y-2">
-                <p className="text-sm text-amber-800 dark:text-amber-300">
-                  Your <span className="font-bold">{streakStatus.previousStreak}-day streak</span> is about to break.
-                  {ticketCount > 0 ? " Select a missed day and use a ticket to bridge it!" : " Get Time Travel Tickets from the shop to save it!"}
+                <h2 className="text-xl md:text-2xl font-semibold text-white mb-2">
+                  Streak Restored!
+                </h2>
+                <p className="text-sm md:text-base text-white/60">
+                  Progress bridged successfully. Your streak is back on track.
                 </p>
-                {ticketCount > 0 && streakStatus.missedDates && streakStatus.missedDates.length > 0 && (
-                  <select
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full mt-2 p-2 border border-amber-300 dark:border-amber-700 bg-white dark:bg-gray-800 text-sm rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
+              </motion.div>
+            ) : (
+              <motion.div key="main" exit={{ opacity: 0, scale: 0.95 }}>
+                {/* Header */}
+                <div className="flex items-center gap-4 md:gap-5 mb-6 md:mb-8">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-orange-500/20 rounded-2xl blur-lg animate-pulse" />
+                    <div className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-orange-500/20 to-rose-500/20 border border-white/10 flex items-center justify-center">
+                      <Flame className="w-6 h-6 md:w-8 md:h-8 text-orange-500" />
+                    </div>
+                  </div>
+                  <div>
+                    <h2 className="text-lg md:text-2xl font-bold text-white tracking-tight leading-tight">
+                      Streak <span className="italic font-light">at Risk</span>
+                    </h2>
+                    <p className="text-xs md:text-sm text-white/40 mt-0.5">
+                      {streakStatus.missedDays} day missed yesterday
+                    </p>
+                  </div>
+                </div>
+
+                {/* Info Card */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 md:p-6 mb-6 md:mb-8">
+                  <p className="text-xs md:text-sm text-white/60 leading-relaxed">
+                    Your <span className="font-bold text-white">{streakStatus.previousStreak}-day streak</span> is about to reset. Don't let your hard work go to waste!
+                  </p>
+                  
+                  {ticketCount > 0 ? (
+                    <div className="mt-4 md:mt-5 space-y-2 md:space-y-3">
+                      <label className="text-[9px] md:text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold">
+                        Select Date to Bridge
+                      </label>
+                      <div className="relative">
+                         <select
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          className="w-full bg-white/[0.05] border border-white/10 text-white text-xs md:text-sm rounded-xl p-3 md:p-4 outline-none focus:border-violet-500/50 appearance-none cursor-pointer transition-colors"
+                        >
+                          {streakStatus.missedDates?.map((date) => (
+                            <option key={date} value={date} className="bg-[#050710]">
+                              {new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
+                          <ChevronDown size={16} className="md:w-[18px] md:h-[18px]" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-4 md:mt-5 flex items-start gap-2 md:gap-3 p-3 bg-violet-500/5 rounded-xl border border-violet-500/10">
+                      <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-violet-400 shrink-0 mt-0.5" />
+                      <p className="text-[10px] md:text-xs text-violet-200/70 leading-relaxed">
+                        You don't have any Time Travel Tickets. Visit the shop to get one and save your streak!
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 md:mb-6 p-3 md:p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 text-[10px] md:text-xs flex items-center gap-2 md:gap-3"
                   >
-                    {streakStatus.missedDates.map(date => (
-                      <option key={date} value={date}>{date}</option>
-                    ))}
-                  </select>
+                    <AlertCircle size={14} className="md:w-4 md:h-4" />
+                    {error}
+                  </motion.div>
                 )}
-              </div>
 
-              {error && <div className="mb-4 p-2 bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 text-xs">{error}</div>}
-
-              <div className="space-y-2">
-                {ticketCount > 0 ? (
-                  <button onClick={handleUseTicket} disabled={isRestoring || !selectedDate} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md">
-                    {isRestoring ? (
-                      <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Using...</span></>
-                    ) : (
-                      <><Flame className="w-4 h-4" /><span>Use Ticket for {selectedDate || "date"} ({ticketCount} left)</span></>
-                    )}
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2 md:gap-3">
+                  {ticketCount > 0 ? (
+                    <button
+                      onClick={handleUseTicket}
+                      disabled={isRestoring || !selectedDate}
+                      className="group relative w-full h-11 md:h-14 bg-white hover:bg-gray-100 text-black text-sm md:text-base font-bold rounded-xl overflow-hidden transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+                    >
+                      <div className="relative flex items-center justify-center gap-2 md:gap-2.5">
+                        {isRestoring ? (
+                          <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <Flame size={18} className="fill-black md:w-5 md:h-5" />
+                            <span>Use Ticket ({ticketCount} left)</span>
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  ) : (
+                    <Link
+                      href="/shop"
+                      onClick={onClose}
+                      className="group relative w-full h-11 md:h-14 bg-black border border-white/10 hover:border-white/30 text-white text-sm md:text-base font-bold rounded-xl flex items-center justify-center gap-2 md:gap-2.5 transition-all active:scale-[0.98]"
+                    >
+                      <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ShoppingBag size={18} className="md:w-5 md:h-5" />
+                      <span>Visit Shop</span>
+                    </Link>
+                  )}
+                  
+                  <button
+                    onClick={onClose}
+                    className="w-full py-1 md:py-2 text-[10px] md:text-xs text-white/20 hover:text-white/40 transition-colors uppercase tracking-widest font-bold"
+                  >
+                    Maybe Later
                   </button>
-                ) : (
-                  <Link href="/shop" onClick={onClose} className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-4 rounded-lg text-sm transition-colors shadow-md">
-                    <span>Go to Shop</span>
-                  </Link>
-                )}
-                <button onClick={onClose} className="w-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-xs py-2 transition-colors">Dismiss</button>
-              </div>
-            </>
-          )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

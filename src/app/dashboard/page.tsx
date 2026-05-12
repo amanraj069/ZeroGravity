@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { DashboardLayout } from "@/components/dashboard";
 import DashboardSkeleton from "./DashboardSkeleton";
 
@@ -105,9 +106,15 @@ export default function Dashboard() {
         try {
           const data = await getPowerUpInventory();
           if (data?.success && data.data?.streakStatus?.canUse) {
+            const { streakStatus } = data.data;
             const lastDismissed = sessionStorage.getItem("streakBrokenDismissed");
-            if (!lastDismissed) {
-              setStreakStatus(data.data.streakStatus);
+            
+            // Only trigger if they had a streak (previousStreak >= 1) 
+            // and they JUST missed it yesterday (missedDays === 1)
+            const shouldTrigger = streakStatus.missedDays === 1 && streakStatus.previousStreak >= 1;
+
+            if (!lastDismissed && shouldTrigger) {
+              setStreakStatus(streakStatus);
               setTicketCount(data.data.timeTravelTickets.owned);
               setShowStreakBroken(true);
             }
@@ -232,24 +239,14 @@ export default function Dashboard() {
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             {/* Points Branding */}
-            <div className="hidden sm:flex items-baseline gap-1.5 px-3 py-1 border-r border-black/10 dark:border-white/10">
+            <div className="hidden sm:flex items-baseline px-3 py-1 border-r border-black/10 dark:border-white/10">
               <span className="text-lg md:text-2xl font-bold text-black dark:text-white">
                 {(user?.points || 0).toLocaleString()}
               </span>
-              <span className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] font-bold">
-                pts
-              </span>
+              <CurrencyIcon size={14} className="text-gray-500 dark:text-gray-400 mb-1 md:mb-1.5" />
             </div>
 
-            {/* Mobile Points (Smaller) */}
-            <div className="flex sm:hidden items-baseline gap-1 px-2 border-r border-black/10 dark:border-white/10">
-              <span className="text-base font-bold text-black dark:text-white">
-                {(user?.points || 0).toLocaleString()}
-              </span>
-              <span className="text-[8px] text-gray-500 dark:text-gray-400 uppercase font-medium">
-                pts
-              </span>
-            </div>
+
 
             {/* Shop Button */}
             <Link

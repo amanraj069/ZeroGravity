@@ -210,6 +210,8 @@ export interface PowerUpItem {
   owned: number;
   max: number;
   price: number;
+  monthlyPurchased?: number;
+  monthlyLimit?: number;
 }
 
 export interface StreakStatus {
@@ -257,7 +259,7 @@ export const buyPowerUp = async (
 export const consumeTimeTravelTicket = async (date: string): Promise<{
   success: boolean;
   message: string;
-  data?: { ticketsRemaining: number; restoredStreak: number; remainingGap: number; bridgedDate: string; tasksMarked: number; };
+  data?: { ticketsRemaining: number; currentStreak: number; remainingGap: number; bridgedDate: string; tasksMarked: number; };
 } | null> => {
   try {
     const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.USE_TICKET, {

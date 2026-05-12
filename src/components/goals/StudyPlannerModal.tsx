@@ -592,7 +592,7 @@ export default function StudyPlannerModal({
                   setSpIsCreating(true);
                   setSpError(null);
                   try {
-                    const result = await dailyTasksService.bulkCreateStudyTasks(
+                    await dailyTasksService.bulkCreateStudyTasks(
                       selected.map((t) => ({
                         date: t.date,
                         title: t.title,
@@ -600,11 +600,18 @@ export default function StudyPlannerModal({
                         priority: t.priority,
                       }))
                     );
-                    setSpCreatedCount(result.count || selected.length);
+                    
+                    // Reset state
                     setSpPlan([]);
+                    setSpTopic("");
+                    setSpConfigExpanded(false);
+                    setSpCreatedCount(null);
                     
                     // Call parent callback to refresh data
                     await onTasksCreated();
+
+                    // Close the popup automatically
+                    onClose();
                   } catch (e) {
                     setSpError(
                       e instanceof Error ? e.message : "Failed to create tasks."

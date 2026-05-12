@@ -14,6 +14,7 @@ import {
 import { BorderPreview } from "@/components/borders";
 import { BackButton } from "@/components/BackButton";
 import { Check, X, Zap } from "lucide-react";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 export default function ShopPage() {
   const { user, isLoggedIn, isLoading: authLoading, refreshPoints } = useAuth();
@@ -40,6 +41,13 @@ export default function ShopPage() {
     if (!authLoading && !isLoggedIn) router.push("/login");
     else if (isLoggedIn) { fetchShopItems(); fetchInventory(); }
   }, [isLoggedIn, authLoading, router]);
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   const fetchShopItems = async () => {
     setLoading(true);
@@ -108,8 +116,15 @@ export default function ShopPage() {
     } catch { setMessage({ type: "error", text: "Error" }); } finally { setUsingVoyager(false); }
   };
 
-  const getTomorrow = () => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split("T")[0]; };
-  const getMaxFuture = () => { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().split("T")[0]; };
+  const tomorrowObj = new Date();
+  tomorrowObj.setDate(tomorrowObj.getDate() + 1);
+  const tomorrowValue = tomorrowObj.toISOString().split("T")[0];
+  const tomorrowLabel = `Tomorrow (${tomorrowObj.getDate().toString().padStart(2, '0')}/${(tomorrowObj.getMonth() + 1).toString().padStart(2, '0')}/${tomorrowObj.getFullYear().toString().slice(-2)})`;
+
+  const dayAfterObj = new Date();
+  dayAfterObj.setDate(dayAfterObj.getDate() + 2);
+  const dayAfterValue = dayAfterObj.toISOString().split("T")[0];
+  const dayAfterLabel = `Day After (${dayAfterObj.getDate().toString().padStart(2, '0')}/${(dayAfterObj.getMonth() + 1).toString().padStart(2, '0')}/${dayAfterObj.getFullYear().toString().slice(-2)})`;
 
   if (authLoading || !isLoggedIn || !user) return <ZeroGravityLoading title="Loading" subtitle="Preparing shop..." showNavigation={false} />;
 
@@ -127,9 +142,9 @@ export default function ShopPage() {
               <BackButton />
               <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">Shop</h1>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div className="flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <span className="text-sm md:text-lg font-semibold text-black dark:text-white">{userPoints.toLocaleString()}</span>
-              <span className="text-[10px] md:text-sm text-gray-500 dark:text-gray-400">pts</span>
+              <CurrencyIcon size={12} className="text-gray-500 dark:text-gray-400" />
             </div>
           </div>
         </div>
@@ -149,7 +164,7 @@ export default function ShopPage() {
             {/* ─── POWER-UPS ─── */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-500" />
+                {/* <Zap className="w-4 h-4 text-amber-500" /> */}
                 <h2 className="text-xs md:text-sm font-bold uppercase tracking-widest text-gray-600 dark:text-gray-400">Power-Ups</h2>
               </div>
 
@@ -176,12 +191,15 @@ export default function ShopPage() {
                       Travel Back in Time to<br />
                       Bridge <span className="font-bold text-white text-lg">1</span> Missing Streak Day
                     </p>
+
+                    {/* Monthly Limit badge */}
+                    <div className="absolute top-2.5 left-2.5 bg-black/40 dark:bg-black/60 text-white/90 text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm border border-white/10">
+                      {Math.max(0, (tt?.monthlyLimit || 5) - (tt?.monthlyPurchased || 0))} left/mo
+                    </div>
                     {/* Inventory badge */}
-                    {(tt?.owned || 0) > 0 && (
-                      <div className="absolute top-2.5 right-2.5 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        ×{tt?.owned}
-                      </div>
-                    )}
+                    <div className="absolute top-2.5 right-2.5 bg-emerald-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      {tt?.owned || 0}/{tt?.max || 10}
+                    </div>
                   </div>
                   {/* Card footer — name, price, actions */}
                   <div className="px-3 py-3 space-y-2.5">
@@ -190,33 +208,28 @@ export default function ShopPage() {
                         <h3 className="text-sm md:text-base font-semibold text-black dark:text-white">Time Travel Ticket</h3>
                         <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">For Daily Task Streak</p>
                       </div>
-                      <div className="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/40 px-2.5 py-1 rounded-full">
-                        <span className="text-sm font-bold text-amber-700 dark:text-amber-400">{tt?.price || 500}</span>
-                        <span className="text-amber-600 dark:text-amber-500 text-xs">●</span>
+                      <div className="flex items-center">
+                        <span className="text-sm font-bold text-black dark:text-white">{tt?.price || 500}</span>
+                        <CurrencyIcon size={8} />
                       </div>
                     </div>
-                    {/* Status info */}
-                    {streak?.canUse && (
-                      <p className="text-[10px] md:text-xs text-amber-600 dark:text-amber-400">
-                        ⚠ {streak.missedDays} day{streak.missedDays > 1 ? "s" : ""} missed · {streak.previousStreak}-day streak at risk
-                      </p>
-                    )}
+
                     {/* Actions */}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleBuy("timeTravelTicket")}
-                        disabled={buying === "timeTravelTicket" || (tt?.owned || 0) >= (tt?.max || 10) || userPoints < (tt?.price || 500)}
+                        disabled={buying === "timeTravelTicket" || (tt?.owned || 0) >= (tt?.max || 7) || userPoints < (tt?.price || 500) || (tt?.monthlyPurchased || 0) >= (tt?.monthlyLimit || 5)}
                         className="flex-1 py-2 text-xs md:text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
-                        {buying === "timeTravelTicket" ? "..." : (tt?.owned || 0) >= (tt?.max || 10) ? `Max (${tt?.max})` : "Buy"}
+                        {buying === "timeTravelTicket" ? "..." : (tt?.owned || 0) >= (tt?.max || 7) ? `Max (${tt?.max})` : (tt?.monthlyPurchased || 0) >= (tt?.monthlyLimit || 5) ? "Limit Reached" : "Buy"}
                       </button>
-                      {(tt?.owned || 0) > 0 && streak?.canUse && (
-                        <button onClick={() => setShowCalendar(true)} className="flex-1 py-2 text-xs md:text-sm font-medium rounded-lg border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                      {(tt?.owned || 0) > 0 && (
+                        <button onClick={() => setShowCalendar(true)} className="flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-colors shadow-sm">
                           View & Use
                         </button>
                       )}
                     </div>
-                    <p className="text-[9px] text-gray-400 dark:text-gray-500 text-center">{tt?.owned || 0} / {tt?.max || 10} owned</p>
+
                   </div>
                 </div>
 
@@ -237,30 +250,47 @@ export default function ShopPage() {
                       Voyage to the Future and<br />
                       Pre-Complete <span className="font-bold text-white text-lg">1</span> Day&apos;s Tasks
                     </p>
-                    {(fv?.owned || 0) > 0 && (
-                      <div className="absolute top-2.5 right-2.5 bg-violet-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                        ×{fv?.owned}
-                      </div>
-                    )}
+
+                    {/* Monthly Limit badge */}
+                    <div className="absolute top-2.5 left-2.5 bg-black/40 dark:bg-black/60 text-white/90 text-[10px] font-medium px-2 py-0.5 rounded-full backdrop-blur-sm border border-white/10">
+                      {Math.max(0, (fv?.monthlyLimit || 5) - (fv?.monthlyPurchased || 0))} left/mo
+                    </div>
+                    {/* Inventory badge */}
+                    <div className="absolute top-2.5 right-2.5 bg-violet-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
+                      {fv?.owned || 0}/{fv?.max || 5}
+                    </div>
                   </div>
                   <div className="px-3 py-3 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="text-sm md:text-base font-semibold text-black dark:text-white">Future Voyager</h3>
-                        <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">For Daily Tasks · Max 30 days ahead</p>
+                        <p className="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">For Daily Tasks · Max 2 days ahead</p>
                       </div>
-                      <div className="flex items-center gap-1 bg-amber-100 dark:bg-amber-900/40 px-2.5 py-1 rounded-full">
-                        <span className="text-sm font-bold text-amber-700 dark:text-amber-400">{fv?.price || 400}</span>
-                        <span className="text-amber-600 dark:text-amber-500 text-xs">●</span>
+                      <div className="flex items-center">
+                        <span className="text-sm font-bold text-black dark:text-white">{fv?.price || 400}</span>
+                        <CurrencyIcon size={8} />
                       </div>
                     </div>
                     {/* Actions */}
                     {showDatePicker ? (
-                      <div className="space-y-2">
-                        <input type="date" value={futureDate} onChange={e => setFutureDate(e.target.value)} min={getTomorrow()} max={getMaxFuture()} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-violet-500 dark:[color-scheme:dark]" />
-                        <div className="flex gap-2">
-                          <button onClick={() => { setShowDatePicker(false); setFutureDate(""); }} className="flex-1 py-2 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
-                          <button onClick={handleUseVoyager} disabled={!futureDate || usingVoyager} className="flex-1 py-2 text-xs font-semibold rounded-lg bg-violet-500 hover:bg-violet-600 text-white disabled:opacity-50 shadow-sm">
+                      <div className="space-y-2 text-left">
+                        <div className="relative">
+                          <select 
+                            value={futureDate} 
+                            onChange={e => setFutureDate(e.target.value)} 
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-violet-500 appearance-none pr-8 cursor-pointer transition-colors"
+                          >
+                            <option value="" disabled>Select Date...</option>
+                            <option value={tomorrowValue}>{tomorrowLabel}</option>
+                            <option value={dayAfterValue}>{dayAfterLabel}</option>
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-gray-400">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-2">
+                          <button onClick={() => { setShowDatePicker(false); setFutureDate(""); }} className="flex-1 py-2 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Cancel</button>
+                          <button onClick={handleUseVoyager} disabled={!futureDate || usingVoyager} className="flex-1 py-2 text-xs font-semibold rounded-lg bg-violet-500 hover:bg-violet-600 text-white disabled:opacity-50 shadow-sm transition-all">
                             {usingVoyager ? "..." : "Confirm"}
                           </button>
                         </div>
@@ -269,10 +299,10 @@ export default function ShopPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleBuy("futureVoyager")}
-                          disabled={buying === "futureVoyager" || (fv?.owned || 0) >= (fv?.max || 5) || userPoints < (fv?.price || 400)}
+                          disabled={buying === "futureVoyager" || (fv?.owned || 0) >= (fv?.max || 7) || userPoints < (fv?.price || 400) || (fv?.monthlyPurchased || 0) >= (fv?.monthlyLimit || 5)}
                           className="flex-1 py-2 text-xs md:text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                          {buying === "futureVoyager" ? "..." : (fv?.owned || 0) >= (fv?.max || 5) ? `Max (${fv?.max})` : "Buy"}
+                          {buying === "futureVoyager" ? "..." : (fv?.owned || 0) >= (fv?.max || 7) ? `Max (${fv?.max})` : (fv?.monthlyPurchased || 0) >= (fv?.monthlyLimit || 5) ? "Limit Reached" : "Buy"}
                         </button>
                         {(fv?.owned || 0) > 0 && (
                           <button onClick={() => setShowDatePicker(true)} className="flex-1 py-2 text-xs md:text-sm font-semibold rounded-lg bg-violet-500 hover:bg-violet-600 text-white transition-colors shadow-sm">
@@ -281,7 +311,7 @@ export default function ShopPage() {
                         )}
                       </div>
                     )}
-                    <p className="text-[9px] text-gray-400 dark:text-gray-500 text-center">{fv?.owned || 0} / {fv?.max || 5} owned</p>
+
                   </div>
                 </div>
               </div>
@@ -293,9 +323,9 @@ export default function ShopPage() {
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {borders.map(border => (
                   <div key={border.id} className={`relative border p-4 md:p-8 bg-white dark:bg-gray-800 flex flex-col min-h-[260px] md:min-h-[420px] transition-all hover:shadow-lg hover:scale-[1.02] ${purchasedBorderId === border.id ? "animate-purchase-success" : ""} ${border.equipped ? "border-green-500 dark:border-green-400 shadow-md shadow-green-500/20" : "border-gray-200 dark:border-gray-700"}`}>
-                    <div className="absolute top-2 right-2 md:hidden flex items-center gap-0.5">
+                    <div className="absolute top-2.5 right-2.5 md:hidden flex items-center">
                       <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{border.price.toLocaleString()}</span>
-                      <span className="text-[10px] text-gray-500">pts</span>
+                      <CurrencyIcon size={8} className="text-gray-500" />
                     </div>
                     {border.owned && (
                       <div className={`absolute top-2 left-2 md:top-4 md:left-4 flex items-center gap-1 px-2 py-0.5 bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-600 dark:text-green-400 ${border.equipped ? "hidden md:flex" : ""}`}>
@@ -311,9 +341,9 @@ export default function ShopPage() {
                       <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 px-2">{border.description}</p>
                     </div>
                     <div className="flex items-center justify-between pt-3 md:pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <div className="hidden md:flex items-center gap-1">
+                      <div className="hidden md:flex items-center">
                         <span className="text-sm font-medium text-black dark:text-white">{border.price.toLocaleString()}</span>
-                        <span className="text-xs text-gray-500">points</span>
+                        <CurrencyIcon size={10} className="text-gray-400" />
                       </div>
                       <div className="w-full md:w-auto flex justify-center md:justify-end">
                         {border.owned ? (border.equipped ? <span className="text-xs md:text-sm text-green-600 dark:text-green-400">Equipped</span> : <button onClick={() => handleEquip(border.id)} disabled={equipping === border.id} className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 w-full md:w-auto">{equipping === border.id ? "..." : "Equip"}</button>) : (
@@ -339,9 +369,9 @@ export default function ShopPage() {
               <h3 className="text-sm md:text-base font-semibold text-black dark:text-white">Activity Calendar</h3>
               <button onClick={() => setShowCalendar(false)} className="text-gray-400 hover:text-black dark:hover:text-white"><X size={18} /></button>
             </div>
-            <div className="p-4">
+            <div className="p-6">
               <ActivityGraph 
-                className="border-0 !p-0" 
+                className="border-0" 
                 selectedDate={selectedTicketDate}
                 onDateClick={(date) => {
                   const today = new Date().toISOString().split("T")[0];
@@ -351,30 +381,25 @@ export default function ShopPage() {
                 }}
               />
               {(tt?.owned || 0) > 0 && (
-                <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-lg space-y-3">
-                  <p className="text-xs text-amber-700 dark:text-amber-400">
-                    {streak?.canUse ? `${streak.missedDays} day${streak.missedDays > 1 ? "s" : ""} missed. ` : ""}Each ticket bridges 1 day. You have {tt?.owned} ticket{(tt?.owned || 0) > 1 ? "s" : ""}.
-                  </p>
-                  <div className="flex gap-2">
-                    <select
-                      id="missedDateSelect"
-                      className="flex-1 p-2 border border-amber-300 dark:border-amber-700 bg-white dark:bg-gray-800 text-sm rounded focus:outline-none focus:ring-1 focus:ring-amber-500"
-                      value={selectedTicketDate || streak?.missedDates?.[0] || ""}
-                      onChange={(e) => setSelectedTicketDate(e.target.value)}
-                    >
-                      {streak?.missedDates?.map(d => <option key={d} value={d}>{d}</option>)}
-                      {selectedTicketDate && !streak?.missedDates?.includes(selectedTicketDate) && (
-                        <option value={selectedTicketDate}>{selectedTicketDate}</option>
-                      )}
-                    </select>
-                    <button
-                      onClick={() => handleUseTicket(selectedTicketDate || streak?.missedDates?.[0] || "")}
-                      disabled={usingTicket || (!selectedTicketDate && !streak?.missedDates?.[0])}
-                      className="flex-1 py-2 text-sm font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white disabled:opacity-50 shadow-sm"
-                      >
-                        {usingTicket ? "Using..." : "Use 1 Ticket"}
-                      </button>
-                    </div>
+                <div className="mt-6 flex gap-2">
+                  <select
+                    id="missedDateSelect"
+                    className="flex-1 p-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    value={selectedTicketDate || streak?.missedDates?.[0] || ""}
+                    onChange={(e) => setSelectedTicketDate(e.target.value)}
+                  >
+                    {streak?.missedDates?.map(d => <option key={d} value={d}>{d}</option>)}
+                    {selectedTicketDate && !streak?.missedDates?.includes(selectedTicketDate) && (
+                      <option value={selectedTicketDate}>{selectedTicketDate}</option>
+                    )}
+                  </select>
+                  <button
+                    onClick={() => handleUseTicket(selectedTicketDate || streak?.missedDates?.[0] || "")}
+                    disabled={usingTicket || !selectedTicketDate}
+                    className="flex-1 py-2 text-sm font-semibold rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-sm transition-all"
+                  >
+                    {usingTicket ? "Using..." : "Use 1 Ticket"}
+                  </button>
                 </div>
               )}
             </div>

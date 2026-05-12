@@ -8,6 +8,7 @@ import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 import { useAuth } from "@/contexts/AuthContext";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 export default function LeaderboardPage() {
   const params = useParams();
@@ -341,9 +342,12 @@ export default function LeaderboardPage() {
                             <div className="text-lg font-bold text-gray-900 dark:text-white">
                               {Math.round(entry.totalScore || 0)}
                             </div>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {Math.round(entry.pointsEarned || 0)} pts
-                            </p>
+                            <div className="flex items-center justify-end">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {Math.round(entry.pointsEarned || 0)}
+                              </span>
+                              <CurrencyIcon size={8} className="text-gray-500 dark:text-gray-400" />
+                            </div>
                           </div>
                         </div>
                       </div>

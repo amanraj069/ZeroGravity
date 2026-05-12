@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Quiz, QuizParticipant, QuizLeaderboardEntry } from "@/types/quiz";
 import QRCode from "qrcode";
 import { ChevronUp } from "lucide-react";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 export default function HostQuizPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -969,9 +970,12 @@ export default function HostQuizPage() {
                                   </span>
                                 )}
                               </div>
-                              <span className="text-sm font-light text-gray-700 dark:text-gray-400">
-                                {Math.round(b.totalScore || 0)} pts
-                              </span>
+                              <div className="flex items-center">
+                                <span className="text-sm font-light text-gray-700 dark:text-gray-400">
+                                  {Math.round(b.totalScore || 0)}
+                                </span>
+                                <CurrencyIcon size={8} className="text-gray-700 dark:text-gray-400" />
+                              </div>
                             </div>
                           );
                         })}
