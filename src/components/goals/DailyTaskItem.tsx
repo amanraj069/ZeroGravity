@@ -23,7 +23,7 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
 }) => {
   return (
     <div
-      className={`shadow-sm border p-4 transition-all duration-200 relative ${
+      className={`rounded-xl shadow-sm border p-4 transition-all duration-200 relative ${
         togglingTaskId === task._id
           ? "opacity-75 pointer-events-none"
           : ""
@@ -64,7 +64,7 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
               ? "Please wait for the current update to complete"
               : undefined
           }
-          className={`flex-shrink-0 w-6 h-6 border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
+          className={`rounded-md flex-shrink-0 w-6 h-6 border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
             togglingTaskId === task._id
               ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/30"
               : task.isCompletedToday
@@ -138,7 +138,7 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
               </div>
               {/* Desktop priority tag - original position and text */}
               <span
-                className={`hidden md:inline-block px-2 py-0.5 text-xs font-medium ${
+                className={`hidden md:inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
                   task.priority === "high"
                     ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                     : task.priority === "medium"
@@ -162,9 +162,9 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
             )}
           </div>
 
-          {/* Mobile priority tag - bottom right, no rounded corners */}
+          {/* Mobile priority tag - bottom right */}
           <span
-            className={`md:hidden absolute bottom-4 right-4 px-2 py-0.5 text-xs font-medium ${
+            className={`md:hidden absolute bottom-4 right-4 px-2 py-0.5 rounded-full text-xs font-medium ${
               task.priority === "high"
                 ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                 : task.priority === "medium"

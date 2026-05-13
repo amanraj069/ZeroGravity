@@ -158,8 +158,8 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 p-4 shadow-sm border-t border-gray-200 dark:border-gray-700"
-      style={{ borderRadius: 0, position: "relative" }}
+      className="bg-white dark:bg-gray-800 p-4 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl mt-4"
+      style={{ position: "relative" }}
     >
       <div className="mb-4 flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
@@ -201,7 +201,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
                   errors.title
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -229,7 +229,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                 name="priority"
                 value={formData.priority}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                 disabled={isSubmitting}
               >
                 <option value="low">Low</option>
@@ -255,7 +255,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                 placeholder="Enter task description (optional)"
                 disabled={isSubmitting}
               />
@@ -281,7 +281,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                     !editingTask &&
                     (e.target as HTMLInputElement).showPicker?.()
                   }
-                  className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none dark:[color-scheme:dark] ${
+                  className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none dark:[color-scheme:dark] ${
                     errors.dateStarted
                       ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                       : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -331,7 +331,7 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
                         })()
                       : undefined
                   }
-                  className={`w-full px-3 py-2 border text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
+                  className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none cursor-pointer dark:[color-scheme:dark] ${
                     errors.dateEnded
                       ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                       : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -358,16 +358,14 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
-            style={{ borderRadius: 0 }}
+            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50 rounded-lg"
             disabled={isSubmitting}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
-            style={{ borderRadius: 0 }}
+            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 rounded-lg"
             disabled={isSubmitting}
           >
             {isSubmitting

@@ -262,14 +262,14 @@ export default function CreateQuizContent({
             </div>
             <div className="flex items-center gap-3 sm:ml-4">
               <button
-                className="px-4 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium"
+                className="px-4 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium rounded-lg"
                 onClick={saveCurrent}
                 disabled={saving}
               >
                 {saving ? "Saving..." : "Save Progress"}
               </button>
               <button
-                className="px-6 py-2 bg-black text-white hover:bg-gray-800 transition-colors text-sm font-medium"
+                className="px-6 py-2 bg-black text-white hover:bg-gray-800 transition-colors text-sm font-medium rounded-lg"
                 onClick={onPublish}
                 disabled={publishing || !title || questions.length === 0}
               >
@@ -283,7 +283,7 @@ export default function CreateQuizContent({
       <main className="flex-1 py-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 px-6">
           <aside className="md:col-span-3 lg:col-span-3">
-            <div className="bg-white shadow-sm p-6 sticky top-24 border border-gray-100">
+            <div className="bg-white shadow-sm p-6 sticky top-24 border border-gray-100 rounded-xl">
               <div className="mb-4">
                 <span className="text-sm font-medium text-gray-900">
                   Questions
@@ -293,7 +293,7 @@ export default function CreateQuizContent({
                 {questions.map((_, i) => (
                   <button
                     key={i}
-                    className={`border p-2 text-sm transition-all ${
+                    className={`border p-2 text-sm transition-all rounded-lg ${
                       i === currentIndex
                         ? "bg-black text-white border-black shadow-sm"
                         : "bg-white hover:border-gray-300 hover:shadow-sm border-gray-200"
@@ -305,7 +305,7 @@ export default function CreateQuizContent({
                   </button>
                 ))}
                 <button
-                  className="border border-gray-200 p-2 text-sm bg-white hover:border-gray-300 hover:shadow-sm transition-all"
+                  className="border border-gray-200 p-2 text-sm bg-white hover:border-gray-300 hover:shadow-sm transition-all rounded-lg"
                   onClick={addQuestion}
                   disabled={questions.length >= 100}
                   title="Add question"
@@ -315,7 +315,7 @@ export default function CreateQuizContent({
               </div>
               <div className="mt-4">
                 <button
-                  className="w-full border border-gray-200 dark:border-gray-700 p-2 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium"
+                  className="w-full border border-gray-200 dark:border-gray-700 p-2 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium rounded-lg"
                   onClick={() => {
                     setJsonInput(JSON.stringify(questions, null, 2));
                     setShowJsonModal(true);
@@ -328,7 +328,7 @@ export default function CreateQuizContent({
           </aside>
 
           <section className="md:col-span-9 lg:col-span-9">
-            <div className="bg-white shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white shadow-sm border border-gray-100 overflow-hidden rounded-xl">
               {/* Question Header */}
               <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -346,7 +346,7 @@ export default function CreateQuizContent({
                         type="number"
                         min={5}
                         max={600}
-                        className="w-20 border border-gray-300 px-3 py-1.5 text-center focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
+                        className="w-20 border border-gray-300 px-3 py-1.5 text-center focus:outline-none focus:border-black focus:ring-1 focus:ring-black rounded-lg"
                         value={q?.timeLimitSeconds || 60}
                         onChange={(e) =>
                           updateQuestion(currentIndex, {
@@ -364,7 +364,7 @@ export default function CreateQuizContent({
                           type="number"
                           min={1}
                           max={1000}
-                          className="w-16 border border-gray-300 px-3 py-1.5 text-center focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
+                          className="w-16 border border-gray-300 px-3 py-1.5 text-center focus:outline-none focus:border-black focus:ring-1 focus:ring-black rounded-lg"
                           value={q?.maxMarks || 100}
                           onChange={(e) =>
                             updateQuestion(currentIndex, {
@@ -409,7 +409,7 @@ export default function CreateQuizContent({
                     Question Text
                   </label>
                   <input
-                    className="w-full border border-gray-300 px-4 py-3 text-base focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+                    className="w-full border border-gray-300 px-4 py-3 text-base focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all rounded-lg"
                     placeholder="Enter your question here..."
                     value={q?.text || ""}
                     onChange={(e) =>
@@ -427,7 +427,7 @@ export default function CreateQuizContent({
                     {(q?.options || []).map((o, oi) => (
                       <div
                         key={o.key}
-                        className={`flex items-center gap-3 p-3 border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer ${
+                        className={`flex items-center gap-3 p-3 border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer rounded-lg ${
                           o.isCorrect ? "bg-green-50 border-green-200" : ""
                         }`}
                         onClick={() => markCorrect(currentIndex, o.key)}
@@ -442,7 +442,7 @@ export default function CreateQuizContent({
                           className="w-4 h-4 text-green-600 focus:ring-green-500 focus:ring-2 pointer-events-none"
                         />
                         <div
-                          className={`w-8 h-8 flex items-center justify-center ${
+                          className={`w-8 h-8 flex items-center justify-center rounded-lg ${
                             o.isCorrect ? "bg-green-100" : "bg-gray-100"
                           }`}
                         >
@@ -490,7 +490,7 @@ export default function CreateQuizContent({
                     </button>
                     <div className="flex items-center gap-3">
                       <button
-                        className="px-3 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium"
+                        className="px-3 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium rounded-lg"
                         onClick={addQuestion}
                         disabled={questions.length >= 100}
                         title="Add question"
@@ -498,7 +498,7 @@ export default function CreateQuizContent({
                         Add Question ({questions.length}/100)
                       </button>
                       <button
-                        className="px-4 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                         onClick={saveCurrent}
                         disabled={
                           saving || !q?.options?.some((o) => o.isCorrect)
@@ -522,7 +522,7 @@ export default function CreateQuizContent({
 
       {showJsonModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh]">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh] rounded-xl">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
                 Add Questions with JSON
@@ -549,7 +549,7 @@ export default function CreateQuizContent({
 
             <div className="flex gap-2">
               <button
-                className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-medium bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-medium bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-lg"
                 onClick={() => {
                   const format = [
                     {
@@ -589,7 +589,7 @@ export default function CreateQuizContent({
             </div>
 
             <textarea
-              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto"
+              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto rounded-lg"
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
               placeholder="Paste the array of questions JSON here..."
@@ -597,13 +597,13 @@ export default function CreateQuizContent({
 
             <div className="flex justify-end gap-3 pt-2">
               <button
-                className="px-6 py-2 text-sm border border-gray-300 dark:border-gray-700 font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="px-6 py-2 text-sm border border-gray-300 dark:border-gray-700 font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                 onClick={() => setShowJsonModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                 onClick={() => {
                   try {
                     const parsed = JSON.parse(jsonInput);

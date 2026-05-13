@@ -91,17 +91,15 @@ export default function LoginStreakBonus({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl">
       <div
-        className="relative w-[90%] max-w-4xl mx-4 bg-light-card dark:bg-dark-surface border-2 border-black dark:border-dark-border shadow-2xl"
-        style={{ borderRadius: 0 }}
+        className="relative w-[90%] max-w-4xl mx-4 bg-light-card dark:bg-dark-surface border-2 border-black dark:border-dark-border shadow-2xl rounded-xl"
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-400 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors z-10"
+          className="absolute top-2 right-2 text-gray-400 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors z-10 rounded-lg"
           aria-label="Close"
-          style={{ borderRadius: 0 }}
         >
           <X size={20} />
         </button>
@@ -136,7 +134,7 @@ export default function LoginStreakBonus({
                       : undefined
                   }
                   className={`
-                    border-2 p-1.5 md:p-4 transition-all duration-200 flex items-center justify-between md:flex-col md:justify-between md:min-h-[180px] overflow-hidden
+                    border-2 p-1.5 md:p-4 transition-all duration-200 flex items-center justify-between md:flex-col md:justify-between md:min-h-[180px] overflow-hidden rounded-lg
                     ${
                       isCurrentDayCard && !streakInfo.claimed
                         ? "border-black dark:border-dark-border bg-black dark:bg-black text-white dark:text-white cursor-pointer hover:bg-gray-800 dark:hover:bg-gray-900"
@@ -145,7 +143,6 @@ export default function LoginStreakBonus({
                         : "border-light-border dark:border-dark-border bg-light-surface dark:bg-dark-card"
                     }
                   `}
-                  style={{ borderRadius: 0 }}
                 >
                   {/* Day Number - Left on mobile, Top on desktop */}
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -191,8 +188,7 @@ export default function LoginStreakBonus({
 
           {/* Current Day Info - Hidden on mobile, shown on desktop */}
           <div
-            className="hidden md:block border-2 border-black dark:border-dark-border bg-light-card dark:bg-dark-surface p-4 mb-6"
-            style={{ borderRadius: 0 }}
+            className="hidden md:block border-2 border-black dark:border-dark-border bg-light-card dark:bg-dark-surface p-4 mb-6 rounded-lg"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -226,8 +222,7 @@ export default function LoginStreakBonus({
           {/* Error Message */}
           {error && (
             <div
-              className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border-2 border-red-500 dark:border-red-800 text-red-700 dark:text-red-400 text-xs"
-              style={{ borderRadius: 0 }}
+              className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border-2 border-red-500 dark:border-red-800 text-red-700 dark:text-red-400 text-xs rounded-lg"
             >
               {error}
             </div>
@@ -237,8 +232,7 @@ export default function LoginStreakBonus({
           <button
             onClick={handleClaim}
             disabled={isClaiming}
-            className="w-full bg-black dark:bg-dark-card text-white dark:text-white font-semibold py-4 px-4 text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:bg-gray-800 dark:hover:bg-dark-hover border-2 border-transparent dark:border-dark-border"
-            style={{ borderRadius: 0 }}
+            className="w-full bg-black dark:bg-dark-card text-white dark:text-white font-semibold py-4 px-4 text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:bg-gray-800 dark:hover:bg-dark-hover border-2 border-transparent dark:border-dark-border rounded-lg"
           >
             {isClaiming ? (
               <>

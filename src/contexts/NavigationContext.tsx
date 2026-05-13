@@ -54,6 +54,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
       // New page, add to stack
       return [...prevStack, pathname];
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]); // Only depend on pathname to avoid infinite loops
 
   // Define logical parent pages for each route

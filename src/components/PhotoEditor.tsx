@@ -808,7 +808,7 @@ export default function PhotoEditor({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 sm:p-4">
+    <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-2 sm:p-4">
       <div
         className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full flex flex-col"
         style={{

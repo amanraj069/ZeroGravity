@@ -464,7 +464,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       {/* Click overlay to close sidebar on mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 bg-black/60 backdrop-blur-xl lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

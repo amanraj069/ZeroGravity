@@ -273,8 +273,8 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 p-4 shadow-sm border-t border-gray-200 dark:border-gray-700"
-      style={{ borderRadius: 0, position: "relative" }}
+      className="bg-white dark:bg-gray-800 p-4 shadow-sm border border-gray-200 dark:border-gray-700 rounded-xl mt-4"
+      style={{ position: "relative" }}
     >
       <div className="mb-4 flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
@@ -315,7 +315,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, title: e.target.value }))
                 }
-                className="w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                className="w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
                 placeholder="Enter goal title"
                 required
               />
@@ -338,7 +338,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                   }))
                 }
                 rows={5}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors resize-none"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors resize-none"
                 placeholder="Enter description (optional)"
               />
             </div>
@@ -366,7 +366,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                   }));
                   setHasChangedDateSelectors(true);
                 }}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               >
                 <option value="weekly">Weekly</option>
                 <option value="monthly">Monthly</option>
@@ -391,7 +391,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                     priority: e.target.value as "low" | "medium" | "high",
                   }))
                 }
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -411,7 +411,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                       setSelectedYear(parseInt(e.target.value));
                       setHasChangedDateSelectors(true);
                     }}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                   >
                     {Array.from({ length: 5 }, (_, i) => currentYear + i).map(
                       (year) => (
@@ -431,7 +431,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                         setSelectedYear(parseInt(e.target.value));
                         setHasChangedDateSelectors(true);
                       }}
-                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                     >
                       {Array.from({ length: 5 }, (_, i) => currentYear + i).map(
                         (year) => (
@@ -447,7 +447,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                         setSelectedQuarter(parseInt(e.target.value));
                         setHasChangedDateSelectors(true);
                       }}
-                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                     >
                       <option value={1}>Q1 (Jan-Mar)</option>
                       <option value={2}>Q2 (Apr-Jun)</option>
@@ -465,7 +465,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                         setSelectedYear(parseInt(e.target.value));
                         setHasChangedDateSelectors(true);
                       }}
-                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                     >
                       {Array.from({ length: 5 }, (_, i) => currentYear + i).map(
                         (year) => (
@@ -481,7 +481,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                         setSelectedMonth(parseInt(e.target.value));
                         setHasChangedDateSelectors(true);
                       }}
-                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                     >
                       {[
                         "January",
@@ -513,7 +513,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                         setSelectedYear(parseInt(e.target.value));
                         setHasChangedDateSelectors(true);
                       }}
-                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                     >
                       {Array.from({ length: 3 }, (_, i) => currentYear + i).map(
                         (year) => (
@@ -529,7 +529,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                         setSelectedWeek(parseInt(e.target.value));
                         setHasChangedDateSelectors(true);
                       }}
-                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+                      className="px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
                     >
                       {getWeeksInYear(selectedYear).map((week) => (
                         <option key={week.weekNum} value={week.weekNum}>
@@ -549,7 +549,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
         </div>
         {/* Milestones Section */}
         {milestones.length > 0 && (
-          <div className="space-y-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+          <div className="space-y-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 rounded-xl">
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Milestones
@@ -561,7 +561,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
             {milestones.map((milestone, idx) => (
               <div
                 key={idx}
-                className={`border bg-white dark:bg-gray-900 p-3 mb-2 flex flex-col gap-2 ${
+                className={`border bg-white dark:bg-gray-900 p-3 mb-2 flex flex-col gap-2 rounded-xl ${
                   milestoneErrors[idx]
                     ? "border-red-400 dark:border-red-600"
                     : "border-gray-200 dark:border-gray-700"
@@ -574,7 +574,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                     onChange={(e) =>
                       updateMilestone(idx, "title", e.target.value)
                     }
-                    className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="flex-1 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
                     placeholder="Milestone title"
                   />
                   <button
@@ -599,7 +599,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
                   onChange={(e) =>
                     updateMilestone(idx, "targetDate", e.target.value)
                   }
-                  className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:ring-1 ${
+                  className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white focus:outline-none focus:ring-1 ${
                     milestoneErrors[idx]
                       ? "border-red-400 dark:border-red-600 focus:border-red-500 focus:ring-red-500"
                       : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-black dark:focus:ring-white"
@@ -617,7 +617,7 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
         <button
           type="button"
           onClick={addMilestone}
-          className="w-full border border-dashed border-gray-400 dark:border-gray-600 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          className="w-full border border-dashed border-gray-400 dark:border-gray-600 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 rounded-lg"
         >
           + Add Milestone
         </button>
@@ -625,15 +625,13 @@ const AddGoalForm: React.FC<AddGoalFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50"
-            style={{ borderRadius: 0 }}
+            className="px-3 py-2 text-sm border-2 border-red-500 dark:border-red-500 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors disabled:opacity-50 rounded-lg"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
-            style={{ borderRadius: 0 }}
+            className="px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 rounded-lg"
           >
             {isEditing ? "Update Goal" : "Create Goal"}
           </button>

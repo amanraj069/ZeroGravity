@@ -31,41 +31,43 @@ export default function HeroSection() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
-          className="rounded-full bg-white/10 dark:bg-white/[0.02] backdrop-blur-xl py-1.5 px-3 sm:px-7 border border-black/5 dark:border-white/[0.08] shadow-2xl flex items-center gap-2 sm:gap-6 transition-all hover:bg-white/20 dark:hover:bg-white/[0.05]"
+          className="rounded-full bg-white/5 dark:bg-black/20 backdrop-blur-md py-1.5 pl-5 pr-1.5 border border-white/10 dark:border-white/5 shadow-2xl flex items-center transition-all hover:bg-white/10 dark:hover:bg-black/30 group/quiz"
         >
-          <p className="text-[9px] sm:text-[11px] font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap tracking-[0.2em] uppercase opacity-70">
-            Here for a quiz?
-          </p>
-          <div className="h-3 w-[1px] bg-black/10 dark:bg-white/10 mx-1" />
-          <form onSubmit={handleQuizJoin} className="flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="CODE"
-              value={quizCode}
-              onChange={(e) => setQuizCode(e.target.value.toUpperCase())}
-              maxLength={6}
-              className="w-12 sm:w-20 bg-transparent text-black dark:text-white px-0 py-1 focus:outline-none transition-colors uppercase placeholder:text-gray-400 dark:placeholder:text-white/20 tracking-[0.3em] text-center text-[10px] sm:text-xs font-black border-b border-transparent focus:border-black/40 dark:focus:border-white/40"
-            />
-            <button
-              type="submit"
-              disabled={!quizCode.trim()}
-              className="text-black dark:text-white p-1 hover:scale-125 active:scale-95 transition-all disabled:opacity-20"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          <div className="flex items-center gap-4">
+            <p className="text-[9px] font-bold text-white whitespace-nowrap tracking-[0.2em] uppercase opacity-40 group-hover/quiz:opacity-100 transition-opacity">
+              HERE FOR A QUIZ?
+            </p>
+            <div className="h-4 w-[1px] bg-white/10" />
+            <form onSubmit={handleQuizJoin} className="flex items-center gap-3">
+              <input
+                type="text"
+                placeholder="CODE"
+                value={quizCode}
+                onChange={(e) => setQuizCode(e.target.value.toUpperCase())}
+                maxLength={6}
+                className="w-16 sm:w-20 bg-transparent text-white px-0 py-1 focus:outline-none transition-all uppercase placeholder:text-white/40 tracking-[0.2em] text-center text-[10px] font-bold"
+              />
+              <button
+                type="submit"
+                disabled={!quizCode.trim()}
+                className="group/btn relative flex items-center justify-center w-7 h-7 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black dark:hover:bg-white text-black dark:text-white hover:text-white dark:hover:text-black transition-all disabled:opacity-20 disabled:cursor-not-allowed"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </button>
-          </form>
+                <svg
+                  className="w-3.5 h-3.5 transform group-hover/btn:translate-x-0.5 transition-transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </button>
+            </form>
+          </div>
         </motion.div>
       </div>
 
@@ -113,14 +115,14 @@ export default function HeroSection() {
                   <>
                     <Link
                       href="/dashboard"
-                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto"
+                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto rounded-xl overflow-hidden"
                     >
-                      <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] shadow-xl dark:shadow-white/5" />
+                      <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] shadow-xl dark:shadow-white/5 rounded-xl" />
                       <span className="relative">Go to Dashboard</span>
                     </Link>
                     <Link
                       href="/profile"
-                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30"
+                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
                     >
                       <span className="relative">My Profile</span>
                     </Link>
@@ -129,9 +131,9 @@ export default function HeroSection() {
                   <>
                     <Link
                       href="/login"
-                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto shadow-2xl shadow-black/10 dark:shadow-white/5"
+                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto shadow-2xl shadow-black/10 dark:shadow-white/5 rounded-xl overflow-hidden"
                     >
-                      <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98]" />
+                      <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98] rounded-xl" />
                       <span className="relative flex items-center gap-3">
                         Get Started
                         <svg
@@ -151,7 +153,7 @@ export default function HeroSection() {
                     </Link>
                     <Link
                       href="/login"
-                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
                     >
                       <span className="relative">Log In</span>
                     </Link>

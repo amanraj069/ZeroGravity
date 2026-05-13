@@ -526,13 +526,13 @@ export default function EditProfile() {
 
         {/* Messages */}
         {success && (
-          <div className="p-3 mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 text-green-700 dark:text-green-400 text-sm">
+          <div className="p-3 mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 text-green-700 dark:text-green-400 text-sm rounded-lg">
             {success}
           </div>
         )}
 
         {error && (
-          <div className="p-3 mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+          <div className="p-3 mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg">
             {error}
           </div>
         )}
@@ -541,10 +541,10 @@ export default function EditProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Profile Picture (Sticky) */}
           <div className="lg:col-span-1">
-            <div className="border border-gray-200 dark:border-gray-800 p-6 bg-white dark:bg-gray-800 lg:sticky lg:top-20">
+            <div className="border border-gray-200 dark:border-gray-800 p-6 bg-white dark:bg-gray-800 lg:sticky lg:top-20 rounded-xl">
               <div className="flex flex-col items-center">
                 <div className="relative group mb-4">
-                  <div className="w-32 h-32 overflow-hidden bg-gray-200 dark:bg-gray-700">
+                  <div className="w-32 h-32 overflow-hidden bg-gray-200 dark:bg-gray-700 rounded-xl">
                     {user.profilePicture ? (
                       <Image
                         src={user.profilePicture}
@@ -613,7 +613,7 @@ export default function EditProfile() {
           {/* Right Column - Edit Forms */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
-            <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800">
+            <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl">
               <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
                   Basic Information
@@ -629,7 +629,7 @@ export default function EditProfile() {
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                      className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                     />
                   </div>
                   <div>
@@ -640,7 +640,7 @@ export default function EditProfile() {
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                      className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                     />
                   </div>
                 </div>
@@ -657,7 +657,7 @@ export default function EditProfile() {
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="w-full pl-7 pr-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900"
+                      className="w-full pl-7 pr-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                     />
                   </div>
                 </div>
@@ -667,7 +667,7 @@ export default function EditProfile() {
                     Phone Number
                   </label>
                   <div className="relative flex">
-                    <span className="inline-flex items-center px-3 py-2.5 border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400">
+                    <span className="inline-flex items-center px-3 py-2.5 border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 rounded-l-lg">
                       +91
                     </span>
                     <input
@@ -681,7 +681,7 @@ export default function EditProfile() {
                       }}
                       placeholder="9876543210"
                       maxLength={10}
-                      className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
+                      className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 rounded-r-lg"
                     />
                   </div>
                 </div>
@@ -689,7 +689,7 @@ export default function EditProfile() {
                 <button
                   onClick={handleSaveProfile}
                   disabled={saving}
-                  className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -697,7 +697,7 @@ export default function EditProfile() {
             </div>
 
             {/* Security Settings */}
-            <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800">
+            <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl">
               <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
                   Security Settings
@@ -723,12 +723,12 @@ export default function EditProfile() {
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="Enter new email"
                     disabled={editMode === "email"}
-                    className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                   />
                   <button
                     onClick={handleSendEmailOtp}
                     disabled={sendingOtp || !newEmail || editMode === "email"}
-                    className="w-full md:w-auto px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    className="w-full md:w-auto px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap rounded-lg"
                   >
                     {sendingOtp ? "Sending..." : "Change Email"}
                   </button>
@@ -750,7 +750,7 @@ export default function EditProfile() {
                     </div>
 
                     {otpError && (
-                      <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+                      <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg">
                         {otpError}
                       </div>
                     )}
@@ -771,7 +771,7 @@ export default function EditProfile() {
                             handleOtpChange(index, e.target.value)
                           }
                           onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
+                          className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                           autoFocus={index === 0 && otp.join("") === ""}
                         />
                       ))}
@@ -781,7 +781,7 @@ export default function EditProfile() {
                       <button
                         onClick={handleVerifyOtp}
                         disabled={verifyingOtp || otp.join("").length !== 6}
-                        className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                        className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
                       >
                         {verifyingOtp
                           ? "Verifying..."
@@ -795,7 +795,7 @@ export default function EditProfile() {
                           setNewEmail("");
                         }}
                         disabled={verifyingOtp}
-                        className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                       >
                         Cancel
                       </button>
@@ -847,7 +847,7 @@ export default function EditProfile() {
                           onChange={(e) => setNewPassword(e.target.value)}
                           placeholder="Enter new password"
                           disabled={editMode === "password"}
-                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                         />
                         <button
                           type="button"
@@ -903,7 +903,7 @@ export default function EditProfile() {
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm new password"
                           disabled={editMode === "password"}
-                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                         />
                         <button
                           type="button"
@@ -959,7 +959,7 @@ export default function EditProfile() {
                       !confirmPassword ||
                       editMode === "password"
                     }
-                    className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
                   >
                     {sendingOtp ? "Sending..." : "Send OTP"}
                   </button>
@@ -980,7 +980,7 @@ export default function EditProfile() {
                       </div>
 
                       {otpError && (
-                        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg">
                           {otpError}
                         </div>
                       )}
@@ -1001,7 +1001,7 @@ export default function EditProfile() {
                               handleOtpChange(index, e.target.value)
                             }
                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                            className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
+                            className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                             autoFocus={index === 0 && otp.join("") === ""}
                           />
                         ))}
@@ -1011,7 +1011,7 @@ export default function EditProfile() {
                         <button
                           onClick={handleVerifyOtp}
                           disabled={verifyingOtp || otp.join("").length !== 6}
-                          className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                          className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
                         >
                           {verifyingOtp
                             ? "Verifying..."
@@ -1026,7 +1026,7 @@ export default function EditProfile() {
                             setConfirmPassword("");
                           }}
                           disabled={verifyingOtp}
-                          className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                         >
                           Cancel
                         </button>

@@ -51,6 +51,12 @@ export interface QuizLeaderboardEntry {
   accuracy?: number;
   pointsEarned?: number;
   isDeleted?: boolean;
+  answers?: Array<{
+    questionId: string;
+    selectedOptionKey: string;
+    isCorrect: boolean;
+    responseTimeSeconds?: number;
+  }>;
 }
 
 export interface AdminQuizDetails {

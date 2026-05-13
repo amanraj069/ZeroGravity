@@ -22,14 +22,14 @@ export default function DashboardSkeleton() {
           </div>
 
           {/* Shop Button Skeleton */}
-          <div className="h-8 sm:h-9 w-16 sm:w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+          <div className="h-8 sm:h-9 w-16 sm:w-20 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
         </div>
       </div>
 
       {/* Navigation Grid Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] px-4 py-4 md:px-6 md:py-5 rounded-lg flex items-center justify-between animate-pulse">
+          <div key={i} className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] px-4 py-4 md:px-6 md:py-5 rounded-xl flex items-center justify-between animate-pulse">
             <div className="flex items-center gap-4">
               <div className="h-12 w-1 bg-gray-200 dark:bg-gray-800 rounded-full" />
               <div className="space-y-2">
@@ -43,7 +43,7 @@ export default function DashboardSkeleton() {
       </div>
 
       {/* Students Hub Skeleton */}
-      <div className="w-full border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-[#050710] py-6 sm:py-10 px-6 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse">
+      <div className="w-full border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-[#050710] py-6 sm:py-10 px-6 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse rounded-2xl">
         <div className="text-center md:text-left space-y-3 w-full md:w-2/3">
           <div className="h-8 sm:h-12 w-48 sm:w-72 bg-gray-200 dark:bg-gray-800 rounded mx-auto md:mx-0" />
           <div className="space-y-2">

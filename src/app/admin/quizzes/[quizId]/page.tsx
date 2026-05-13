@@ -69,7 +69,7 @@ export default function AdminQuizDetailPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <h2 className="font-medium">Participants ({participants.length})</h2>
-          <div className="border  divide-y">
+          <div className="border  divide-y rounded-xl overflow-hidden">
             {participants.map((p: QuizParticipant) => (
               <div
                 key={p.quizUserId}
@@ -89,7 +89,7 @@ export default function AdminQuizDetailPage() {
 
         <div className="space-y-2">
           <h2 className="font-medium">Leaderboard</h2>
-          <div className="border  divide-y">
+          <div className="border  divide-y rounded-xl overflow-hidden">
             {board.map((b: QuizLeaderboardEntry, idx: number) => (
               <div
                 key={b.quizUserId}
@@ -114,7 +114,7 @@ export default function AdminQuizDetailPage() {
         <h2 className="font-medium mb-2">Questions</h2>
         <div className="space-y-2">
           {(q.questions || []).map((question, i: number) => (
-            <div key={question.questionId || i} className="border  p-3">
+            <div key={question.questionId || i} className="border  p-3 rounded-xl">
               <div className="font-medium">
                 Q{i + 1}: {question.text}
               </div>

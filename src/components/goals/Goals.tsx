@@ -367,7 +367,7 @@ const Goals: React.FC = () => {
             </div>
             <button
               onClick={() => setShowAddGoal(true)}
-              className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Goal
@@ -416,7 +416,7 @@ const Goals: React.FC = () => {
         )}
 
         {/* Mobile-optimized Filter */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 shadow-sm mt-4">
           <div className="flex overflow-x-auto sm:overflow-visible justify-start scrollbar-hide">
             {(
               [
@@ -446,7 +446,7 @@ const Goals: React.FC = () => {
         {/* Mobile-optimized Goals Display */}
         <div className="space-y-4">
           {filteredGoals.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100dvh-300px)] py-12 px-4 text-center shadow-sm relative">
+            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100dvh-300px)] py-12 px-4 text-center shadow-sm relative mt-4">
               {/* Dark mode hint - only show in light mode */}
               {theme === "light" && (
                 <div className="absolute top-4 right-4 text-xs text-gray-400 flex items-center gap-1">
@@ -474,7 +474,7 @@ const Goals: React.FC = () => {
               {!showAddGoal && (
                 <button
                   onClick={() => setShowAddGoal(true)}
-                  className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                 >
                   Create Goal
                 </button>
@@ -492,7 +492,7 @@ const Goals: React.FC = () => {
               .map((goal) => (
                 <div
                   key={goal._id}
-                  className={`shadow-sm overflow-hidden ${
+                  className={`rounded-xl shadow-sm overflow-hidden ${
                     goal.completed
                       ? "bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700"
                       : isGoalOverdue(goal)
@@ -509,7 +509,7 @@ const Goals: React.FC = () => {
                     <div className="flex items-start gap-4">
                       <button
                         onClick={() => toggleGoalCompletion(goal._id)}
-                        className={`flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                        className={`rounded-md flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${
                           goal.completed
                             ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
                             : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
@@ -601,11 +601,11 @@ const Goals: React.FC = () => {
                           </span>
 
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[10px] text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 border border-gray-200 dark:border-gray-600">
+                            <span className="rounded-full text-[10px] text-gray-500 dark:text-gray-400 capitalize bg-gray-100 dark:bg-gray-700 px-2 py-0.5 border border-gray-200 dark:border-gray-600">
                               {goal.category}
                             </span>
                             <span
-                              className={`text-[10px] px-1.5 py-0.5 font-medium ${
+                              className={`rounded-full text-[10px] px-2 py-0.5 font-medium ${
                                 goal.priority === "high"
                                   ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
                                   : goal.priority === "medium"
@@ -680,7 +680,7 @@ const Goals: React.FC = () => {
                                     milestone.id,
                                   )
                                 }
-                                className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center transition-colors ${
+                                className={`rounded-md flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center transition-colors ${
                                   milestone.completed
                                     ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
                                     : "border-gray-300 dark:border-gray-500 hover:border-gray-400 dark:hover:border-gray-400"

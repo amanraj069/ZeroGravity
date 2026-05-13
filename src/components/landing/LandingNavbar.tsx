@@ -44,25 +44,25 @@ function LandingNavbar() {
                     {/* Desktop: Show Leaderboard, Goals, Dashboard and Profile links */}
                     <Link
                       href="/leaderboard"
-                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                     >
                       Leaderboard
                     </Link>
                     <Link
                       href="/goals"
-                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                     >
                       Goals
                     </Link>
                     <Link
                       href="/dashboard"
-                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                     >
                       Dashboard
                     </Link>
                     <Link
                       href="/profile"
-                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                     >
                       Profile
                     </Link>
@@ -76,7 +76,7 @@ function LandingNavbar() {
                     </button>
                     <button
                       onClick={logout}
-                      className="hidden sm:inline-block bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                      className="hidden sm:inline-block bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                     >
                       Logout
                     </button>
@@ -85,13 +85,13 @@ function LandingNavbar() {
                   <>
                     <Link
                       href="/login"
-                      className="text-black dark:text-white hover:text-gray-800 dark:hover:text-gray-300 text-xs sm:text-sm border border-gray-300 dark:border-gray-700 px-2 sm:px-4 py-2 hover:border-black dark:hover:border-gray-500 transition-colors"
+                      className="text-black dark:text-white hover:text-gray-800 dark:hover:text-gray-300 text-xs sm:text-sm border border-gray-300 dark:border-gray-700 px-2 sm:px-4 py-2 hover:border-black dark:hover:border-gray-500 transition-colors rounded-lg"
                     >
                       Login
                     </Link>
                     <Link
                       href="/about"
-                      className="bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                      className="bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                     >
                       About
                     </Link>
@@ -109,7 +109,7 @@ function LandingNavbar() {
           {/* Overlay */}
           {isMenuOpen && (
             <div
-              className="fixed inset-0 bg-black/50 z-30 sm:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-xl z-30 sm:hidden"
               onClick={() => setIsMenuOpen(false)}
             />
           )}
@@ -141,63 +141,63 @@ function LandingNavbar() {
                   <Link
                     href="/"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <HomeIcon size={18} /> Home
                   </Link>
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <LayoutDashboard size={18} /> Dashboard
                   </Link>
                   <Link
                     href="/leaderboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <Trophy size={18} /> Leaderboard
                   </Link>
                   <Link
                     href="/goals"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <Target size={18} /> Goals
                   </Link>
                   <Link
                     href="/quizzes"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <BrainCircuit size={18} /> Quizzes
                   </Link>
                   <Link
                     href="/notes"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <FileText size={18} /> Notes
                   </Link>
                   <Link
                     href="/academia"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <GraduationCap size={18} /> Academia
                   </Link>
                   <Link
                     href="/shop"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <ShoppingBag size={18} /> Shop
                   </Link>
                   <Link
                     href="/profile"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <User size={18} /> Profile
                   </Link>
@@ -211,7 +211,7 @@ function LandingNavbar() {
                     setIsMenuOpen(false);
                     logout();
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                 >
                   <LogOut size={18} /> Logout
                 </button>

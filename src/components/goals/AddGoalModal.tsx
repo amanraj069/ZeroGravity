@@ -157,8 +157,8 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#020410]/90 backdrop-blur-lg flex items-center justify-center z-50 p-4 transition-all">
-      <div className="goal-modal-shell relative w-full max-w-2xl max-h-[85dvh] overflow-y-auto border border-white/20 bg-[#01020a]/95 shadow-[0_0_45px_rgba(26,110,255,0.35)] overflow-hidden">
+    <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 bg-black/60 backdrop-blur-xl flex items-center justify-center z-50 p-4 transition-all">
+      <div className="goal-modal-shell relative w-full max-w-2xl max-h-[85dvh] overflow-y-auto border border-white/20 bg-[#01020a]/95 shadow-[0_0_45px_rgba(26,110,255,0.35)] overflow-hidden rounded-2xl">
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -226,7 +226,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="border border-white/15 bg-[#04071c] p-2 text-slate-200 transition hover:scale-105 hover:border-blue-400 hover:text-white"
+              className="border border-white/15 bg-[#04071c] p-2 text-slate-200 transition hover:scale-105 hover:border-blue-400 hover:text-white rounded-lg"
             >
               <X className="h-5 w-5" />
             </button>
@@ -241,7 +241,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, title: e.target.value }))
                 }
-                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                className="w-full rounded-lg border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
                 placeholder="Goal title"
               />
             </div>
@@ -255,7 +255,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                     description: e.target.value,
                   }))
                 }
-                className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                className="w-full rounded-lg border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
                 rows={3}
                 placeholder="Description (optional)"
               />
@@ -276,7 +276,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                         | "yearly",
                     }))
                   }
-                  className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                  className="w-full rounded-lg border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
                 >
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
@@ -295,7 +295,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       priority: e.target.value as "low" | "medium" | "high",
                     }))
                   }
-                  className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                  className="w-full rounded-lg border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -314,21 +314,21 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                       targetDate: e.target.value,
                     }))
                   }
-                  className="w-full rounded-none border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
+                  className="w-full rounded-lg border border-white/15 bg-[#03112c] px-4 py-3 text-base text-white shadow-sm transition focus:border-blue-400 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:ring-offset-[#020312]"
                 />
               </div>
             </div>
 
             {/* Milestones section - Available for both adding and editing */}
             {milestones.length > 0 && (
-              <div className="space-y-4 rounded-none border border-white/10 bg-[#030a1f]/80 p-4 shadow-inner">
+              <div className="space-y-4 rounded-xl border border-white/10 bg-[#030a1f]/80 p-4 shadow-inner">
                 <div className="flex items-center justify-between text-sm font-medium text-blue-100">
                   <span>Milestones</span>
                 </div>
                 {milestones.map((milestone, milestoneIndex) => (
                   <div
                     key={milestoneIndex}
-                    className="rounded-none border border-white/10 bg-[#04102a] p-3 shadow-sm transition hover:border-blue-400"
+                    className="rounded-xl border border-white/10 bg-[#04102a] p-3 shadow-sm transition hover:border-blue-400"
                   >
                     <div className="flex items-center justify-between">
                       <input
@@ -341,13 +341,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                             e.target.value
                           )
                         }
-                        className="mr-2 flex-1 rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
+                        className="mr-2 flex-1 rounded-lg border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
                         placeholder="Milestone title"
                       />
                       <button
                         type="button"
                         onClick={() => removeMilestone(milestoneIndex)}
-                        className="p-2 text-gray-400 transition hover:bg-red-500/10 hover:text-red-400"
+                        className="p-2 text-gray-400 transition hover:bg-red-500/10 hover:text-red-400 rounded-lg"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -362,7 +362,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
                           e.target.value
                         )
                       }
-                      className="mt-2 w-full rounded-none border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
+                      className="mt-2 w-full rounded-lg border border-white/15 bg-[#020b1f] px-3 py-2 text-sm text-white focus:border-blue-400 focus:ring-2 focus:ring-blue-800"
                     />
                   </div>
                 ))}
@@ -372,7 +372,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
             <button
               type="button"
               onClick={addMilestone}
-              className="w-full rounded-none border border-dashed border-white/15 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-400 hover:text-blue-200"
+              className="w-full rounded-lg border border-dashed border-white/15 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-400 hover:text-blue-200"
             >
               + Add Milestone
             </button>
@@ -381,13 +381,13 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-none border border-white/15 px-4 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-300 hover:text-white"
+                className="flex-1 rounded-lg border border-white/15 px-4 py-3 text-sm font-medium text-blue-100 transition hover:border-blue-300 hover:text-white"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="goal-modal-cta relative flex-1 overflow-hidden rounded-none border border-white/20 bg-gradient-to-r from-[#050505] via-[#0b0b12] to-black px-4 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(0,0,0,0.6)] transition hover:brightness-115 hover:shadow-[0_0_35px_rgba(72,94,255,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                className="goal-modal-cta relative flex-1 overflow-hidden rounded-lg border border-white/20 bg-gradient-to-r from-[#050505] via-[#0b0b12] to-black px-4 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(0,0,0,0.6)] transition hover:brightness-115 hover:shadow-[0_0_35px_rgba(72,94,255,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               >
                 <div className="absolute inset-0 bg-black/40">
                   {buttonStars.map((star, index) => (

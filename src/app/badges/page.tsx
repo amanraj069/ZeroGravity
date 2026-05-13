@@ -27,13 +27,13 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <div className="border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 flex flex-col gap-1">
-      <div className="text-2xl font-light text-black dark:text-white">
+    <div className="border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-[#050710] shadow-sm flex flex-col gap-1 rounded-xl">
+      <div className="text-2xl font-black text-gray-900 dark:text-white tabular-nums">
         {value}
       </div>
-      <div className="text-xs text-gray-500 dark:text-gray-400">{label}</div>
+      <div className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-tight">{label}</div>
       {sub && (
-        <div className="text-[10px] text-gray-400 dark:text-gray-500">
+        <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
           {sub}
         </div>
       )}
@@ -43,18 +43,44 @@ function StatCard({
 
 // --- Badge card ---
 function BadgeCard({ badge }: { badge: BadgeProgress }) {
+  const [isHovered, setIsHovered] = useState(false);
   const visual = BADGE_VISUALS[badge.id];
   const pct = Math.round(badge.progress * 100);
 
+  // Parse shadow value from tailwind class shadow-[...]
+  const glowShadow = visual.glow.match(/\[(.*)\]/)?.[1]?.replaceAll("_", " ");
+
   return (
     <div
-      className={`relative p-4 sm:p-5 flex flex-col gap-2.5 sm:gap-3 transition-all group overflow-hidden border bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_6px_20px_rgba(0,0,0,0.4)]
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`relative p-4 sm:p-5 flex flex-col gap-2.5 sm:gap-3 transition-all duration-500 group overflow-hidden border bg-white dark:bg-[#050710] shadow-sm rounded-xl
         ${
           badge.unlocked
-            ? "border-gray-200 dark:border-gray-800 hover:border-blue-400/40 dark:hover:border-blue-500/50 hover:shadow-md dark:hover:shadow-[0_8px_25px_rgba(30,120,255,0.15)]"
+            ? "border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#0a0e17]"
             : "border-gray-200 dark:border-gray-800 opacity-80"
         }
       `}
+      style={
+        isHovered && badge.unlocked
+          ? {
+              boxShadow: glowShadow ? glowShadow : undefined,
+              borderColor: "rgba(139, 92, 246, 0.3)", // Default fallback violet
+              ...(badge.id.includes("yellow") ||
+              badge.id.includes("perfectionist") ||
+              badge.id.includes("centurion") ||
+              badge.id.includes("full-house")
+                ? { borderColor: "rgba(250, 204, 21, 0.4)" }
+                : {}),
+              ...(badge.id.includes("sky") ||
+              badge.id.includes("immortal") ||
+              badge.id.includes("guardian") ||
+              badge.id.includes("millennial")
+                ? { borderColor: "rgba(125, 211, 252, 0.4)" }
+                : {}),
+            }
+          : {}
+      }
     >
       {/* Top Right State Icon */}
       <div className="absolute top-4 right-4 flex items-center justify-center z-10">
@@ -117,9 +143,9 @@ function BadgeCard({ badge }: { badge: BadgeProgress }) {
           </span>
           <span className="text-gray-900 dark:text-white">{pct}%</span>
         </div>
-        <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 overflow-hidden">
+        <div className="w-full h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r ${visual.gradient} transition-all duration-700 ${badge.unlocked ? "" : "opacity-40"}`}
+            className={`h-full bg-gradient-to-r ${visual.gradient} transition-all duration-700 rounded-full ${badge.unlocked ? "" : "opacity-40"}`}
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -240,7 +266,7 @@ export default function BadgesPage() {
                   setSortBy(newSortBy);
                   setSortOrder(newSortOrder);
                 }}
-                className="w-20 flex items-center gap-1.5 pl-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors appearance-none pr-8 bg-transparent cursor-pointer outline-none"
+                className="w-20 flex items-center gap-1.5 pl-3 py-1.5 text-xs font-bold text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all appearance-none pr-8 bg-white dark:bg-[#050710] cursor-pointer outline-none rounded-lg shadow-sm"
               >
                 <option value="" disabled hidden>
                   Sort
@@ -289,7 +315,7 @@ export default function BadgesPage() {
 
             <button
               onClick={() => setShowStats(!showStats)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] hover:bg-gray-100 dark:hover:bg-gray-800 transition-all rounded-lg shadow-sm uppercase tracking-wider"
             >
               Stats
               {showStats ? (
@@ -342,10 +368,10 @@ export default function BadgesPage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`flex-1 px-3 py-1.5 text-xs whitespace-nowrap border transition-colors text-center justify-center ${
+                className={`flex-1 px-3 py-2 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap border transition-all text-center justify-center rounded-lg shadow-sm ${
                   activeCategory === cat.id
                     ? "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white"
-                    : "text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    : "bg-white dark:bg-[#050710] text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
                 }`}
               >
                 {cat.label}

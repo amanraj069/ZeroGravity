@@ -251,7 +251,7 @@ export default function Dashboard() {
             {/* Shop Button */}
             <Link
               href="/shop"
-              className="group relative inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 font-medium tracking-wide text-white dark:text-black transition-all duration-300"
+              className="group relative inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 font-medium tracking-wide text-white dark:text-black transition-all duration-300 rounded-lg overflow-hidden"
             >
               <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:opacity-90" />
               <ShoppingBag className="w-3.5 h-3.5 relative" />
@@ -279,7 +279,7 @@ export default function Dashboard() {
               <Link
                 href={item.url}
                 id={item.id}
-                className="group block overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-lg"
+                className="group block overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-xl"
               >
                 <div className="relative flex flex-row items-center justify-between gap-5 px-4 py-4 md:px-6 md:py-5">
                   <div className="flex items-center gap-4 lg:gap-4">
@@ -317,7 +317,7 @@ export default function Dashboard() {
         >
           <Link
             href="/studentsHub"
-            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 group transition-all duration-500 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)]"
+            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 group transition-all duration-500 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-2xl"
           >
             {/* Immersive Star Layer */}
             <div className="absolute inset-0 opacity-20 dark:opacity-40 pointer-events-none group-hover:opacity-40 dark:group-hover:opacity-70 transition-opacity">

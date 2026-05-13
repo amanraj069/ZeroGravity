@@ -13,7 +13,7 @@ import {
 } from "@/services/shopService";
 import { BorderPreview } from "@/components/borders";
 import { BackButton } from "@/components/BackButton";
-import { Check, X, Zap } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 export default function ShopPage() {
@@ -363,7 +363,7 @@ export default function ShopPage() {
 
       {/* ─── Activity Calendar Modal ─── */}
       {showCalendar && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
           <div className="relative w-full max-w-3xl bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl max-h-[85vh] overflow-y-auto">
             <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between rounded-t-xl">
               <h3 className="text-sm md:text-base font-semibold text-black dark:text-white">Activity Calendar</h3>

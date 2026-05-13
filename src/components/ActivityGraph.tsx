@@ -229,7 +229,7 @@ export default function ActivityGraph({
   if (loading) {
     return (
       <div
-        className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 ${className}`}
+        className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 rounded-xl ${className}`}
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -246,7 +246,7 @@ export default function ActivityGraph({
   if (!activityData) {
     return (
       <div
-        className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 ${className}`}
+        className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 rounded-xl ${className}`}
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -262,7 +262,7 @@ export default function ActivityGraph({
 
   return (
     <div
-      className={`border border-gray-200 dark:border-gray-800 p-3 md:p-4 bg-white dark:bg-gray-800 ${className}`}
+      className={`border border-gray-200 dark:border-gray-800 p-3 md:p-4 bg-white dark:bg-gray-800 rounded-xl ${className}`}
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-3">
@@ -354,7 +354,7 @@ export default function ActivityGraph({
       {/* Tooltip */}
       {hoveredDay && hoveredDay.count >= 0 && (
         <div
-          className="fixed z-50 px-2 py-1 text-xs bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded shadow-lg pointer-events-none whitespace-nowrap"
+          className="fixed z-50 px-2 py-1 text-xs bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-md shadow-lg pointer-events-none whitespace-nowrap"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y,

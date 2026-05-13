@@ -292,12 +292,12 @@ export default function AcademiaPage() {
                           setTimeout(() => setShowCGPAError(false), 3000);
                         }
                       }}
-                      className="text-right"
+                      className="text-right group/cgpa transition-opacity hover:opacity-80"
                     >
-                      <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 leading-tight mb-0.5">
+                      <p className="text-[9px] sm:text-[10px] text-gray-500 dark:text-gray-500 font-bold leading-tight mb-0.5 uppercase tracking-[0.2em]">
                         CGPA
                       </p>
-                      <p className="text-lg sm:text-2xl font-semibold text-black dark:text-white leading-tight">
+                      <p className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white leading-tight tabular-nums">
                         {cgpaResult.cgpa !== null
                           ? cgpaResult.cgpa.toFixed(2)
                           : "—"}
@@ -392,18 +392,18 @@ export default function AcademiaPage() {
                       }
                     }}
                     onDragLeave={handleDragLeave}
-                    className={`group border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:border-black dark:hover:border-white hover:bg-gray-100 dark:hover:bg-gray-750 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 p-4 sm:p-6 relative cursor-move ${
+                    className={`group border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] hover:border-purple-300/20 dark:hover:border-purple-200/40 hover:bg-gray-50 dark:hover:bg-[#0a0e17] shadow-sm transition-all duration-300 p-4 sm:p-6 relative cursor-move rounded-xl ${
                       draggedSemesterId === semester.semesterId
                         ? "opacity-90 z-50"
                         : ""
                     } ${
                       dragOverIndex === index &&
                       draggedSemesterId !== semester.semesterId
-                        ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20 ring-2 ring-blue-300 dark:ring-blue-600"
+                        ? "border-purple-500 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/20 ring-1 ring-purple-300 dark:ring-purple-600"
                         : ""
                     } ${
                       justSwapped && justSwapped.includes(semester.semesterId)
-                        ? "ring-2 ring-green-400 dark:ring-green-500"
+                        ? "ring-1 ring-emerald-400 dark:ring-emerald-500"
                         : ""
                     }`}
                   >
@@ -444,16 +444,15 @@ export default function AcademiaPage() {
                       <>
                         {/* Current Badge / Course Count */}
                         {index === semesters.length - 1 ? (
-                          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 opacity-100 group-hover:opacity-0 transition-opacity duration-200 pointer-events-none">
-                            <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border border-blue-300 dark:border-blue-700">
+                          <div className="absolute top-3 sm:top-4 right-3 sm:right-4 opacity-100 group-hover:opacity-0 transition-opacity duration-200 pointer-events-none">
+                            <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] bg-violet-950/80 dark:bg-violet-400/10 text-white dark:text-violet-400 border border-violet-500/20 rounded-full shadow-sm">
                               Current
                             </span>
                           </div>
                         ) : (
-                          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 opacity-100 group-hover:opacity-0 transition-opacity duration-200 pointer-events-none">
-                            <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
-                              {semester.courses.length} course
-                              {semester.courses.length !== 1 ? "s" : ""}
+                          <div className="absolute top-3 sm:top-4 right-3 sm:right-4 opacity-100 group-hover:opacity-0 transition-opacity duration-200 pointer-events-none">
+                            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                              {semester.courses.length} course{semester.courses.length !== 1 ? "s" : ""}
                             </p>
                           </div>
                         )}
@@ -521,10 +520,13 @@ export default function AcademiaPage() {
                               e.preventDefault();
                             }
                           }}
+                          className="flex flex-col h-full"
                         >
-                          <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-1 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors pr-16 sm:pr-20">
-                            {semester.name}
-                          </h3>
+                          <div className="flex items-center gap-2 mb-3">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white transition-colors truncate">
+                              {semester.name}
+                            </h3>
+                          </div>
                           <div className="mb-2">
                             {(() => {
                               const sgpa = calculateSGPA(semester.courses);
@@ -572,15 +574,23 @@ export default function AcademiaPage() {
               <button
                 onClick={handleAddSemester}
                 disabled={addingSemester}
-                className="border-2 border-dotted border-gray-400 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 hover:border-black dark:hover:border-white hover:bg-gray-100 dark:hover:bg-gray-750 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 p-4 sm:p-6 flex items-center justify-center min-h-[120px] sm:min-h-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710]/40 hover:border-violet-300/50 dark:hover:border-violet-200/30 hover:bg-gray-50 dark:hover:bg-[#0a0e17] shadow-sm transition-all duration-300 hover:scale-[1.005] hover:-translate-y-0.5 p-4 sm:p-6 flex items-center justify-center min-h-[120px] sm:min-h-[140px] disabled:opacity-50 disabled:cursor-not-allowed rounded-xl group/add"
               >
                 {addingSemester ? (
-                  <div className="text-gray-500 dark:text-gray-400">
-                    Adding...
+                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm font-medium">Adding...</span>
                   </div>
                 ) : (
-                  <div className="text-3xl sm:text-4xl text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
-                    +
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center group-hover/add:bg-violet-500/10 transition-colors border border-gray-200 dark:border-gray-700 group-hover/add:border-violet-500/30">
+                      <span className="text-2xl sm:text-3xl text-gray-400 dark:text-gray-500 group-hover/add:text-violet-400 transition-colors">
+                        +
+                      </span>
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 group-hover/add:text-violet-400 transition-colors">
+                      Add Semester
+                    </span>
                   </div>
                 )}
               </button>

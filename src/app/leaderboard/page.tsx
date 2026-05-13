@@ -418,7 +418,7 @@ export default function Leaderboard() {
             </p>
             <button
               onClick={fetchLeaderboard}
-              className="mt-4 px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="mt-4 px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
             >
               Retry
             </button>
@@ -476,7 +476,7 @@ export default function Leaderboard() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap mt-2 sm:mt-0">
-            <div className="flex items-center gap-2 px-2 py-1 bg-black/5 dark:bg-white/5 rounded-sm">
+            <div className="flex items-center gap-2 px-2.5 py-1 bg-black/5 dark:bg-white/5 rounded-full">
               <p className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 font-light whitespace-nowrap">
                 Weekly: {formatStartingDate(leaderboard.weekStart)}
               </p>
@@ -496,8 +496,8 @@ export default function Leaderboard() {
           className="relative group "
         >
           {/* Glass Card Container */}
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 blur transition duration-1000 group-hover:duration-200" />
-          <div className="relative border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#050710]/80 backdrop-blur-xl shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] overflow-hidden transition-all duration-300">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 blur transition duration-1000 group-hover:duration-200 rounded-xl" />
+          <div className="relative border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#050710]/80 backdrop-blur-xl shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] overflow-hidden transition-all duration-300 rounded-xl">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -683,7 +683,7 @@ export default function Leaderboard() {
               <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white my-6 tracking-tight">
                 Not <span className="font-normal italic">Eligible</span>
               </h2>
-              <div className="border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#050710]/80 backdrop-blur-xl shadow-sm overflow-hidden transition-all duration-300">
+              <div className="border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#050710]/80 backdrop-blur-xl shadow-sm overflow-hidden transition-all duration-300 rounded-xl">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>

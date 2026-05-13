@@ -359,8 +359,7 @@ const DailyTasks: React.FC = () => {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
                 onClick={() => setShowStudyPlanner(true)}
-                className="relative flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0"
-                style={{ borderRadius: 0 }}
+                className="relative flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
                 title="AI Study Planner"
               >
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -370,8 +369,7 @@ const DailyTasks: React.FC = () => {
             </div>
             <button
               onClick={() => setShowAddTask(true)}
-              className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0"
-              style={{ borderRadius: 0 }}
+              className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
             >
               <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Add Task</span>
@@ -423,8 +421,7 @@ const DailyTasks: React.FC = () => {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
                 onClick={() => setShowStudyPlanner(true)}
-                className="relative w-full flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black py-2 text-[13px] hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
-                style={{ borderRadius: 0 }}
+                className="relative w-full flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black py-2 text-[13px] hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap rounded-lg"
                 title="AI Study Planner"
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -439,7 +436,7 @@ const DailyTasks: React.FC = () => {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-              className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark] min-w-0"
+              className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark] min-w-0 rounded-lg"
             />
           </div>
           {/* Upcoming Days - full width */}
@@ -513,7 +510,7 @@ const DailyTasks: React.FC = () => {
 
       {/* Read-only indicator for non-today dates */}
       {!isToday && (
-        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2 mt-2 sm:mt-4">
+        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2 mt-2 sm:mt-4 rounded-xl">
           <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
           <p className="text-sm text-amber-700 dark:text-amber-300">
             You are viewing tasks for a{" "}
@@ -541,7 +538,7 @@ const DailyTasks: React.FC = () => {
             </p>
             <button
               onClick={() => setShowAddTask(true)}
-              className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
             >
               Create Task
             </button>

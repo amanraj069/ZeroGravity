@@ -291,24 +291,25 @@ export default function SemesterDetailPage() {
                 {semester.name}
               </h1>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                Manage your courses and grades
+                Manage your Courses
               </p>
             </div>
             <button
               onClick={handleAddCourseClick}
               disabled={addingCourse || showAddCoursePrompt}
-              className="flex items-center justify-center gap-1 sm:gap-1.5 border-2 border-dotted border-gray-300 dark:border-gray-600 px-3 sm:px-6 py-2 sm:py-3 bg-white dark:bg-gray-800 hover:border-black dark:hover:border-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-black dark:text-white font-medium text-xs sm:text-base whitespace-nowrap flex-shrink-0"
+              className="group relative inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 font-medium tracking-wide text-white dark:text-black transition-all duration-300 rounded-lg overflow-hidden shrink-0"
             >
-              <span className="text-lg sm:text-xl">+</span>
-              <span className="hidden sm:inline">Add Course</span>
-              <span className="sm:hidden">Add</span>
+              <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:opacity-90" />
+              <span className="relative text-lg sm:text-xl">+</span>
+              <span className="relative text-[10px] sm:text-xs font-bold uppercase tracking-widest hidden sm:inline">Add Course</span>
+              <span className="relative text-[10px] font-bold uppercase tracking-widest sm:hidden">Add</span>
             </button>
           </div>
         </div>
 
         {/* Add Course Prompt Modal */}
         {showAddCoursePrompt && (
-          <div className="mb-3 sm:mb-6 border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md p-4 sm:p-6">
+          <div className="mb-3 sm:mb-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] p-4 sm:p-6 rounded-xl">
             <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white mb-3 sm:mb-4">
               Add New Course
             </h3>
@@ -323,7 +324,7 @@ export default function SemesterDetailPage() {
                     value={newCourseName}
                     onChange={(e) => setNewCourseName(e.target.value)}
                     placeholder="Enter course name"
-                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                     autoFocus
                   />
                 </div>
@@ -334,7 +335,7 @@ export default function SemesterDetailPage() {
                   <select
                     value={newCourseGrade}
                     onChange={(e) => setNewCourseGrade(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                     style={{
                       paddingRight: "2rem",
                       minHeight: "2.5rem",
@@ -366,7 +367,7 @@ export default function SemesterDetailPage() {
                     onChange={(e) =>
                       setNewCourseCredits(Number(e.target.value))
                     }
-                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                   />
                 </div>
               </div>
@@ -382,7 +383,7 @@ export default function SemesterDetailPage() {
                     onChange={(e) =>
                       setNewCourseAbsents(Number(e.target.value))
                     }
-                    className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                   />
                 </div>
               </div>
@@ -398,24 +399,24 @@ Mid1 Evaluation: 13/15
 Assignment: 8/10
 ...`}
                   rows={4}
-                  className="w-full px-3 sm:px-4 py-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent font-mono text-xs sm:text-sm"
+                  className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 font-mono text-xs sm:text-sm rounded-lg transition-all"
                 />
                 <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                   Write additional information like evaluations, assignments,
                   etc.
                 </p>
               </div>
-              <div className="flex gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2">
                 <button
                   onClick={handleAddCourse}
                   disabled={addingCourse}
-                  className="px-4 sm:px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
+                  className="w-full py-3 bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm rounded-lg font-bold uppercase tracking-wider shadow-sm"
                 >
                   {addingCourse ? "Adding..." : "Add"}
                 </button>
                 <button
                   onClick={handleCancelAddCourse}
-                  className="px-4 sm:px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-xs sm:text-sm"
+                  className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-xs sm:text-sm rounded-lg font-bold uppercase tracking-wider border border-gray-200 dark:border-gray-700 shadow-sm"
                 >
                   Cancel
                 </button>
@@ -435,7 +436,7 @@ Assignment: 8/10
 
         {/* Courses List */}
         {semester.courses.length === 0 ? (
-          <div className="text-center py-8 sm:py-12 border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-md">
+          <div className="text-center py-8 sm:py-12 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] rounded-xl">
             <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">
               No courses yet. Click &quot;Add Course&quot; to get started.
             </p>
@@ -445,7 +446,7 @@ Assignment: 8/10
             {semester.courses.map((course) => (
               <div
                 key={course.courseId}
-                className="border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 shadow-md hover:shadow-lg transition-all duration-200 p-4 sm:p-6"
+                className="group/card border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] hover:border-purple-300/20 dark:hover:border-purple-200/40 hover:bg-gray-50 dark:hover:bg-[#0a0e17] shadow-sm transition-all duration-300 rounded-xl p-4 sm:p-6"
               >
                 {editingCourse === course.courseId ? (
                   /* Edit Mode */
@@ -459,7 +460,7 @@ Assignment: 8/10
                           type="text"
                           value={editCourseName}
                           onChange={(e) => setEditCourseName(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                         />
                       </div>
                       <div className="sm:col-span-5">
@@ -469,7 +470,7 @@ Assignment: 8/10
                         <select
                           value={editCourseGrade}
                           onChange={(e) => setEditCourseGrade(e.target.value)}
-                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                           style={{
                             paddingRight: "2rem",
                             minHeight: "2.5rem",
@@ -501,7 +502,7 @@ Assignment: 8/10
                           onChange={(e) =>
                             setEditCourseCredits(Number(e.target.value))
                           }
-                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                         />
                       </div>
                     </div>
@@ -517,7 +518,7 @@ Assignment: 8/10
                           onChange={(e) =>
                             setEditCourseAbsents(Number(e.target.value))
                           }
-                          className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent text-sm sm:text-base"
+                          className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 text-sm sm:text-base rounded-lg transition-all"
                         />
                       </div>
                     </div>
@@ -535,23 +536,23 @@ Mid1 Evaluation: 13/15
 Assignment: 8/10
 ...`}
                         rows={6}
-                        className="w-full px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent font-mono text-xs sm:text-sm"
+                        className="w-full px-3 sm:px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500/30 font-mono text-sm rounded-lg transition-all"
                       />
                       <p className="mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                         Write additional information like evaluations,
                         assignments, etc.
                       </p>
                     </div>
-                    <div className="flex gap-2 sm:gap-3">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2">
                       <button
                         onClick={() => handleUpdateCourse(course.courseId)}
-                        className="px-3 sm:px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-xs sm:text-sm"
+                        className="w-full py-3 bg-black dark:bg-white text-white dark:text-black hover:opacity-90 transition-all text-xs sm:text-sm rounded-lg font-bold uppercase tracking-wider shadow-sm"
                       >
                         Save
                       </button>
                       <button
                         onClick={cancelEditing}
-                        className="px-3 sm:px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-xs sm:text-sm"
+                        className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-xs sm:text-sm rounded-lg font-bold uppercase tracking-wider border border-gray-200 dark:border-gray-700 shadow-sm"
                       >
                         Cancel
                       </button>
@@ -565,39 +566,41 @@ Assignment: 8/10
                       onClick={() => toggleCourseExpand(course.courseId)}
                     >
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-2 sm:mb-3">
-                          {course.name}
-                        </h3>
-                        <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm flex-wrap">
-                          {course.grade && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
-                                Grade
-                              </span>
-                              <span className="text-gray-900 dark:text-gray-100 font-medium">
-                                {course.grade}
-                              </span>
-                            </div>
-                          )}
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
-                              Credits
-                            </span>
-                            <span className="text-gray-900 dark:text-gray-100 font-medium">
-                              {course.credits || 4}
-                            </span>
-                          </div>
-                          {course.absents > 0 && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
-                                Absents
-                              </span>
-                              <span className="text-gray-900 dark:text-gray-100 font-medium">
-                                {course.absents}
-                              </span>
-                            </div>
-                          )}
+                        <div className="flex items-center gap-3 mb-3">
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white transition-colors truncate">
+                            {course.name}
+                          </h3>
                         </div>
+                          <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
+                            {course.grade && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
+                                  Grade
+                                </span>
+                                <span className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold">
+                                  {course.grade}
+                                </span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
+                                Credits
+                               </span>
+                              <span className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold">
+                                {course.credits || 4}
+                              </span>
+                            </div>
+                            {course.absents > 0 && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
+                                  Absents
+                                </span>
+                                <span className="text-sm sm:text-base text-red-500 dark:text-red-400 font-bold">
+                                  {course.absents}
+                                </span>
+                              </div>
+                            )}
+                          </div>
                       </div>
                       <div className="flex gap-2">
                         <button
@@ -692,8 +695,8 @@ Assignment: 8/10
                           Additional Information
                         </h4>
                         {course.additionalInfo ? (
-                          <div className="p-3 sm:p-4 bg-gray-100 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-700 shadow-sm">
-                            <pre className="whitespace-pre-wrap text-xs sm:text-sm text-gray-800 dark:text-gray-200 font-mono">
+                          <div className="p-3 sm:p-4 bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-gray-800 rounded-lg">
+                            <pre className="whitespace-pre-wrap text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-mono">
                               {course.additionalInfo}
                             </pre>
                           </div>

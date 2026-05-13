@@ -517,7 +517,7 @@ function CreateQuizContent() {
 
                   <div className="flex items-center gap-2 sm:hidden shrink-0">
                     <button
-                      className="h-10 w-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
+                      className="h-10 w-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 rounded-lg"
                       onClick={saveCurrent}
                       disabled={saving}
                       aria-label="Save Progress"
@@ -530,7 +530,7 @@ function CreateQuizContent() {
                       )}
                     </button>
                     <button
-                      className="h-10 w-10 flex items-center justify-center bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      className="h-10 w-10 flex items-center justify-center bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 rounded-lg"
                       onClick={onPublish}
                       disabled={publishing || !title || questions.length === 0}
                       aria-label="Publish & Host"
@@ -555,14 +555,14 @@ function CreateQuizContent() {
             </div>
             <div className="hidden sm:flex sm:ml-4 items-center gap-3">
               <button
-                className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium"
+                className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium rounded-lg"
                 onClick={saveCurrent}
                 disabled={saving}
               >
                 {saving ? "Saving..." : "Save Progress"}
               </button>
               <button
-                className="w-full sm:w-auto px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50"
+                className="w-full sm:w-auto px-6 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50 rounded-lg"
                 onClick={onPublish}
                 disabled={publishing || !title || questions.length === 0}
               >
@@ -576,7 +576,7 @@ function CreateQuizContent() {
       <main className="flex-1 pt-2 sm:pt-2 pb-24 sm:pb-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 px-3 sm:px-4">
           <aside className="hidden md:block order-2 md:order-1 md:col-span-3 lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[580px]">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[580px] rounded-xl">
               <div className="p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
                   Question Panel
@@ -587,7 +587,7 @@ function CreateQuizContent() {
                   {questions.map((_, i) => (
                     <button
                       key={i}
-                      className={`border-2 p-2 text-sm transition-all ${
+                      className={`border-2 p-2 text-sm transition-all rounded-lg ${
                         i === currentIndex
                           ? modifiedQuestions.has(i)
                             ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
@@ -607,7 +607,7 @@ function CreateQuizContent() {
               {/* Add Question Button at Bottom */}
               <div className="p-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex flex-col gap-2">
                 <button
-                  className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2"
+                  className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 rounded-lg"
                   onClick={addQuestion}
                   disabled={questions.length >= 100}
                   title="Add question"
@@ -628,7 +628,7 @@ function CreateQuizContent() {
                   Add Question
                 </button>
                 <button
-                  className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center"
+                  className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center rounded-lg"
                   onClick={() => {
                     setJsonInput(JSON.stringify(questions, null, 2));
                     setShowJsonModal(true);
@@ -642,7 +642,7 @@ function CreateQuizContent() {
           </aside>
 
           <section className="order-1 md:order-2 md:col-span-9 lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-240px)] md:min-h-[520px] md:h-[580px] flex flex-col">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-240px)] md:min-h-[520px] md:h-[580px] flex flex-col rounded-xl">
               {/* Question Header */}
               <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-2.5 sm:py-4">
                 <div className="flex items-center justify-between gap-2 sm:gap-4">
@@ -660,7 +660,7 @@ function CreateQuizContent() {
                         type="number"
                         min={5}
                         max={600}
-                        className="h-7 sm:h-auto w-12 sm:w-20 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
+                        className="h-7 sm:h-auto w-12 sm:w-20 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white rounded-lg"
                         value={q?.timeLimitSeconds || 60}
                         onChange={(e) =>
                           updateQuestion(currentIndex, {
@@ -680,7 +680,7 @@ function CreateQuizContent() {
                           type="number"
                           min={1}
                           max={1000}
-                          className="h-7 sm:h-auto w-11 sm:w-16 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white"
+                          className="h-7 sm:h-auto w-11 sm:w-16 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-1 sm:px-3 py-1 text-[11px] sm:text-sm text-center focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white rounded-lg"
                           value={q?.maxMarks || 100}
                           onChange={(e) =>
                             updateQuestion(currentIndex, {
@@ -725,7 +725,7 @@ function CreateQuizContent() {
                     Question Text
                   </label>
                   <input
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white transition-all placeholder-gray-400 dark:placeholder-gray-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white transition-all placeholder-gray-400 dark:placeholder-gray-500 rounded-lg"
                     placeholder="Enter your question here..."
                     value={q?.text || ""}
                     onChange={(e) =>
@@ -747,7 +747,7 @@ function CreateQuizContent() {
                     {(q?.options || []).map((o, oi) => (
                       <div
                         key={o.key}
-                        className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors ${
+                        className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors rounded-lg ${
                           o.isCorrect
                             ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
                             : "bg-white dark:bg-gray-700"
@@ -798,7 +798,7 @@ function CreateQuizContent() {
 
                     {/* Add option button */}
                     <button
-                      className="flex items-center gap-2 p-3 border border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors text-sm text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 w-full"
+                      className="flex items-center gap-2 p-3 border border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors text-sm text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 w-full rounded-lg"
                       onClick={() => addOption(currentIndex)}
                     >
                       <svg
@@ -825,7 +825,7 @@ function CreateQuizContent() {
                     <div className="relative group col-span-2 sm:col-span-1 min-w-[140px] sm:mr-auto">
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-60 blur group-hover:opacity-100 animate-pulse transition duration-500"></div>
                       <button
-                        className="relative w-full h-9 sm:h-auto border border-gray-900 dark:border-gray-100 px-2.5 sm:px-3 py-2 text-[11px] sm:text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-900 dark:hover:bg-gray-100 transition-all font-medium flex items-center justify-center gap-1.5"
+                        className="relative w-full h-9 sm:h-auto border border-gray-900 dark:border-gray-100 px-2.5 sm:px-3 py-2 text-[11px] sm:text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-900 dark:hover:bg-gray-100 transition-all font-medium flex items-center justify-center gap-1.5 rounded-lg"
                         onClick={() => setShowAiModal(true)}
                         title="Generate with AI"
                       >
@@ -846,7 +846,7 @@ function CreateQuizContent() {
                       </button>
                     </div>
                     <button
-                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[11px] sm:text-sm font-medium"
+                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[11px] sm:text-sm font-medium rounded-lg"
                       onClick={addQuestion}
                       disabled={questions.length >= 100}
                       title="Add question"
@@ -859,7 +859,7 @@ function CreateQuizContent() {
                       </span>
                     </button>
                     <button
-                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[11px] sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-[11px] sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                       onClick={saveCurrent}
                       disabled={saving || !q?.options?.some((o) => o.isCorrect)}
                       title={
@@ -884,7 +884,7 @@ function CreateQuizContent() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
-        <div className="mx-3 mb-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
+        <div className="mx-3 mb-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
           <button
             onClick={() => setIsQuestionPanelOpen((prev) => !prev)}
             className="w-full px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between"
@@ -963,8 +963,8 @@ function CreateQuizContent() {
       </div>
 
       {showJsonModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 overflow-hidden">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-full">
+        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-full rounded-xl">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
                 Add Questions with JSON
@@ -991,7 +991,7 @@ function CreateQuizContent() {
 
             <div className="flex gap-2">
               <button
-                className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-medium bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-medium bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-lg"
                 onClick={() => {
                   const prompt = `Here is the current set of questions in my quiz format. 
 Please generate new questions and add them to this array, maintaining the exact same JSON structure.
@@ -1020,7 +1020,7 @@ Give me the final combined JSON array with the new questions added:`;
             </div>
 
             <textarea
-              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto"
+              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto rounded-lg"
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
               placeholder="Paste the array of questions JSON here..."
@@ -1028,13 +1028,13 @@ Give me the final combined JSON array with the new questions added:`;
 
             <div className="flex justify-end gap-3 pt-2">
               <button
-                className="px-6 py-2 text-sm border border-gray-300 dark:border-gray-700 font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="px-6 py-2 text-sm border border-gray-300 dark:border-gray-700 font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                 onClick={() => setShowJsonModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="px-6 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                 onClick={() => {
                   try {
                     const parsed = JSON.parse(jsonInput);
@@ -1093,7 +1093,7 @@ Give me the final combined JSON array with the new questions added:`;
 
       {showAiModal && (
         <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-6xl shadow-xl flex flex-col max-h-full">
+          <div className="bg-white dark:bg-gray-900 w-full max-w-6xl shadow-xl flex flex-col max-h-full rounded-xl overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-2">
               <h2 className="text-base sm:text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
@@ -1113,7 +1113,7 @@ Give me the final combined JSON array with the new questions added:`;
                 Generate Quiz with AI
               </h2>
               <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                <span className="text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                <span className="text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 whitespace-nowrap rounded-lg">
                   {Math.max(0, 100 - localAiCount)} Ques left
                 </span>
                 <button
@@ -1140,7 +1140,7 @@ Give me the final combined JSON array with the new questions added:`;
             {/* Modal Body */}
             <div className="flex-1 overflow-hidden flex flex-col p-5 sm:p-6 min-h-0">
               {aiError && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 p-3 flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 p-3 flex items-start gap-3 mb-4 animate-in fade-in slide-in-from-top-1 duration-200 rounded-lg">
                   <svg
                     className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0"
                     fill="none"
@@ -1211,7 +1211,7 @@ Give me the final combined JSON array with the new questions added:`;
                   {generatedQuestions.length > 0 &&
                     !isGenerating &&
                     aiConfigExpanded && (
-                      <div className="grid grid-cols-2 gap-3 p-3 mb-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <div className="grid grid-cols-2 gap-3 p-3 mb-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 animate-in fade-in slide-in-from-top-1 duration-200 rounded-lg">
                         <div className="flex flex-col gap-1">
                           <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
                             Questions
@@ -1233,7 +1233,7 @@ Give me the final combined JSON array with the new questions added:`;
                             Options per Q
                           </label>
                           <select
-                            className="px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
+                            className="px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
                             value={aiNumOptions}
                             onChange={(e) => setAiNumOptions(e.target.value)}
                           >
@@ -1249,7 +1249,7 @@ Give me the final combined JSON array with the new questions added:`;
 
                   <textarea
                     ref={aiPromptRef}
-                    className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out rounded-lg"
                     rows={
                       generatedQuestions.length > 0 || isGenerating
                         ? Math.min(
@@ -1301,7 +1301,7 @@ Give me the final combined JSON array with the new questions added:`;
                         Options per Q
                       </label>
                       <select
-                        className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
+                        className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
                         value={aiNumOptions}
                         onChange={(e) => setAiNumOptions(e.target.value)}
                         disabled={isGenerating}
@@ -1315,7 +1315,7 @@ Give me the final combined JSON array with the new questions added:`;
                     </div>
                     <div className="flex flex-col gap-1 justify-end col-span-2">
                       <button
-                        className="w-full px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px]"
+                        className="w-full px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px] rounded-lg"
                         onClick={handleGenerateAI}
                         disabled={
                           isGenerating ||
@@ -1384,7 +1384,7 @@ Give me the final combined JSON array with the new questions added:`;
                       return (
                         <div
                           key={idx}
-                          className={`border p-3 transition-all cursor-pointer ${
+                          className={`border p-3 transition-all cursor-pointer rounded-lg ${
                             selectedAiIndices.has(idx)
                               ? "border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-950/20"
                               : "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 opacity-60"
@@ -1401,7 +1401,7 @@ Give me the final combined JSON array with the new questions added:`;
                           <div className="flex items-start gap-3">
                             {/* Checkbox */}
                             <div
-                              className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center mt-0.5 transition-colors ${
+                              className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center mt-0.5 transition-colors rounded ${
                                 selectedAiIndices.has(idx)
                                   ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white"
                                   : "border-gray-300 dark:border-gray-600"
@@ -1421,7 +1421,7 @@ Give me the final combined JSON array with the new questions added:`;
                                 {gq.options.map((opt, oIdx) => (
                                   <li
                                     key={oIdx}
-                                    className={`text-xs p-2 border ${
+                                    className={`text-xs p-2 border rounded-lg ${
                                       opt.isCorrect
                                         ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300"
                                         : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
@@ -1450,7 +1450,7 @@ Give me the final combined JSON array with the new questions added:`;
                 <div className="flex items-center gap-2">
                   {/* Generate New */}
                   <button
-                    className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium truncate"
+                    className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium truncate rounded-lg"
                     onClick={() => {
                       setGeneratedQuestions([]);
                       setAiPrompt("");
@@ -1464,7 +1464,7 @@ Give me the final combined JSON array with the new questions added:`;
 
                   {/* Regenerate */}
                   <button
-                    className="flex-shrink-0 w-9 h-9 sm:w-[38px] sm:h-[38px] flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white transition-colors"
+                    className="flex-shrink-0 w-9 h-9 sm:w-[38px] sm:h-[38px] flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white transition-colors rounded-lg"
                     title="Regenerate quiz"
                     onClick={handleGenerateAI}
                     disabled={isGenerating || localAiCount >= 100}
@@ -1474,7 +1474,7 @@ Give me the final combined JSON array with the new questions added:`;
 
                   {/* Add X Questions */}
                   <button
-                    className="flex-1 sm:flex-none ml-auto px-3 sm:px-6 py-2 text-xs sm:text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 truncate"
+                    className="flex-1 sm:flex-none ml-auto px-3 sm:px-6 py-2 text-xs sm:text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 truncate rounded-lg"
                     onClick={handleAddSelectedQuestions}
                     disabled={selectedAiIndices.size === 0}
                   >

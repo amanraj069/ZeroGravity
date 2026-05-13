@@ -49,12 +49,12 @@ export default function StreakBrokenPopup({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/80 backdrop-blur-md"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xl"
         onClick={onClose}
       />
 
@@ -120,7 +120,7 @@ export default function StreakBrokenPopup({
                 {/* Info Card */}
                 <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 md:p-6 mb-6 md:mb-8">
                   <p className="text-xs md:text-sm text-white/60 leading-relaxed">
-                    Your <span className="font-bold text-white">{streakStatus.previousStreak}-day streak</span> is about to reset. Don't let your hard work go to waste!
+                    Your <span className="font-bold text-white">{streakStatus.previousStreak}-day streak</span> is about to reset. Don&apos;t let your hard work go to waste!
                   </p>
                   
                   {ticketCount > 0 ? (
@@ -149,7 +149,7 @@ export default function StreakBrokenPopup({
                     <div className="mt-4 md:mt-5 flex items-start gap-2 md:gap-3 p-3 bg-violet-500/5 rounded-xl border border-violet-500/10">
                       <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-violet-400 shrink-0 mt-0.5" />
                       <p className="text-[10px] md:text-xs text-violet-200/70 leading-relaxed">
-                        You don't have any Time Travel Tickets. Visit the shop to get one and save your streak!
+                        You don&apos;t have any Time Travel Tickets. Visit the shop to get one and save your streak!
                       </p>
                     </div>
                   )}

@@ -24,11 +24,11 @@ export default function ProfileSkeleton() {
       {/* Top Sections Split Skeleton */}
       <div className="flex flex-col lg:flex-row gap-3 md:gap-4 mb-4">
         {/* Left Section (60%) */}
-        <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-3 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center min-h-[160px] md:min-h-[200px]">
+        <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-3 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center min-h-[160px] md:min-h-[200px] rounded-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 w-full h-full relative">
             <div className="flex flex-row items-center gap-3 lg:gap-6 w-full sm:w-auto mt-1 sm:mt-0">
               {/* Profile Picture Skeleton */}
-              <div className="w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 bg-gray-200 dark:bg-gray-700 flex-shrink-0 animate-pulse" />
+              <div className="w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 bg-gray-200 dark:bg-gray-700 flex-shrink-0 animate-pulse rounded-xl" />
               
               {/* Name and Username Skeleton */}
               <div className="flex-1 min-w-0 flex flex-col justify-center gap-3">
@@ -51,7 +51,7 @@ export default function ProfileSkeleton() {
         {/* Right Section (40%) */}
         <div className="w-full lg:w-[40%] flex flex-col gap-3 md:gap-4">
           {/* Badges Strip Skeleton */}
-          <div className="flex-1 border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 min-h-[120px] flex flex-col justify-center">
+          <div className="flex-1 border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 min-h-[120px] flex flex-col justify-center rounded-xl">
             <div className="flex items-center justify-between mb-2 w-full">
               <div className="h-3 w-12 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
               <div className="h-2 w-16 bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
@@ -65,20 +65,20 @@ export default function ProfileSkeleton() {
 
           {/* Streaks Skeleton */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="h-16 bg-orange-50/30 dark:bg-orange-950/10 border border-orange-100 dark:border-orange-900/30 rounded-none animate-pulse" />
-            <div className="h-16 bg-purple-50/30 dark:bg-purple-950/10 border border-purple-100 dark:border-purple-900/30 rounded-none animate-pulse" />
+            <div className="h-16 bg-orange-50/30 dark:bg-orange-950/10 border border-orange-100 dark:border-orange-900/30 rounded-xl animate-pulse" />
+            <div className="h-16 bg-purple-50/30 dark:bg-purple-950/10 border border-purple-100 dark:border-purple-900/30 rounded-xl animate-pulse" />
           </div>
         </div>
       </div>
 
       {/* Activity Graph Skeleton */}
-      <div className="border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800/40 min-h-[150px]">
+      <div className="border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800/40 min-h-[150px] rounded-xl">
         <div className="h-4 w-48 bg-gray-200 dark:bg-gray-700 rounded mb-6 animate-pulse" />
         <div className="w-full h-24 bg-gray-50/50 dark:bg-gray-900/50 rounded animate-pulse" />
       </div>
 
       {/* Profile Details Card Skeleton */}
-      <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 space-y-6">
+      <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 space-y-6 rounded-xl">
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="h-3 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />

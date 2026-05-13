@@ -350,7 +350,7 @@ export default function Profile() {
             </h1>
             {/* Points Display & Actions - Right on mobile, next to Profile on desktop */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <span className="text-sm font-semibold text-black dark:text-white">
                   {(user.points || 0).toLocaleString()}
                 </span>
@@ -360,7 +360,7 @@ export default function Profile() {
               </div>
               <Link
                 href="/shop"
-                className="flex sm:hidden items-center justify-center p-1.5 bg-black dark:bg-white text-white dark:text-black transition-colors"
+                className="flex sm:hidden items-center justify-center p-1.5 bg-black dark:bg-white text-white dark:text-black transition-colors rounded-lg"
                 title="Shop"
               >
                 <ShoppingBag className="w-4 h-4 flex-shrink-0" />
@@ -372,7 +372,7 @@ export default function Profile() {
             {user?.subscription === "pro" && (
               <Link
                 href="/profileVisitors"
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
               >
                 <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
                 History
@@ -380,28 +380,28 @@ export default function Profile() {
             )}
             <Link
               href="/shop"
-              className="hidden sm:flex flex-none items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap min-w-0"
+              className="hidden sm:flex flex-none items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <ShoppingBag className="w-3 h-3 flex-shrink-0" />
               Shop
             </Link>
             <button
               onClick={handleOpenBorderPicker}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Edit Card
             </button>
             <Link
               href="/profile/edit"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <Pencil className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Edit Profile
             </Link>
             <Link
               href="/settings"
-              className="flex items-center justify-center px-2 sm:px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center justify-center px-2 sm:px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg"
               title="Settings"
             >
               <Settings className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600 dark:text-gray-300 flex-shrink-0" />
@@ -412,7 +412,7 @@ export default function Profile() {
         {/* Top Sections: 60% / 40% Split */}
         <div className="flex flex-col lg:flex-row gap-3 md:gap-4 mb-4">
           {/* Left Section (60%) */}
-          <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-3 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center">
+          <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-3 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center rounded-xl">
             {/* Share Share Icon - Top Right Displayed on all Screens */}
             <button
               onClick={handleShareProfile}
@@ -428,11 +428,11 @@ export default function Profile() {
             </button>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 w-full h-full relative">
-              <div className="flex flex-row items-center gap-3 lg:gap-6 w-full sm:w-auto mt-1 sm:mt-0">
+              <div className="flex flex-row items-center gap-6 lg:gap-12 w-full sm:w-auto mt-1 sm:mt-0">
                 {/* Profile Picture */}
-                <div className="relative group flex-shrink-0">
+                <div className="relative group flex-shrink-0 ml-2 lg:ml-6">
                   <div
-                    className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 ${getAnimationClass(
+                    className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
                       user.equippedBorder || "",
                     )}`}
                     style={getBorderStyle(user.equippedBorder || "default")}
@@ -532,7 +532,7 @@ export default function Profile() {
                                   !showDisplayBadgePicker,
                                 )
                               }
-                              className={`inline-flex flex-shrink-0 items-center gap-2 px-2.5 py-1 bg-gradient-to-r ${v.bgLight} ${v.bgDark} rounded whitespace-nowrap group/title transition-all hover:ring-1 hover:ring-gray-400/30 dark:hover:ring-white/20`}
+                              className={`inline-flex flex-shrink-0 items-center gap-2 px-2.5 py-1 bg-gradient-to-r ${v.bgLight} ${v.bgDark} rounded-full whitespace-nowrap group/title transition-all hover:ring-1 hover:ring-gray-400/30 dark:hover:ring-white/20`}
                               title="Click to change display badge"
                             >
                               <span
@@ -669,7 +669,7 @@ export default function Profile() {
           {/* Right Section (40%) */}
           <div className="w-full lg:w-[40%] flex flex-col gap-3 md:gap-4 justify-between">
             {/* Badges Strip (matching badges page visual style) */}
-            <div className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center">
+            <div className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center rounded-xl">
               <div className="flex items-center justify-between mb-2 w-full">
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
                   Badges
@@ -777,7 +777,7 @@ export default function Profile() {
             {/* Streak Grid 2 Columns */}
             <div className="grid grid-cols-2 gap-3 h-auto">
               {/* Current Streak */}
-              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center">
+              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center rounded-xl">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5">
                   <div className="absolute top-0 left-1/4 w-12 h-12 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
                   <div
@@ -803,7 +803,7 @@ export default function Profile() {
               </div>
 
               {/* Highest Streak */}
-              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center">
+              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center rounded-xl">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5">
                   <div className="absolute top-0 right-1/4 w-12 h-12 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
                   <div
@@ -835,7 +835,7 @@ export default function Profile() {
         <ActivityGraph joinedDate={user.createdAt} />
 
         {/* Profile Details Card */}
-        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
+        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 rounded-xl">
           <div className="space-y-4">
             {/* Email */}
             <div>
@@ -863,7 +863,7 @@ export default function Profile() {
                   Subscription
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs ${
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
                     user.subscription === "pro"
                       ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
@@ -890,7 +890,7 @@ export default function Profile() {
                   Account Status
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs ${
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
                     user.isActive
                       ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
                       : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"
@@ -915,8 +915,8 @@ export default function Profile() {
 
       {/* Border Picker Modal */}
       {showBorderPicker && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] overflow-hidden">
+        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] overflow-hidden rounded-2xl">
             <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
               <h2 className="text-xl font-medium text-black dark:text-white">
                 Choose Border
@@ -948,7 +948,7 @@ export default function Profile() {
                   </p>
                   <Link
                     href="/shop"
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                   >
                     Visit Shop
                   </Link>
@@ -960,7 +960,7 @@ export default function Profile() {
                       key={border.id}
                       onClick={() => handleEquipBorder(border.id)}
                       disabled={equipping || border.equipped}
-                      className={`p-3 md:p-6 border transition-all ${
+                      className={`p-3 md:p-6 border transition-all rounded-xl ${
                         border.equipped
                           ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
                           : "border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600"
@@ -998,8 +998,8 @@ export default function Profile() {
 
       {/* Badge Picker Modal */}
       {editingBadgeSlot !== null && badgeData && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] flex flex-col overflow-hidden">
+        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
+          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] flex flex-col overflow-hidden rounded-2xl">
             <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shadow-sm">
               <h2 className="text-xl font-bold text-black dark:text-white">
                 Choose Badge for Slot {editingBadgeSlot + 1}

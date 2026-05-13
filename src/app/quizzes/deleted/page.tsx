@@ -148,9 +148,9 @@ export default function DeletedQuizzesPage() {
             <div className="text-center py-16">
               <div className="max-w-2xl mx-auto">
                 <div className="mb-8">
-                  <div className="w-20 h-20 mx-auto bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mb-6">
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-8">
                     <svg
-                      className="w-10 h-10 text-yellow-600 dark:text-yellow-400"
+                      className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -158,7 +158,7 @@ export default function DeletedQuizzesPage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1}
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
@@ -173,7 +173,7 @@ export default function DeletedQuizzesPage() {
                   </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 shadow-sm p-8 border border-gray-100 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 shadow-sm p-8 border border-gray-100 dark:border-gray-700 rounded-xl">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     Pro Features for Quiz Management:
                   </h2>
@@ -207,7 +207,7 @@ export default function DeletedQuizzesPage() {
                   <div className="text-center">
                     <button
                       onClick={() => router.push("/quizzes")}
-                      className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium mr-4"
+                      className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium mr-4 rounded-lg"
                     >
                       Back to Quizzes
                     </button>
@@ -216,7 +216,7 @@ export default function DeletedQuizzesPage() {
                         // TODO: Add upgrade functionality
                         alert("Upgrade functionality coming soon!");
                       }}
-                      className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-base font-medium"
+                      className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-base font-medium rounded-lg"
                     >
                       Upgrade to Pro
                     </button>
@@ -269,7 +269,7 @@ export default function DeletedQuizzesPage() {
               placeholder="Search by title"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full sm:w-80 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all"
+              className="w-full sm:w-80 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all rounded-lg"
             />
           </div>
 
@@ -290,9 +290,9 @@ export default function DeletedQuizzesPage() {
             <div className="py-16 px-4 text-center min-h-[550px] flex items-center justify-center">
               <div className="max-w-md mx-auto">
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-6">
                     <svg
-                      className="w-8 h-8 text-gray-400 dark:text-gray-500"
+                      className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white opacity-20 dark:opacity-40"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -300,7 +300,7 @@ export default function DeletedQuizzesPage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
+                        strokeWidth={1}
                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                       />
                     </svg>
@@ -315,7 +315,7 @@ export default function DeletedQuizzesPage() {
                 </p>
                 <button
                   onClick={() => router.push("/quizzes")}
-                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all rounded-lg"
                 >
                   Back to Quizzes
                 </button>
@@ -328,9 +328,9 @@ export default function DeletedQuizzesPage() {
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="max-w-md mx-auto text-center">
                 <div className="mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-6">
                     <svg
-                      className="w-8 h-8 text-gray-400 dark:text-gray-500"
+                      className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white opacity-20 dark:opacity-40"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -338,7 +338,7 @@ export default function DeletedQuizzesPage() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
+                        strokeWidth={1}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
@@ -352,7 +352,7 @@ export default function DeletedQuizzesPage() {
                 </p>
                 <button
                   onClick={() => setSearchTerm("")}
-                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all rounded-lg"
                 >
                   Clear Search
                 </button>
@@ -366,12 +366,12 @@ export default function DeletedQuizzesPage() {
               {filteredQuizzes.map((quiz) => (
                 <div
                   key={quiz.quizId}
-                  className="bg-white dark:bg-gray-800 shadow-sm p-6 border border-gray-100 dark:border-gray-700"
+                  className="bg-white dark:bg-gray-800 shadow-sm p-6 border border-gray-100 dark:border-gray-700 rounded-xl"
                 >
                   {/* Header with Deleted Date and Actions */}
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="px-3 py-1 text-xs font-medium bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300">
+                      <span className="px-3 py-1 text-xs font-medium bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
                         Deleted
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -385,7 +385,7 @@ export default function DeletedQuizzesPage() {
                       <button
                         onClick={(e) => handleRestoreQuiz(quiz.quizId, e)}
                         disabled={processingQuizId === quiz.quizId}
-                        className="border border-green-300 dark:border-green-700 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-3 py-1 text-xs font-medium hover:border-green-400 dark:hover:border-green-600 hover:bg-green-100 dark:hover:bg-green-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                        className="border border-green-300 dark:border-green-700 text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-3 py-1 text-xs font-medium hover:border-green-400 dark:hover:border-green-600 hover:bg-green-100 dark:hover:bg-green-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1 rounded-lg"
                         title="Restore quiz"
                       >
                         {processingQuizId === quiz.quizId &&

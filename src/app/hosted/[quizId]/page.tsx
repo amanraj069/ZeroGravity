@@ -309,7 +309,7 @@ export default function HostedQuizPage() {
                   />
                   {/* Track */}
                   <div
-                    className={`w-10 h-5 sm:w-12 sm:h-6 transition-colors border border-gray-400 dark:border-gray-600 ${
+                    className={`w-10 h-5 sm:w-12 sm:h-6 transition-colors border border-gray-400 dark:border-gray-600 rounded-full ${
                       isPresentationMode
                         ? "bg-emerald-500 border-emerald-600"
                         : "bg-gray-200 dark:bg-gray-800"
@@ -317,7 +317,7 @@ export default function HostedQuizPage() {
                   />
                   {/* Thumb - Square */}
                   <div
-                    className={`absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white border border-gray-300 dark:border-gray-700 transition-transform ${
+                    className={`absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white border border-gray-300 dark:border-gray-700 transition-transform rounded-full ${
                       isPresentationMode ? "translate-x-5 sm:translate-x-6" : "translate-x-0"
                     }`}
                   />
@@ -330,13 +330,13 @@ export default function HostedQuizPage() {
               <div className="flex gap-2 sm:gap-3">
                 <button
                   onClick={handleBackToPortal}
-                  className="px-2.5 sm:px-5 py-1.5 sm:py-2 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white transition-colors whitespace-nowrap text-center rounded-none"
+                  className="px-2.5 sm:px-5 py-1.5 sm:py-2 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white transition-colors whitespace-nowrap text-center rounded-lg"
                 >
                   Portal
                 </button>
                 <button
                   onClick={handleViewLeaderboard}
-                  className="px-2.5 sm:px-5 py-1.5 sm:py-2 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white transition-colors whitespace-nowrap text-center rounded-none"
+                  className="px-2.5 sm:px-5 py-1.5 sm:py-2 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-widest border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white transition-colors whitespace-nowrap text-center rounded-lg"
                 >
                   Leaderboard
                 </button>
@@ -345,8 +345,8 @@ export default function HostedQuizPage() {
           </div>
 
           {currentIndex === -1 && isActive && quizStatus !== "ended" ? (
-            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh] rounded-xl">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center rounded-xl">
                 <svg
                   className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400"
                   fill="currentColor"
@@ -368,14 +368,14 @@ export default function HostedQuizPage() {
               </p>
               <button
                 onClick={handlePushNext}
-                className="px-6 sm:px-8 py-3 sm:py-4 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
               >
                 Push First Question
               </button>
             </div>
           ) : currentQuestion ? (
             /* Question Box */
-            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 overflow-hidden shadow-sm">
+            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 overflow-hidden shadow-sm rounded-xl">
               {/* Question Header with Timer and Actions */}
               <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
@@ -387,7 +387,7 @@ export default function HostedQuizPage() {
                   <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 flex-shrink-0 pt-1 lg:pt-0">
                     {/* Timer */}
                     <div
-                      className={`h-8 sm:h-11 px-2.5 sm:px-5 font-mono text-[13px] sm:text-lg font-bold flex items-center justify-center min-w-[65px] sm:min-w-[100px] border ${
+                      className={`h-8 sm:h-11 px-2.5 sm:px-5 font-mono text-[13px] sm:text-lg font-bold flex items-center justify-center min-w-[65px] sm:min-w-[100px] border rounded-lg ${
                         currentQuestionTimeLeft <= 10
                           ? "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/30 font-bold"
                           : currentQuestionTimeLeft <= 30
@@ -399,14 +399,14 @@ export default function HostedQuizPage() {
                     </div>
                     {/* Status Badge */}
                     <div
-                      className={`h-8 sm:h-11 px-2.5 sm:px-4 text-[10px] sm:text-sm font-semibold flex items-center border ${
+                      className={`h-8 sm:h-11 px-2.5 sm:px-4 text-[10px] sm:text-sm font-semibold flex items-center border rounded-lg ${
                         isQuestionActive
                           ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/30"
                           : "bg-gray-100 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700"
                       }`}
                     >
                       <span
-                        className={`mr-1.5 h-1.5 w-1.5 rounded-none ${isQuestionActive ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}
+                        className={`mr-1.5 h-1.5 w-1.5 rounded-full ${isQuestionActive ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}
                       ></span>
                       <span className="uppercase tracking-widest">{isQuestionActive ? "Live" : "Ended"}</span>
                     </div>
@@ -419,7 +419,7 @@ export default function HostedQuizPage() {
                       {!isQuestionActive && !showCorrectAnswer && (
                         <button
                           onClick={() => setShowCorrectAnswer(true)}
-                          className="h-8 sm:h-11 px-3 sm:px-5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-none"
+                          className="h-8 sm:h-11 px-3 sm:px-5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-lg"
                         >
                           Correct
                         </button>
@@ -429,14 +429,14 @@ export default function HostedQuizPage() {
                       {isQuestionActive ? (
                         <button
                           onClick={handleStopQuestion}
-                          className="h-8 sm:h-11 px-3 sm:px-6 bg-red-600 hover:bg-red-700 text-white text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-none"
+                          className="h-8 sm:h-11 px-3 sm:px-6 bg-red-600 hover:bg-red-700 text-white text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-lg"
                         >
                           Stop
                         </button>
                       ) : currentIndex + 1 < questions.length ? (
                         <button
                           onClick={handlePushNext}
-                          className="h-8 sm:h-11 px-3 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-none"
+                          className="h-8 sm:h-11 px-3 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-lg"
                         >
                           Next
                         </button>
@@ -446,7 +446,7 @@ export default function HostedQuizPage() {
                             setCurrentIndex(-1);
                             setQuizStatus("ended");
                           }}
-                          className="h-8 sm:h-11 px-3 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-none"
+                          className="h-8 sm:h-11 px-3 sm:px-6 bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black text-[10px] sm:text-xs font-bold transition-all shadow-sm flex items-center justify-center uppercase tracking-widest flex-1 rounded-lg"
                         >
                           Finish
                         </button>
@@ -500,9 +500,9 @@ export default function HostedQuizPage() {
                         </div>
 
                         {/* Bar Container */}
-                        <div className="w-full h-40 sm:h-64 md:h-72 flex items-end justify-center bg-gray-100/50 dark:bg-gray-800/50 overflow-hidden mb-1 relative border border-gray-200 dark:border-gray-700 border-b-none">
+                        <div className="w-full h-40 sm:h-64 md:h-72 flex items-end justify-center bg-gray-100/50 dark:bg-gray-800/50 overflow-hidden mb-1 relative border border-gray-200 dark:border-gray-700 border-b-none rounded-t-lg">
                           <div
-                            className={`w-full transition-all [transition-duration:800ms] [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
+                            className={`w-full transition-all [transition-duration:800ms] [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] rounded-t-lg ${
                               isPresentationMode
                                 ? "bg-gray-300 dark:bg-gray-600"
                                 : shouldHighlight
@@ -522,7 +522,7 @@ export default function HostedQuizPage() {
                           }`}
                         >
                           <div
-                            className={`w-7 h-7 sm:w-12 sm:h-12 mx-auto mb-1.5 sm:mb-3 flex items-center justify-center text-[10px] sm:text-lg font-bold shadow-sm transition-colors duration-300 ${
+                            className={`w-7 h-7 sm:w-12 sm:h-12 mx-auto mb-1.5 sm:mb-3 flex items-center justify-center text-[10px] sm:text-lg font-bold shadow-sm transition-colors duration-300 rounded-lg ${
                               shouldHighlight
                                 ? "bg-emerald-500 text-white border-2 border-emerald-500"
                                 : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700"
@@ -530,7 +530,7 @@ export default function HostedQuizPage() {
                           >
                             {option.key}
                           </div>
-                          <div className="text-[8.5px] sm:text-base font-medium px-0 sm:px-2 break-words leading-tight h-[2.4em] overflow-hidden line-clamp-2">
+                          <div className="text-[8.5px] sm:text-base font-medium px-0 sm:px-2 break-words leading-tight">
                             {option.text}
                           </div>
                           {total > 0 && (
@@ -555,7 +555,7 @@ export default function HostedQuizPage() {
                 {/* Response Stats */}
                 <div className="mt-8 pt-5 border-t border-gray-200 dark:border-gray-700 flex items-center justify-center gap-6 sm:gap-12 text-[10px] sm:text-sm text-gray-500 dark:text-gray-400 font-medium tracking-widest uppercase">
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-none bg-blue-500"></div>
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
                     <span className="text-gray-900 dark:text-white text-xs sm:text-base font-bold">
                       {Object.values(voteCounts).reduce(
                         (sum, c) => sum + (c as number),
@@ -565,7 +565,7 @@ export default function HostedQuizPage() {
                     <span className="opacity-70">responses</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-none bg-purple-500"></div>
+                    <div className="h-1.5 w-1.5 rounded-full bg-purple-500"></div>
                     <span className="text-gray-900 dark:text-white text-xs sm:text-base font-bold">
                       {participants.length}
                     </span>
@@ -577,9 +577,9 @@ export default function HostedQuizPage() {
           ) : quizStatus === "ended" ? (
             /* Quiz Ended */
             <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400"
+                  className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -600,13 +600,13 @@ export default function HostedQuizPage() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <button
                   onClick={handleViewLeaderboard}
-                  className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                 >
                   View Leaderboard
                 </button>
                 <button
                   onClick={handleBackToPortal}
-                  className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-medium hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                  className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-medium hover:border-gray-400 dark:hover:border-gray-500 transition-colors rounded-lg"
                 >
                   Back to Portal
                 </button>
@@ -615,9 +615,9 @@ export default function HostedQuizPage() {
           ) : !isActive ? (
             /* Quiz Not Started Yet */
             <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400"
+                  className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -637,7 +637,7 @@ export default function HostedQuizPage() {
               </p>
               <button
                 onClick={handleBackToPortal}
-                className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
               >
                 Back to Portal
               </button>
@@ -645,9 +645,9 @@ export default function HostedQuizPage() {
           ) : (
             /* Quiz Active - Waiting for First Question */
             <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[50vh]">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+              <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400"
+                  className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >

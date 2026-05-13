@@ -97,7 +97,7 @@ export default function PublicProfile() {
     return (
       <DashboardLayout>
         <div className="mt-2 space-y-3 md:space-y-4">
-          <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
+          <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 rounded-xl">
             <h1 className="text-xl md:text-2xl font-semibold text-black dark:text-white mb-2">
               Profile Not Found
             </h1>
@@ -133,7 +133,7 @@ export default function PublicProfile() {
             </h1>
             {currentUser?.userId === user.userId && (
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <div className="flex items-center gap-1.5 px-3 py-1 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <span className="text-sm font-semibold text-black dark:text-white">
                     {(user.points || 0).toLocaleString()}
                   </span>
@@ -148,7 +148,7 @@ export default function PublicProfile() {
             {currentUser?.userId === user.userId && (
               <Link
                 href="/shop"
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
               >
                 <ShoppingBag className="w-3 h-3 flex-shrink-0" />
                 Shop
@@ -157,7 +157,7 @@ export default function PublicProfile() {
             {currentUser?.userId === user.userId && (
               <Link
                 href="/profile/edit"
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg"
               >
                 Edit Profile
               </Link>
@@ -168,7 +168,7 @@ export default function PublicProfile() {
         {/* Top Sections: 60% / 40% Split */}
         <div className="flex flex-col lg:flex-row gap-3 md:gap-4 mb-4">
           {/* Left Section (60%) */}
-          <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-3 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center">
+          <div className="w-full lg:w-[60%] border border-gray-200 dark:border-gray-800 p-3 md:p-5 bg-white dark:bg-gray-800 relative flex flex-col justify-center rounded-xl">
             <button
               onClick={handleShareProfile}
               className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors rounded-full z-10 group p-0 shadow-sm"
@@ -187,7 +187,7 @@ export default function PublicProfile() {
                 {/* Profile Picture */}
                 <div className="relative group flex-shrink-0">
                   <div
-                    className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 ${getAnimationClass(
+                    className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
                       user.equippedBorder || "",
                     )}`}
                     style={getBorderStyle(user.equippedBorder || "default")}
@@ -218,7 +218,7 @@ export default function PublicProfile() {
                     {user.highestBadgeId && (
                       <div className="flex">
                         <div
-                          className={`inline-flex flex-shrink-0 items-center gap-1.5 px-2 py-0.5 bg-gradient-to-r ${BADGE_VISUALS[user.highestBadgeId].bgLight} ${BADGE_VISUALS[user.highestBadgeId].bgDark} rounded whitespace-nowrap`}
+                          className={`inline-flex flex-shrink-0 items-center gap-1.5 px-2 py-0.5 bg-gradient-to-r ${BADGE_VISUALS[user.highestBadgeId].bgLight} ${BADGE_VISUALS[user.highestBadgeId].bgDark} rounded-full whitespace-nowrap`}
                           title={`Highest Badge: ${user.highestBadgeId}`}
                         >
                           <span
@@ -270,7 +270,7 @@ export default function PublicProfile() {
           {/* Right Section (40%) - Badges & Streak */}
           <div className="w-full lg:w-[40%] flex flex-col gap-3 md:gap-4 justify-between">
             {/* Badges Strip */}
-            <div className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center min-h-[140px]">
+            <div className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center min-h-[140px] rounded-xl">
               <div className="flex items-center justify-between mb-2 w-full">
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
                   Badges
@@ -337,7 +337,7 @@ export default function PublicProfile() {
 
             {/* Streak Grid 2 Columns */}
             <div className="grid grid-cols-2 gap-3 h-auto">
-              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden flex flex-col justify-center">
+              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden flex flex-col justify-center rounded-xl">
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
                     Current Streak
@@ -350,7 +350,7 @@ export default function PublicProfile() {
                   </div>
                 </div>
               </div>
-              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden flex flex-col justify-center">
+              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden flex flex-col justify-center rounded-xl">
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
                     Highest Streak
@@ -371,7 +371,7 @@ export default function PublicProfile() {
         <ActivityGraph joinedDate={user.createdAt} userId={user.userId} />
 
         {/* Profile Details Card */}
-        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800">
+        <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 rounded-xl">
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -387,7 +387,7 @@ export default function PublicProfile() {
                   Subscription
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs ${
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
                     user.subscription === "pro"
                       ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
@@ -411,7 +411,7 @@ export default function PublicProfile() {
                   Account Status
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs ${
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
                     user.isActive
                       ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
                       : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"

@@ -9,6 +9,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 import { useAuth } from "@/contexts/AuthContext";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { X, Check, AlertCircle, Clock, ChevronRight, ChevronDown } from "lucide-react";
 
 export default function LeaderboardPage() {
   const params = useParams();
@@ -19,6 +20,7 @@ export default function LeaderboardPage() {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [board, setBoard] = useState<QuizLeaderboardEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   // Scroll to top on page load
@@ -110,6 +112,119 @@ export default function LeaderboardPage() {
     );
   }
 
+  const ParticipantReportSection = ({ entry }: { entry: QuizLeaderboardEntry }) => {
+    if (!quiz) return null;
+
+    return (
+      <div className="mt-4 sm:mt-6 pt-4 sm:pt-8 border-t border-gray-100 dark:border-gray-800 animate-in slide-in-from-top-4 duration-300 -mx-2 sm:mx-0 px-2 sm:px-0 bg-gray-50/30 dark:bg-gray-800/20 rounded-b-xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-10">
+          {quiz.questions.map((q, idx) => {
+            // Robust matching: by ID or by Index
+            const answer = entry.answers?.find(
+              (a) => a.questionId === q.questionId
+            ) || (entry.answers && entry.answers.length === quiz.questions.length ? entry.answers[idx] : undefined);
+            
+            const isCorrect = answer?.isCorrect;
+            const hasAnswered = !!answer;
+
+            return (
+              <div
+                key={q.questionId || idx}
+                className="space-y-2.5 pb-4 sm:pb-8 border-b border-gray-100/50 dark:border-gray-800/30 last:border-0 md:odd:border-r md:odd:pr-8"
+              >
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <span className={`flex-shrink-0 w-5 h-5 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[9px] sm:text-[10px] font-bold ${
+                    !hasAnswered 
+                      ? "bg-gray-200 dark:bg-gray-700 text-gray-500" 
+                      : isCorrect 
+                        ? "bg-green-500 text-white shadow-sm shadow-green-500/20" 
+                        : "bg-red-500 text-white shadow-sm shadow-red-500/20"
+                  }`}>
+                    {idx + 1}
+                  </span>
+                  <p className="text-[11px] sm:text-sm text-gray-900 dark:text-white font-medium leading-relaxed">
+                    {q.text}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-1 pl-7 sm:pl-10">
+                  {q.options.map((opt) => {
+                    const isSelected = answer?.selectedOptionKey === opt.key;
+                    const isCorrectOpt = opt.isCorrect;
+                    
+                    let variantClasses = "border-transparent text-gray-500 dark:text-gray-400 opacity-60";
+                    if (isSelected) {
+                      variantClasses = isCorrect
+                        ? "border-green-500 bg-green-500/10 text-green-700 dark:text-green-300 opacity-100 font-medium"
+                        : "border-red-500 bg-red-500/10 text-red-700 dark:text-red-300 opacity-100 font-medium";
+                    } else if (isCorrectOpt && hasAnswered && !isCorrect) {
+                      variantClasses = "border-green-500/30 bg-green-500/5 text-green-600 dark:text-green-400 opacity-100";
+                    }
+
+                    return (
+                      <div
+                        key={opt.key}
+                        className={`flex items-center justify-between p-1.5 sm:p-2.5 border rounded-lg text-[10px] sm:text-xs transition-all ${variantClasses}`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className={`flex-shrink-0 w-3.5 h-3.5 rounded flex items-center justify-center text-[8px] font-bold ${
+                            isSelected ? "bg-current/10" : "bg-gray-100 dark:bg-white/5"
+                          }`}>
+                            {opt.key}
+                          </span>
+                          <span className="truncate">{opt.text}</span>
+                        </div>
+                        <div className="flex-shrink-0">
+                          {isSelected && isCorrect && <Check size={10} className="text-green-600 sm:w-3 sm:h-3" />}
+                          {isSelected && !isCorrect && <X size={10} className="text-red-600 sm:w-3 sm:h-3" />}
+                          {!isSelected && isCorrectOpt && hasAnswered && !isCorrect && (
+                            <Check size={10} className="text-green-500/50 sm:w-3 sm:h-3" />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="pl-7 sm:pl-10 flex items-center justify-between">
+                  {!hasAnswered ? (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-[8px] font-bold uppercase tracking-wider">
+                      <AlertCircle size={8} />
+                      Skipped
+                    </span>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                       {answer.responseTimeSeconds && (
+                        <div className="flex items-center gap-1 text-[8px] text-gray-500 font-medium">
+                          <Clock size={8} />
+                          {answer.responseTimeSeconds.toFixed(1)}s
+                        </div>
+                      )}
+                      <span className={`text-[8px] font-bold uppercase tracking-wider ${isCorrect ? "text-green-500" : "text-red-500"}`}>
+                        {isCorrect ? "Correct" : "Incorrect"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-6 flex justify-center pb-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpandedUserId(null);
+            }}
+            className="px-4 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-[10px] font-medium text-gray-500 hover:text-gray-800 dark:hover:text-white flex items-center gap-1 transition-all hover:border-gray-400 shadow-sm"
+          >
+            Collapse Report <ChevronDown size={12} className="rotate-180" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <main className="flex-1 flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10">
@@ -123,7 +238,7 @@ export default function LeaderboardPage() {
                     `/quizzes/host/${quizId}${quiz?.joinCode ? `?code=${quiz.joinCode}` : ""}`,
                   )
                 }
-                className="mt-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                className="mt-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors rounded-lg"
                 title="Back to Host"
               >
                 <svg
@@ -155,13 +270,13 @@ export default function LeaderboardPage() {
                 <div className="flex flex-row gap-1.5 sm:gap-3">
                   <button
                     onClick={handleBackToHosted}
-                    className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap"
+                    className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap rounded-lg"
                   >
                     ← Back to Control
                   </button>
                   <button
                     onClick={handleBackToPortal}
-                    className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap"
+                    className="px-2 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 text-gray-900 dark:text-white font-light transition-colors whitespace-nowrap rounded-lg"
                   >
                     Portal
                   </button>
@@ -176,7 +291,7 @@ export default function LeaderboardPage() {
           {/* Desktop Leaderboard - Quizizz-style */}
           <div className="hidden lg:block">
             {/* Column Headers */}
-            <div className="flex items-center gap-5 px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-5 px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-t-xl">
               <div className="w-[200px] flex-shrink-0 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Participant
               </div>
@@ -192,7 +307,7 @@ export default function LeaderboardPage() {
             </div>
 
             {/* Rows */}
-            <div className="divide-y divide-gray-200 dark:divide-gray-800 border-x border-b border-gray-200 dark:border-gray-800">
+            <div className="divide-y divide-gray-200 dark:divide-gray-800 border-x border-b border-gray-200 dark:border-gray-800 rounded-b-xl overflow-hidden">
               {board.length > 0 ? (
                 board
                   .slice()
@@ -230,11 +345,15 @@ export default function LeaderboardPage() {
                     return (
                       <div
                         key={entry.quizUserId}
-                        className={`py-4 px-4 transition-colors ${
+                        onClick={() => {
+                          if (isDeleted) return;
+                          setExpandedUserId(expandedUserId === entry.quizUserId ? null : entry.quizUserId);
+                        }}
+                        className={`py-4 px-4 transition-all duration-300 ${
                           isDeleted
-                            ? "opacity-60"
-                            : "hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                        }`}
+                            ? "opacity-60 cursor-not-allowed"
+                            : "hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer"
+                        } ${expandedUserId === entry.quizUserId ? "bg-gray-50 dark:bg-gray-800/80 shadow-inner" : ""}`}
                       >
                         <div className="flex items-center gap-5">
                           {/* Left: Avatar + Name */}
@@ -272,16 +391,26 @@ export default function LeaderboardPage() {
                             <div className="flex gap-1 mb-1.5 mr-12">
                               {Array.from({ length: totalQuestions }).map(
                                 (_, i) => {
-                                  let bgColor = "bg-blue-400 dark:bg-blue-500";
-                                  if (i < correctAnswers) {
-                                    bgColor = "bg-green-500";
-                                  } else if (i < answeredQuestions) {
-                                    bgColor = "bg-red-500";
+                                  const question = quiz?.questions[i];
+                                  const answer = entry.answers?.find(
+                                    (a) => a.questionId === question?.questionId
+                                  );
+
+                                  let bgColor = "bg-blue-100 dark:bg-blue-900/30";
+                                  if (answer) {
+                                    bgColor = answer.isCorrect
+                                      ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]"
+                                      : "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
+                                  } else if (i < (correctAnswers + incorrectAnswers)) {
+                                    // Fallback to sequential if answers array is missing but counts exist
+                                    if (i < correctAnswers) bgColor = "bg-green-500";
+                                    else bgColor = "bg-red-500";
                                   }
+
                                   return (
                                     <div
                                       key={i}
-                                      className={`h-5 rounded-sm ${bgColor}`}
+                                      className={`h-5 rounded-lg transition-all duration-300 ${bgColor}`}
                                       style={{
                                         width: `${100 / totalQuestions}%`,
                                       }}
@@ -338,26 +467,32 @@ export default function LeaderboardPage() {
                           </div>
 
                           {/* Score */}
-                          <div className="w-[120px] text-right flex-shrink-0">
-                            <div className="text-lg font-bold text-gray-900 dark:text-white">
-                              {Math.round(entry.totalScore || 0)}
-                            </div>
-                            <div className="flex items-center justify-end">
-                              <span className="text-xs text-gray-500 dark:text-gray-400">
-                                {Math.round(entry.pointsEarned || 0)}
-                              </span>
-                              <CurrencyIcon size={8} className="text-gray-500 dark:text-gray-400" />
+                            <div className="text-right">
+                              <div className="text-sm font-bold text-gray-900 dark:text-white leading-none">
+                                {Math.round(entry.totalScore || 0)}
+                              </div>
+                              <div className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-0.5 flex items-center justify-end gap-1">
+                                pts
+                                <ChevronRight 
+                                  size={12} 
+                                  className={`transition-transform duration-300 ${expandedUserId === entry.quizUserId ? "rotate-90" : ""}`} 
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
+
+                        {/* Inline Report Section */}
+                        {expandedUserId === entry.quizUserId && (
+                          <ParticipantReportSection entry={entry} />
+                        )}
                       </div>
                     );
                   })
               ) : (
                 <div className="min-h-[400px] text-center py-12 flex flex-col items-center justify-center gap-2">
-                  <div className="w-12 h-12 mx-auto mb-4 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                  <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                     <svg
-                      className="w-6 h-6 text-gray-400 dark:text-gray-500"
+                      className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white opacity-20 dark:opacity-40"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -419,115 +554,117 @@ export default function LeaderboardPage() {
                   return (
                     <div
                       key={entry.quizUserId}
-                      className={`py-3 px-2 ${isDeleted ? "opacity-60" : ""}`}
+                      onClick={() => {
+                        if (isDeleted) return;
+                        setExpandedUserId(expandedUserId === entry.quizUserId ? null : entry.quizUserId);
+                      }}
+                      className={`py-4 px-3 transition-all duration-300 ${isDeleted ? "opacity-60" : "active:bg-gray-100 dark:active:bg-gray-800"} ${
+                        expandedUserId === entry.quizUserId ? "bg-gray-50 dark:bg-gray-800/50" : ""
+                      }`}
                     >
-                      <div className="flex items-center gap-3">
-                        {/* Left: Avatar + Name + Bars */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1.5">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          {/* Top Left: Avatar + Name + Counts */}
+                          <div className="flex items-center gap-3 min-w-0">
                             {entry.participantAvatar ? (
                               <Image
                                 src={`/quiz/avatars/${entry.participantAvatar}`}
                                 alt={entry.participantName}
-                                width={32}
-                                height={32}
-                                className={`w-8 h-8 rounded-full object-cover flex-shrink-0 ${isDeleted ? "grayscale" : ""}`}
+                                width={36}
+                                height={36}
+                                className={`w-9 h-9 rounded-full object-cover flex-shrink-0 ${isDeleted ? "grayscale" : ""}`}
                               />
                             ) : (
                               <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 ${getAvatarColor(entry.participantName)} ${isDeleted ? "grayscale" : ""}`}
+                                className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 ${getAvatarColor(entry.participantName)} ${isDeleted ? "grayscale" : ""}`}
                               >
-                                {entry.participantName
-                                  ?.charAt(0)
-                                  ?.toUpperCase() || "?"}
+                                {entry.participantName?.charAt(0)?.toUpperCase() || "?"}
                               </div>
                             )}
-                            <h3
-                              className={`text-sm font-medium truncate ${
-                                isDeleted
-                                  ? "text-gray-500 dark:text-gray-400 line-through"
-                                  : "text-gray-900 dark:text-white"
-                              }`}
-                            >
-                              {entry.participantName}
-                            </h3>
-                            {/* Counts beside name */}
-                            <div className="flex items-center gap-1.5 text-[10px] ml-auto flex-shrink-0">
-                              <span className="text-green-600 dark:text-green-400 font-medium">
-                                ✓{correctAnswers}
-                              </span>
-                              <span className="text-red-600 dark:text-red-400 font-medium">
-                                ✗{incorrectAnswers}
-                              </span>
-                              {unanswered > 0 && (
-                                <span className="text-blue-500 dark:text-blue-400 font-medium">
-                                  —{unanswered}
-                                </span>
-                              )}
+                            <div className="flex flex-col min-w-0">
+                              <h3
+                                className={`text-sm font-medium truncate ${
+                                  isDeleted
+                                    ? "text-gray-500 dark:text-gray-400 line-through"
+                                    : "text-gray-900 dark:text-white"
+                                }`}
+                              >
+                                {entry.participantName}
+                              </h3>
+                              <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium">
+                                <span className="text-green-600 dark:text-green-400">✓{correctAnswers}</span>
+                                <span className="text-red-600 dark:text-red-400">✗{incorrectAnswers}</span>
+                                {unanswered > 0 && <span>—{unanswered}</span>}
+                              </div>
                             </div>
                           </div>
-                          {/* Answer bars */}
-                          <div className="flex gap-0.5 mb-1">
-                            {Array.from({ length: totalQuestions }).map(
-                              (_, i) => {
-                                let bgColor = "bg-blue-400 dark:bg-blue-500";
-                                if (i < correctAnswers) {
-                                  bgColor = "bg-green-500";
-                                } else if (i < answeredQuestions) {
-                                  bgColor = "bg-red-500";
-                                }
-                                return (
-                                  <div
-                                    key={i}
-                                    className={`h-4 rounded-sm ${bgColor}`}
-                                    style={{
-                                      width: `${100 / totalQuestions}%`,
-                                    }}
-                                  />
-                                );
-                              },
-                            )}
+
+                          {/* Top Right: Accuracy + Score */}
+                          <div className="flex items-center gap-2.5 flex-shrink-0">
+                            <div className="relative w-9 h-9">
+                              <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+                                <circle
+                                  cx="18" cy="18" r="15"
+                                  fill="none"
+                                  className="stroke-gray-200 dark:stroke-gray-700"
+                                  strokeWidth="3.5"
+                                />
+                                <circle
+                                  cx="18" cy="18" r="15"
+                                  fill="none"
+                                  className="stroke-green-500"
+                                  strokeWidth="3.5"
+                                  strokeDasharray={`${accuracy * 0.9425} 94.25`}
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                              <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-gray-900 dark:text-white">
+                                {accuracy}%
+                              </span>
+                            </div>
+                            <div className="text-right min-w-[45px]">
+                              <div className="text-sm font-bold text-gray-900 dark:text-white leading-none">
+                                {Math.round(entry.totalScore || 0)}
+                              </div>
+                              <div className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-1 flex items-center justify-end gap-1">
+                                pts
+                                <ChevronRight 
+                                  size={10} 
+                                  className={`transition-transform duration-300 ${expandedUserId === entry.quizUserId ? "rotate-90" : ""}`} 
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
 
-                        {/* Right: Accuracy circle + Score */}
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {/* Accuracy circle */}
-                          <div className="relative w-10 h-10">
-                            <svg
-                              className="w-10 h-10 -rotate-90"
-                              viewBox="0 0 36 36"
-                            >
-                              <circle
-                                cx="18"
-                                cy="18"
-                                r="15"
-                                fill="none"
-                                className="stroke-gray-200 dark:stroke-gray-700"
-                                strokeWidth="3"
+                        {/* Bottom: Answer bars */}
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: totalQuestions }).map((_, i) => {
+                            const question = quiz?.questions[i];
+                            const answer = entry.answers?.find(
+                              (a) => a.questionId === question?.questionId
+                            );
+
+                            let bgColor = "bg-gray-100 dark:bg-gray-800";
+                            if (answer) {
+                              bgColor = answer.isCorrect ? "bg-green-500" : "bg-red-500";
+                            } else if (i < (correctAnswers + incorrectAnswers)) {
+                              bgColor = i < correctAnswers ? "bg-green-500" : "bg-red-500";
+                            }
+
+                            return (
+                              <div
+                                key={i}
+                                className={`h-1.5 rounded-sm flex-1 ${bgColor}`}
                               />
-                              <circle
-                                cx="18"
-                                cy="18"
-                                r="15"
-                                fill="none"
-                                className="stroke-green-500"
-                                strokeWidth="3"
-                                strokeDasharray={`${accuracy * 0.9425} 94.25`}
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                            <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-gray-900 dark:text-white">
-                              {accuracy}%
-                            </span>
-                          </div>
-                          {/* Score */}
-                          <div className="text-right min-w-[40px]">
-                            <div className="text-sm font-bold text-gray-900 dark:text-white text-center">
-                              {Math.round(entry.totalScore || 0)}
-                            </div>
-                          </div>
+                            );
+                          })}
                         </div>
+
+                        {/* Inline Report Section - Mobile */}
+                        {expandedUserId === entry.quizUserId && (
+                          <ParticipantReportSection entry={entry} />
+                        )}
                       </div>
                     </div>
                   );

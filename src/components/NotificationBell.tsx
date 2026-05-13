@@ -140,7 +140,7 @@ export default function NotificationBell() {
       {/* Points Animation - Top Center Popup */}
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] pointer-events-none animate-fade-in-down">
-          <div className="px-6 py-3 shadow-lg bg-black dark:bg-white text-white dark:text-black">
+          <div className="px-6 py-3 shadow-lg bg-black dark:bg-white text-white dark:text-black rounded-xl">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold">
                 +{pointsAnimation.points}
@@ -155,7 +155,7 @@ export default function NotificationBell() {
         {/* Bell Icon */}
         <button
           onClick={handleToggle}
-          className="relative p-2 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
+          className="relative p-2 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           aria-label="Notifications"
         >
           <Bell className="w-5 h-5" />
@@ -166,7 +166,7 @@ export default function NotificationBell() {
 
         {/* Dropdown */}
         {isOpen && (
-          <div className="absolute right-[-50px] lg:right-[-100px] mt-2 w-[21rem] md:w-96 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg z-50 max-h-96 overflow-hidden flex flex-col">
+          <div className="absolute right-[-50px] lg:right-[-100px] mt-2 w-[21rem] md:w-96 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg z-50 max-h-96 overflow-hidden flex flex-col rounded-xl">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
               <h3 className="text-lg font-semibold text-black dark:text-white">
@@ -231,8 +231,7 @@ export default function NotificationBell() {
                                   onClick={() =>
                                     handleClaimPoints(notification._id)
                                   }
-                                  className="px-3 py-1 text-xs bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-                                  style={{ borderRadius: 0 }}
+                                  className="px-3 py-1 text-xs bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                                 >
                                   Claim {notification.points} points
                                 </button>

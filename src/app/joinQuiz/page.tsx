@@ -644,14 +644,14 @@ function JoinQuizContent() {
           <div className="max-w-6xl mx-auto w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-stretch">
               {/* Form section - First on mobile, Second on desktop */}
-              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-5 sm:p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60dvh] flex flex-col justify-center order-1 lg:order-2">
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-5 sm:p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[60dvh] flex flex-col justify-center order-1 lg:order-2 rounded-xl">
                 <div className="space-y-5 sm:space-y-6 lg:space-y-8">
                   <div>
                     <label className="block text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-4">
                       Quiz Access Code
                     </label>
                     <input
-                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
+                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm rounded-lg"
                       placeholder="Enter 6-letter code"
                       value={joinCode}
                       onChange={(e) =>
@@ -663,10 +663,10 @@ function JoinQuizContent() {
 
                   <div>
                     <label className="block text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 mb-2 sm:mb-4">
-                      Your Cosmic Identity
+                      Your Name
                     </label>
                     <input
-                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm"
+                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm rounded-lg"
                       placeholder="Enter your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -674,7 +674,7 @@ function JoinQuizContent() {
                   </div>
 
                   {showAvatarError && (
-                    <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3">
+                    <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3 rounded-lg">
                       <p className="text-sm text-red-600 dark:text-red-400 text-center">
                         Please select an avatar to continue
                       </p>
@@ -682,7 +682,7 @@ function JoinQuizContent() {
                   )}
 
                   <button
-                    className="w-full bg-black dark:bg-white text-white dark:text-black py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black dark:disabled:hover:bg-white shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
+                    className="w-full bg-black dark:bg-white text-white dark:text-black py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black dark:disabled:hover:bg-white shadow-lg hover:shadow-xl transform hover:translate-y-[-1px] rounded-lg"
                     onClick={handleJoin}
                     disabled={!joinCode.trim() || !name.trim()}
                   >
@@ -692,7 +692,7 @@ function JoinQuizContent() {
               </div>
 
               {/* Avatar Selection - Second on mobile, First on desktop */}
-              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 lg:p-8 border border-black dark:border-gray-700 min-h-[350px] h-[40vh] sm:h-[50dvh] lg:h-[60dvh] flex flex-col order-2 lg:order-1">
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 lg:p-8 border border-black dark:border-gray-700 min-h-[350px] h-[40vh] sm:h-[50dvh] lg:h-[60dvh] flex flex-col order-2 lg:order-1 rounded-xl">
                 <div className="mb-4 sm:mb-6">
                   <h3 className="text-lg sm:text-xl font-light text-gray-900 dark:text-white mb-1 sm:mb-2">
                     Choose Your Avatar
@@ -762,7 +762,7 @@ function JoinQuizContent() {
                 {!showKickedOut && (
                   <button
                     onClick={handleExit}
-                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800 whitespace-nowrap rounded-sm"
+                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800 whitespace-nowrap rounded-lg"
                     title="Leave Quiz"
                   >
                     Exit
@@ -789,7 +789,7 @@ function JoinQuizContent() {
               {!showKickedOut && (
                 <button
                   onClick={handleExit}
-                  className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800"
+                  className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-300 dark:focus:ring-red-800 rounded-lg"
                   title="Leave Quiz"
                 >
                   Exit Quiz
@@ -804,21 +804,8 @@ function JoinQuizContent() {
         <div className="w-full max-w-6xl">
           {showKickedOut ? (
             <div className="flex flex-col items-center justify-center min-h-[500px] py-12">
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 sm:p-12 max-w-md w-full text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-500/10 dark:bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-                  <svg
-                    className="w-10 h-10 text-red-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 sm:p-12 max-w-md w-full text-center rounded-xl">
+                <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-6 sm:mb-8 flex items-center justify-center">                  <span className="text-5xl sm:text-7xl">💀</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-light text-gray-900 dark:text-white mb-3 tracking-tight">
                   Removed from Quiz
@@ -828,7 +815,7 @@ function JoinQuizContent() {
                 </p>
                 <button
                   onClick={() => goBack()}
-                  className="w-full bg-black dark:bg-white text-white dark:text-black py-3 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 shadow-lg hover:shadow-xl transform hover:translate-y-[-1px]"
+                  className="w-full bg-black dark:bg-white text-white dark:text-black py-3 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-black/20 dark:focus:ring-white/20 shadow-lg hover:shadow-xl transform hover:translate-y-[-1px] rounded-lg"
                 >
                   Go Back
                 </button>
@@ -836,9 +823,9 @@ function JoinQuizContent() {
             </div>
           ) : showQuizEnded ? (
             <div className="flex flex-col items-center justify-center min-h-[400px]">
-              <div className="w-16 h-16 mb-6 border-2 border-green-500 flex items-center justify-center">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-green-500"
+                  className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -846,7 +833,7 @@ function JoinQuizContent() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
@@ -859,14 +846,13 @@ function JoinQuizContent() {
               </p>
               <button
                 onClick={handleExit}
-                className="h-10 px-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+                className="h-10 px-6 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors rounded-lg"
               >
                 Return to Quiz Entry
               </button>
             </div>
           ) : currentQuestion ? (
-            /* Question Box - Fixed Height */
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 min-h-[500px] md:min-h-[550px] flex flex-col">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 min-h-[75vh] lg:min-h-[70vh] flex flex-col rounded-xl overflow-hidden">
               {/* Question Header with Timer and Progress */}
               <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/80">
                 <div className="flex items-center justify-between gap-4 mb-4">
@@ -898,7 +884,7 @@ function JoinQuizContent() {
                         : timeLeft <= 30
                           ? "bg-amber-500 text-white border-amber-600"
                           : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border-gray-200 dark:border-gray-600"
-                    } rounded-none`}
+                    } rounded-lg`}
                   >
                     {Math.floor(timeLeft / 60)}:
                     {(timeLeft % 60).toString().padStart(2, "0")}
@@ -959,12 +945,12 @@ function JoinQuizContent() {
                       return (
                         <button
                           key={o.key}
-                          className={`${colorClass} text-white p-4 sm:p-8 text-left transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99] border-b-4 border-black/20`}
+                          className={`${colorClass} text-white p-4 sm:p-8 text-left transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed transform hover:scale-[1.01] active:scale-[0.99] border-b-4 border-black/20 rounded-lg`}
                           onClick={() => sendAnswer(o.key)}
                           disabled={hasAnswered || isTimeUp}
                         >
                           <div className="flex items-center gap-3 sm:gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 sm:w-12 sm:h-12 bg-white/20 flex items-center justify-center text-sm sm:text-xl font-bold border border-white/30">
+                            <div className="flex-shrink-0 w-8 h-8 sm:w-12 sm:h-12 bg-white/20 flex items-center justify-center text-sm sm:text-xl font-bold border border-white/30 rounded-lg">
                               {o.key}
                             </div>
                             <div className="flex-1 text-sm sm:text-lg font-medium leading-tight">
@@ -982,30 +968,30 @@ function JoinQuizContent() {
             <div className="pb-16">
               <div className="mx-auto pb-4">
                 {/* Participants Section */}
-                <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 lg:mt-4 min-h-[650px]">
+                <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 lg:mt-4 min-h-[50vh] lg:min-h-[70vh] rounded-xl overflow-hidden">
                   <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                     <h3 className="text-base font-medium text-gray-900 dark:text-white">
                       Participants
                     </h3>
-                    <span className="inline-flex items-center bg-black dark:bg-white px-3 py-1 text-sm text-white dark:text-black font-medium">
+                    <span className="inline-flex items-center bg-black dark:bg-white px-3 py-1 text-sm text-white dark:text-black font-medium rounded-lg">
                       {participants.length} joined
                     </span>
                   </div>
 
                   <div className="p-6 min-h-[200px]">
                     {participants.length > 0 ? (
-                      <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-7 gap-2 sm:gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2 sm:gap-4 md:gap-6">
                         {participants.map((p) => (
                           <div
                             key={p.quizUserId}
-                            className={`flex flex-col items-center text-center p-1 sm:p-2 transition-all ${
+                            className={`flex flex-row sm:flex-col items-center sm:text-center p-2 sm:p-3 transition-all rounded-xl gap-4 sm:gap-0 ${
                               p.quizUserId === joined?.quizUserId
                                 ? "border border-amber-500 bg-amber-50/50 dark:bg-amber-900/10"
-                                : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                                : "hover:bg-gray-50 dark:hover:bg-gray-700/50"
                             }`}
                           >
                             {p.participantAvatar ? (
-                              <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-sm flex-shrink-0 border border-gray-200 dark:border-gray-600 bg-white">
+                              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-sm flex-shrink-0 border border-gray-200 dark:border-gray-600 bg-white">
                                 <NextImage
                                   src={`/quiz/avatars/${p.participantAvatar}`}
                                   alt={`Avatar for ${p.participantName}`}
@@ -1016,7 +1002,7 @@ function JoinQuizContent() {
                               </div>
                             ) : (
                               <div
-                                className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white text-sm sm:text-lg leading-none font-medium shadow-sm flex-shrink-0 ${getAvatarColor(
+                                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white text-lg leading-none font-medium shadow-sm flex-shrink-0 ${getAvatarColor(
                                   p.participantName || "U",
                                 )}`}
                               >
@@ -1024,11 +1010,14 @@ function JoinQuizContent() {
                                   "?"}
                               </div>
                             )}
-                            <span className="text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 mt-1.5 truncate w-full font-bold uppercase tracking-tight">
-                              {p.quizUserId === joined?.quizUserId
-                                ? `${p.participantName}`
-                                : p.participantName}
-                            </span>
+                            <div className="flex-1 min-w-0 sm:mt-3">
+                              <span className="block text-sm sm:text-xs text-gray-900 dark:text-white sm:text-gray-700 sm:dark:text-gray-300 truncate font-bold sm:uppercase tracking-tight">
+                                {p.participantName}
+                              </span>
+                              <span className="sm:hidden text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-widest font-medium">
+                                {p.quizUserId === joined?.quizUserId ? "You" : "Participant"}
+                              </span>
+                            </div>
                           </div>
                         ))}
                       </div>

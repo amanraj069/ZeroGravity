@@ -183,8 +183,8 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 shadow-lg max-w-md w-full max-h-[90dvh] overflow-y-auto rounded-lg">
+    <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 bg-black/60 backdrop-blur-xl flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 shadow-lg max-w-md w-full max-h-[90dvh] overflow-y-auto rounded-xl">
         <div className="p-4 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">
@@ -215,7 +215,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
+              className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
                 errors.title
                   ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                   : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -244,7 +244,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               rows={3}
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               placeholder="Enter task description (optional)"
               disabled={isSubmitting}
             />
@@ -268,7 +268,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                   priority: e.target.value as "low" | "medium" | "high",
                 }))
               }
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-md text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               disabled={isSubmitting}
             >
               <option value="low">Low</option>
@@ -293,7 +293,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dateStarted"
                 value={formData.dateStarted}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dateStarted
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -321,7 +321,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dateEnded"
                 value={formData.dateEnded}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dateEnded
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -352,7 +352,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dailyStartTime"
                 value={formData.dailyStartTime}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dailyStartTime
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -380,7 +380,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dailyEndTime"
                 value={formData.dailyEndTime}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-md text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dailyEndTime
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -400,14 +400,14 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+              className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
               disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className="flex-1 px-3 py-2 text-sm bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
               disabled={isSubmitting}
             >
               {isSubmitting

@@ -332,9 +332,9 @@ export default function Signup() {
         <div className="w-full max-w-md p-6 sm:p-8">
           <div className="text-center mb-6 sm:mb-8">
             {/* Email icon */}
-            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+            <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
               <svg
-                className="w-8 h-8 text-green-600 dark:text-green-400"
+                className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
