@@ -338,10 +338,23 @@ export default function GoogleSignInButton({
   // Render Google button
   return (
     <div className="w-full relative">
-      <div ref={buttonRef} className="w-full [&_*]:!rounded-xl" />
-      {/* Dark-mode only: overlay a dark border on top of the Google iframe's white border */}
+      {/* Dark mode border overlay — sits on top of the Google iframe's own white border */}
       <div
-        className="pointer-events-none absolute inset-0 rounded-xl hidden dark:block border border-gray-700"
+        className="
+          w-full overflow-hidden rounded-xl
+          dark:[&_iframe]:!border-0
+          dark:[&_div]:![border-color:transparent]
+        "
+      >
+        <div ref={buttonRef} className="w-full [&_*]:!rounded-xl" />
+      </div>
+      {/* In dark mode, draw a matching dark border on top of the iframe border */}
+      <div
+        className="
+          pointer-events-none absolute inset-0 rounded-xl
+          hidden dark:block
+          border border-gray-700
+        "
         aria-hidden="true"
       />
     </div>
