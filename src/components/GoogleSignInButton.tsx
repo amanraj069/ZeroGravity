@@ -172,7 +172,7 @@ export default function GoogleSignInButton({
             'button, iframe, div[role="button"]',
           );
           buttons.forEach((element) => {
-            (element as HTMLElement).style.borderRadius = "0";
+            (element as HTMLElement).style.borderRadius = "12px";
             // Remove border in dark mode for better appearance
             if (theme === "dark") {
               (element as HTMLElement).style.border = "none";
@@ -182,7 +182,7 @@ export default function GoogleSignInButton({
           // Also apply to any nested elements
           const allElements = buttonRef.current.querySelectorAll("*");
           allElements.forEach((element) => {
-            (element as HTMLElement).style.borderRadius = "0";
+            (element as HTMLElement).style.borderRadius = "12px";
             // Remove border styling in dark mode
             if (theme === "dark") {
               (element as HTMLElement).style.border = "none";
@@ -225,7 +225,7 @@ export default function GoogleSignInButton({
             'button, iframe, div[role="button"]',
           );
           buttons.forEach((element) => {
-            (element as HTMLElement).style.borderRadius = "0";
+            (element as HTMLElement).style.borderRadius = "12px";
             // Remove border in dark mode
             if (theme === "dark") {
               (element as HTMLElement).style.border = "none";
@@ -270,11 +270,11 @@ export default function GoogleSignInButton({
         'button, iframe, div[role="button"]',
       );
       buttons.forEach((element) => {
-        (element as HTMLElement).style.borderRadius = "0";
+        (element as HTMLElement).style.borderRadius = "12px";
       });
       const allElements = buttonRef.current.querySelectorAll("*");
       allElements.forEach((element) => {
-        (element as HTMLElement).style.borderRadius = "0";
+        (element as HTMLElement).style.borderRadius = "12px";
       });
     };
 
@@ -303,7 +303,7 @@ export default function GoogleSignInButton({
       <button
         type="button"
         disabled
-        className="w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-400 border border-gray-300 dark:border-gray-700 py-2.5 sm:py-3 px-4 font-medium cursor-not-allowed text-sm sm:text-base flex items-center justify-center gap-3 opacity-60 transition-opacity"
+        className="w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-400 border border-gray-300 dark:border-gray-700 py-2.5 sm:py-3 px-4 font-medium cursor-not-allowed text-sm sm:text-base flex items-center justify-center gap-3 opacity-60 transition-opacity rounded-xl"
       >
         <svg
           width="20"
@@ -338,7 +338,7 @@ export default function GoogleSignInButton({
   // Render Google button
   return (
     <div className="w-full">
-      <div ref={buttonRef} className="w-full [&_*]:!rounded-none" />
+      <div ref={buttonRef} className="w-full [&_*]:!rounded-xl" />
     </div>
   );
 }

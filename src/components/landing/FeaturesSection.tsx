@@ -63,8 +63,11 @@ export default function FeaturesSection() {
   const [stars, setStars] = useState<{ id: number; top: string; left: string; size: number; delay: number; color: string }[]>([]);
 
   useEffect(() => {
+    const mobile = window.innerWidth < 640;
     const starColors = ["bg-white", "bg-purple-100", "bg-blue-100"];
-    const newStars = Array.from({ length: 60 }, (_, i) => ({
+    const starCount = mobile ? 20 : 60;
+    
+    const newStars = Array.from({ length: starCount }, (_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -77,15 +80,15 @@ export default function FeaturesSection() {
 
   return (
     <section className="relative py-20 lg:py-32 overflow-hidden bg-white dark:bg-[#0a0a0c] transition-colors duration-1000">
-      {/* Cosmic Atmosphere */}
+      {/* Cosmic Atmosphere - Optimized for Mobile */}
       <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
-        <div className="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-purple-600/[0.05] rounded-full blur-[140px]" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/[0.05] rounded-full blur-[140px]" />
+        <div className="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-purple-600/[0.05] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/[0.05] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />
         
         {stars.map((star) => (
           <div
             key={star.id}
-            className={`absolute rounded-full ${star.color} opacity-[0.2]`}
+            className={`absolute rounded-full ${star.color} opacity-[0.2] will-change-opacity`}
             style={{
               top: star.top,
               left: star.left,
@@ -121,7 +124,7 @@ export default function FeaturesSection() {
           {features.map((feature) => (
             <AnimatedFeatureItem 
               key={feature.id} 
-              className={`group relative overflow-hidden bg-white/50 dark:bg-white/[0.02] backdrop-blur-md rounded-3xl border border-black/5 dark:border-white/[0.05] transition-all duration-500 ${feature.border} ${feature.size}`}
+              className={`group relative overflow-hidden bg-white/50 dark:bg-white/[0.02] sm:backdrop-blur-md rounded-3xl border border-black/5 dark:border-white/[0.05] transition-all duration-500 ${feature.border} ${feature.size}`}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
               
@@ -168,7 +171,7 @@ export default function FeaturesSection() {
                       alt={feature.title}
                       width={800}
                       height={500}
-                      className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+                      className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.03] will-change-transform"
                     />
                   </div>
                 </div>

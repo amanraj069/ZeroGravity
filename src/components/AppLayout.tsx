@@ -17,15 +17,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const Footer = isHomePage ? LandingFooter : SimpleFooter;
 
   const isNotesPage = pathname?.startsWith("/notes");
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      <LandingNavbar />
+      {!isAuthPage && <LandingNavbar />}
       <main className="flex-1 flex flex-col">{children}</main>
 
       {isHomePage ? (
         <Footer />
-      ) : isNotesPage ? null : (
+      ) : isNotesPage || isAuthPage ? null : (
         <SimpleFooter />
       )}
     </div>

@@ -3,16 +3,15 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import { API_ENDPOINTS, apiCall } from "@/config/api";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 export default function Signup() {
   const router = useRouter();
   const { sendOtp, verifyOtp, resendOtp, loginWithGoogle, user } = useAuth();
-  const [signupEnabled, setSignupEnabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -24,6 +23,24 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignupInProgress, setIsSignupInProgress] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  
+  // Generate random stars for background atmosphere (client-side only to avoid hydration mismatch)
+  const [stars, setStars] = useState<Array<{left: string, top: string, size: number, opacity: number, delay: number}>>([]);
+  
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 50 : 120;
+    const baseSize = isMobile ? 0.5 : 0.8;
+    const sizeVariance = isMobile ? 1 : 1.5;
+
+    setStars(Array.from({ length: starCount }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * sizeVariance + baseSize,
+      opacity: Math.random() * 0.8 + 0.4,
+      delay: Math.random() * 5,
+    })));
+  }, []);
 
   // OTP verification state
   const [showOtpScreen, setShowOtpScreen] = useState(false);
@@ -40,10 +57,6 @@ export default function Signup() {
     // Redirect to home if user is already logged in (but not during signup process)
     if (user && !isSignupInProgress) {
       router.push("/");
-      return;
-    }
-    if (!user) {
-      checkSignupStatus();
     }
   }, [user, router, isSignupInProgress]);
 
@@ -58,21 +71,6 @@ export default function Signup() {
     }
   }, [resendCooldown]);
 
-  const checkSignupStatus = async () => {
-    try {
-      const response = await apiCall(API_ENDPOINTS.AUTH.SIGNUP_STATUS);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSignupEnabled(data.enabled);
-        }
-      }
-    } catch (err) {
-      console.error("Failed to check signup status:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,19 +147,6 @@ export default function Signup() {
     return null;
   };
 
-  const handleJoinWaitlist = () => {
-    router.push("/");
-    // Wait for navigation to complete, then scroll to waitlist section
-    setTimeout(() => {
-      const waitlistElement = document.getElementById("waitlist");
-      if (waitlistElement) {
-        waitlistElement.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    }, 100);
-  };
 
   // OTP input handlers
   const handleOtpChange = (index: number, value: string) => {
@@ -278,58 +263,47 @@ export default function Signup() {
     );
   }
 
-  // Show waitlist message when signup is disabled
-  if (!signupEnabled) {
-    return (
-      <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md p-6 sm:p-8 text-center">
-          <div className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
-              Sign Up Currently Unavailable
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Account creation is temporarily disabled. Please join our waitlist
-              to be notified when registration opens.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <button
-              onClick={handleJoinWaitlist}
-              className="w-full bg-black dark:bg-white text-white dark:text-black py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm sm:text-base"
-            >
-              Join Waitlist
-            </button>
-
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Are you an Admin?{" "}
-              <Link
-                href="/login"
-                className="text-black dark:text-white hover:underline font-medium"
-              >
-                Sign in
-              </Link>
-            </p>
-          </div>
-
-          <div className="mt-6 text-center">
-            <Link
-              href="/"
-              className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
-            >
-              ← Back to home
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Show OTP verification screen
   if (showOtpScreen) {
     return (
-      <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md p-6 sm:p-8">
+      <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Base Background Layer */}
+        <div className="absolute inset-0 bg-white dark:bg-black z-0" />
+        
+        {/* Background Atmosphere & Stars */}
+        <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+          <div className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/[0.08] md:bg-purple-600/[0.15] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" />
+          <div className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-blue-600/[0.05] md:bg-blue-600/[0.1] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" />
+
+          {/* Stars */}
+          <div className="absolute inset-0">
+            {stars.map((star, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: [star.opacity, 0.1, star.opacity],
+                  scale: [1, 0.8, 1],
+                }}
+                transition={{
+                  duration: 1.5 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: star.delay,
+                  ease: "easeInOut",
+                }}
+                className="absolute bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                style={{
+                  left: star.left,
+                  top: star.top,
+                  width: star.size,
+                  height: star.size,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative z-20">
           <div className="text-center mb-6 sm:mb-8">
             {/* Email icon */}
             <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
@@ -359,13 +333,13 @@ export default function Signup() {
           </div>
 
           {otpError && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm text-center">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm text-center rounded-xl">
               {otpError}
             </div>
           )}
 
           {successMessage && (
-            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm text-center">
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm text-center rounded-xl">
               {successMessage}
             </div>
           )}
@@ -384,7 +358,7 @@ export default function Signup() {
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900"
+                className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl"
                 autoFocus={index === 0}
               />
             ))}
@@ -394,7 +368,7 @@ export default function Signup() {
             <button
               onClick={handleVerifyOtp}
               disabled={isVerifying || otp.join("").length !== 6}
-              className="w-full bg-black dark:bg-green-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black dark:bg-green-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base rounded-xl shadow-lg"
             >
               {isVerifying ? "Verifying..." : "Verify Email"}
             </button>
@@ -434,63 +408,152 @@ export default function Signup() {
 
   // Show signup form when signup is enabled
   return (
-    <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md p-6 sm:p-8">
+    <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Base Background Layer */}
+      <div className="absolute inset-0 bg-white dark:bg-black z-0" />
+      
+      {/* Background Atmosphere & Stars */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+        {/* Floating Background Blobs */}
+        <motion.div 
+          animate={{
+            x: [0, 30, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/[0.08] md:bg-purple-600/[0.15] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" 
+        />
+        <motion.div 
+          animate={{
+            x: [0, -40, 0],
+            y: [0, 20, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-blue-600/[0.05] md:bg-blue-600/[0.1] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" 
+        />
+
+        {/* Stars */}
+        <div className="absolute inset-0">
+          {stars.map((star, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: [star.opacity, 0.1, star.opacity],
+                scale: [1, 0.8, 1],
+              }}
+              transition={{
+                duration: 1.5 + Math.random() * 2,
+                repeat: Infinity,
+                delay: star.delay,
+                ease: "easeInOut",
+              }}
+              className="absolute bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              style={{
+                left: star.left,
+                top: star.top,
+                width: star.size,
+                height: star.size,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative z-20"
+      >
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
+          <motion.h1 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2"
+          >
             Create Account
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-sm sm:text-base text-gray-600 dark:text-gray-400"
+          >
             Join ZeroGravity and start your productivity journey
-          </p>
+          </motion.p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-xl">
             {error}
           </div>
         )}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             <input
               type="text"
               name="name"
               placeholder="Full Name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
+              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
               required
               autoComplete="name"
             />
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
             <input
               type="text"
               name="username"
               placeholder="Username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
+              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
               required
               autoComplete="username"
             />
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
             <input
               type="email"
               name="email"
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
+              className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
               required
               autoComplete="email"
             />
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          >
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -498,7 +561,7 @@ export default function Signup() {
                 placeholder="Setup your Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-3 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500"
+                className="w-full px-3 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                 required
                 minLength={8}
                 autoComplete="new-password"
@@ -506,7 +569,7 @@ export default function Signup() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none transition-colors"
               >
                 {showPassword ? (
                   <svg
@@ -545,55 +608,73 @@ export default function Signup() {
                 )}
               </button>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-3">
-            <button
+          <motion.div 
+            className="space-y-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+          >
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base rounded-xl shadow-lg hover:shadow-black/20 dark:hover:shadow-red-900/40"
             >
               {isSubmitting ? "Sending OTP..." : "Create Account"}
-            </button>
+            </motion.button>
 
-            <GoogleSignInButton
-              onSuccess={async (credential) => {
-                setIsGoogleLoading(true);
-                setIsSignupInProgress(true);
-                setError("");
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1, duration: 0.5 }}
+            >
+              <GoogleSignInButton
+                onSuccess={async (credential) => {
+                  // ... (no changes to logic)
+                  setIsGoogleLoading(true);
+                  setIsSignupInProgress(true);
+                  setError("");
 
-                try {
-                  const result = await loginWithGoogle(credential);
+                  try {
+                    const result = await loginWithGoogle(credential);
 
-                  if (result.success) {
-                    // Redirect to dashboard after successful login
-                    router.push("/dashboard");
-                  } else {
-                    setError(result.message || "Google authentication failed");
+                    if (result.success) {
+                      router.push("/dashboard");
+                    } else {
+                      setError(result.message || "Google authentication failed");
+                      setIsSignupInProgress(false);
+                    }
+                  } catch (err) {
+                    console.error("Google login error:", err);
+                    setError(
+                      "An unexpected error occurred during Google authentication"
+                    );
                     setIsSignupInProgress(false);
+                  } finally {
+                    setIsGoogleLoading(false);
                   }
-                } catch (err) {
-                  console.error("Google login error:", err);
-                  setError(
-                    "An unexpected error occurred during Google authentication"
-                  );
-                  setIsSignupInProgress(false);
-                } finally {
+                }}
+                onError={() => {
+                  setError("Google authentication failed. Please try again.");
                   setIsGoogleLoading(false);
-                }
-              }}
-              onError={() => {
-                setError("Google authentication failed. Please try again.");
-                setIsGoogleLoading(false);
-                setIsSignupInProgress(false);
-              }}
-              disabled={isSubmitting}
-              isLoading={isGoogleLoading}
-            />
-          </div>
+                  setIsSignupInProgress(false);
+                }}
+                disabled={isSubmitting}
+                isLoading={isGoogleLoading}
+              />
+            </motion.div>
+          </motion.div>
         </form>
 
-        <div className="mt-6 text-center space-y-2">
+        <motion.div 
+          className="mt-6 text-center space-y-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.3, duration: 0.5 }}
+        >
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
             <Link
@@ -603,16 +684,21 @@ export default function Signup() {
               Sign in
             </Link>
           </p>
-        </div>
-        <div className="mt-6 text-center space-y-2">
+        </motion.div>
+        <motion.div 
+          className="mt-6 text-center space-y-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4, duration: 0.5 }}
+        >
           <Link
             href="/"
             className="block text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
           >
             ← Back to home
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

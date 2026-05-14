@@ -8,7 +8,6 @@ import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 import { useAuth } from "@/contexts/AuthContext";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { X, Check, AlertCircle, Clock, ChevronRight, ChevronDown } from "lucide-react";
 
 export default function LeaderboardPage() {

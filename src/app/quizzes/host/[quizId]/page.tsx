@@ -19,7 +19,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Quiz, QuizParticipant, QuizLeaderboardEntry } from "@/types/quiz";
 import QRCode from "qrcode";
 import { ChevronUp, X } from "lucide-react";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 export default function HostQuizPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();

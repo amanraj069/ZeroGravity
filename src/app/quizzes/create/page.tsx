@@ -467,10 +467,13 @@ function CreateQuizContent() {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Full-width header matching website design theme */}
       <div className="bg-white dark:bg-gray-900">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 overflow-hidden">
-              <BackButton className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0" />
+              <BackButton
+                href={quizId ? `/quizzes/host/${quizId}` : "/quizzes"}
+                className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              />
 
               <div className="flex-1 min-w-0">
                 <style jsx>{`
@@ -500,7 +503,7 @@ function CreateQuizContent() {
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    className={`text-xl sm:text-3xl font-light text-black dark:text-white bg-transparent outline-none w-full placeholder-gray-300 dark:placeholder-gray-400 border-b-2 pb-1 transition-colors duration-300 ${
+                    className={`text-xl sm:text-3xl font-light text-black dark:text-white !bg-transparent outline-none w-full placeholder-gray-300 dark:placeholder-gray-400 border-b-2 pb-1 transition-colors duration-300 ${
                       titleError
                         ? "border-red-500 shake-animation"
                         : title.trim()
@@ -546,7 +549,7 @@ function CreateQuizContent() {
                 </div>
                 <input
                   type="text"
-                  className="text-black dark:text-white bg-transparent border-b border-transparent focus:border-gray-200 dark:focus:border-gray-700 outline-none w-full text-sm mt-1 placeholder-gray-300 dark:placeholder-gray-400 transition-colors"
+                  className="text-black dark:text-white !bg-transparent border-b border-transparent focus:border-gray-200 dark:focus:border-gray-700 outline-none w-full text-sm mt-1 placeholder-gray-300 dark:placeholder-gray-400 transition-colors"
                   placeholder="Add a description (optional)"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -762,7 +765,7 @@ function CreateQuizContent() {
                           className="w-4 h-4 text-green-600 focus:ring-green-500 focus:ring-2 cursor-pointer"
                         />
                         <input
-                          className="flex-1 border-none bg-transparent focus:outline-none text-sm sm:text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                          className="flex-1 border-none !bg-transparent focus:outline-none text-sm sm:text-base text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                           placeholder={`Enter Option ${o.key}`}
                           value={o.text}
                           onChange={(e) =>

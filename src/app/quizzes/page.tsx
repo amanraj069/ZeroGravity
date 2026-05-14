@@ -7,7 +7,8 @@ import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import Image from "next/image";
-import { Plus, Trash2, Settings2 } from "lucide-react";
+import { Plus, Trash2, Users, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { BackButton } from "@/components/BackButton";
 import QuizzesSkeleton, {
   QuizCardsSkeleton,
@@ -17,7 +18,7 @@ export default function QuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
   const router = useRouter();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredQuizzes, setFilteredQuizzes] = useState<Quiz[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -37,18 +38,20 @@ export default function QuizzesPage() {
 
   useEffect(() => {
     // Debounced search functionality
+    if (!searchTerm.trim()) {
+      setFilteredQuizzes(quizzes);
+      setSearchLoading(false);
+      return;
+    }
+
     setSearchLoading(true);
     const timeoutId = setTimeout(() => {
-      if (searchTerm.trim()) {
-        const filtered = quizzes.filter(
-          (quiz) =>
-            quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-        setFilteredQuizzes(filtered);
-      } else {
-        setFilteredQuizzes(quizzes);
-      }
+      const filtered = quizzes.filter(
+        (quiz) =>
+          quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          quiz.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+      setFilteredQuizzes(filtered);
       setSearchLoading(false);
     }, 300);
 
@@ -289,7 +292,12 @@ export default function QuizzesPage() {
       <main className="flex-1 py-4 sm:py-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header */}
-          <div className="mb-5 sm:mb-8">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-5 sm:mb-8"
+          >
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -327,135 +335,150 @@ export default function QuizzesPage() {
               <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end sm:shrink-0">
                 <button
                   onClick={() => router.push("/joinQuiz")}
-                  className="w-full sm:w-auto border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-lg"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-lg"
                 >
+                  <Users className="w-4 h-4" />
                   Join Quiz
                 </button>
                 {user?.subscription === "pro" && (
                   <button
                     onClick={() => router.push("/quizzes/deleted")}
-                    className="hidden sm:block w-full sm:w-auto border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-lg"
+                    className="hidden sm:flex w-full sm:w-auto items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-lg"
                   >
-                    View Deleted
+                    <Trash2 className="w-4 h-4" />
+                    Trash
                   </button>
                 )}
                 <button
                   onClick={() => router.push("/createQuiz")}
-                  className="hidden sm:block w-full sm:w-auto bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer rounded-lg"
+                  className="hidden sm:flex w-full sm:w-auto items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer rounded-lg"
                 >
+                  <Plus className="w-4 h-4" />
                   Create New Quiz
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Search Bar */}
-          <div className="mb-4 sm:mb-6 relative">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="mb-4 sm:mb-6 relative"
+          >
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+              <Search className="w-4 h-4" />
+            </div>
             <input
               type="text"
               placeholder="Search quizzes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all rounded-lg"
+              className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 pl-10 pr-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all rounded-lg"
             />
             {searchLoading && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-700 border-t-black dark:border-t-white  animate-spin"></div>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Loading State */}
           {loading && <QuizCardsSkeleton />}
 
           {/* Empty State */}
-          {!loading && filteredQuizzes.length === 0 && quizzes.length === 0 && (
-            <div className="py-16 px-4">
-              <div className="max-w-5xl mx-auto">
-                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-                  {/* Image Container - Left Side */}
-                  <div className="flex-shrink-0 lg:w-1/2">
-                    <div className="relative w-80 h-80 lg:w-96 lg:h-96 mx-auto">
-                      <Image
-                        src="/quiz/noQuizzes.png"
-                        alt="No quizzes illustration"
-                        fill
-                        className="object-cover"
-                        priority
-                      />
-                    </div>
-                  </div>
-
-                  {/* Content - Right Side */}
-                  <div className="flex-1 lg:w-1/2 text-center lg:text-left">
-                    <div className="space-y-6">
-                      <h2 className="text-3xl lg:text-4xl font-light text-gray-900 dark:text-white leading-tight">
-                        Ready to create your first quiz?
-                      </h2>
-                      <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
-                        Build engaging quizzes that captivate your audience and
-                        make learning interactive and fun
-                      </p>
-
-                      {/* Feature List - Simple and Clean */}
-                      <div className="space-y-3 max-w-md mx-auto lg:mx-0">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            Real-time results and analytics
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            Support for multiple participants
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            Easy sharing with join codes
-                          </span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-2 h-2 bg-black dark:bg-white"></div>
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            Detailed performance insights
-                          </span>
-                        </div>
+          <AnimatePresence>
+            {!loading && filteredQuizzes.length === 0 && quizzes.length === 0 && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="py-16 px-4"
+              >
+                <div className="max-w-5xl mx-auto">
+                  <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                    {/* Image Container - Left Side */}
+                    <div className="flex-shrink-0 lg:w-1/2">
+                      <div className="relative w-80 h-80 lg:w-96 lg:h-96 mx-auto">
+                        <Image
+                          src="/quiz/noQuizzes.png"
+                          alt="No quizzes illustration"
+                          fill
+                          className="object-cover"
+                          priority
+                        />
                       </div>
+                    </div>
 
-                      {/* Action Button */}
-                      <div className="pt-4">
-                        <button
-                          onClick={() => router.push("/createQuiz")}
-                          className="w-full flex items-center justify-center px-8 py-3 bg-black dark:bg-white text-white dark:text-black text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-lg"
-                        >
-                          Create Your First Quiz
-                          <svg
-                            className="ml-2 w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                    {/* Content - Right Side */}
+                    <div className="flex-1 lg:w-1/2 text-center lg:text-left">
+                      <div className="space-y-6">
+                        <h2 className="text-3xl lg:text-4xl font-light text-gray-900 dark:text-white leading-tight">
+                          Ready to create your first quiz?
+                        </h2>
+                        <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
+                          Build engaging quizzes that captivate your audience and
+                          make learning interactive and fun
+                        </p>
+
+                        {/* Feature List - Simple and Clean */}
+                        <div className="space-y-3 max-w-md mx-auto lg:mx-0">
+                          {[
+                            "Real-time results and analytics",
+                            "Support for multiple participants",
+                            "Easy sharing with join codes",
+                            "Detailed performance insights"
+                          ].map((feature, i) => (
+                            <motion.div 
+                              key={i}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.5 + i * 0.1 }}
+                              className="flex items-center space-x-3"
+                            >
+                              <div className="w-2 h-2 bg-black dark:bg-white"></div>
+                              <span className="text-sm text-gray-700 dark:text-gray-300">
+                                {feature}
+                              </span>
+                            </motion.div>
+                          ))}
+                        </div>
+
+                        {/* Action Button */}
+                        <div className="pt-4">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => router.push("/createQuiz")}
+                            className="w-full flex items-center justify-center px-8 py-3 bg-black dark:bg-white text-white dark:text-black text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-lg"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 4v16m8-8H4"
-                            />
-                          </svg>
-                        </button>
+                            Create Your First Quiz
+                            <svg
+                              className="ml-2 w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
+                          </motion.button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* No Search Results */}
-          {!loading && filteredQuizzes.length === 0 && quizzes.length > 0 && (
+          {!loading && !searchLoading && filteredQuizzes.length === 0 && quizzes.length > 0 && (
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="max-w-md mx-auto text-center">
                 {/* Search Icon */}
@@ -503,102 +526,118 @@ export default function QuizzesPage() {
 
           {/* Quizzes Grid */}
           {!loading && filteredQuizzes.length > 0 && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-              {filteredQuizzes.map((quiz) => (
-                <div
-                  key={quiz.quizId}
-                  onClick={() => handleQuizClick(quiz)}
-                  className="bg-white dark:bg-gray-800 shadow-sm p-3 sm:p-5 hover:shadow-lg transition-all cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group rounded-xl"
-                >
-                  {/* Header with Status + Title and Actions */}
-                  <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
-                    <div className="min-w-0 flex items-center gap-2 sm:gap-3 flex-1">
-                      <span
-                        className={`shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full ${getStatusColor(
-                          quiz.status,
-                        )}`}
-                      >
-                        {getStatusText(quiz.status)}
+            <motion.div 
+              layout
+              className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
+            >
+              <AnimatePresence>
+                {filteredQuizzes.map((quiz, index) => (
+                  <motion.div
+                    key={quiz.quizId}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={() => handleQuizClick(quiz)}
+                    whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
+                    className="flex flex-col h-full bg-white dark:bg-gray-800 shadow-sm p-3 sm:p-5 transition-all cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group rounded-xl"
+                  >
+                    {/* Header with Status + Title and Actions */}
+                    <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+                      <div className="min-w-0 flex items-center gap-2 sm:gap-3 flex-1">
+                        <span
+                          className={`shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full ${getStatusColor(
+                            quiz.status,
+                          )}`}
+                        >
+                          {getStatusText(quiz.status)}
+                        </span>
+                        <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-1 sm:line-clamp-2 min-w-0">
+                          {quiz.title}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                        <button
+                          onClick={(e) =>
+                            handleDeleteQuiz(quiz.quizId, e, quiz.status)
+                          }
+                          disabled={
+                            deletingQuizId === quiz.quizId ||
+                            quiz.status === "active"
+                          }
+                          className="p-1 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors rounded-lg"
+                          title={
+                            quiz.status === "active"
+                              ? "Cannot delete an active quiz"
+                              : "Delete quiz"
+                          }
+                        >
+                          {deletingQuizId === quiz.quizId ? (
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-red-500 dark:border-red-400 border-t-transparent animate-spin"></div>
+                          ) : (
+                            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="hidden sm:flex mb-3 items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="truncate">
+                        Created {new Date(quiz.createdAt).toLocaleDateString()}
                       </span>
-                      <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-1 sm:line-clamp-2 min-w-0">
-                        {quiz.title}
-                      </h3>
+                      <span className="shrink-0">
+                        Updated {new Date(quiz.updatedAt).toLocaleDateString()}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(
-                            `/quizzes/create?quizId=${quiz.quizId}&edit=true`,
-                          );
-                        }}
-                        className="p-1 text-gray-400 hover:text-black dark:hover:text-white transition-colors rounded-lg"
-                        title="Edit Quiz"
-                      >
-                        <Settings2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                      </button>
-                      <button
-                        onClick={(e) =>
-                          handleDeleteQuiz(quiz.quizId, e, quiz.status)
-                        }
-                        disabled={
-                          deletingQuizId === quiz.quizId ||
-                          quiz.status === "active"
-                        }
-                        className="p-1 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors rounded-lg"
-                        title={
-                          quiz.status === "active"
-                            ? "Cannot delete an active quiz"
-                            : "Delete quiz"
-                        }
-                      >
-                        {deletingQuizId === quiz.quizId ? (
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-red-500 dark:border-red-400 border-t-transparent animate-spin"></div>
-                        ) : (
-                          <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
 
-                  <div className="hidden sm:flex mb-3 items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span className="truncate">
-                      Created {new Date(quiz.createdAt).toLocaleDateString()}
-                    </span>
-                    <span className="shrink-0">
-                      Updated {new Date(quiz.updatedAt).toLocaleDateString()}
-                    </span>
-                  </div>
+                    {/* Quiz Description */}
+                    {quiz.description && (
+                      <p className="hidden sm:block text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
+                        {quiz.description}
+                      </p>
+                    )}
 
-                  {/* Quiz Description */}
-                  {quiz.description && (
-                    <p className="hidden sm:block text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
-                      {quiz.description}
-                    </p>
-                  )}
-
-                  {/* Quiz Stats */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-gray-100 dark:border-gray-700">
-                    <div className="text-center">
-                      <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
-                        {quiz.questions.length}
+                    {/* Quiz Stats */}
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-gray-100 dark:border-gray-700">
+                      <div className="text-center">
+                        <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
+                          {quiz.questions.length}
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
+                          Questions
+                        </div>
                       </div>
-                      <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
-                        Questions
+                      <div className="text-center">
+                        <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
+                          {quiz.participants || 0}
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
+                          Participants
+                        </div>
                       </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
-                        {quiz.participants || 0}
-                      </div>
-                      <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
-                        Participants
-                      </div>
-                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              <motion.button
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: filteredQuizzes.length * 0.05 }}
+                onClick={() => router.push("/createQuiz")}
+                className="flex flex-col items-center justify-center h-full border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-all duration-300 hover:scale-[1.005] hover:-translate-y-0.5 p-3 sm:p-5 min-h-[140px] sm:min-h-[160px] rounded-xl group/add"
+              >
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover/add:border-gray-400 transition-colors">
+                    <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors" />
                   </div>
+                  <span className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors">
+                    ADD QUIZ
+                  </span>
                 </div>
-              ))}
-            </div>
+              </motion.button>
+            </motion.div>
           )}
         </div>
       </main>

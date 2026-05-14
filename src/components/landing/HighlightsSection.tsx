@@ -53,8 +53,13 @@ export default function HighlightsSection() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Generate Stars
-    const newStars = Array.from({ length: 60 }, (_, i) => ({
+    // Responsive Check first to determine star count
+    const mobile = window.innerWidth < 640;
+    setIsMobile(mobile);
+    
+    // Generate Stars - Fewer on mobile for performance
+    const starCount = mobile ? 20 : 60;
+    const newStars = Array.from({ length: starCount }, (_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -63,9 +68,7 @@ export default function HighlightsSection() {
     }));
     setStars(newStars);
 
-    // Responsive Check
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
@@ -73,7 +76,7 @@ export default function HighlightsSection() {
   const cardVariants: Variants = {
     hidden: { 
       opacity: 0, 
-      x: isMobile ? 30 : 0, 
+      x: isMobile ? 20 : 0, 
       y: isMobile ? 0 : 30 
     },
     visible: { 
@@ -81,8 +84,8 @@ export default function HighlightsSection() {
       x: 0, 
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut" as const
+        duration: 0.5,
+        ease: "easeOut"
       }
     }
   };
@@ -94,16 +97,16 @@ export default function HighlightsSection() {
         {/* Deep space base gradient */}
         <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a0a] via-[#0d0d0d] to-[#111111]" />
         
-        {/* Animated Background Atmosphere */}
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/[0.07] rounded-full blur-[140px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-violet-600/[0.07] rounded-full blur-[140px] animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-violet-600/[0.05] rounded-full blur-[120px]" />
+        {/* Animated Background Atmosphere - Optimized for Mobile */}
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/[0.07] rounded-full blur-[80px] sm:blur-[140px] animate-pulse will-change-[opacity,filter]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-violet-600/[0.07] rounded-full blur-[80px] sm:blur-[140px] animate-pulse will-change-[opacity,filter]" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-violet-600/[0.05] rounded-full blur-[60px] sm:blur-[120px]" />
         
         {/* Animated Stars */}
         {stars.map((star) => (
           <div
             key={star.id}
-            className="absolute rounded-full bg-white opacity-[0.15] animate-pulse"
+            className="absolute rounded-full bg-white opacity-[0.15] animate-pulse will-change-opacity"
             style={{
               top: star.top,
               left: star.left,
@@ -139,7 +142,7 @@ export default function HighlightsSection() {
         <AnimatedFeatureGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/10">
           {highlights.map((item, index) => (
             <motion.div key={index} variants={cardVariants}>
-              <Link href={item.href} className={`block h-full group bg-white dark:bg-[#0a0a0a]/30 backdrop-blur-md overflow-hidden relative transition-all duration-500 ${item.glow}`}>
+              <Link href={item.href} className={`block h-full group bg-white dark:bg-[#0a0a0a]/30 sm:backdrop-blur-md overflow-hidden relative transition-all duration-500 ${item.glow}`}>
                 {/* Subtle Hover Gradient */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
                 
