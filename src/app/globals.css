@@ -332,53 +332,140 @@ textarea::placeholder {
   animation: fade-in-down 2s ease-out forwards;
 }
 
-/* Purchase success animation */
-@keyframes purchase-success {
+/* Premium Minimal Purchase Animation */
+@keyframes purchase-premium {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
   }
-  15% {
-    transform: scale(1.08);
-    box-shadow:
-      0 0 15px 4px rgba(34, 197, 94, 0.7),
-      0 0 25px 6px rgba(34, 197, 94, 0.5);
-  }
-  30% {
-    transform: scale(1.12);
-    box-shadow:
-      0 0 20px 6px rgba(34, 197, 94, 0.8),
-      0 0 35px 8px rgba(34, 197, 94, 0.6);
-  }
-  50% {
-    transform: scale(1.08);
-    box-shadow:
-      0 0 18px 5px rgba(34, 197, 94, 0.7),
-      0 0 30px 7px rgba(34, 197, 94, 0.5);
-  }
-  70% {
-    transform: scale(1.04);
-    box-shadow:
-      0 0 12px 3px rgba(34, 197, 94, 0.5),
-      0 0 20px 5px rgba(34, 197, 94, 0.3);
-  }
-  85% {
-    transform: scale(1.02);
-    box-shadow:
-      0 0 8px 2px rgba(34, 197, 94, 0.3),
-      0 0 15px 3px rgba(34, 197, 94, 0.2);
+  20% {
+    transform: scale(1.015);
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.15);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
-.animate-purchase-success {
-  animation: purchase-success 2s ease-out forwards;
-  will-change: transform, box-shadow;
-  border-color: rgb(34, 197, 94) !important;
+@keyframes purchase-glint {
+  0% {
+    transform: skewX(-20deg) translateX(-200%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: skewX(-20deg) translateX(200%);
+    opacity: 0;
+  }
+}
+
+.animate-purchase-premium {
+  animation: purchase-premium 1.2s cubic-bezier(0.2, 0, 0, 1) forwards;
+  position: relative;
+  overflow: hidden !important;
+  z-index: 50;
+  border-color: #22c55e !important;
+  transition: border-color 0.4s ease;
+}
+
+.animate-purchase-premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 100%
+  );
+  z-index: 5;
+  animation: purchase-glint 1s ease-in-out forwards;
+  pointer-events: none;
+}
+
+.animate-purchase-premium::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #22c55e;
+  border-radius: inherit;
+  opacity: 0;
+  animation: fade-in-out 1.2s ease-in-out forwards;
+  pointer-events: none;
+  z-index: 6;
+}
+
+@keyframes fade-in-out {
+  0% { opacity: 0; transform: scale(1); }
+  30% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.02); }
+}
+
+/* Power-up Premium Purchase Animation */
+@keyframes powerup-premium {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes powerup-shockwave {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+    border-width: 4px;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.animate-powerup-premium {
+  animation: powerup-premium 1s cubic-bezier(0.2, 0, 0, 1) forwards;
+  position: relative;
+}
+
+.animate-powerup-premium::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: powerup-shockwave 0.8s ease-out forwards;
+  pointer-events: none;
   z-index: 10;
+}
+
+.animate-powerup-premium::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  animation: fade-in-out 1s ease-out forwards;
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Aurora border - Northern lights shifting effect */

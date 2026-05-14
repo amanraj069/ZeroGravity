@@ -25,6 +25,7 @@ export default function ShopPage() {
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [equipping, setEquipping] = useState<string | null>(null);
   const [purchasedBorderId, setPurchasedBorderId] = useState<string | null>(null);
+  const [purchasedPowerUpId, setPurchasedPowerUpId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Power-ups
@@ -86,7 +87,14 @@ export default function ShopPage() {
     setBuying(type); setMessage(null);
     try {
       const r = await buyPowerUp(type);
-      if (r?.success) { setMessage({ type: "success", text: r.message }); setUserPoints(r.data?.newPoints || userPoints); await refreshPoints(); await fetchInventory(); }
+      if (r?.success) { 
+        setMessage({ type: "success", text: r.message }); 
+        setUserPoints(r.data?.newPoints || userPoints); 
+        setPurchasedPowerUpId(type);
+        setTimeout(() => setPurchasedPowerUpId(null), 1500);
+        await refreshPoints(); 
+        await fetchInventory(); 
+      }
       else setMessage({ type: "error", text: r?.message || "Failed" });
     } catch { setMessage({ type: "error", text: "Error" }); } finally { setBuying(null); }
   };
@@ -171,7 +179,7 @@ export default function ShopPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
 
                 {/* ── Time Travel Ticket ── */}
-                <div className="bg-white dark:bg-[#141821] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow">
+                <div className={`bg-white dark:bg-[#141821] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow ${purchasedPowerUpId === "timeTravelTicket" ? "animate-powerup-premium" : ""}`}>
                   {/* Card inner — dark area with icon and description */}
                   <div className="mx-3 mt-3 rounded-lg bg-gradient-to-br from-[#2a2a2e] to-[#1a1a1e] dark:from-[#1a1d26] dark:to-[#0e1018] p-5 md:p-6 text-center relative overflow-hidden">
                     {/* Subtle glow */}
@@ -234,7 +242,7 @@ export default function ShopPage() {
                 </div>
 
                 {/* ── Future Voyager ── */}
-                <div className="bg-white dark:bg-[#141821] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow">
+                <div className={`bg-white dark:bg-[#141821] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow ${purchasedPowerUpId === "futureVoyager" ? "animate-powerup-premium" : ""}`}>
                   <div className="mx-3 mt-3 rounded-lg bg-gradient-to-br from-[#2a2a2e] to-[#1a1a1e] dark:from-[#1a1d26] dark:to-[#0e1018] p-5 md:p-6 text-center relative overflow-hidden">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-violet-500/10 rounded-full blur-2xl" />
                     <div className="relative z-10 w-16 h-16 md:w-20 md:h-20 mx-auto mb-4">
@@ -322,7 +330,7 @@ export default function ShopPage() {
               <h2 className="text-xs md:text-sm font-bold uppercase tracking-widest text-gray-600 dark:text-gray-400">Profile Borders</h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {borders.map(border => (
-                  <div key={border.id} className={`relative border p-4 md:p-8 bg-white dark:bg-gray-800 flex flex-col min-h-[260px] md:min-h-[420px] transition-all hover:shadow-lg hover:scale-[1.02] ${purchasedBorderId === border.id ? "animate-purchase-success" : ""} ${border.equipped ? "border-green-500 dark:border-green-400 shadow-md shadow-green-500/20" : "border-gray-200 dark:border-gray-700"}`}>
+                  <div key={border.id} className={`relative border p-4 md:p-8 bg-white dark:bg-gray-800 flex flex-col min-h-[260px] md:min-h-[420px] transition-all hover:shadow-lg hover:scale-[1.02] ${purchasedBorderId === border.id ? "animate-purchase-premium" : ""} ${border.equipped ? "border-green-500 dark:border-green-400 shadow-md shadow-green-500/20" : "border-gray-200 dark:border-gray-700"}`}>
                     <div className="absolute top-2.5 right-2.5 md:hidden flex items-center">
                       <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{border.price.toLocaleString()}</span>
                       <CurrencyIcon size={8} className="text-gray-500" />

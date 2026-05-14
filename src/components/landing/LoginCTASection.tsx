@@ -40,10 +40,10 @@ export default function LoginCTASection() {
             <div className="flex justify-center">
               <Link
                 href="/login"
-                className="group relative inline-flex items-center justify-center px-6 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-white dark:text-black transition-all duration-300 ease-in-out"
+                className="group relative inline-flex items-center justify-center px-6 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-white dark:text-black transition-all duration-300 ease-in-out rounded-xl"
               >
                 {/* Button background with subtle scale effect */}
-                <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98] shadow-xl dark:shadow-white/5" />
+                <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98] shadow-xl dark:shadow-white/5 rounded-xl" />
                 
                 <span className="relative flex items-center gap-3">
                   Sign in to ZeroGravity

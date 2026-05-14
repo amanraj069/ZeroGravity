@@ -4,7 +4,7 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 
 export default function TermsAndConditionsPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 pt-2 sm:pt-4 md:pt-8 pb-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white dark:bg-gray-900 pt-2 sm:pt-4 md:pt-8 pb-24 sm:pb-32 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <AnimatedSection className="mb-6 mt-2 sm:mt-4 md:mt-8">

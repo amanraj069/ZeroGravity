@@ -84,16 +84,16 @@ function LandingNavbar() {
                 ) : (
                   <>
                     <Link
-                      href="/login"
+                      href="/about"
                       className="text-black dark:text-white hover:text-gray-800 dark:hover:text-gray-300 text-xs sm:text-sm border border-gray-300 dark:border-gray-700 px-2 sm:px-4 py-2 hover:border-black dark:hover:border-gray-500 transition-colors rounded-lg"
                     >
-                      Login
+                      About
                     </Link>
                     <Link
-                      href="/about"
+                      href="/login"
                       className="bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                     >
-                      About
+                      Login
                     </Link>
                   </>
                 )}

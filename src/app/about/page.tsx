@@ -2,12 +2,10 @@
 
 import {
   AnimatedSection,
-  AnimatedFeatureGrid,
-  AnimatedFeatureItem,
 } from "@/components/AnimatedSection";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { Github, Linkedin, Mail, Zap } from "lucide-react";
 
 export default function AboutPage() {
   const versions = [
@@ -83,257 +81,127 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 sm:py-12 px-8 sm:px-12 lg:px-16">
-      <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
-        <AnimatedSection className="mb-2 sm:mb-6">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light text-black dark:text-white mb-2 sm:mb-2">
-            About ZeroGravity
+    <div className="min-h-screen bg-white dark:bg-[#0a0a0a] transition-colors duration-1000">
+      <div className="max-w-6xl mx-auto px-5 sm:px-12 pt-10 pb-24 sm:pt-16 sm:pb-32">
+        
+        {/* Header */}
+        <AnimatedSection className="mb-12 sm:mb-16">
+          <h1 className="text-2xl sm:text-5xl font-light text-black dark:text-white mb-2 sm:mb-4 tracking-tight">
+            About Zero<span className="font-normal italic">Gravity</span>
           </h1>
+          <p className="text-[13px] sm:text-base text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+            A minimalist productivity sanctuary designed to help you achieve goals with clarity and focus.
+          </p>
         </AnimatedSection>
 
-        {/* Developer Section - Moved to Top */}
-        <AnimatedSection className="mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-8 sm:mb-12">
+        {/* Developer Card */}
+        <AnimatedSection className="mb-16 sm:mb-24">
+          <h2 className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-500 mb-4 sm:mb-8">
             Developer
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-6 sm:gap-8">
-            {developers.map((dev, index) => (
-              <motion.div
-                key={index}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6 },
-                  },
-                }}
-                className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 transition-colors overflow-hidden relative group"
-                onClick={() =>
-                  window.open(
-                    "https://portfolio-aman-raj.vercel.app/",
-                    "_blank"
-                  )
-                }
-              >
-                {/* Hover text - Click for portfolio */}
-                <div className="absolute top-4 right-4 md:top-6 md:right-[280px] z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm">
-                    Click for portfolio
-                  </span>
+          {developers.map((dev, index) => (
+            <div key={index} className="bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col md:flex-row group transition-all duration-500 hover:border-gray-200 dark:hover:border-white/10">
+              <div className="p-6 sm:p-10 flex-1 order-2 md:order-1">
+                <h3 className="text-lg sm:text-2xl font-medium text-black dark:text-white mb-1">{dev.name}</h3>
+                <p className="text-[12px] sm:text-base text-gray-500 dark:text-gray-400 mb-4 font-light">{dev.role}</p>
+                <p className="text-[12px] sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6 sm:mb-8 font-light italic opacity-80">
+                  {dev.bio}
+                </p>
+                
+                <div className="flex gap-4 sm:gap-5">
+                  <a href={dev.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+                    <Github className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </a>
+                  <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+                    <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </a>
+                  <a href={`mailto:${dev.email}`} className="text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </a>
                 </div>
-
-                <div className="flex flex-col md:flex-row">
-                  {/* Image - Top on mobile, Right side on desktop with full height */}
-                  <div className="w-full md:w-64 md:flex-shrink-0 order-1 md:order-2">
-                    <div className="relative w-full h-64 md:h-full min-h-[256px]">
-                      <Image
-                        src="https://portfolio-aman-raj.vercel.app/home/cover_me.JPG"
-                        alt={dev.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 256px"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 p-8 sm:p-10 order-2 md:order-1 cursor-pointer">
-                    <h3 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-2">
-                      {dev.name}
-                    </h3>
-                    <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6">
-                      {dev.role}
-                    </p>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                      {dev.bio}
-                    </p>
-                    <div className="grid grid-cols-2 sm:flex sm:flex-row gap-4 sm:gap-6">
-                      <a
-                        href={dev.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center text-sm sm:text-base text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      >
-                        <svg
-                          className="w-5 h-5 mr-2 flex-shrink-0"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                        </svg>
-                        GitHub
-                      </a>
-                      <a
-                        href={dev.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center text-sm sm:text-base text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      >
-                        <svg
-                          className="w-5 h-5 mr-2 flex-shrink-0"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                        LinkedIn
-                      </a>
-                      <a
-                        href={`mailto:${dev.email}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center text-sm sm:text-base text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      >
-                        <svg
-                          className="w-5 h-5 mr-2 flex-shrink-0"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h.946l9.418 7.09 9.418-7.09h.946A1.636 1.636 0 0 1 24 5.457z" />
-                        </svg>
-                        Gmail
-                      </a>
-                      <a
-                        href={dev.medium}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center text-sm sm:text-base text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      >
-                        <svg
-                          className="w-5 h-5 mr-2 flex-shrink-0"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
-                        </svg>
-                        Medium
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+              
+              <div className="w-full md:w-64 h-56 sm:h-72 md:h-auto relative order-1 md:order-2">
+                <Image
+                  src="https://portfolio-aman-raj.vercel.app/home/cover_me.JPG"
+                  alt={dev.name}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+            </div>
+          ))}
         </AnimatedSection>
 
-        {/* Version History Section */}
-        <AnimatedSection className="mb-16 sm:mb-20">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-8 sm:mb-12">
+        {/* Version History */}
+        <AnimatedSection className="mb-16 sm:mb-24">
+          <h2 className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-500 mb-4 sm:mb-8">
             Version History
           </h2>
-          <div className="space-y-8 sm:space-y-12">
-            {versions.map((version, index) => (
-              <motion.div
-                key={version.version}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: { duration: 0.6, delay: index * 0.1 },
-                  },
-                }}
-                className="border-l-2 border-gray-300 dark:border-gray-700 pl-6 sm:pl-8 relative"
-              >
-                <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-black dark:bg-white border-2 border-white dark:border-gray-900" />
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-1">
-                      Version {version.version}
-                    </h3>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
-                      {version.date}
-                    </p>
+          <div className="space-y-8 sm:space-y-10">
+            {versions.map((v) => (
+              <div key={v.version} className="relative pl-6 sm:pl-10 border-l border-gray-100 dark:border-white/5">
+                <div className="absolute left-[-4px] sm:left-[-5px] top-1 w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-gray-200 dark:bg-white/20" />
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-2 sm:mb-4">
+                  <h3 className="text-[15px] sm:text-lg font-medium text-black dark:text-white">Version {v.version}</h3>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] sm:text-xs text-gray-400 font-light">{v.date}</span>
+                    <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400 px-1.5 py-0.5 bg-gray-50 dark:bg-white/5 rounded w-fit">
+                      {v.status}
+                    </span>
                   </div>
-                  <span
-                    className={`inline-block mt-2 sm:mt-0 px-3 py-1 text-xs sm:text-sm font-medium ${
-                      version.status === "Current"
-                        ? "bg-black dark:bg-white text-white dark:text-black"
-                        : version.status === "Pre Beta"
-                        ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300"
-                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    {version.status}
-                  </span>
                 </div>
-                <ul className="space-y-2 mt-4">
-                  {version.features.map((feature, featureIndex) => (
-                    <li
-                      key={featureIndex}
-                      className="text-sm sm:text-base text-gray-600 dark:text-gray-400 flex items-start"
-                    >
-                      <span className="mr-2 text-black dark:text-white">•</span>
-                      <span>{feature}</span>
+                <ul className="space-y-1.5 sm:space-y-2">
+                  {v.features.map((f, fi) => (
+                    <li key={fi} className="text-[12px] sm:text-sm text-gray-500 dark:text-gray-400 font-light flex items-start gap-2 sm:gap-3">
+                      <span className="text-gray-300 dark:text-white/10 mt-1.5 sm:mt-1">•</span>
+                      {f}
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </div>
             ))}
           </div>
         </AnimatedSection>
 
-        {/* Upcoming Features Section */}
-        <AnimatedSection className="mb-16 sm:mb-20">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white mb-8 sm:mb-12">
-            Upcoming Features
+        {/* Upcoming Features */}
+        <AnimatedSection className="mb-16 sm:mb-24">
+          <h2 className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-500 mb-4 sm:mb-8">
+            Future Roadmap
           </h2>
-          <AnimatedFeatureGrid className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             {upcomingFeatures.map((feature, index) => (
-              <AnimatedFeatureItem key={index}>
-                <div className="bg-gray-50 dark:bg-gray-800/50 p-6 sm:p-8 border border-gray-200 dark:border-gray-700/50 h-full hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg sm:text-xl font-light text-black dark:text-white flex-1">
-                      {feature.title}
-                    </h3>
-                    <span
-                      className={`ml-3 px-2 py-1 text-xs font-medium whitespace-nowrap ${
-                        feature.status === "In Development"
-                          ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-                          : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-                      }`}
-                    >
-                      {feature.status}
-                    </span>
-                  </div>
-                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-                    {feature.description}
-                  </p>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500">
-                    ETA: {feature.eta}
-                  </p>
+              <div key={index} className="bg-white dark:bg-[#0a0a0a] p-5 sm:p-8 hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
+                <div className="flex items-start gap-3 mb-2">
+                  <Zap className="w-3.5 h-3.5 text-gray-400 mt-1" />
+                  <h3 className="text-sm sm:text-lg font-light text-black dark:text-white tracking-tight leading-tight">{feature.title}</h3>
                 </div>
-              </AnimatedFeatureItem>
+                <p className="text-[12px] sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-light mb-4">
+                  {feature.description}
+                </p>
+                <div className="flex items-center gap-3">
+                  <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400">{feature.status}</span>
+                  <div className="h-px flex-1 bg-gray-100 dark:bg-white/5" />
+                  <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400">{feature.eta}</span>
+                </div>
+              </div>
             ))}
-          </AnimatedFeatureGrid>
+          </div>
         </AnimatedSection>
 
         {/* Footer CTA */}
-        <AnimatedSection className="text-center">
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-8 sm:pt-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-0 sm:mb-0">
-                Want to see your name in Developer Section by Contributing?
-              </p>
-              <Link
-                href="/contact"
-                className="inline-block bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-1 sm:py-2 text-base sm:text-lg font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap"
-              >
-                Drop your ideas here
-              </Link>
-            </div>
-          </div>
+        <AnimatedSection className="pt-10 sm:pt-12 border-t border-gray-100 dark:border-white/5 text-center">
+          <h2 className="text-base sm:text-2xl font-light text-black dark:text-white mb-4 sm:mb-6 tracking-tight italic opacity-90">
+            Want to contribute?
+          </h2>
+          <Link
+            href="/contact"
+            className="inline-flex items-center justify-center px-8 sm:px-10 py-2 sm:py-3 border border-black dark:border-white text-black dark:text-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-300 text-[11px] sm:text-sm font-medium tracking-wide rounded-full"
+          >
+            Get in Touch
+          </Link>
         </AnimatedSection>
+
       </div>
     </div>
   );

@@ -77,7 +77,7 @@ export default function HeroSection() {
           initial={{ scale: 1.15, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.2 }}
           transition={{ duration: 3, ease: "easeOut" }}
-          className="absolute inset-0"
+          className="absolute inset-0 will-change-transform"
         >
           <Image
             src="/landing/zerogravity_bg.webp"
@@ -90,7 +90,7 @@ export default function HeroSection() {
 
         {/* Subtle Cosmic Overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-white/5 dark:from-[#111116] dark:via-transparent dark:to-[#111116]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[160px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-[1200px] h-full sm:h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[80px] sm:blur-[160px] pointer-events-none will-change-[filter]" />
       </div>
 
       <AnimatedHero className="relative z-10 text-center max-w-5xl mx-auto px-6">
@@ -115,14 +115,14 @@ export default function HeroSection() {
                   <>
                     <Link
                       href="/dashboard"
-                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto rounded-xl overflow-hidden"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-[85%] sm:w-auto rounded-xl overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] shadow-xl dark:shadow-white/5 rounded-xl" />
                       <span className="relative">Go to Dashboard</span>
                     </Link>
                     <Link
                       href="/profile"
-                      className="group relative inline-flex items-center justify-center px-10 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
                     >
                       <span className="relative">My Profile</span>
                     </Link>
@@ -131,7 +131,7 @@ export default function HeroSection() {
                   <>
                     <Link
                       href="/login"
-                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-full sm:w-auto shadow-2xl shadow-black/10 dark:shadow-white/5 rounded-xl overflow-hidden"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-white dark:text-black transition-all duration-300 w-[85%] sm:w-auto shadow-2xl shadow-black/10 dark:shadow-white/5 rounded-xl overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:scale-[1.02] group-active:scale-[0.98] rounded-xl" />
                       <span className="relative flex items-center gap-3">
@@ -153,7 +153,7 @@ export default function HeroSection() {
                     </Link>
                     <Link
                       href="/login"
-                      className="group relative inline-flex items-center justify-center px-12 py-4 font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-full sm:w-auto border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
                     >
                       <span className="relative">Log In</span>
                     </Link>

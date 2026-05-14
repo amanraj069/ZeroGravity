@@ -521,7 +521,7 @@ export default function Leaderboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  {leaderboard.entries.length === 0 ? (
+                  {leaderboard.entries.filter((e) => e.user !== null).length === 0 ? (
                     <tr>
                       <td
                         colSpan={6}
@@ -531,7 +531,7 @@ export default function Leaderboard() {
                       </td>
                     </tr>
                   ) : (
-                    leaderboard.entries.map((entry) => {
+                    leaderboard.entries.filter((e) => e.user !== null).map((entry) => {
                       // Determine background color based on rank (only for top 3)
                       let rowBgClass = "";
                       let rewardPoints = null;

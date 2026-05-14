@@ -17,30 +17,48 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zerogravity.vercel.app"),
-  title: "zeroGravity",
-  description: "Goals without gravity",
+  title: {
+    default: "zeroGravity - Goals without gravity",
+    template: "%s | zeroGravity",
+  },
+  description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries. Track progress, take quizzes, and join the community.",
+  keywords: ["education", "goals", "quizzes", "students", "learning", "zeroGravity", "academic", "study planner"],
+  authors: [{ name: "zeroGravity Team" }],
+  creator: "zeroGravity",
+  publisher: "zeroGravity",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "zeroGravity",
-    description: "Goals without gravity",
+    type: "website",
+    locale: "en_US",
+    title: "zeroGravity - Goals without gravity",
+    description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries.",
     url: "https://zerogravity.vercel.app",
     siteName: "zeroGravity",
     images: [
-      new URL(
-        "/opengraph-image",
-        new URL("https://zerogravity.vercel.app"),
-      ).toString(),
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "zeroGravity - Goals without gravity",
+      },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "zeroGravity",
-    description: "Goals without gravity",
-    images: [
-      new URL(
-        "/opengraph-image",
-        new URL("https://zerogravity.vercel.app"),
-      ).toString(),
-    ],
+    title: "zeroGravity - Goals without gravity",
+    description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries.",
+    creator: "@zeroGravity",
+    images: ["/opengraph-image"],
   },
 };
 

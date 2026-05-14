@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +19,24 @@ export default function Login() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  
+  // Generate random stars for background atmosphere (client-side only to avoid hydration mismatch)
+  const [stars, setStars] = useState<Array<{left: string, top: string, size: number, opacity: number, delay: number}>>([]);
+  
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 50 : 120;
+    const baseSize = isMobile ? 0.5 : 0.8;
+    const sizeVariance = isMobile ? 1 : 1.5;
+
+    setStars(Array.from({ length: starCount }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * sizeVariance + baseSize,
+      opacity: Math.random() * 0.8 + 0.4,
+      delay: Math.random() * 5,
+    })));
+  }, []);
 
   useEffect(() => {
     // Redirect to home if user is already logged in
@@ -106,25 +125,103 @@ export default function Login() {
   }
 
   return (
-    <div className="h-[100dvh] w-full flex items-center justify-center bg-white dark:bg-gray-900 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md p-6 sm:p-8">
+    <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Base Background Layer */}
+      <div className="absolute inset-0 bg-white dark:bg-black z-0" />
+      
+      {/* Background Atmosphere & Stars */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+        {/* Floating Background Blobs */}
+        <motion.div 
+          animate={{
+            x: [0, 30, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/[0.08] md:bg-purple-600/[0.15] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" 
+        />
+        <motion.div 
+          animate={{
+            x: [0, -40, 0],
+            y: [0, 20, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-blue-600/[0.05] md:bg-blue-600/[0.1] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" 
+        />
+
+        {/* Stars */}
+        <div className="absolute inset-0">
+          {stars.map((star, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: [star.opacity, 0.1, star.opacity],
+                scale: [1, 0.8, 1],
+              }}
+              transition={{
+                duration: 1.5 + Math.random() * 2,
+                repeat: Infinity,
+                delay: star.delay,
+                ease: "easeInOut",
+              }}
+              className="absolute bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              style={{
+                left: star.left,
+                top: star.top,
+                width: star.size,
+                height: star.size,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative z-20"
+      >
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2">
+          <motion.h1 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-2"
+          >
             Login
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="text-sm sm:text-base text-gray-600 dark:text-gray-400"
+          >
             Welcome back to ZeroGravity
-          </p>
+          </motion.p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {error && (
-            <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/30 p-3  border border-red-200 dark:border-red-800">
+            <div className="text-red-600 dark:text-red-400 text-sm text-center bg-red-50 dark:bg-red-900/30 p-3 rounded-xl border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
             <label
               htmlFor="email"
               className="block text-sm font-medium text-black dark:text-white mb-2"
@@ -139,12 +236,16 @@ export default function Login() {
               onChange={handleChange}
               required
               autoComplete="email"
-              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
+              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
               placeholder="Enter your email here"
             />
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
             <label
               htmlFor="password"
               className="block text-sm font-medium text-black dark:text-white mb-2"
@@ -160,13 +261,13 @@ export default function Login() {
                 onChange={handleChange}
                 required
                 autoComplete="current-password"
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none transition-colors"
               >
                 {showPassword ? (
                   <svg
@@ -205,16 +306,23 @@ export default function Login() {
                 )}
               </button>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-3">
-            <button
+          <motion.div 
+            className="space-y-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base rounded-xl shadow-lg hover:shadow-black/20 dark:hover:shadow-red-900/40"
             >
               {isLoading ? "Signing in..." : "Sign In"}
-            </button>
+            </motion.button>
 
             <div className="relative flex items-center justify-center my-4 sm:my-6">
               <div className="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
@@ -224,14 +332,19 @@ export default function Login() {
               <div className="flex-grow border-t border-gray-300 dark:border-gray-700"></div>
             </div>
 
-            <div className="w-full">
+            <motion.div 
+              className="w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
               <GoogleSignInButton
               onSuccess={async (credential) => {
+                // ... (no changes to logic)
                 setIsGoogleLoading(true);
                 setError("");
 
                 try {
-                  // Check signin status first
                   const signinStatusResponse = await apiCall(
                     API_ENDPOINTS.AUTH.SIGNIN_STATUS
                   );
@@ -246,7 +359,6 @@ export default function Login() {
                   const result = await loginWithGoogle(credential);
 
                   if (result.success) {
-                    // Redirect to dashboard after successful login
                     router.push("/dashboard");
                   } else {
                     setError(result.message || "Google authentication failed");
@@ -267,11 +379,16 @@ export default function Login() {
               disabled={isLoading}
               isLoading={isGoogleLoading}
             />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </form>
 
-        <div className="mt-6 sm:mt-8 text-center">
+        <motion.div 
+          className="mt-6 sm:mt-8 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.5 }}
+        >
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Don&apos;t have an account?{" "}
             <Link
@@ -281,17 +398,22 @@ export default function Login() {
               Sign up
             </Link>
           </p>
-        </div>
+        </motion.div>
 
-        <div className="mt-4 sm:mt-6 text-center">
+        <motion.div 
+          className="mt-4 sm:mt-6 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1, duration: 0.5 }}
+        >
           <Link
             href="/"
             className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
           >
             ← Back to home
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

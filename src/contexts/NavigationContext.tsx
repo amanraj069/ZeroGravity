@@ -31,6 +31,10 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Update navigation stack when pathname changes
   useEffect(() => {
+    // Skip redirector pages in the navigation history
+    const redirectorPages = ["/createQuiz", "/login", "/signup"];
+    if (redirectorPages.includes(pathname)) return;
+
     // The last page in the current stack is the "previous" page before we update
     const currentLastPage = navigationStack[navigationStack.length - 1];
 
@@ -65,6 +69,8 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     if (path?.startsWith("/academia/")) return "/academia";
     if (path === "/goals") return "/dashboard";
     if (path === "/quizzes") return "/dashboard";
+    if (path === "/quizzes/create") return "/quizzes";
+    if (path?.startsWith("/quizzes/host/")) return "/quizzes";
     if (path?.startsWith("/quizzes/")) return "/quizzes";
     if (path === "/notes") return "/dashboard";
     if (path?.startsWith("/notes/")) return "/notes";
@@ -79,8 +85,8 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     if (path === "/studentsHub") return "/dashboard";
     if (path?.startsWith("/studentsHub/")) return "/dashboard";
     if (path === "/joinQuiz") return "/dashboard";
-    if (path === "/createQuiz") return "/dashboard";
-    if (path?.startsWith("/hosted/")) return "/dashboard";
+    if (path === "/createQuiz") return "/quizzes";
+    if (path?.startsWith("/hosted/")) return "/quizzes";
 
     // Default fallback to dashboard
     return "/dashboard";

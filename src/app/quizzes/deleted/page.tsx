@@ -6,15 +6,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { listDeletedQuizzes, restoreQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
+import DeletedQuizzesSkeleton, { DeletedQuizCardsSkeleton } from "@/components/quizzes/DeletedQuizzesSkeleton";
 
 export default function DeletedQuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
   const router = useRouter();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredQuizzes, setFilteredQuizzes] = useState<Quiz[]>([]);
-  // const [searchLoading, setSearchLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [processingQuizId, setProcessingQuizId] = useState<string | null>(null);
   const [processingAction, setProcessingAction] = useState<"restore" | null>(
     null,
@@ -31,19 +32,21 @@ export default function DeletedQuizzesPage() {
 
   useEffect(() => {
     // Debounced search functionality
-    // setSearchLoading(true);
+    if (!searchTerm.trim()) {
+      setFilteredQuizzes(quizzes);
+      setSearchLoading(false);
+      return;
+    }
+
+    setSearchLoading(true);
     const timeoutId = setTimeout(() => {
-      if (searchTerm.trim()) {
-        const filtered = quizzes.filter(
-          (quiz) =>
-            quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            quiz.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-        );
-        setFilteredQuizzes(filtered);
-      } else {
-        setFilteredQuizzes(quizzes);
-      }
-      // setSearchLoading(false);
+      const filtered = quizzes.filter(
+        (quiz) =>
+          quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          quiz.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+      setFilteredQuizzes(filtered);
+      setSearchLoading(false);
     }, 300);
 
     return () => clearTimeout(timeoutId);
@@ -121,12 +124,7 @@ export default function DeletedQuizzesPage() {
   };
 
   if (authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Authenticating"
-        subtitle="Verifying your cosmic credentials..."
-      />
-    );
+    return <DeletedQuizzesSkeleton />;
   }
 
   if (!isLoggedIn) {
@@ -232,58 +230,49 @@ export default function DeletedQuizzesPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-      <main className="py-10">
-        <div className="max-w-6xl mx-auto px-4">
+      <main className="py-6 sm:py-10">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header with Search */}
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <button
-                  onClick={() => router.push("/quizzes")}
-                  className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <button
+                onClick={() => router.push("/quizzes")}
+                className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+              >
+                <svg
+                  className="w-6 h-6 sm:w-8 sm:h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-                <h1 className="text-3xl font-light text-black dark:text-white">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-0.5 sm:mb-1">
                   Deleted Quizzes
                 </h1>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                  Restore your deleted quizzes
+                </p>
               </div>
-              <p className="text-gray-600 dark:text-gray-400">
-                Restore or permanently delete your deleted quizzes
-              </p>
             </div>
             <input
               type="text"
               placeholder="Search by title"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full sm:w-80 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all rounded-lg"
+              className="w-full sm:w-80 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all rounded-lg"
             />
           </div>
 
           {/* Loading State */}
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="flex flex-col items-center justify-center">
-                <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-black dark:border-t-white rounded-full animate-spin mb-3"></div>
-                <p className="text-gray-600 dark:text-gray-400 font-light">
-                  Loading deleted quizzes...
-                </p>
-              </div>
-            </div>
-          )}
+          {loading && <DeletedQuizCardsSkeleton />}
 
           {/* Empty State */}
           {!loading && filteredQuizzes.length === 0 && quizzes.length === 0 && (
@@ -324,7 +313,7 @@ export default function DeletedQuizzesPage() {
           )}
 
           {/* No Search Results */}
-          {!loading && filteredQuizzes.length === 0 && quizzes.length > 0 && (
+          {!loading && !searchLoading && filteredQuizzes.length === 0 && quizzes.length > 0 && (
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="max-w-md mx-auto text-center">
                 <div className="mb-6">
@@ -366,7 +355,7 @@ export default function DeletedQuizzesPage() {
               {filteredQuizzes.map((quiz) => (
                 <div
                   key={quiz.quizId}
-                  className="bg-white dark:bg-gray-800 shadow-sm p-6 border border-gray-100 dark:border-gray-700 rounded-xl"
+                  className="bg-white dark:bg-gray-800 shadow-sm p-4 sm:p-6 border border-gray-100 dark:border-gray-700 rounded-xl"
                 >
                   {/* Header with Deleted Date and Actions */}
                   <div className="flex justify-between items-start mb-4">
@@ -416,8 +405,7 @@ export default function DeletedQuizzesPage() {
                     </div>
                   </div>
 
-                  {/* Quiz Title */}
-                  <h3 className="text-xl font-semibold text-black dark:text-white mb-3 line-clamp-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-2 sm:mb-3 line-clamp-2">
                     {quiz.title}
                   </h3>
 
@@ -429,28 +417,28 @@ export default function DeletedQuizzesPage() {
                   )}
 
                   {/* Quiz Stats */}
-                  <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black dark:text-white">
+                      <div className="text-base sm:text-lg font-semibold text-black dark:text-white">
                         {quiz.questions.length}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Questions
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black dark:text-white">
+                      <div className="text-base sm:text-lg font-semibold text-black dark:text-white truncate px-1">
                         {quiz.status}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Status
                       </div>
                     </div>
                     <div className="text-center">
-                      <div className="text-lg font-semibold text-black dark:text-white">
-                        {new Date(quiz.createdAt).toLocaleDateString()}
+                      <div className="text-base sm:text-lg font-semibold text-black dark:text-white">
+                        {new Date(quiz.createdAt).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' })}
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Created
                       </div>
                     </div>

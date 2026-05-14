@@ -42,6 +42,7 @@ import {
   BADGE_VISUALS,
   BadgeData,
 } from "@/services/badgeService";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 interface StreakInfo {
   currentStreak: number;
@@ -354,9 +355,7 @@ export default function Profile() {
                 <span className="text-sm font-semibold text-black dark:text-white">
                   {(user.points || 0).toLocaleString()}
                 </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  points
-                </span>
+                <CurrencyIcon size={12} className="ml-0.5" />
               </div>
               <Link
                 href="/shop"

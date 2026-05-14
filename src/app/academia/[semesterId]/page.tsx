@@ -13,6 +13,7 @@ import {
   GRADE_OPTIONS,
 } from "@/services/academiaService";
 import { ChevronLeft } from "lucide-react";
+import SemesterDetailSkeleton from "@/components/academia/SemesterDetailSkeleton";
 
 export default function SemesterDetailPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -218,14 +219,8 @@ export default function SemesterDetailPage() {
     setEditCourseAbsents(0);
   };
 
-  if (authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Loading Semester"
-        subtitle="Preparing your academic records..."
-        showNavigation={false}
-      />
-    );
+  if (authLoading || loading) {
+    return <SemesterDetailSkeleton />;
   }
 
   if (!isLoggedIn) {
@@ -235,20 +230,6 @@ export default function SemesterDetailPage() {
         subtitle="Redirecting to login..."
         showNavigation={false}
       />
-    );
-  }
-
-  if (loading) {
-    return (
-      <DashboardLayout>
-        <div className="mt-4">
-          <div className="flex items-center justify-center py-12">
-            <div className="text-gray-500 dark:text-gray-400">
-              Loading semester...
-            </div>
-          </div>
-        </div>
-      </DashboardLayout>
     );
   }
 

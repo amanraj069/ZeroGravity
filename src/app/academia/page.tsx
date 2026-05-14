@@ -14,6 +14,7 @@ import {
   calculateSGPA,
   calculateCGPA,
 } from "@/services/academiaService";
+import AcademiaSkeleton, { AcademiaGridSkeleton } from "@/components/academia/AcademiaSkeleton";
 
 export default function AcademiaPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -248,13 +249,7 @@ export default function AcademiaPage() {
   };
 
   if (authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Loading Academia"
-        subtitle="Preparing your academic records..."
-        showNavigation={false}
-      />
-    );
+    return <AcademiaSkeleton />;
   }
 
   if (!isLoggedIn) {
@@ -274,12 +269,15 @@ export default function AcademiaPage() {
         <div className="mb-4 sm:mb-8">
           <div className="mb-2">
             {/* Title and CGPA on same row on mobile */}
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <BackButton />
-                <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white">
+            <div className="flex items-center gap-2 sm:gap-4 mb-2">
+              <BackButton />
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white mb-0.5 sm:mb-1">
                   Academia
                 </h1>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                  Store your academics in encrypted format
+                </p>
               </div>
               {(() => {
                 const cgpaResult = calculateCGPA(semesters);
@@ -307,10 +305,6 @@ export default function AcademiaPage() {
                 );
               })()}
             </div>
-            {/* Description below */}
-            <p className="text-xs sm:text-base text-gray-600 dark:text-gray-400 mb-2">
-              Store your academics in encrypted format
-            </p>
             {/* CGPA error message */}
             {showCGPAError && (
               <p className="text-xs text-red-600 dark:text-red-400 mt-1">
@@ -331,11 +325,7 @@ export default function AcademiaPage() {
 
         {/* Loading State */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-gray-500 dark:text-gray-400">
-              Loading semesters...
-            </div>
-          </div>
+          <AcademiaGridSkeleton />
         ) : (
           <>
             {/* Semesters Grid */}
