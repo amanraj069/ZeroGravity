@@ -3,9 +3,11 @@
 import {
   AnimatedSection,
 } from "@/components/AnimatedSection";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Github, Linkedin, Mail, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AboutPage() {
   const versions = [
@@ -80,9 +82,69 @@ export default function AboutPage() {
     },
   ];
 
+  // Generate random stars for background atmosphere (client-side only to avoid hydration mismatch)
+  const [stars, setStars] = useState<Array<{left: string, top: string, size: number, opacity: number, delay: number}>>([]);
+  
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 50 : 120;
+    const baseSize = isMobile ? 0.5 : 0.8;
+    const sizeVariance = isMobile ? 1 : 1.5;
+
+    setStars(Array.from({ length: starCount }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * sizeVariance + baseSize,
+      opacity: Math.random() * 0.8 + 0.4,
+      delay: Math.random() * 5,
+    })));
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0a0a0a] transition-colors duration-1000">
-      <div className="max-w-6xl mx-auto px-5 sm:px-12 pt-10 pb-24 sm:pt-16 sm:pb-32">
+    <div className="min-h-screen bg-white dark:bg-[#111116] transition-colors duration-1000 relative overflow-hidden">
+      {/* Background Atmosphere & Stars */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Floating Background Blobs */}
+        <motion.div 
+          animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-5%] right-[-5%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-500/[0.05] dark:bg-indigo-500/[0.08] rounded-full blur-[80px] md:blur-[140px]" 
+        />
+        <motion.div 
+          animate={{ x: [0, -40, 0], y: [0, 20, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-0 left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-rose-500/[0.05] dark:bg-blue-900/[0.1] rounded-full blur-[60px] md:blur-[120px]" 
+        />
+
+        {/* Stars */}
+        <div className="absolute inset-0">
+          {stars.map((star, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: [star.opacity, 0.1, star.opacity],
+                scale: [1, 0.8, 1],
+              }}
+              transition={{
+                duration: 1.5 + Math.random() * 2,
+                repeat: Infinity,
+                delay: star.delay,
+                ease: "easeInOut",
+              }}
+              className="absolute rounded-full bg-indigo-400 dark:bg-white/40"
+              style={{
+                left: star.left,
+                top: star.top,
+                width: star.size,
+                height: star.size,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-12 pt-10 pb-24 sm:pt-16 sm:pb-32">
         
         {/* Header */}
         <AnimatedSection className="mb-12 sm:mb-16">
@@ -100,7 +162,7 @@ export default function AboutPage() {
             Developer
           </h2>
           {developers.map((dev, index) => (
-            <div key={index} className="bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col md:flex-row group transition-all duration-500 hover:border-gray-200 dark:hover:border-white/10">
+            <div key={index} className="bg-white/40 dark:bg-[#181820]/40 backdrop-blur-xl border border-gray-100 dark:border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col md:flex-row group transition-all duration-500 hover:border-gray-200 dark:hover:border-white/20 shadow-sm dark:shadow-none">
               <div className="p-6 sm:p-10 flex-1 order-2 md:order-1">
                 <h3 className="text-lg sm:text-2xl font-medium text-black dark:text-white mb-1">{dev.name}</h3>
                 <p className="text-[12px] sm:text-base text-gray-500 dark:text-gray-400 mb-4 font-light">{dev.role}</p>
@@ -140,13 +202,13 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-8 sm:space-y-10">
             {versions.map((v) => (
-              <div key={v.version} className="relative pl-6 sm:pl-10 border-l border-gray-100 dark:border-white/5">
-                <div className="absolute left-[-4px] sm:left-[-5px] top-1 w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-gray-200 dark:bg-white/20" />
+              <div key={v.version} className="relative pl-6 sm:pl-10 border-l border-gray-100 dark:border-white/10">
+                <div className="absolute left-[-4px] sm:left-[-5px] top-1 w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-gray-200 dark:bg-white/30" />
                 <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-2 sm:mb-4">
                   <h3 className="text-[15px] sm:text-lg font-medium text-black dark:text-white">Version {v.version}</h3>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] sm:text-xs text-gray-400 font-light">{v.date}</span>
-                    <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400 px-1.5 py-0.5 bg-gray-50 dark:bg-white/5 rounded w-fit">
+                    <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400 px-1.5 py-0.5 bg-gray-50 dark:bg-white/10 rounded w-fit">
                       {v.status}
                     </span>
                   </div>
@@ -169,9 +231,9 @@ export default function AboutPage() {
           <h2 className="text-[9px] sm:text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-500 mb-4 sm:mb-8">
             Future Roadmap
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-gray-100 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-gray-100 dark:bg-white/10 border border-gray-100 dark:border-white/10">
             {upcomingFeatures.map((feature, index) => (
-              <div key={index} className="bg-white dark:bg-[#0a0a0a] p-5 sm:p-8 hover:bg-gray-50/50 dark:hover:bg-white/[0.01] transition-colors">
+              <div key={index} className="bg-white dark:bg-[#111116] p-5 sm:p-8 hover:bg-gray-50/50 dark:hover:bg-[#181820]/40 transition-colors">
                 <div className="flex items-start gap-3 mb-2">
                   <Zap className="w-3.5 h-3.5 text-gray-400 mt-1" />
                   <h3 className="text-sm sm:text-lg font-light text-black dark:text-white tracking-tight leading-tight">{feature.title}</h3>
@@ -181,7 +243,7 @@ export default function AboutPage() {
                 </p>
                 <div className="flex items-center gap-3">
                   <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400">{feature.status}</span>
-                  <div className="h-px flex-1 bg-gray-100 dark:bg-white/5" />
+                  <div className="h-px flex-1 bg-gray-100 dark:bg-white/10" />
                   <span className="text-[8px] uppercase tracking-widest font-bold text-gray-400">{feature.eta}</span>
                 </div>
               </div>
@@ -190,7 +252,7 @@ export default function AboutPage() {
         </AnimatedSection>
 
         {/* Footer CTA */}
-        <AnimatedSection className="pt-10 sm:pt-12 border-t border-gray-100 dark:border-white/5 text-center">
+        <AnimatedSection className="pt-10 sm:pt-12 border-t border-gray-100 dark:border-white/10 text-center">
           <h2 className="text-base sm:text-2xl font-light text-black dark:text-white mb-4 sm:mb-6 tracking-tight italic opacity-90">
             Want to contribute?
           </h2>
