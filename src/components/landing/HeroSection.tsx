@@ -31,13 +31,13 @@ export default function HeroSection() {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
-          className="rounded-full bg-white/5 dark:bg-black/20 backdrop-blur-md py-1.5 pl-5 pr-1.5 border border-white/10 dark:border-white/5 shadow-2xl flex items-center transition-all hover:bg-white/10 dark:hover:bg-black/30 group/quiz"
+          className="rounded-full bg-white/40 dark:bg-black/40 backdrop-blur-xl py-1.5 pl-5 pr-1.5 border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-none flex items-center transition-all hover:bg-white/60 dark:hover:bg-black/60 group/quiz"
         >
           <div className="flex items-center gap-4">
-            <p className="text-[9px] font-bold text-white whitespace-nowrap tracking-[0.2em] uppercase opacity-40 group-hover/quiz:opacity-100 transition-opacity">
+            <p className="text-[9px] font-bold text-gray-500 dark:text-white/40 whitespace-nowrap tracking-[0.2em] uppercase group-hover/quiz:text-black dark:group-hover/quiz:text-white transition-opacity">
               HERE FOR A QUIZ?
             </p>
-            <div className="h-4 w-[1px] bg-white/10" />
+            <div className="h-4 w-[1px] bg-gray-200 dark:bg-white/10" />
             <form onSubmit={handleQuizJoin} className="flex items-center gap-3">
               <input
                 type="text"
@@ -45,7 +45,7 @@ export default function HeroSection() {
                 value={quizCode}
                 onChange={(e) => setQuizCode(e.target.value.toUpperCase())}
                 maxLength={6}
-                className="w-16 sm:w-20 bg-transparent text-white px-0 py-1 focus:outline-none transition-all uppercase placeholder:text-white/40 tracking-[0.2em] text-center text-[10px] font-bold"
+                className="w-16 sm:w-20 bg-transparent text-black dark:text-white px-0 py-1 focus:outline-none transition-all uppercase placeholder:text-gray-400 dark:placeholder:text-white/40 tracking-[0.2em] text-center text-[10px] font-bold"
               />
               <button
                 type="submit"
@@ -153,7 +153,7 @@ export default function HeroSection() {
                     </Link>
                     <Link
                       href="/login"
-                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 backdrop-blur-xl hover:bg-black/10 dark:hover:bg-white/10 rounded-xl"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-black/5 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl hover:bg-white/60 dark:hover:bg-white/10 shadow-lg hover:shadow-black/5 rounded-xl"
                     >
                       <span className="relative">Log In</span>
                     </Link>

@@ -125,36 +125,32 @@ export default function Login() {
   }
 
   return (
-    <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Base Background Layer */}
-      <div className="absolute inset-0 bg-white dark:bg-black z-0" />
+    <div className="h-[100dvh] w-full flex relative overflow-hidden">
+      {/* Base Background Layer – light mode */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-purple-50 dark:hidden z-0" />
+      {/* Base Background Layer – dark mode */}
+      <div className="absolute inset-0 hidden dark:block bg-black z-0" />
       
       {/* Background Atmosphere & Stars */}
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         {/* Floating Background Blobs */}
+        {/* Top-right: purple/indigo */}
         <motion.div 
-          animate={{
-            x: [0, 30, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-600/[0.08] md:bg-purple-600/[0.15] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" 
+          animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-400/[0.18] md:bg-purple-500/[0.22] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" 
         />
+        {/* Bottom-left: rose/pink */}
         <motion.div 
-          animate={{
-            x: [0, -40, 0],
-            y: [0, 20, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-blue-600/[0.05] md:bg-blue-600/[0.1] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" 
+          animate={{ x: [0, -40, 0], y: [0, 20, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-rose-300/[0.15] md:bg-rose-400/[0.18] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" 
+        />
+        {/* Centre accent: blue/indigo — light mode only */}
+        <motion.div
+          animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[30%] left-[10%] w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-indigo-300/[0.12] md:bg-indigo-400/[0.14] dark:hidden rounded-full blur-[70px] md:blur-[120px]"
         />
 
         {/* Stars */}
@@ -173,7 +169,7 @@ export default function Login() {
                 delay: star.delay,
                 ease: "easeInOut",
               }}
-              className="absolute bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              className="absolute rounded-full bg-indigo-400 shadow-[0_0_6px_rgba(99,102,241,0.5)] dark:bg-white dark:shadow-[0_0_8px_rgba(255,255,255,0.8)]"
               style={{
                 left: star.left,
                 top: star.top,
@@ -185,12 +181,16 @@ export default function Login() {
         </div>
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative z-20"
-      >
+      {/* ── Two-column wrapper ── */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto flex items-center justify-center px-6 lg:px-10 gap-10 lg:gap-24">
+
+        {/* ── LEFT: Login Card ── */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full max-w-md flex-shrink-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+        >
         <div className="text-center mb-6 sm:mb-8">
           <motion.h1 
             initial={{ opacity: 0, y: -10 }}
@@ -274,34 +274,26 @@ export default function Login() {
                     className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
-                    />
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
                   </svg>
                 ) : (
                   <svg
                     className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     viewBox="0 0 24 24"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
                   </svg>
                 )}
               </button>
@@ -414,6 +406,85 @@ export default function Login() {
           </Link>
         </motion.div>
       </motion.div>
+
+        {/* ── RIGHT: Hero Panel (desktop only) ── */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+          className="hidden lg:flex flex-col justify-center w-fit"
+        >
+          {/* Eyebrow — matches site pattern */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="text-[10px] uppercase tracking-[0.5em] font-bold text-gray-400 dark:text-gray-500 mb-6"
+          >
+            ZeroGravity
+          </motion.p>
+
+          {/* Main headline — font-light, tracking-tighter like HeroSection */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
+            className="text-5xl xl:text-6xl font-light text-black dark:text-white tracking-tighter leading-[1.1] mb-6"
+          >
+            Can you defy
+            <br />
+            <span className="italic">the gravity?</span>
+          </motion.h2>
+
+          {/* Divider */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.85, duration: 0.5, ease: "easeOut" }}
+            className="origin-left w-12 h-px bg-black dark:bg-white mb-6"
+          />
+
+          {/* Sub-copy */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.6 }}
+            className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-10 max-w-xs"
+          >
+            Push your limits, earn streaks, and rise up the leaderboard - one task at a time.
+          </motion.p>
+
+          {/* Feature tags — minimal, site-consistent */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.05, duration: 0.6 }}
+            className="flex flex-col gap-2"
+          >
+            <div className="flex gap-3">
+              {["Daily Streaks", "Leaderboards"].map((tag) => (
+                <span
+                  key={tag}
+                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-500 bg-black/[0.07] dark:bg-white/5 rounded-full whitespace-nowrap"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              {["Power-Ups", "Quizzes"].map((tag) => (
+                <span
+                  key={tag}
+                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-500 bg-black/[0.07] dark:bg-white/5 rounded-full whitespace-nowrap"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+
+      </div>{/* end two-column wrapper */}
     </div>
   );
 }
