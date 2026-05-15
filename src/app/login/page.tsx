@@ -39,9 +39,9 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    // Redirect to home if user is already logged in
+    // Redirect to dashboard if user is already logged in
     if (user) {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [user, router]);
 
@@ -463,22 +463,26 @@ export default function Login() {
           >
             <div className="flex gap-3">
               {["Daily Streaks", "Leaderboards"].map((tag) => (
-                <span
+                <motion.span
                   key={tag}
-                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-500 bg-black/[0.07] dark:bg-white/5 rounded-full whitespace-nowrap"
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]"
                 >
                   {tag}
-                </span>
+                </motion.span>
               ))}
             </div>
             <div className="flex gap-3">
               {["Power-Ups", "Quizzes"].map((tag) => (
-                <span
+                <motion.span
                   key={tag}
-                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-500 bg-black/[0.07] dark:bg-white/5 rounded-full whitespace-nowrap"
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]"
                 >
                   {tag}
-                </span>
+                </motion.span>
               ))}
             </div>
           </motion.div>

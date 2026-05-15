@@ -183,9 +183,9 @@ export default function PublicProfile() {
             </button>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 w-full h-full relative">
-              <div className="flex flex-row items-center gap-3 lg:gap-6 w-full sm:w-auto mt-1 sm:mt-0">
+              <div className="flex flex-row items-center gap-6 lg:gap-12 w-full sm:w-auto mt-1 sm:mt-0">
                 {/* Profile Picture */}
-                <div className="relative group flex-shrink-0">
+                <div className="relative group flex-shrink-0 ml-2 lg:ml-6">
                   <div
                     className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
                       user.equippedBorder || "",
@@ -211,7 +211,7 @@ export default function PublicProfile() {
 
                 {/* Name and Username */}
                 <div className="flex-1 min-w-0 text-left flex flex-col justify-center h-full">
-                  <div className="flex flex-col gap-1 md:gap-1.5 mb-1 md:mb-1.5 py-1 items-start">
+                  <div className="flex flex-col gap-2 md:gap-2.5 mb-2 py-1 items-start">
                     <h2 className="text-lg md:text-2xl font-bold text-black dark:text-white truncate">
                       {user.firstName} {user.lastName}
                     </h2>
@@ -244,8 +244,9 @@ export default function PublicProfile() {
                     @{user.username}
                   </p>
 
+                  {/* Task counts below username (hidden on mobile) */}
                   <div className="hidden sm:flex items-center justify-start gap-4 md:gap-8 mt-2 md:mt-3">
-                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
+                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-transparent dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
                       <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                         Active Tasks
                       </span>
@@ -253,7 +254,7 @@ export default function PublicProfile() {
                         {streakInfo?.totalActiveTasks ?? 0}
                       </span>
                     </div>
-                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
+                    <div className="flex flex-col items-start gap-0.5 md:gap-1 p-1.5 md:p-2 border border-transparent dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 rounded-md min-w-[100px] md:min-w-[120px]">
                       <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
                         Completed
                       </span>
@@ -270,7 +271,7 @@ export default function PublicProfile() {
           {/* Right Section (40%) - Badges & Streak */}
           <div className="w-full lg:w-[40%] flex flex-col gap-3 md:gap-4 justify-between">
             {/* Badges Strip */}
-            <div className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center min-h-[140px] rounded-xl">
+            <div className="flex-1 relative border border-gray-200 dark:border-gray-800 p-3 bg-white dark:bg-gray-800/60 overflow-hidden hover:border-gray-400 dark:hover:border-gray-600 transition-all group flex flex-col justify-center rounded-xl">
               <div className="flex items-center justify-between mb-2 w-full">
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
                   Badges
@@ -293,7 +294,7 @@ export default function PublicProfile() {
                   return (
                     <div
                       key={slot}
-                      className={`flex-1 min-w-0 flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-2 sm:p-3 md:p-4 border transition-all bg-white dark:bg-[#050710] shadow-sm rounded-xl relative min-h-[90px] sm:min-h-[110px]
+                      className={`flex-1 min-w-0 flex flex-col items-center justify-center gap-1.5 sm:gap-2 p-2 sm:p-3 md:p-4 border transition-all bg-white dark:bg-[#050710] shadow-sm rounded-xl relative min-h-[90px] sm:min-h-[110px] md:min-h-[120px]
                         ${badgeId ? "border-gray-200 dark:border-gray-800" : "border-dashed border-gray-300 dark:border-gray-700 opacity-40"}`}
                     >
                       {badgeId && badgeVisual ? (
@@ -337,7 +338,15 @@ export default function PublicProfile() {
 
             {/* Streak Grid 2 Columns */}
             <div className="grid grid-cols-2 gap-3 h-auto">
-              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden flex flex-col justify-center rounded-xl">
+              {/* Current Streak */}
+              <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center rounded-xl">
+                <div className="absolute inset-0 opacity-10 dark:opacity-5">
+                  <div className="absolute top-0 left-1/4 w-12 h-12 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
+                  <div
+                    className="absolute bottom-0 right-1/4 w-16 h-16 bg-red-400 rounded-full blur-3xl animate-pulse"
+                    style={{ animationDelay: "0.5s" }}
+                  ></div>
+                </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
                     Current Streak
@@ -350,7 +359,15 @@ export default function PublicProfile() {
                   </div>
                 </div>
               </div>
-              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden flex flex-col justify-center rounded-xl">
+              {/* Highest Streak */}
+              <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center rounded-xl">
+                <div className="absolute inset-0 opacity-10 dark:opacity-5">
+                  <div className="absolute top-0 right-1/4 w-12 h-12 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
+                  <div
+                    className="absolute bottom-0 left-1/4 w-16 h-16 bg-pink-400 rounded-full blur-3xl animate-pulse"
+                    style={{ animationDelay: "0.5s" }}
+                  ></div>
+                </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
                     Highest Streak

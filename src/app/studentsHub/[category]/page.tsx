@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import BenefitsList from "@/components/studentsHub/BenefitsList";
+import { BackButton } from "@/components/BackButton";
 import { travelBenefits } from "@/data/benefits/travel";
 import { technologyBenefits } from "@/data/benefits/technology";
 import { softwareBenefits } from "@/data/benefits/software";
@@ -126,111 +127,39 @@ export default function CategoryPage() {
   return (
     <DashboardLayout>
       <div className="mt-4">
-        <div className="mb-2 sm:mb-4 flex flex-row items-start md:items-center justify-between gap-3 md:gap-4">
-          <Link
-            href="/studentsHub"
-            className="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors whitespace-nowrap text-sm sm:text-base flex-shrink-0"
-          >
-            <span className="mr-2">←</span>
-            <span className="hidden sm:inline">Back to Students Hub</span>
-            <span className="sm:hidden">Back</span>
-          </Link>
-          <div className="text-right flex-shrink-0 max-w-[60%] sm:max-w-none">
-            <h1 className="text-xl sm:text-3xl md:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2 leading-tight">
+        {/* Header Section */}
+        <div className="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <BackButton />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-black dark:text-white leading-tight">
               {categoryInfo.title}
             </h1>
-            <p className="hidden sm:block text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 leading-tight">
-              {categoryInfo.description}
-            </p>
           </div>
-        </div>
-
-        {/* Search Bar - Desktop version */}
-        <div className="hidden sm:block sticky top-[64px] z-20 bg-gray-100 dark:bg-gray-900 -mx-4 px-4 py-4 border-b border-gray-200 dark:border-gray-800 mb-6 shadow-sm">
-          <div className="relative w-full max-w-6xl mx-auto">
+          
+          {/* Search Bar */}
+          <div className="w-full md:w-72 lg:w-96 flex-shrink-0 relative">
             <input
               type="text"
               placeholder="Search benefits..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-5 py-4 pl-14 pr-12 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-none text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-light text-base shadow-lg hover:shadow-xl focus:shadow-xl"
+              className="w-full px-4 py-2.5 pl-10 pr-10 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-2xl text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 focus:ring-0 transition-all duration-300 font-light text-sm shadow-sm"
             />
             <svg
-              className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"
+              className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white transition-colors p-1"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Search Bar - Mobile version */}
-        <div className="sm:hidden sticky top-[53px] z-20 bg-gray-100 dark:bg-gray-900 -mx-4 px-4 py-3 border-b border-gray-200 dark:border-gray-800 mb-6 shadow-sm">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search benefits..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2.5 pl-11 pr-10 border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-none text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-gray-400 dark:focus:border-gray-600 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300 font-light text-sm shadow-lg hover:shadow-xl focus:shadow-xl"
-            />
-            <svg
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             )}
