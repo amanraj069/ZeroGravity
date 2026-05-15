@@ -158,12 +158,14 @@ export default function ActivityGraph({
 
           // Check if this day belongs to the current month
           const belongsToMonth = month === monthIndex && year === monthYear;
+          const activityCount = activityMap.get(dateStr) || 0;
+          
+          // Strictly treat as "future" (hidden) if it's past today
           const isFuture = currentDate > today;
 
           week.push({
             date: dateStr,
-            count:
-              !belongsToMonth || isFuture ? -1 : activityMap.get(dateStr) || 0,
+            count: !belongsToMonth || isFuture ? -1 : activityCount,
           });
 
           currentDate.setDate(currentDate.getDate() + 1);

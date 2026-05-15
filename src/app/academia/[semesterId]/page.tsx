@@ -12,7 +12,7 @@ import {
   type Course,
   GRADE_OPTIONS,
 } from "@/services/academiaService";
-import { ChevronLeft } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 import SemesterDetailSkeleton from "@/components/academia/SemesterDetailSkeleton";
 
 export default function SemesterDetailPage() {
@@ -238,13 +238,10 @@ export default function SemesterDetailPage() {
       <DashboardLayout>
         <div className="mt-4">
           <div className="flex items-center gap-2 sm:gap-4 mb-8">
-            <Link
+            <BackButton
               href="/academia"
               className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-              title="Back to Academia"
-            >
-              <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
-            </Link>
+            />
             <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white">
               Semester Not Found
             </h1>
@@ -260,13 +257,10 @@ export default function SemesterDetailPage() {
         {/* Header */}
         <div className="mb-4 sm:mb-8">
           <div className="flex items-center gap-2 sm:gap-4 mb-2">
-            <Link
+            <BackButton
               href="/academia"
               className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
-              title="Back to Academia"
-            >
-              <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
-            </Link>
+            />
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white mb-0.5 sm:mb-1">
                 {semester.name}
@@ -417,9 +411,12 @@ Assignment: 8/10
 
         {/* Courses List */}
         {semester.courses.length === 0 ? (
-          <div className="text-center py-8 sm:py-12 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] rounded-xl">
+          <div className="text-center border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] rounded-xl h-[70dvh] flex flex-col items-center justify-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white px-4">
+              No courses yet.
+            </h2>
             <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 px-4">
-              No courses yet. Click &quot;Add Course&quot; to get started.
+              Click &quot;Add Course&quot; to get started.
             </p>
           </div>
         ) : (

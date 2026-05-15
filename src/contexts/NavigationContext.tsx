@@ -6,6 +6,7 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useRef,
 } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -28,6 +29,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
   const pathname = usePathname();
   const [navigationStack, setNavigationStack] = useState<string[]>([]);
   const [previousPage, setPreviousPage] = useState<string | null>(null);
+  const isNavigatingBackRef = useRef(false);
 
   // Update navigation stack when pathname changes
   useEffect(() => {
@@ -43,7 +45,20 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     setNavigationStack((prevStack) => {
-      // Check if pathname is already in stack (going back)
+      if (isNavigatingBackRef.current) {
+        isNavigatingBackRef.current = false;
+        
+        const existingIndex = prevStack.indexOf(pathname);
+        if (existingIndex !== -1) {
+          return prevStack.slice(0, existingIndex + 1);
+        }
+        
+        // If we navigated back to a logical parent that wasn't in the stack,
+        // reset the stack to just that parent to prevent infinite back-loops.
+        return [pathname];
+      }
+
+      // Check if pathname is already in stack (going back natively via browser)
       const existingIndex = prevStack.indexOf(pathname);
       if (existingIndex !== -1) {
         // User went back to a previous page, trim stack to that point
@@ -83,7 +98,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     if (path?.startsWith("/profile/")) return "/dashboard"; // Other users
     if (path === "/settings") return "/dashboard";
     if (path === "/studentsHub") return "/dashboard";
-    if (path?.startsWith("/studentsHub/")) return "/dashboard";
+    if (path?.startsWith("/studentsHub/")) return "/studentsHub";
     if (path === "/joinQuiz") return "/dashboard";
     if (path === "/createQuiz") return "/quizzes";
     if (path?.startsWith("/hosted/")) return "/quizzes";
@@ -114,6 +129,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
   const goBack = useCallback(() => {
     const backPath = getBackPath();
     if (backPath && backPath !== pathname) {
+      isNavigatingBackRef.current = true;
       router.push(backPath);
       // Stack will be automatically updated by useEffect when pathname changes
     }

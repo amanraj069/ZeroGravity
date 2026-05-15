@@ -156,6 +156,20 @@ export default function StudentsHub() {
     }));
   }, []);
 
+  const studentbeansStars = useMemo(() => {
+    return Array.from({ length: 40 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      size: Math.random() * 3 + 1,
+      opacity: Math.random() * 0.8 + 0.2,
+      delay: Math.random() * 3,
+      twinkleDuration: 2 + Math.random() * 3,
+      twinkleDelay: Math.random() * 2,
+      moveX: (Math.random() - 0.5) * 40,
+      moveY: (Math.random() - 0.5) * 40,
+    }));
+  }, []);
+
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
@@ -187,7 +201,7 @@ export default function StudentsHub() {
       <div className="mt-2 sm:mt-4">
         <div className="mb-4 sm:mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-3 text-left">
-            <BackButton />
+            <BackButton href="/dashboard" />
             <div>
               <h1 className="text-3xl sm:text-4xl font-light text-black dark:text-white mb-1 sm:mb-2">
                 Students Hub
@@ -199,7 +213,7 @@ export default function StudentsHub() {
           </div>
         </div>
 
-        {/* Premium Tools Section - 2x2 Grid */}
+        {/* Premium Tools Section */}
         <div className="mb-6 sm:mb-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {/* GitHub Student Dev Pack */}
@@ -232,10 +246,10 @@ export default function StudentsHub() {
                 ))}
               </div>
 
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] relative z-10 h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-4 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] relative z-10 h-full rounded-2xl">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
                       <Image
                         src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                         alt="GitHub"
@@ -253,7 +267,7 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 ml-2 sm:ml-4 mr-2 sm:mr-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -267,10 +281,10 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-4 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full rounded-2xl">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
                       <Image
                         src="/benifits/gemini.png"
                         alt="Gemini"
@@ -288,7 +302,7 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 ml-2 sm:ml-4 mr-2 sm:mr-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -302,10 +316,10 @@ export default function StudentsHub() {
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-4 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full rounded-2xl">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
                       <Image
                         src="/benifits/perp.png"
                         alt="Perplexity"
@@ -323,46 +337,106 @@ export default function StudentsHub() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 ml-2 sm:ml-4 mr-2 sm:mr-4 flex-shrink-0">
                     →
                   </div>
                 </div>
               </div>
             </Link>
 
-            {/* ChatGPT Go */}
+            {/* Notion Plus */}
             <Link
-              href="https://chatgpt.com/#pricing"
+              href="https://www.notion.so/students"
               target="_blank"
               rel="noopener noreferrer"
               className="block relative overflow-visible group w-full"
             >
-              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-5 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full">
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-4 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full rounded-2xl">
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden">
-                      <Image
-                        src={
-                          theme === "light"
-                            ? "/benifits/chatgpt_light.jpeg"
-                            : "/benifits/chatgpt.png"
-                        }
-                        alt="ChatGPT"
-                        width={28}
-                        height={28}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png"
+                        alt="Notion"
                         className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
-                        ChatGPT Go
+                        Notion Plus
                       </h3>
                       <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-                        Free AI chatbot for students
+                        Free workspace for students and educators
                       </p>
                     </div>
                   </div>
-                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform group-hover:translate-x-1 transition-all duration-300 ml-2 sm:ml-4 flex-shrink-0">
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 ml-2 sm:ml-4 mr-2 sm:mr-4 flex-shrink-0">
+                    →
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* JetBrains */}
+            <Link
+              href="https://www.jetbrains.com/community/education/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block relative overflow-visible group w-full"
+            >
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-4 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full rounded-2xl">
+                <div className="flex items-center justify-between h-full">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
+                      <img
+                        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jetbrains/jetbrains-original.svg"
+                        alt="JetBrains"
+                        className="w-6 h-6 sm:w-7 sm:h-7 object-contain"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
+                        JetBrains Pack
+                      </h3>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
+                        Free professional developer tools and IDEs
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 ml-2 sm:ml-4 mr-2 sm:mr-4 flex-shrink-0">
+                    →
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Figma */}
+            <Link
+              href="https://www.figma.com/education/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block relative overflow-visible group w-full"
+            >
+              <div className="border-2 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 p-3 sm:p-4 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20 hover:scale-[1.02] h-full rounded-2xl">
+                <div className="flex items-center justify-between h-full">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg"
+                        alt="Figma"
+                        className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base sm:text-lg font-light text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors mb-0.5 sm:mb-1">
+                        Figma for Education
+                      </h3>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
+                        Free professional design software
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transform -translate-x-2 group-hover:translate-x-0 transition-all duration-300 ml-2 sm:ml-4 mr-2 sm:mr-4 flex-shrink-0">
                     →
                   </div>
                 </div>
@@ -373,7 +447,7 @@ export default function StudentsHub() {
 
         {/* Verification Platforms Section */}
         <div className="mb-6 sm:mb-10">
-          <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-3 sm:mb-4">
+          <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-4 sm:mb-6">
             Verification Platforms
           </h2>
           {/* CSS for star animations */}
@@ -421,7 +495,7 @@ export default function StudentsHub() {
               href="https://www.myunidays.com/IN/en-IN"
               target="_blank"
               rel="noopener noreferrer"
-              className="verification-card group relative w-full sm:w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
+              className="verification-card group relative w-full sm:flex-1 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02] rounded-2xl"
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
@@ -460,7 +534,7 @@ export default function StudentsHub() {
               href="https://studentpeeps.club/"
               target="_blank"
               rel="noopener noreferrer"
-              className="verification-card group relative w-full sm:w-1/2 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02]"
+              className="verification-card group relative w-full sm:flex-1 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02] rounded-2xl"
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
@@ -493,20 +567,59 @@ export default function StudentsHub() {
                 </span>
               </div>
             </Link>
+
+            {/* StudentBeans Card */}
+            <Link
+              href="https://www.studentbeans.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="verification-card group relative w-full sm:flex-1 overflow-hidden border-2 border-gray-300 dark:border-gray-700 bg-gray-800 dark:bg-black hover:border-gray-600 dark:hover:border-white transition-all duration-300 hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-white/20 hover:scale-[1.02] rounded-2xl"
+            >
+              {/* Starfield Background */}
+              <div className="absolute inset-0 bg-gray-800 dark:bg-black">
+                {studentbeansStars.map((star, index) => (
+                  <div
+                    key={index}
+                    className="verification-star-base absolute rounded-full bg-white"
+                    style={
+                      {
+                        left: star.left,
+                        top: star.top,
+                        width: `${star.size}px`,
+                        height: `${star.size}px`,
+                        "--verification-star-opacity": `${star.opacity}`,
+                        "--verification-appear-delay": `${star.delay * 0.1}s`,
+                        "--verification-twinkle-duration": `${star.twinkleDuration}s`,
+                        "--verification-twinkle-delay": `${star.twinkleDelay}s`,
+                        "--verification-move-x": `${star.moveX}px`,
+                        "--verification-move-y": `${star.moveY}px`,
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </div>
+
+              {/* Card Content */}
+              <div className="relative z-10 p-4 sm:p-6 flex items-center justify-center min-h-[80px] sm:min-h-[100px]">
+                <span className="text-lg sm:text-xl font-light text-white group-hover:scale-105 transition-transform">
+                  StudentBeans
+                </span>
+              </div>
+            </Link>
           </div>
         </div>
 
         {/* Categories Section */}
         <div>
-          <h2 className="text-2xl sm:text-3xl font-light text-black dark:text-white mb-4 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-4 sm:mb-8">
             Categories
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {categories.map((category, index) => (
               <Link
                 key={index}
                 href={category.url}
-                className={`overflow-hidden border-2 hover:border-gray-400/70 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px] ${
+                className={`overflow-hidden border-2 rounded-2xl hover:border-gray-400/70 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px] ${
                   isLightTheme
                     ? "text-gray-900 border-white/80 shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
                     : "text-white border-gray-800/60"
@@ -532,7 +645,7 @@ export default function StudentsHub() {
 
                 {/* Distinct border treatment */}
                 <div
-                  className={`absolute inset-0 transition-all duration-300 pointer-events-none ${
+                  className={`absolute inset-0 transition-all duration-300 pointer-events-none rounded-2xl ${
                     isLightTheme
                       ? "border-[3px] border-white/80"
                       : "border-2 border-white/10"
@@ -540,34 +653,32 @@ export default function StudentsHub() {
                 />
 
                 {/* Content */}
-                <div className="p-4 sm:p-6 md:p-10 flex items-center justify-center h-full relative z-10">
-                  <div className="text-center">
-                    <h3
-                      className={`text-lg sm:text-xl md:text-2xl font-light transition-all duration-300 group-hover:scale-105 tracking-tight ${
-                        isLightTheme
-                          ? "text-gray-900 group-hover:text-gray-900"
-                          : "text-white group-hover:text-white"
+                <div className="p-4 sm:p-6 md:p-10 flex flex-col items-center justify-center h-full relative z-10">
+                  <h3
+                    className={`text-lg sm:text-xl font-light transition-all duration-300 group-hover:-translate-y-3 group-hover:scale-105 tracking-tight relative z-10 ${
+                      isLightTheme
+                        ? "text-gray-900 group-hover:text-gray-900"
+                        : "text-white group-hover:text-white"
+                    }`}
+                  >
+                    {category.title}
+                  </h3>
+                  {/* Arrow indicator on hover - hidden on mobile */}
+                  <div className="absolute top-1/2 mt-3 hidden sm:flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-0">
+                    <span
+                      className={`text-sm ${
+                        isLightTheme ? "text-gray-900/70" : "text-white/80"
                       }`}
                     >
-                      {category.title}
-                    </h3>
-                    {/* Arrow indicator on hover - hidden on mobile */}
-                    <div className="hidden sm:flex mt-3 items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                      <span
-                        className={`text-sm ${
-                          isLightTheme ? "text-gray-900/70" : "text-white/80"
-                        }`}
-                      >
-                        Explore
-                      </span>
-                      <span
-                        className={`ml-2 transform group-hover:translate-x-1 transition-transform duration-300 ${
-                          isLightTheme ? "text-gray-900/80" : "text-white/80"
-                        }`}
-                      >
-                        →
-                      </span>
-                    </div>
+                      Explore
+                    </span>
+                    <span
+                      className={`ml-2 transform group-hover:translate-x-1 transition-transform duration-300 ${
+                        isLightTheme ? "text-gray-900/80" : "text-white/80"
+                      }`}
+                    >
+                      →
+                    </span>
                   </div>
                 </div>
               </Link>
