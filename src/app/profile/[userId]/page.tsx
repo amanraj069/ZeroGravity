@@ -7,7 +7,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, ShoppingBag, Share2 } from "lucide-react";
+import { Flame, ShoppingBag, Share2, Settings } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
@@ -156,10 +156,11 @@ export default function PublicProfile() {
             )}
             {currentUser?.userId === user.userId && (
               <Link
-                href="/profile/edit"
+                href="/settings"
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg"
               >
-                Edit Profile
+                <Settings className="w-3 h-3 flex-shrink-0" />
+                Settings
               </Link>
             )}
           </div>

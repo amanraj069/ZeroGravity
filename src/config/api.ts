@@ -176,6 +176,7 @@ export const API_ENDPOINTS = {
     FAVORITE: (id: string) => `${API_BASE_URL}/api/notes/${id}/favorite`,
     DELETE: (id: string) => `${API_BASE_URL}/api/notes/${id}`,
     EMPTY_TRASH: `${API_BASE_URL}/api/notes/trash`,
+    UPLOAD_IMAGE: `${API_BASE_URL}/api/notes/upload-image`,
     CATEGORIES: `${API_BASE_URL}/api/notes/categories`,
     UPDATE_CATEGORY: (id: string) =>
       `${API_BASE_URL}/api/notes/categories/${id}`,
@@ -202,6 +203,13 @@ export const apiCall = async (url: string, options: RequestInit = {}) => {
       ...(optionHeaders as Record<string, string>),
     },
   };
+
+  // If Content-Type was explicitly set to empty string (e.g. for FormData),
+  // delete it so the browser can set the correct multipart boundary
+  const headers = defaultOptions.headers as Record<string, string>;
+  if (headers["Content-Type"] === "") {
+    delete headers["Content-Type"];
+  }
 
   try {
     if (process.env.NODE_ENV === "development") {

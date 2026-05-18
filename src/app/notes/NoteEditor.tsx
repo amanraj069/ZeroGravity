@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Note, NoteCategory } from "@/services/notesService";
+import { Note, NoteCategory, uploadNoteImage } from "@/services/notesService";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { TableToolbar } from "./components/TableToolbar";
+
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TLink from "@tiptap/extension-link";
-import TImage from "@tiptap/extension-image";
+import TImage from "./extensions/resizableImage";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -48,10 +50,10 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  Undo2,
-  Redo2,
+  AlignStartVertical,
+  AlignCenterVertical,
+  AlignEndVertical,
   RemoveFormatting,
-  ListCollapse,
   ChevronDown,
   Type,
   Palette,
@@ -96,12 +98,7 @@ const TEXT_COLORS = [
   { name: "Gray", color: "#6b7280" },
 ];
 
-// ─── Heading type for outline ───────────────────────────────
-interface HeadingItem {
-  level: number;
-  text: string;
-  pos: number;
-}
+
 
 interface NoteEditorProps {
   note: Note | null;
@@ -146,19 +143,30 @@ export default function NoteEditor({
     top: number;
     left: number;
   }>({ top: 0, left: 0 });
-  const [showOutline, setShowOutline] = useState(false);
   const [showLineSpacing, setShowLineSpacing] = useState(false);
   const [lineSpacingPos, setLineSpacingPos] = useState<{
     top: number;
     left: number;
   }>({ top: 0, left: 0 });
-  const [headings, setHeadings] = useState<HeadingItem[]>([]);
   const [titleError, setTitleError] = useState<string | null>(null);
   const [prevTitle, setPrevTitle] = useState<string>("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [showTablePicker, setShowTablePicker] = useState(false);
+  const [tablePos, setTablePos] = useState({ top: 0, left: 0 });
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [hoveredTableGrid, setHoveredTableGrid] = useState({ rows: 0, cols: 0 });
+  const [activeTableEl, setActiveTableEl] = useState<HTMLElement | null>(null);
+  const [tableMenuCoords, setTableMenuCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [tableWidth, setTableWidth] = useState<number>(0);
+  const [showVerticalAlign, setShowVerticalAlign] = useState(false);
+  const [verticalAlignPos, setVerticalAlignPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const verticalAlignRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const textColorRef = useRef<HTMLDivElement>(null);
+  const lineSpacingRef = useRef<HTMLDivElement>(null);
   const titleErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
   const downloadRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -181,8 +189,40 @@ export default function NoteEditor({
       Placeholder.configure({ placeholder: "Start writing…" }),
       TTable.configure({ resizable: true }),
       TableRow,
-      TableCell,
-      TableHeader,
+      TableCell.extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            verticalAlign: {
+              default: "top",
+              parseHTML: (element) => element.style.verticalAlign || "top",
+              renderHTML: (attributes) => {
+                if (!attributes.verticalAlign) return {};
+                return {
+                  style: `vertical-align: ${attributes.verticalAlign}`,
+                };
+              },
+            },
+          };
+        },
+      }),
+      TableHeader.extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            verticalAlign: {
+              default: "top",
+              parseHTML: (element) => element.style.verticalAlign || "top",
+              renderHTML: (attributes) => {
+                if (!attributes.verticalAlign) return {};
+                return {
+                  style: `vertical-align: ${attributes.verticalAlign}`,
+                };
+              },
+            },
+          };
+        },
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       LineHeight,
     ],
@@ -192,8 +232,6 @@ export default function NoteEditor({
       if (note) {
         onChange(note._id, { content: ed.getHTML() });
       }
-      // Update headings for outline
-      extractHeadings(ed);
     },
     editorProps: {
       attributes: {
@@ -206,6 +244,27 @@ export default function NoteEditor({
           "prose-th:border prose-th:border-gray-300 dark:prose-th:border-gray-600 prose-th:p-2 prose-th:bg-gray-100 dark:prose-th:bg-gray-800",
       },
       handleKeyDown: (_view, event) => {
+        if (event.key === "Backspace" && editor) {
+          const { selection } = editor.state;
+          const parentNode = selection.$anchor.parent;
+          if (
+            selection.empty &&
+            selection.$anchor.parentOffset === 0 &&
+            parentNode.textContent.length === 0
+          ) {
+            if (editor.isActive("taskItem")) {
+              event.preventDefault();
+              editor.chain().focus().liftListItem("taskItem").run();
+              return true;
+            }
+            if (editor.isActive("listItem")) {
+              event.preventDefault();
+              editor.chain().focus().liftListItem("listItem").run();
+              return true;
+            }
+          }
+        }
+
         if (event.key === "Tab") {
           event.preventDefault();
           if (event.shiftKey) {
@@ -228,31 +287,35 @@ export default function NoteEditor({
         }
         return false;
       },
+      handlePaste: (_view, event) => {
+        const items = event.clipboardData?.items;
+        if (!items) return false;
+        for (const item of Array.from(items)) {
+          if (item.type.startsWith("image/")) {
+            event.preventDefault();
+            const file = item.getAsFile();
+            if (file) handleImageUpload(file);
+            return true;
+          }
+        }
+        return false;
+      },
+      handleDrop: (_view, event) => {
+        const files = event.dataTransfer?.files;
+        if (!files || files.length === 0) return false;
+        const imageFile = Array.from(files).find((f) =>
+          f.type.startsWith("image/"),
+        );
+        if (imageFile) {
+          event.preventDefault();
+          handleImageUpload(imageFile);
+          return true;
+        }
+        return false;
+      },
     },
     immediatelyRender: false,
   });
-
-  // Extract headings from editor for document outline
-  const extractHeadings = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (ed: any) => {
-      const items: HeadingItem[] = [];
-      ed.state.doc.descendants(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node: any, pos: number) => {
-          if (node.type.name === "heading") {
-            items.push({
-              level: node.attrs.level,
-              text: node.textContent,
-              pos,
-            });
-          }
-        },
-      );
-      setHeadings(items);
-    },
-    [],
-  );
 
   // Sync content when active note changes
   useEffect(() => {
@@ -265,13 +328,11 @@ export default function NoteEditor({
           editor.commands.setContent(note.content || "", { emitUpdate: false });
         }
         editor.setEditable(!isTrash);
-        extractHeadings(editor);
       }, 0);
     } else if (editor && !note) {
       setTimeout(() => {
         if (!editor || editor.isDestroyed) return;
         editor.commands.setContent("", { emitUpdate: false });
-        setHeadings([]);
       }, 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -329,15 +390,183 @@ export default function NoteEditor({
         setShowTextColorPicker(false);
       }
       if (
+        lineSpacingRef.current &&
+        !lineSpacingRef.current.contains(e.target as Node)
+      ) {
+        setShowLineSpacing(false);
+      }
+      if (
         downloadRef.current &&
         !downloadRef.current.contains(e.target as Node)
       ) {
         setShowDownloadDropdown(false);
       }
+      if (
+        tableRef.current &&
+        !tableRef.current.contains(e.target as Node)
+      ) {
+        setShowTablePicker(false);
+      }
+      if (
+        verticalAlignRef.current &&
+        !verticalAlignRef.current.contains(e.target as Node)
+      ) {
+        setShowVerticalAlign(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const update = () => {
+      if (editor.isActive("table")) {
+        const { selection } = editor.state;
+        try {
+          const dom = editor.view.domAtPos(selection.from).node;
+          const tableDOM = dom instanceof Element 
+            ? dom.closest("table") 
+            : dom.parentElement?.closest("table");
+          if (tableDOM) {
+            setActiveTableEl(tableDOM as HTMLElement);
+            return;
+          }
+        } catch {}
+      }
+      setActiveTableEl(null);
+    };
+
+    editor.on("selectionUpdate", update);
+    editor.on("transaction", update);
+    editor.on("focus", update);
+    editor.on("blur", update);
+
+    const timer = setTimeout(update, 100);
+
+    return () => {
+      clearTimeout(timer);
+      editor.off("selectionUpdate", update);
+      editor.off("transaction", update);
+      editor.off("focus", update);
+      editor.off("blur", update);
+    };
+  }, [editor]);
+
+  useEffect(() => {
+    if (!activeTableEl || !editor) return;
+
+    const updatePosition = () => {
+      const scrollContainer = activeTableEl.closest(".overflow-y-auto") as HTMLElement;
+      if (!scrollContainer) return;
+      
+      const tableRect = activeTableEl.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
+      
+      const relativeTop = tableRect.top - containerRect.top + scrollContainer.scrollTop;
+      const relativeLeft = tableRect.left - containerRect.left + scrollContainer.scrollLeft;
+      
+      // Position it exactly 38px above the table top edge
+      const top = relativeTop - 38; 
+      
+      setTableMenuCoords({ top, left: relativeLeft });
+      setTableWidth(tableRect.width);
+    };
+
+    updatePosition();
+    
+    const resizeObserver = new ResizeObserver(updatePosition);
+    resizeObserver.observe(activeTableEl);
+
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [activeTableEl, editor]);
+
+  // Helper: upload an image file to Cloudinary, then insert into editor
+  const handleImageUpload = useCallback(
+    async (file: File) => {
+      if (!editor) return;
+      // Validate file type
+      if (!file.type.startsWith("image/")) return;
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image must be smaller than 5MB");
+        return;
+      }
+
+      let localUrl = "";
+      try {
+        localUrl = URL.createObjectURL(file);
+      } catch {
+        // Fallback to base64 reader if createObjectURL fails
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") {
+            editor.chain().focus().setImage({ src: reader.result, uploading: true } as unknown as { src: string }).run();
+          }
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+
+      // 1. Immediately insert image with local blob URL and uploading: true
+      editor.chain().focus().setImage({ src: localUrl, uploading: true } as unknown as { src: string }).run();
+      setUploadingImage(true);
+
+      // 2. Perform background upload to Cloudinary
+      uploadNoteImage(file)
+        .then((result) => {
+          if (!editor || editor.isDestroyed) return;
+
+          // 3. Swap out localUrl with Cloudinary URL and set uploading: false
+          editor.commands.command(({ tr }) => {
+            let found = false;
+            tr.doc.descendants((node, pos) => {
+              if (node.type.name === "image" && node.attrs.src === localUrl) {
+                tr.setNodeMarkup(pos, undefined, {
+                  ...node.attrs,
+                  src: result.url,
+                  uploading: false,
+                });
+                found = true;
+                return false; // stop iteration
+              }
+              return true;
+            });
+            return found;
+          });
+        })
+        .catch((err) => {
+          console.error("Cloudinary background upload failed, keeping local URL:", err);
+          // Set uploading: false to remove loading overlay
+          if (!editor || editor.isDestroyed) return;
+          editor.commands.command(({ tr }) => {
+            let found = false;
+            tr.doc.descendants((node, pos) => {
+              if (node.type.name === "image" && node.attrs.src === localUrl) {
+                tr.setNodeMarkup(pos, undefined, {
+                  ...node.attrs,
+                  uploading: false,
+                });
+                found = true;
+                return false;
+              }
+              return true;
+            });
+            return found;
+          });
+        })
+        .finally(() => {
+          setUploadingImage(false);
+        });
+    },
+    [editor],
+  );
 
   const addLink = useCallback(() => {
     if (!editor) return;
@@ -347,49 +576,41 @@ export default function NoteEditor({
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
     } else {
+      // Ensure URL has protocol
+      const href = url.match(/^https?:\/\//) ? url : `https://${url}`;
       editor
         .chain()
         .focus()
         .extendMarkRange("link")
-        .setLink({ href: url })
+        .setLink({ href })
         .run();
     }
   }, [editor]);
 
   const addImage = useCallback(() => {
     if (!editor) return;
-    const url = window.prompt("Enter image URL:");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
+    // Open file picker for local images
+    imageInputRef.current?.click();
   }, [editor]);
 
-  const insertTable = useCallback(() => {
-    if (!editor) return;
-    editor
-      .chain()
-      .focus()
-      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-      .run();
-  }, [editor]);
+  const handleImageFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) handleImageUpload(file);
+      // Reset input so same file can be re-selected
+      e.target.value = "";
+    },
+    [handleImageUpload],
+  );
+
+
 
   const insertCodeBlock = useCallback(() => {
     if (!editor) return;
     editor.chain().focus().toggleCodeBlock({ language: "cpp" }).run();
   }, [editor]);
 
-  const scrollToHeading = useCallback(
-    (pos: number) => {
-      if (!editor) return;
-      editor.chain().focus().setTextSelection(pos).run();
-      // Scroll the editor view to the heading
-      const domAtPos = editor.view.domAtPos(pos);
-      const node = domAtPos.node as HTMLElement;
-      const el = node.nodeType === 3 ? node.parentElement : node;
-      el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    },
-    [editor],
-  );
+
 
   // Word / char count
   const text = editor?.getText() || "";
@@ -402,27 +623,20 @@ export default function NoteEditor({
     | { type: "highlight-picker" }
     | { type: "text-color-picker" }
     | { type: "line-spacing-picker" }
+    | { type: "vertical-align-picker" }
+    | { type: "table-picker" }
     | {
         icon: React.ComponentType<{ size: number }>;
         action: () => void;
         title: string;
         isActive?: boolean;
+        disabled?: boolean;
       };
 
   const toolbarButtons: TBBtn[] = useMemo(() => {
     if (!editor) return [];
     return [
-      {
-        icon: Undo2,
-        action: () => editor.chain().focus().undo().run(),
-        title: "Undo — Reverse your last action (⌘Z)",
-      },
-      {
-        icon: Redo2,
-        action: () => editor.chain().focus().redo().run(),
-        title: "Redo — Restore undone action (⌘⇧Z)",
-      },
-      { type: "divider" as const },
+
       {
         icon: Bold,
         action: () => editor.chain().focus().toggleBold().run(),
@@ -511,12 +725,8 @@ export default function NoteEditor({
         title: "Link — Add or edit a hyperlink",
         isActive: editor.isActive("link"),
       },
-      { icon: Image, action: addImage, title: "Image — Insert image from URL" },
-      {
-        icon: Table,
-        action: insertTable,
-        title: "Insert table — Add a 3×3 table",
-      },
+      { icon: Image, action: addImage, title: "Image — Insert image from file" },
+      { type: "table-picker" as const },
       {
         icon: CodeXml,
         action: insertCodeBlock,
@@ -542,6 +752,7 @@ export default function NoteEditor({
         title: "Align right — Right-align text",
         isActive: editor.isActive({ textAlign: "right" }),
       },
+      { type: "vertical-align-picker" as const },
       { type: "line-spacing-picker" as const },
       { type: "divider" as const },
       {
@@ -561,6 +772,13 @@ export default function NoteEditor({
   // ─── Render ───────────────────────────────────────────────
   return (
     <div className="flex flex-col flex-1 h-full min-h-0">
+      <input
+        type="file"
+        ref={imageInputRef}
+        onChange={handleImageFileSelect}
+        accept="image/*"
+        className="hidden"
+      />
       {/* Top toolbar */}
       <div className="flex items-center justify-between px-3 min-h-[42px] border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0a0a0a] flex-shrink-0">
         <div className="flex items-center gap-1.5 min-w-0 flex-1">
@@ -596,6 +814,12 @@ export default function NoteEditor({
         </div>
 
         <div className="flex items-center gap-1 flex-shrink-0">
+          {uploadingImage && (
+            <span className="flex items-center gap-1 text-[10px] text-blue-400 mr-2">
+              <Loader2 size={12} className="animate-spin" />
+              Uploading...
+            </span>
+          )}
           {saving && (
             <span className="flex items-center gap-1 text-[10px] text-gray-400 mr-2">
               <Loader2 size={12} className="animate-spin" />
@@ -603,18 +827,7 @@ export default function NoteEditor({
             </span>
           )}
 
-          {/* Document outline toggle */}
-          <button
-            onClick={() => setShowOutline((o) => !o)}
-            className={`p-1.5 rounded transition-colors ${
-              showOutline
-                ? "text-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                : "text-gray-400 hover:text-gray-700 dark:hover:text-white"
-            }`}
-            title="Document outline — Navigate sections by headings"
-          >
-            <ListCollapse size={15} />
-          </button>
+
 
           {!isTrash && (
             <div className="relative">
@@ -808,6 +1021,100 @@ export default function NoteEditor({
               );
             }
 
+            // Table Grid Picker
+            if ("type" in btn && btn.type === "table-picker") {
+              const isTableActive = editor?.isActive("table");
+              return (
+                <div key="table-picker" className="relative" ref={tableRef}>
+                  <button
+                    onClick={(e) => {
+                      if (isTableActive) return;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setTablePos({ top: rect.bottom + 4, left: rect.left });
+                      setShowTablePicker((s) => !s);
+                      setShowHighlightPicker(false);
+                      setShowTextColorPicker(false);
+                      setShowLineSpacing(false);
+                      setShowDownloadDropdown(false);
+                      setHoveredTableGrid({ rows: 0, cols: 0 });
+                    }}
+                    disabled={isTableActive}
+                    className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
+                      isTableActive
+                        ? "text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50"
+                        : showTablePicker
+                        ? "text-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                        : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
+                    }`}
+                    title={isTableActive ? "Cannot insert a table inside another table" : "Insert table — Hover to choose dimensions"}
+                  >
+                    <Table size={14} />
+                    {!isTableActive && <ChevronDown size={10} />}
+                  </button>
+                  {showTablePicker && !isTableActive && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowTablePicker(false)}
+                      />
+                      <div
+                        className="fixed z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-2.5 w-[210px] select-none"
+                        style={{ top: tablePos.top, left: tablePos.left }}
+                      >
+                        <p className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 pb-2">
+                          Insert Table Grid
+                        </p>
+                        <div className="flex flex-col gap-1.5 p-1 bg-gray-50 dark:bg-gray-900/50 rounded-md border border-gray-100 dark:border-gray-800/80">
+                          {Array.from({ length: 10 }).map((_, rIdx) => (
+                            <div key={rIdx} className="flex gap-1.5 justify-center">
+                              {Array.from({ length: 10 }).map((_, cIdx) => {
+                                const isHighlighted =
+                                  rIdx < hoveredTableGrid.rows &&
+                                  cIdx < hoveredTableGrid.cols;
+                                return (
+                                  <div
+                                    key={cIdx}
+                                    onMouseEnter={() =>
+                                      setHoveredTableGrid({
+                                        rows: rIdx + 1,
+                                        cols: cIdx + 1,
+                                      })
+                                    }
+                                    onClick={() => {
+                                      editor
+                                        ?.chain()
+                                        .focus()
+                                        .insertTable({
+                                          rows: rIdx + 1,
+                                          cols: cIdx + 1,
+                                          withHeaderRow: true,
+                                        })
+                                        .run();
+                                      setShowTablePicker(false);
+                                    }}
+                                    className={`w-3 h-3 border rounded-sm transition-all duration-75 cursor-pointer ${
+                                      isHighlighted
+                                        ? "bg-blue-500 border-blue-600 scale-105"
+                                        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                                    }`}
+                                  />
+                                );
+                              })}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-center text-[10px] font-medium text-gray-500 dark:text-gray-400 pt-2 mt-1.5 border-t border-gray-100 dark:border-gray-700">
+                          {hoveredTableGrid.rows > 0 && hoveredTableGrid.cols > 0
+                            ? `Insert ${hoveredTableGrid.rows} × ${hoveredTableGrid.cols} table`
+                            : "Hover grid to set size"}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            }
+
             // Highlight color picker
             if ("type" in btn && btn.type === "highlight-picker") {
               return (
@@ -822,6 +1129,8 @@ export default function NoteEditor({
                       setPickerPos({ top: rect.bottom + 4, left: rect.left });
                       setShowHighlightPicker((s) => !s);
                       setShowTextColorPicker(false);
+                      setShowLineSpacing(false);
+                      setShowDownloadDropdown(false);
                     }}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
                       editor?.isActive("highlight")
@@ -909,6 +1218,8 @@ export default function NoteEditor({
                       });
                       setShowTextColorPicker((s) => !s);
                       setShowHighlightPicker(false);
+                      setShowLineSpacing(false);
+                      setShowDownloadDropdown(false);
                     }}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
                       editor?.getAttributes("textStyle").color
@@ -982,6 +1293,98 @@ export default function NoteEditor({
               );
             }
 
+            // Vertical alignment picker
+            if ("type" in btn && btn.type === "vertical-align-picker") {
+              const isTableActive = editor?.isActive("table");
+              const currentVal =
+                editor?.getAttributes("tableCell").verticalAlign ||
+                editor?.getAttributes("tableHeader").verticalAlign ||
+                "top";
+                
+              return (
+                <div key="vertical-align-picker" className="relative" ref={verticalAlignRef}>
+                  <button
+                    onClick={(e) => {
+                      if (!isTableActive) return;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setVerticalAlignPos({
+                        top: rect.bottom + 4,
+                        left: rect.left,
+                      });
+                      setShowVerticalAlign((s) => !s);
+                      setShowHighlightPicker(false);
+                      setShowTextColorPicker(false);
+                      setShowLineSpacing(false);
+                      setShowDownloadDropdown(false);
+                    }}
+                    disabled={!isTableActive}
+                    className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
+                      !isTableActive
+                        ? "text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50"
+                        : showVerticalAlign
+                        ? "text-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                        : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
+                    }`}
+                    title={
+                      isTableActive
+                        ? "Vertical alignment — Align cell content (Top, Middle, Bottom)"
+                        : "Vertical alignment (Only available inside tables)"
+                    }
+                  >
+                    <AlignCenterVertical size={14} />
+                    {isTableActive && <ChevronDown size={10} />}
+                  </button>
+                  {showVerticalAlign && isTableActive && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setShowVerticalAlign(false)}
+                      />
+                      <div
+                        className="fixed z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-2 w-[140px]"
+                        style={{
+                          top: verticalAlignPos.top,
+                          left: verticalAlignPos.left,
+                        }}
+                      >
+                        <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider px-2 pb-1.5">
+                          Vertical Align
+                        </p>
+                        {[
+                          { label: "Align Top", value: "top", icon: AlignStartVertical },
+                          { label: "Align Middle", value: "middle", icon: AlignCenterVertical },
+                          { label: "Align Bottom", value: "bottom", icon: AlignEndVertical },
+                        ].map((opt) => {
+                          const Icon = opt.icon;
+                          return (
+                            <button
+                              key={opt.value}
+                              onClick={() => {
+                                editor
+                                  ?.chain()
+                                  .focus()
+                                  .setCellAttribute("verticalAlign", opt.value)
+                                  .run();
+                                setShowVerticalAlign(false);
+                              }}
+                              className={`w-full flex items-center gap-2 text-left px-3 py-1.5 text-xs rounded transition-colors ${
+                                currentVal === opt.value
+                                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium"
+                                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              }`}
+                            >
+                              <Icon size={13} />
+                              {opt.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            }
+ 
             // Line spacing picker
             if ("type" in btn && btn.type === "line-spacing-picker") {
               const currentLineHeight =
@@ -989,7 +1392,7 @@ export default function NoteEditor({
                 editor?.getAttributes("heading").lineHeight ||
                 null;
               return (
-                <div key="line-spacing-picker" className="relative">
+                <div key="line-spacing-picker" className="relative" ref={lineSpacingRef}>
                   <button
                     onClick={(e) => {
                       const rect = e.currentTarget.getBoundingClientRect();
@@ -1000,6 +1403,7 @@ export default function NoteEditor({
                       setShowLineSpacing((s) => !s);
                       setShowHighlightPicker(false);
                       setShowTextColorPicker(false);
+                      setShowDownloadDropdown(false);
                     }}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
                       currentLineHeight
@@ -1072,12 +1476,15 @@ export default function NoteEditor({
                 <button
                   key={idx}
                   onClick={btn.action}
+                  disabled={btn.disabled}
                   className={`p-1.5 rounded transition-colors flex-shrink-0 ${
                     btn.isActive
                       ? "text-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                      : btn.disabled
+                      ? "text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50"
                       : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
                   }`}
-                  title={btn.title}
+                  title={btn.disabled ? "Cannot insert a table inside another table" : btn.title}
                 >
                   <Icon size={14} />
                 </button>
@@ -1089,63 +1496,23 @@ export default function NoteEditor({
         </div>
       )}
 
-      {/* Main content area with optional outline */}
+
+
+      {/* Main content area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Editor area flex container */}
         <div className="flex flex-col flex-1 overflow-hidden">
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto relative">
+            {editor && activeTableEl && (
+              <TableToolbar
+                editor={editor}
+                tableMenuCoords={tableMenuCoords}
+                tableWidth={tableWidth}
+              />
+            )}
             <EditorContent editor={editor} className="h-full" />
           </div>
         </div>
-
-        {/* Document outline panel */}
-        {showOutline && (
-          <div className="w-56 min-w-[224px] border-l border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#111111] overflow-y-auto flex-shrink-0">
-            <div className="px-3 py-2.5 border-b border-gray-200 dark:border-gray-800">
-              <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Document Outline
-              </h3>
-            </div>
-            {headings.length === 0 ? (
-              <div className="px-3 py-6 text-center">
-                <p className="text-xs text-gray-400 dark:text-gray-600 italic">
-                  Add headings (H1, H2, H3) to create a document outline
-                </p>
-              </div>
-            ) : (
-              <nav className="py-1">
-                {headings.map((h, i) => (
-                  <button
-                    key={`${h.pos}-${i}`}
-                    onClick={() => scrollToHeading(h.pos)}
-                    className="w-full text-left py-1.5 pr-3 text-xs hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white truncate"
-                    style={{
-                      paddingLeft: `${(h.level - 1) * 12 + 12}px`,
-                    }}
-                    title={h.text}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <span
-                        className={`text-[9px] font-bold flex-shrink-0 px-1 py-0.5 rounded ${
-                          h.level === 1
-                            ? "text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400"
-                            : h.level === 2
-                              ? "text-purple-600 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400"
-                              : "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400"
-                        }`}
-                      >
-                        H{h.level}
-                      </span>
-                      <span className="truncate">
-                        {h.text || "Untitled heading"}
-                      </span>
-                    </span>
-                  </button>
-                ))}
-              </nav>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Status bar */}
@@ -1154,14 +1521,6 @@ export default function NoteEditor({
           <span>{charCount} chars</span>
           <span className="text-gray-300 dark:text-gray-600">·</span>
           <span>{wordCount} words</span>
-          {headings.length > 0 && (
-            <>
-              <span className="text-gray-300 dark:text-gray-600">·</span>
-              <span>
-                {headings.length} section{headings.length > 1 ? "s" : ""}
-              </span>
-            </>
-          )}
         </div>
         <span>
           {new Date(note.lastUpdatedDate).toLocaleString("en-US", {
