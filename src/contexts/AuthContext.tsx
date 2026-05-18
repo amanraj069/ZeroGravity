@@ -32,6 +32,7 @@ interface User {
   aiGenerationCount?: number;
   selectedBadges?: string[];
   displayBadge?: string;
+  usernameChangesCount?: number;
 }
 
 interface LoginReward {

@@ -527,7 +527,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
             onToggleSidebar={() => setSidebarOpen((o) => !o)}
             sidebarOpen={sidebarOpen}
             categories={categories}
-            isTrash={sidebarView === "trash"}
+            isTrash={!!activeNote.trash}
             allNotes={allNotes}
             onCreateCategory={handleCreateCategory}
           />

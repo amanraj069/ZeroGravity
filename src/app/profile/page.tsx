@@ -392,18 +392,11 @@ export default function Profile() {
               Edit Card
             </button>
             <Link
-              href="/profile/edit"
+              href="/settings"
               className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
-              <Pencil className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
-              Edit Profile
-            </Link>
-            <Link
-              href="/settings"
-              className="flex items-center justify-center px-2 sm:px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg"
-              title="Settings"
-            >
-              <Settings className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600 dark:text-gray-300 flex-shrink-0" />
+              <Settings className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+              Settings
             </Link>
           </div>
         </div>

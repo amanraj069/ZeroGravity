@@ -355,6 +355,7 @@ export default function StudentsHub() {
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png"
                         alt="Notion"
@@ -388,6 +389,7 @@ export default function StudentsHub() {
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jetbrains/jetbrains-original.svg"
                         alt="JetBrains"
@@ -421,6 +423,7 @@ export default function StudentsHub() {
                 <div className="flex items-center justify-between h-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/30 transition-colors overflow-hidden rounded-xl">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src="https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg"
                         alt="Figma"

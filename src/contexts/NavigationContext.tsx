@@ -94,9 +94,8 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     if (path === "/leaderboard") return "/dashboard";
     if (path?.startsWith("/leaderboard/")) return "/quizzes"; // From quiz detail
     if (path === "/profile") return "/dashboard";
-    if (path === "/profile/edit") return "/profile";
+    if (path === "/settings") return "/profile";
     if (path?.startsWith("/profile/")) return "/dashboard"; // Other users
-    if (path === "/settings") return "/dashboard";
     if (path === "/studentsHub") return "/dashboard";
     if (path?.startsWith("/studentsHub/")) return "/studentsHub";
     if (path === "/joinQuiz") return "/dashboard";

@@ -165,3 +165,25 @@ export async function togglePinCategory(id: string): Promise<NoteCategory> {
   if (!data.success) throw new Error(data.message);
   return data.data;
 }
+
+// ─── Image Upload ────────────────────────────────────────────────
+
+export async function uploadNoteImage(
+  file: File,
+): Promise<{ url: string; width: number; height: number }> {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  // We need to NOT set Content-Type header so the browser sets it with the boundary
+  const res = await apiCallWithAuth(API_ENDPOINTS.NOTES.UPLOAD_IMAGE, {
+    method: "POST",
+    body: formData,
+    headers: {
+      // Override default JSON content-type — let browser set multipart boundary
+      "Content-Type": "",
+    },
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.message);
+  return data.data;
+}

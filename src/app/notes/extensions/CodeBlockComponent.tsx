@@ -5,7 +5,7 @@ import {
   ReactNodeViewProps,
 } from "@tiptap/react";
 import { useState, useCallback, useRef, useEffect } from "react";
-import { ChevronDown, Copy, Check, Wand2 } from "lucide-react";
+import { ChevronDown, Copy, Check, Wand2, Trash2 } from "lucide-react";
 import Editor from "@monaco-editor/react";
 
 // Simple formatters for each language
@@ -159,12 +159,32 @@ export default function CodeBlockComponent({
   updateAttributes,
   editor,
   getPos,
+  deleteNode,
 }: ReactNodeViewProps) {
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [copied, setCopied] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null);
+  const isManuallyResized = useRef(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Check initial state
+    setIsDarkMode(document.documentElement.classList.contains("dark"));
+
+    // Set up observer for class changes on html tag
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const language = (node.attrs.language as string) || "cpp";
   const currentLang =
@@ -242,6 +262,7 @@ export default function CodeBlockComponent({
   const handleEditorDidMount = (editor: any) => {
     editorRef.current = editor;
     const updateHeight = () => {
+      if (isManuallyResized.current) return;
       const contentHeight = editor.getContentHeight();
       // min ~5 lines (120px), max ~25 lines (500px)
       const newHeight = Math.min(500, Math.max(120, contentHeight));
@@ -250,6 +271,53 @@ export default function CodeBlockComponent({
     };
     editor.onDidContentSizeChange(updateHeight);
     updateHeight();
+
+    // Custom tactile scroll friction / detent at boundaries
+    const domNode = editor.getDomNode();
+    if (domNode) {
+      let accumulatedDelta = 0;
+      let lastWheelTime = 0;
+
+      domNode.addEventListener(
+        "wheel",
+        (e: WheelEvent) => {
+          const scrollTop = editor.getScrollTop();
+          const scrollHeight = editor.getScrollHeight();
+          const layoutHeight = editor.getLayoutInfo().height;
+          
+          const isAtTop = scrollTop <= 0;
+          const isAtBottom = scrollTop + layoutHeight >= scrollHeight - 2;
+
+          const scrollingUp = e.deltaY < 0;
+          const scrollingDown = e.deltaY > 0;
+
+          const now = Date.now();
+          // Reset effort accumulator if user paused scrolling for > 400ms
+          if (now - lastWheelTime > 400) {
+            accumulatedDelta = 0;
+          }
+          lastWheelTime = now;
+
+          if ((isAtTop && scrollingUp) || (isAtBottom && scrollingDown)) {
+            // We hit a boundary! Accumulate scroll wheel delta effort
+            accumulatedDelta += Math.abs(e.deltaY);
+
+            // Block scroll propagation until they push past the 150px "resistance threshold"
+            if (accumulatedDelta < 150) {
+              e.preventDefault();
+              e.stopPropagation();
+            } else {
+              // Once they break through, keep it unlocked as long as they keep scrolling
+              accumulatedDelta = 150;
+            }
+          } else {
+            // Reset resistance when scrolling within bounds
+            accumulatedDelta = 0;
+          }
+        },
+        { passive: false }
+      );
+    }
   };
 
   const handleFormat = () => {
@@ -267,31 +335,79 @@ export default function CodeBlockComponent({
     handleEditorChange(formattedCode);
   };
 
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isManuallyResized.current = true;
+
+    const startY = e.clientY;
+    const startHeight = editorHeight;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const deltaY = moveEvent.clientY - startY;
+      const newHeight = Math.max(100, Math.min(800, startHeight + deltaY));
+      setEditorHeight(newHeight);
+      editorRef.current?.layout();
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <NodeViewWrapper className="code-block-wrapper">
       <div 
-        className="code-block-container" 
-        style={{ zIndex: isFocused || showLangDropdown ? 60 : 0 }}
+        className="code-block-container rounded-md overflow-hidden border" 
+        style={{ 
+          zIndex: isFocused || showLangDropdown ? 60 : 0,
+          background: isDarkMode ? "#1e1e1e" : "#ffffff",
+          borderColor: isDarkMode ? "#2d2d2d" : "#e5e7eb",
+        }}
         onKeyDown={stopPropagation}
         onPaste={stopPropagation}
         onCopy={stopPropagation}
         onCut={stopPropagation}
       >
         {/* Floating toolbar (appears on hover, right side) */}
-        <div className="code-block-header">
+        <div 
+          className="code-block-header"
+          style={{
+            background: isDarkMode ? "rgba(22, 22, 22, 0.92)" : "rgba(249, 250, 251, 0.95)",
+            borderColor: isDarkMode ? "#3a3a3a" : "#e5e7eb",
+          }}
+        >
           {/* Language selector */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowLangDropdown((s) => !s)}
               className="code-block-lang-btn"
+              style={{
+                color: isDarkMode ? "#a0a0a0" : "#4b5563",
+                background: isDarkMode ? "#252525" : "#f3f4f6",
+                borderColor: isDarkMode ? "#3a3a3a" : "#e5e7eb",
+              }}
             >
               <span>{currentLang.label}</span>
               <ChevronDown size={10} />
             </button>
             {showLangDropdown && (
-              <div className="code-block-lang-dropdown">
+              <div 
+                className="code-block-lang-dropdown"
+                style={{
+                  background: isDarkMode ? "#252525" : "#ffffff",
+                  borderColor: isDarkMode ? "#3a3a3a" : "#e5e7eb",
+                  boxShadow: isDarkMode 
+                    ? "0 4px 16px rgba(0, 0, 0, 0.4)" 
+                    : "0 4px 16px rgba(0, 0, 0, 0.08)",
+                }}
+              >
                 {SUPPORTED_LANGUAGES.map((lang) => (
                   <button
                     key={lang.id}
@@ -302,6 +418,14 @@ export default function CodeBlockComponent({
                     className={`code-block-lang-option ${
                       language === lang.id ? "active" : ""
                     }`}
+                    style={{
+                      color: language === lang.id 
+                        ? (isDarkMode ? "#58a6ff" : "#2563eb") 
+                        : (isDarkMode ? "#b0b0b0" : "#4b5563"),
+                      background: language === lang.id 
+                        ? (isDarkMode ? "rgba(88, 166, 255, 0.1)" : "rgba(37, 99, 235, 0.05)")
+                        : "transparent",
+                    }}
                   >
                     {lang.label}
                   </button>
@@ -315,6 +439,9 @@ export default function CodeBlockComponent({
             <button
               onClick={handleFormat}
               className="code-block-action-btn"
+              style={{
+                color: isDarkMode ? "#808080" : "#4b5563",
+              }}
               title="Format code"
             >
               <Wand2 size={13} />
@@ -325,6 +452,9 @@ export default function CodeBlockComponent({
           <button
             onClick={handleCopy}
             className="code-block-action-btn"
+            style={{
+              color: isDarkMode ? "#808080" : "#4b5563",
+            }}
             title="Copy code"
           >
             {copied ? (
@@ -333,15 +463,34 @@ export default function CodeBlockComponent({
               <Copy size={13} />
             )}
           </button>
+
+          {/* Delete button */}
+          {editor.isEditable && (
+            <button
+              onClick={deleteNode}
+              className="code-block-action-btn text-red-400 hover:text-red-300 hover:bg-red-950/40"
+              style={{
+                color: isDarkMode ? "#f87171" : "#ef4444",
+              }}
+              title="Delete code block"
+            >
+              <Trash2 size={13} />
+            </button>
+          )}
         </div>
 
         {/* Code content using Monaco */}
-        <div className="pt-2 pb-2 bg-[#1e1e1e] rounded-b-md">
+        <div 
+          className="pt-2 flex flex-col rounded-b-md"
+          style={{
+            background: isDarkMode ? "#1e1e1e" : "#ffffff",
+          }}
+        >
           <Editor
             height={editorHeight}
             language={monacoLanguage}
             value={node.textContent}
-            theme="vs-dark"
+            theme={isDarkMode ? "vs-dark" : "vs"}
             onChange={handleEditorChange}
             beforeMount={handleEditorWillMount}
             onMount={(editor) => {
@@ -359,8 +508,35 @@ export default function CodeBlockComponent({
               formatOnPaste: true,
               automaticLayout: true,
               fixedOverflowWidgets: true,
+              scrollbar: {
+                alwaysConsumeMouseWheel: false,
+                verticalScrollbarSize: 6,
+                horizontalScrollbarSize: 6,
+                verticalSliderSize: 4,
+                horizontalSliderSize: 4,
+              },
             }}
           />
+
+          {/* Resizer Handle */}
+          {editor.isEditable && (
+            <div
+              className={`h-2 w-full cursor-ns-resize flex items-center justify-center transition-colors rounded-b-md ${
+                isDarkMode 
+                  ? "bg-gray-800/40 hover:bg-blue-500/80" 
+                  : "bg-gray-100 hover:bg-blue-500/85"
+              }`}
+              onMouseDown={handleResizeStart}
+              title="Drag to resize height"
+            >
+              <div 
+                className="w-8 h-[2px] rounded" 
+                style={{
+                  background: isDarkMode ? "rgba(156, 163, 175, 0.7)" : "rgba(156, 163, 175, 0.4)",
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </NodeViewWrapper>
