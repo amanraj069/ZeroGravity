@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
@@ -23,23 +23,33 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignupInProgress, setIsSignupInProgress] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  
+
   // Generate random stars for background atmosphere (client-side only to avoid hydration mismatch)
-  const [stars, setStars] = useState<Array<{left: string, top: string, size: number, opacity: number, delay: number}>>([]);
-  
+  const [stars, setStars] = useState<
+    Array<{
+      left: string;
+      top: string;
+      size: number;
+      opacity: number;
+      delay: number;
+    }>
+  >([]);
+
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
     const starCount = isMobile ? 50 : 120;
     const baseSize = isMobile ? 0.5 : 0.8;
     const sizeVariance = isMobile ? 1 : 1.5;
 
-    setStars(Array.from({ length: starCount }, () => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      size: Math.random() * sizeVariance + baseSize,
-      opacity: Math.random() * 0.8 + 0.4,
-      delay: Math.random() * 5,
-    })));
+    setStars(
+      Array.from({ length: starCount }, () => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        size: Math.random() * sizeVariance + baseSize,
+        opacity: Math.random() * 0.8 + 0.4,
+        delay: Math.random() * 5,
+      })),
+    );
   }, []);
 
   // OTP verification state
@@ -65,12 +75,11 @@ export default function Signup() {
     if (resendCooldown > 0) {
       const timer = setTimeout(
         () => setResendCooldown(resendCooldown - 1),
-        1000
+        1000,
       );
       return () => clearTimeout(timer);
     }
   }, [resendCooldown]);
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,7 +156,6 @@ export default function Signup() {
     return null;
   };
 
-
   // OTP input handlers
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) {
@@ -179,7 +187,7 @@ export default function Signup() {
 
   const handleOtpKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpInputRefs.current[index - 1]?.focus();
@@ -248,6 +256,36 @@ export default function Signup() {
     setIsSignupInProgress(false);
   };
 
+  // Memoize Google Sign-In callback to prevent rerenders when form inputs change
+  const handleGoogleSignInSuccess = useCallback(
+    async (credential: string) => {
+      setIsGoogleLoading(true);
+      setIsSignupInProgress(true);
+      setError("");
+      try {
+        const result = await loginWithGoogle(credential);
+        if (result.success) router.push("/dashboard");
+        else {
+          setError(result.message || "Google authentication failed");
+          setIsSignupInProgress(false);
+        }
+      } catch (err) {
+        console.error("Google login error:", err);
+        setError("An unexpected error occurred during Google authentication");
+        setIsSignupInProgress(false);
+      } finally {
+        setIsGoogleLoading(false);
+      }
+    },
+    [loginWithGoogle, router],
+  );
+
+  const handleGoogleSignInError = useCallback(() => {
+    setError("Google authentication failed. Please try again.");
+    setIsGoogleLoading(false);
+    setIsSignupInProgress(false);
+  }, []);
+
   // Don't render anything if user is logged in and not during signup (will redirect)
   if (user && !isSignupInProgress) {
     return null;
@@ -263,29 +301,28 @@ export default function Signup() {
     );
   }
 
-
   // Show OTP verification screen
   if (showOtpScreen) {
     return (
       <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Base Background Layer – light mode */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-purple-50 dark:hidden z-0" />
-      {/* Base Background Layer – dark mode */}
-      <div className="absolute inset-0 hidden dark:block bg-black z-0" />
-        
+        {/* Base Background Layer – light mode */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-purple-50 dark:hidden z-0" />
+        {/* Base Background Layer – dark mode */}
+        <div className="absolute inset-0 hidden dark:block bg-black z-0" />
+
         {/* Background Atmosphere & Stars */}
         <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
           {/* Top-right: purple/indigo */}
-          <motion.div 
+          <motion.div
             animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-400/[0.18] md:bg-purple-500/[0.22] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" 
+            className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-400/[0.18] md:bg-purple-500/[0.22] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]"
           />
           {/* Bottom-left: rose/pink */}
-          <motion.div 
+          <motion.div
             animate={{ x: [0, -40, 0], y: [0, 20, 0] }}
             transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-rose-300/[0.15] md:bg-rose-400/[0.18] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" 
+            className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-rose-300/[0.15] md:bg-rose-400/[0.18] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]"
           />
           {/* Centre accent: blue/indigo — light mode only */}
           <motion.div
@@ -426,25 +463,25 @@ export default function Signup() {
 
   // Show signup form when signup is enabled
   return (
-    <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="h-[100dvh] w-full flex relative overflow-hidden">
       {/* Base Background Layer – light mode */}
       <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-purple-50 dark:hidden z-0" />
       {/* Base Background Layer – dark mode */}
       <div className="absolute inset-0 hidden dark:block bg-black z-0" />
-      
+
       {/* Background Atmosphere & Stars */}
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         {/* Top-right: purple/indigo */}
-        <motion.div 
+        <motion.div
           animate={{ x: [0, 30, 0], y: [0, -30, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-400/[0.18] md:bg-purple-500/[0.22] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]" 
+          className="absolute top-[-10%] right-[-10%] md:top-0 md:right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-purple-400/[0.18] md:bg-purple-500/[0.22] dark:bg-indigo-500/[0.1] md:dark:bg-indigo-500/[0.2] rounded-full blur-[80px] md:blur-[140px]"
         />
         {/* Bottom-left: rose/pink */}
-        <motion.div 
+        <motion.div
           animate={{ x: [0, -40, 0], y: [0, 20, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-rose-300/[0.15] md:bg-rose-400/[0.18] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]" 
+          className="absolute bottom-[-5%] left-[-10%] md:bottom-20 md:left-0 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-rose-300/[0.15] md:bg-rose-400/[0.18] dark:bg-blue-900/[0.08] md:dark:bg-blue-900/[0.15] rounded-full blur-[60px] md:blur-[120px]"
         />
         {/* Centre accent: blue/indigo — light mode only */}
         <motion.div
@@ -469,7 +506,7 @@ export default function Signup() {
                 delay: star.delay,
                 ease: "easeInOut",
               }}
-                className="absolute rounded-full bg-indigo-400 shadow-[0_0_6px_rgba(99,102,241,0.5)] dark:bg-white dark:shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              className="absolute rounded-full bg-indigo-400 shadow-[0_0_6px_rgba(99,102,241,0.5)] dark:bg-white dark:shadow-[0_0_8px_rgba(255,255,255,0.8)]"
               style={{
                 left: star.left,
                 top: star.top,
@@ -482,16 +519,15 @@ export default function Signup() {
       </div>
       {/* ── Two-column wrapper ── */}
       <div className="relative z-20 w-full max-w-6xl mx-auto flex items-center justify-center px-6 lg:px-10 gap-10 lg:gap-24">
-
         {/* ── LEFT: Signup Card ── */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative z-20"
+          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <div className="text-center mb-6 sm:mb-8">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -499,7 +535,7 @@ export default function Signup() {
             >
               Create Account
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
@@ -619,7 +655,7 @@ export default function Signup() {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="space-y-3"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -635,20 +671,15 @@ export default function Signup() {
                 {isSubmitting ? "Sending OTP..." : "Create Account"}
               </motion.button>
 
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.5 }}>
+              <motion.div
+                style={{ willChange: "opacity" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.1, duration: 0.5 }}
+              >
                 <GoogleSignInButton
-                  onSuccess={async (credential) => {
-                    setIsGoogleLoading(true);
-                    setIsSignupInProgress(true);
-                    setError("");
-                    try {
-                      const result = await loginWithGoogle(credential);
-                      if (result.success) router.push("/dashboard");
-                      else { setError(result.message || "Google authentication failed"); setIsSignupInProgress(false); }
-                    } catch (err) { console.error("Google login error:", err); setError("An unexpected error occurred during Google authentication"); setIsSignupInProgress(false); }
-                    finally { setIsGoogleLoading(false); }
-                  }}
-                  onError={() => { setError("Google authentication failed. Please try again."); setIsGoogleLoading(false); setIsSignupInProgress(false); }}
+                  onSuccess={handleGoogleSignInSuccess}
+                  onError={handleGoogleSignInError}
                   disabled={isSubmitting}
                   isLoading={isGoogleLoading}
                 />
@@ -656,13 +687,34 @@ export default function Signup() {
             </motion.div>
           </form>
 
-          <motion.div className="mt-6 text-center space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.5 }}>
+          <motion.div
+            className="mt-6 text-center space-y-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.3, duration: 0.5 }}
+          >
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Already have an account? <Link href="/login" className="text-black dark:text-white hover:underline font-medium">Sign in</Link>
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="text-black dark:text-white hover:underline font-medium"
+              >
+                Sign in
+              </Link>
             </p>
           </motion.div>
-          <motion.div className="mt-6 text-center space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4, duration: 0.5 }}>
-            <Link href="/" className="block text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm">← Back to home</Link>
+          <motion.div
+            className="mt-6 text-center space-y-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.4, duration: 0.5 }}
+          >
+            <Link
+              href="/"
+              className="block text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm"
+            >
+              ← Back to home
+            </Link>
           </motion.div>
         </motion.div>
 
@@ -706,7 +758,8 @@ export default function Signup() {
             transition={{ delay: 0.9, duration: 0.6 }}
             className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-10 max-w-xs"
           >
-            Push your limits, earn streaks, and rise up the leaderboard - one task at a time.
+            Push your limits, earn streaks, and rise up the leaderboard - one
+            task at a time.
           </motion.p>
 
           <motion.div
@@ -717,17 +770,30 @@ export default function Signup() {
           >
             <div className="flex gap-3">
               {["Daily Streaks", "Leaderboards"].map((tag) => (
-                <motion.span key={tag} whileHover={{ y: -1.5 }} whileTap={{ scale: 0.98 }} className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]">{tag}</motion.span>
+                <motion.span
+                  key={tag}
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]"
+                >
+                  {tag}
+                </motion.span>
               ))}
             </div>
             <div className="flex gap-3">
               {["Power-Ups", "Quizzes"].map((tag) => (
-                <motion.span key={tag} whileHover={{ y: -1.5 }} whileTap={{ scale: 0.98 }} className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]">{tag}</motion.span>
+                <motion.span
+                  key={tag}
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]"
+                >
+                  {tag}
+                </motion.span>
               ))}
             </div>
           </motion.div>
         </motion.div>
-
       </div>
     </div>
   );

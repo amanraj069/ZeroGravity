@@ -542,17 +542,15 @@ export default function NoteEditor({
           });
         })
         .catch((err) => {
-          console.error("Cloudinary background upload failed, keeping local URL:", err);
-          // Set uploading: false to remove loading overlay
+          console.error("Cloudinary background upload failed, removing image node:", err);
+          alert(err.message || "Failed to upload image. Please try again.");
+          // Remove the image node from the editor to avoid broken placeholder
           if (!editor || editor.isDestroyed) return;
           editor.commands.command(({ tr }) => {
             let found = false;
             tr.doc.descendants((node, pos) => {
               if (node.type.name === "image" && node.attrs.src === localUrl) {
-                tr.setNodeMarkup(pos, undefined, {
-                  ...node.attrs,
-                  uploading: false,
-                });
+                tr.delete(pos, pos + node.nodeSize);
                 found = true;
                 return false;
               }

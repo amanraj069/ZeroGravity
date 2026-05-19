@@ -44,6 +44,9 @@ interface NotesAppProps {
 export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
   const searchParams = useSearchParams();
 
+  // ─── Map to store pending changes for debounced saves ─────
+  const pendingChangesRef = useRef<Map<string, Partial<Note>>>(new Map());
+
   // ─── State ────────────────────────────────────────────────
   const [allNotes, setAllNotes] = useState<Note[]>([]);
   const [categories, setCategories] = useState<NoteCategory[]>([]);
@@ -138,6 +141,40 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
     }
   }, [activeNoteId, sidebarView, activeCategory]);
 
+  // Synchronize state when browser navigation occurs (back/forward buttons)
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+
+      // Parse activeNoteId
+      const match = path.match(/^\/notes\/([^\/]+)$/);
+      if (match) {
+        const docId = match[1];
+        setActiveNoteId(docId);
+      } else if (path === "/notes") {
+        setActiveNoteId(null);
+
+        // Parse tab/sidebarView
+        const tab = params.get("tab");
+        if (tab && TAB_MAP[tab]) {
+          setSidebarView(TAB_MAP[tab]);
+        } else {
+          setSidebarView("notes");
+        }
+
+        // Parse activeCategory
+        const category = params.get("category");
+        setActiveCategory(category || null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   // If user arrives with initialDocId, switch to correct sidebar view
   // after data loads (e.g. show trash tab if the note is trashed)
   useEffect(() => {
@@ -168,8 +205,11 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       const note = await createNote(body);
       setAllNotes((prev) => [note, ...prev]);
       setActiveNoteId(note._id);
-    } catch (err) {
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to create note.";
       console.error("Failed to create note:", err);
+      alert(errorMessage);
     }
   }, [activeCategory]);
 
@@ -187,32 +227,56 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
         const note = await createNote(body);
         setAllNotes((prev) => [note, ...prev]);
         setActiveNoteId(note._id);
-      } catch (err) {
+      } catch (err: unknown) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create note.";
         console.error("Failed to create note:", err);
+        alert(errorMessage);
       }
     },
     [],
   );
 
-  const handleUpdateNote = useCallback((id: string, changes: Partial<Note>) => {
-    // Optimistically update local state
-    setAllNotes((prev) =>
-      prev.map((n) => (n._id === id ? { ...n, ...changes } : n)),
-    );
+  const handleUpdateNote = useCallback(
+    (id: string, changes: Partial<Note>) => {
+      // Optimistically update local state
+      setAllNotes((prev) =>
+        prev.map((n) => (n._id === id ? { ...n, ...changes } : n)),
+      );
 
-    // Debounced save to backend
-    setSaving(true);
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(async () => {
-      try {
-        await updateNoteApi(id, changes);
-      } catch (err) {
-        console.error("Failed to save note:", err);
-      } finally {
-        setSaving(false);
-      }
-    }, 400);
-  }, []);
+      // Debounced save to backend - accumulate changes properly
+      setSaving(true);
+
+      // Store pending changes in a ref to accumulate multiple rapid updates
+      const currentPending = pendingChangesRef.current.get(id) || {};
+      pendingChangesRef.current.set(id, { ...currentPending, ...changes });
+
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+
+      saveTimerRef.current = setTimeout(async () => {
+        try {
+          // Get accumulated changes
+          const accumulatedChanges =
+            pendingChangesRef.current.get(id) || changes;
+          await updateNoteApi(id, accumulatedChanges);
+          // Clear pending changes after successful save
+          pendingChangesRef.current.delete(id);
+        } catch (err: unknown) {
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to save note.";
+          console.error("Failed to save note:", err);
+          alert(errorMessage);
+          // Revert local state to match the server state by reloading data
+          // This ensures consistency when save fails
+          loadData();
+        } finally {
+          setSaving(false);
+          saveTimerRef.current = null;
+        }
+      }, 400);
+    },
+    [loadData],
+  );
 
   const handleTrashNote = useCallback(
     async (id: string) => {
@@ -291,21 +355,26 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
     }
   }, []);
 
-  const handleUpdateCategory = useCallback(async (id: string, name: string) => {
-    try {
-      const cat = await updateCategory(id, name);
-      setCategories((prev) =>
-        prev
-          .map((c) => (c._id === id ? cat : c))
-          .sort((a, b) => {
-            if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-            return a.name.localeCompare(b.name);
-          }),
-      );
-    } catch (err) {
-      console.error("Failed to update category:", err);
-    }
-  }, []);
+  const handleUpdateCategory = useCallback(
+    async (id: string, name: string) => {
+      try {
+        const cat = await updateCategory(id, name);
+        setCategories((prev) =>
+          prev
+            .map((c) => (c._id === id ? cat : c))
+            .sort((a, b) => {
+              if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+              return a.name.localeCompare(b.name);
+            }),
+        );
+        // Reload notes to ensure they reflect the updated category name
+        await loadData();
+      } catch (err) {
+        console.error("Failed to update category:", err);
+      }
+    },
+    [loadData],
+  );
 
   const handleDeleteCategory = useCallback(
     async (id: string) => {
@@ -315,11 +384,13 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
         if (activeCategory) {
           setActiveCategory(null);
         }
+        // Reload notes to clear category references from deleted category
+        await loadData();
       } catch (err) {
         console.error("Failed to delete category:", err);
       }
     },
-    [activeCategory],
+    [activeCategory, loadData],
   );
 
   const handleTogglePinCategory = useCallback(async (id: string) => {
@@ -365,7 +436,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       if (format === "pdf") {
         try {
           const html2pdf = (await import("html2pdf.js")).default;
-          
+
           const container = document.createElement("div");
           container.style.position = "absolute";
           container.style.left = "-9999px";
@@ -374,7 +445,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
           container.style.backgroundColor = "white";
           container.style.color = "black";
           container.style.padding = "40px";
-          
+
           container.innerHTML = `
             <div style="font-family: sans-serif;">
               <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 24px; border-bottom: 2px solid #eaeaea; padding-bottom: 12px; color: #1a1a1a;">
@@ -390,9 +461,13 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
           const opt = {
             margin: 15,
             filename: `${title}.pdf`,
-            image: { type: 'jpeg' as const, quality: 0.98 },
+            image: { type: "jpeg" as const, quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-            jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+            jsPDF: {
+              unit: "mm" as const,
+              format: "a4" as const,
+              orientation: "portrait" as const,
+            },
           };
 
           await html2pdf().set(opt).from(container).save();
