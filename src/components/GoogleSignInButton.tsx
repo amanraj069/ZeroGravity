@@ -296,7 +296,7 @@ export default function GoogleSignInButton({
       window.removeEventListener("resize", handleResize);
       hasRenderedButton.current = false;
     };
-  }, [showGoogleButton, disabled, isLoading, isInitialized, theme, onError]); // Added theme and onError to dependencies
+  }, [showGoogleButton, disabled, isLoading, isInitialized, theme]); // Removed onError from dependencies - it's used in initialization, not render
 
   if (!showGoogleButton || disabled || isLoading || !isInitialized) {
     return (
@@ -337,7 +337,7 @@ export default function GoogleSignInButton({
 
   // Render Google button
   return (
-    <div className="w-full relative">
+    <div className="w-full relative" style={{ willChange: "opacity" }}>
       {/* Dark mode border overlay — sits on top of the Google iframe's own white border */}
       <div
         className="
@@ -346,7 +346,11 @@ export default function GoogleSignInButton({
           dark:[&_div]:![border-color:transparent]
         "
       >
-        <div ref={buttonRef} className="w-full [&_*]:!rounded-xl" />
+        <div
+          ref={buttonRef}
+          className="w-full [&_*]:!rounded-xl"
+          style={{ backfaceVisibility: "hidden" }}
+        />
       </div>
       {/* In dark mode, draw a matching dark border on top of the iframe border */}
       <div

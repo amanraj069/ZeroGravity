@@ -206,7 +206,8 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       setAllNotes((prev) => [note, ...prev]);
       setActiveNoteId(note._id);
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to create note.";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to create note.";
       console.error("Failed to create note:", err);
       alert(errorMessage);
     }
@@ -227,7 +228,8 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
         setAllNotes((prev) => [note, ...prev]);
         setActiveNoteId(note._id);
       } catch (err: unknown) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to create note.";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create note.";
         console.error("Failed to create note:", err);
         alert(errorMessage);
       }
@@ -254,12 +256,14 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       saveTimerRef.current = setTimeout(async () => {
         try {
           // Get accumulated changes
-          const accumulatedChanges = pendingChangesRef.current.get(id) || changes;
+          const accumulatedChanges =
+            pendingChangesRef.current.get(id) || changes;
           await updateNoteApi(id, accumulatedChanges);
           // Clear pending changes after successful save
           pendingChangesRef.current.delete(id);
         } catch (err: unknown) {
-          const errorMessage = err instanceof Error ? err.message : "Failed to save note.";
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to save note.";
           console.error("Failed to save note:", err);
           alert(errorMessage);
           // Revert local state to match the server state by reloading data
