@@ -3,6 +3,9 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 import ResizableImageComponent from "./ResizableImageComponent";
 
 const ResizableImage = Image.extend({
+  inline: false,
+  group: "block",
+
   addAttributes() {
     return {
       ...this.parent?.(),
@@ -10,7 +13,6 @@ const ResizableImage = Image.extend({
         default: "100%",
         renderHTML: (attributes) => ({
           width: attributes.width,
-          style: `width: ${attributes.width}; max-width: 100%; height: auto;`,
         }),
       },
       height: {
@@ -27,22 +29,19 @@ const ResizableImage = Image.extend({
       },
       alignment: {
         default: "center",
-        renderHTML: (attributes) => ({
-          "data-alignment": attributes.alignment,
-          style: `display: block; margin-left: ${
-            attributes.alignment === "left"
-              ? "0"
-              : attributes.alignment === "right"
-              ? "auto"
-              : "auto"
-          }; margin-right: ${
-            attributes.alignment === "right"
-              ? "0"
-              : attributes.alignment === "left"
-              ? "auto"
-              : "auto"
-          };`,
-        }),
+        renderHTML: (attributes) => {
+          const isCentered = attributes.alignment === "center";
+          if (!isCentered) {
+            return {
+              "data-alignment": attributes.alignment,
+              style: `display: inline-block; vertical-align: top; float: ${attributes.alignment}; clear: none; margin: 6px 12px; width: ${attributes.width || "100%"}; max-width: 100%; height: auto;`,
+            };
+          }
+          return {
+            "data-alignment": attributes.alignment,
+            style: `display: block; float: none; clear: both; margin-left: auto; margin-right: auto; width: ${attributes.width || "100%"}; max-width: 100%; height: auto;`,
+          };
+        },
       },
     };
   },
