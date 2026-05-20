@@ -12,7 +12,7 @@ export default function StartCreateQuizPage() {
     const params = new URLSearchParams();
     params.set("title", "Untitled");
 
-    router.push(`/quizzes/create?${params.toString()}`);
+    router.push(`/dashboard/quizzes/create?${params.toString()}`);
   }, [router]);
 
   return (

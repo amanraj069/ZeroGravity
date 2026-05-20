@@ -217,7 +217,7 @@ export default function CreateQuizContent({
       }
       const pub = await publishQuiz(id!);
       if (!pub?.success) throw new Error(pub?.message || "Publish failed");
-      router.push(`/quizzes/host/${id}?code=${pub.joinCode}`);
+      router.push(`/dashboard/quizzes/host/${id}?code=${pub.joinCode}`);
     } catch (e) {
       alert((e as Error)?.message || "Failed to publish quiz");
     } finally {

@@ -49,7 +49,7 @@ function LandingNavbar() {
                       Leaderboard
                     </Link>
                     <Link
-                      href="/goals"
+                      href="/dashboard/goals"
                       className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                     >
                       Goals
@@ -160,28 +160,28 @@ function LandingNavbar() {
                     <Trophy size={18} /> Leaderboard
                   </Link>
                   <Link
-                    href="/goals"
+                    href="/dashboard/goals"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <Target size={18} /> Goals
                   </Link>
                   <Link
-                    href="/quizzes"
+                    href="/dashboard/quizzes"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <BrainCircuit size={18} /> Quizzes
                   </Link>
                   <Link
-                    href="/notes"
+                    href="/dashboard/notes"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <FileText size={18} /> Notes
                   </Link>
                   <Link
-                    href="/academia"
+                    href="/dashboard/academia"
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >

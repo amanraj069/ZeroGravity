@@ -77,3 +77,57 @@ export interface AdminQuizListResponse {
   items: AdminQuizListItem[];
   total: number;
 }
+
+export interface QuizSessionSummary {
+  sessionId: string;
+  sessionNumber: number;
+  totalParticipants: number;
+  totalQuestions: number;
+  startedAt?: string;
+  endedAt?: string;
+  duration?: number; // seconds
+  title: string;
+}
+
+export interface QuizSessionParticipant {
+  quizUserId: string;
+  participantName: string;
+  participantAvatar?: string;
+  totalScore: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  accuracy: number;
+  pointsEarned: number;
+  responses: Array<{
+    questionId: string;
+    selectedOptionKey: string;
+    timeLeftSeconds?: number;
+    awardedMarks?: number;
+    isCorrect: boolean;
+  }>;
+  joinedAt?: string;
+  lastAnswerAt?: string;
+}
+
+export interface QuizSessionQuestion {
+  questionId: string;
+  text: string;
+  options: Array<{ key: string; text: string; isCorrect?: boolean }>;
+  timeLimitSeconds: number;
+  maxMarks: number;
+}
+
+export interface QuizSessionDetail {
+  sessionId: string;
+  quizId: string;
+  sessionNumber: number;
+  title: string;
+  description?: string;
+  totalQuestions: number;
+  totalParticipants: number;
+  startedAt?: string;
+  endedAt?: string;
+  duration?: number;
+  questions: QuizSessionQuestion[];
+  leaderboard: QuizSessionParticipant[];
+}

@@ -7,10 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import LoginStreakBonus from "@/components/LoginStreakBonus";
 import StreakBrokenPopup from "@/components/StreakBrokenPopup";
-import {
-  getPowerUpInventory,
-  StreakStatus,
-} from "@/services/shopService";
+import { getPowerUpInventory, StreakStatus } from "@/services/shopService";
 import { motion } from "framer-motion";
 import {
   ShoppingBag,
@@ -57,7 +54,7 @@ export default function Dashboard() {
   const navigationItems = [
     {
       name: "Daily Tasks & Goals",
-      url: "/goals",
+      url: "/dashboard/goals",
       description: "Set and track your daily tasks and goals",
       icon: <Target className="w-5 h-5" />,
       accent: "from-indigo-500 to-purple-500",
@@ -65,7 +62,7 @@ export default function Dashboard() {
     },
     {
       name: "Academia",
-      url: "/academia",
+      url: "/dashboard/academia",
       description: "Store your academics in encrypted format",
       icon: <BookOpen className="w-5 h-5" />,
       accent: "from-fuchsia-500 to-pink-500",
@@ -73,7 +70,7 @@ export default function Dashboard() {
     },
     {
       name: "Quizzes",
-      url: "/quizzes",
+      url: "/dashboard/quizzes",
       description: "Create and take quizzes to test your knowledge",
       icon: <Trophy className="w-5 h-5" />,
       accent: "from-amber-500 to-orange-500",
@@ -81,7 +78,7 @@ export default function Dashboard() {
     },
     {
       name: "Notes",
-      url: "/notes",
+      url: "/dashboard/notes",
       description: "Write, organize, and manage your notes",
       icon: <FileText className="w-5 h-5" />,
       accent: "from-emerald-500 to-teal-500",
@@ -107,11 +104,14 @@ export default function Dashboard() {
           const data = await getPowerUpInventory();
           if (data?.success && data.data?.streakStatus?.canUse) {
             const { streakStatus } = data.data;
-            const lastDismissed = sessionStorage.getItem("streakBrokenDismissed");
-            
-            // Only trigger if they had a streak (previousStreak >= 1) 
+            const lastDismissed = sessionStorage.getItem(
+              "streakBrokenDismissed",
+            );
+
+            // Only trigger if they had a streak (previousStreak >= 1)
             // and they JUST missed it yesterday (missedDays === 1)
-            const shouldTrigger = streakStatus.missedDays === 1 && streakStatus.previousStreak >= 1;
+            const shouldTrigger =
+              streakStatus.missedDays === 1 && streakStatus.previousStreak >= 1;
 
             if (!lastDismissed && shouldTrigger) {
               setStreakStatus(streakStatus);
@@ -243,10 +243,11 @@ export default function Dashboard() {
               <span className="text-lg md:text-2xl font-bold text-black dark:text-white">
                 {(user?.points || 0).toLocaleString()}
               </span>
-              <CurrencyIcon size={14} className="text-gray-500 dark:text-gray-400 mb-1 md:mb-1.5" />
+              <CurrencyIcon
+                size={14}
+                className="text-gray-500 dark:text-gray-400 mb-1 md:mb-1.5"
+              />
             </div>
-
-
 
             {/* Shop Button */}
             <Link

@@ -8,7 +8,14 @@ import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 import { useAuth } from "@/contexts/AuthContext";
-import { X, Check, AlertCircle, Clock, ChevronRight, ChevronDown } from "lucide-react";
+import {
+  X,
+  Check,
+  AlertCircle,
+  Clock,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
 
 export default function LeaderboardPage() {
   const params = useParams();
@@ -98,7 +105,7 @@ export default function LeaderboardPage() {
   };
 
   const handleBackToPortal = () => {
-    router.push(`/quizzes/host/${quizId}`);
+    router.push(`/dashboard/quizzes/host/${quizId}`);
   };
 
   if (loading) {
@@ -111,7 +118,11 @@ export default function LeaderboardPage() {
     );
   }
 
-  const ParticipantReportSection = ({ entry }: { entry: QuizLeaderboardEntry }) => {
+  const ParticipantReportSection = ({
+    entry,
+  }: {
+    entry: QuizLeaderboardEntry;
+  }) => {
     if (!quiz) return null;
 
     return (
@@ -119,10 +130,12 @@ export default function LeaderboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-10">
           {quiz.questions.map((q, idx) => {
             // Robust matching: by ID or by Index
-            const answer = entry.answers?.find(
-              (a) => a.questionId === q.questionId
-            ) || (entry.answers && entry.answers.length === quiz.questions.length ? entry.answers[idx] : undefined);
-            
+            const answer =
+              entry.answers?.find((a) => a.questionId === q.questionId) ||
+              (entry.answers && entry.answers.length === quiz.questions.length
+                ? entry.answers[idx]
+                : undefined);
+
             const isCorrect = answer?.isCorrect;
             const hasAnswered = !!answer;
 
@@ -132,13 +145,15 @@ export default function LeaderboardPage() {
                 className="space-y-2.5 pb-4 sm:pb-8 border-b border-gray-100/50 dark:border-gray-800/30 last:border-0 md:odd:border-r md:odd:pr-8"
               >
                 <div className="flex items-start gap-2 sm:gap-3">
-                  <span className={`flex-shrink-0 w-5 h-5 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[9px] sm:text-[10px] font-bold ${
-                    !hasAnswered 
-                      ? "bg-gray-200 dark:bg-gray-700 text-gray-500" 
-                      : isCorrect 
-                        ? "bg-green-500 text-white shadow-sm shadow-green-500/20" 
-                        : "bg-red-500 text-white shadow-sm shadow-red-500/20"
-                  }`}>
+                  <span
+                    className={`flex-shrink-0 w-5 h-5 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-[9px] sm:text-[10px] font-bold ${
+                      !hasAnswered
+                        ? "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                        : isCorrect
+                          ? "bg-green-500 text-white shadow-sm shadow-green-500/20"
+                          : "bg-red-500 text-white shadow-sm shadow-red-500/20"
+                    }`}
+                  >
                     {idx + 1}
                   </span>
                   <p className="text-[11px] sm:text-sm text-gray-900 dark:text-white font-medium leading-relaxed">
@@ -150,14 +165,16 @@ export default function LeaderboardPage() {
                   {q.options.map((opt) => {
                     const isSelected = answer?.selectedOptionKey === opt.key;
                     const isCorrectOpt = opt.isCorrect;
-                    
-                    let variantClasses = "border-transparent text-gray-500 dark:text-gray-400 opacity-60";
+
+                    let variantClasses =
+                      "border-transparent text-gray-500 dark:text-gray-400 opacity-60";
                     if (isSelected) {
                       variantClasses = isCorrect
                         ? "border-green-500 bg-green-500/10 text-green-700 dark:text-green-300 opacity-100 font-medium"
                         : "border-red-500 bg-red-500/10 text-red-700 dark:text-red-300 opacity-100 font-medium";
                     } else if (isCorrectOpt && hasAnswered && !isCorrect) {
-                      variantClasses = "border-green-500/30 bg-green-500/5 text-green-600 dark:text-green-400 opacity-100";
+                      variantClasses =
+                        "border-green-500/30 bg-green-500/5 text-green-600 dark:text-green-400 opacity-100";
                     }
 
                     return (
@@ -166,19 +183,39 @@ export default function LeaderboardPage() {
                         className={`flex items-center justify-between p-1.5 sm:p-2.5 border rounded-lg text-[10px] sm:text-xs transition-all ${variantClasses}`}
                       >
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className={`flex-shrink-0 w-3.5 h-3.5 rounded flex items-center justify-center text-[8px] font-bold ${
-                            isSelected ? "bg-current/10" : "bg-gray-100 dark:bg-white/5"
-                          }`}>
+                          <span
+                            className={`flex-shrink-0 w-3.5 h-3.5 rounded flex items-center justify-center text-[8px] font-bold ${
+                              isSelected
+                                ? "bg-current/10"
+                                : "bg-gray-100 dark:bg-white/5"
+                            }`}
+                          >
                             {opt.key}
                           </span>
                           <span className="truncate">{opt.text}</span>
                         </div>
                         <div className="flex-shrink-0">
-                          {isSelected && isCorrect && <Check size={10} className="text-green-600 sm:w-3 sm:h-3" />}
-                          {isSelected && !isCorrect && <X size={10} className="text-red-600 sm:w-3 sm:h-3" />}
-                          {!isSelected && isCorrectOpt && hasAnswered && !isCorrect && (
-                            <Check size={10} className="text-green-500/50 sm:w-3 sm:h-3" />
+                          {isSelected && isCorrect && (
+                            <Check
+                              size={10}
+                              className="text-green-600 sm:w-3 sm:h-3"
+                            />
                           )}
+                          {isSelected && !isCorrect && (
+                            <X
+                              size={10}
+                              className="text-red-600 sm:w-3 sm:h-3"
+                            />
+                          )}
+                          {!isSelected &&
+                            isCorrectOpt &&
+                            hasAnswered &&
+                            !isCorrect && (
+                              <Check
+                                size={10}
+                                className="text-green-500/50 sm:w-3 sm:h-3"
+                              />
+                            )}
                         </div>
                       </div>
                     );
@@ -193,13 +230,15 @@ export default function LeaderboardPage() {
                     </span>
                   ) : (
                     <div className="flex items-center gap-3">
-                       {answer.responseTimeSeconds && (
+                      {answer.responseTimeSeconds && (
                         <div className="flex items-center gap-1 text-[8px] text-gray-500 font-medium">
                           <Clock size={8} />
                           {answer.responseTimeSeconds.toFixed(1)}s
                         </div>
                       )}
-                      <span className={`text-[8px] font-bold uppercase tracking-wider ${isCorrect ? "text-green-500" : "text-red-500"}`}>
+                      <span
+                        className={`text-[8px] font-bold uppercase tracking-wider ${isCorrect ? "text-green-500" : "text-red-500"}`}
+                      >
                         {isCorrect ? "Correct" : "Incorrect"}
                       </span>
                     </div>
@@ -234,7 +273,7 @@ export default function LeaderboardPage() {
               <button
                 onClick={() =>
                   router.push(
-                    `/quizzes/host/${quizId}${quiz?.joinCode ? `?code=${quiz.joinCode}` : ""}`,
+                    `/dashboard/quizzes/host/${quizId}${quiz?.joinCode ? `?code=${quiz.joinCode}` : ""}`,
                   )
                 }
                 className="mt-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors rounded-lg"
@@ -346,7 +385,11 @@ export default function LeaderboardPage() {
                         key={entry.quizUserId}
                         onClick={() => {
                           if (isDeleted) return;
-                          setExpandedUserId(expandedUserId === entry.quizUserId ? null : entry.quizUserId);
+                          setExpandedUserId(
+                            expandedUserId === entry.quizUserId
+                              ? null
+                              : entry.quizUserId,
+                          );
                         }}
                         className={`py-4 px-4 transition-all duration-300 ${
                           isDeleted
@@ -392,17 +435,23 @@ export default function LeaderboardPage() {
                                 (_, i) => {
                                   const question = quiz?.questions[i];
                                   const answer = entry.answers?.find(
-                                    (a) => a.questionId === question?.questionId
+                                    (a) =>
+                                      a.questionId === question?.questionId,
                                   );
 
-                                  let bgColor = "bg-blue-100 dark:bg-blue-900/30";
+                                  let bgColor =
+                                    "bg-blue-100 dark:bg-blue-900/30";
                                   if (answer) {
                                     bgColor = answer.isCorrect
                                       ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]"
                                       : "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]";
-                                  } else if (i < (correctAnswers + incorrectAnswers)) {
+                                  } else if (
+                                    i <
+                                    correctAnswers + incorrectAnswers
+                                  ) {
                                     // Fallback to sequential if answers array is missing but counts exist
-                                    if (i < correctAnswers) bgColor = "bg-green-500";
+                                    if (i < correctAnswers)
+                                      bgColor = "bg-green-500";
                                     else bgColor = "bg-red-500";
                                   }
 
@@ -466,19 +515,19 @@ export default function LeaderboardPage() {
                           </div>
 
                           {/* Score */}
-                            <div className="text-right">
-                              <div className="text-sm font-bold text-gray-900 dark:text-white leading-none">
-                                {Math.round(entry.totalScore || 0)}
-                              </div>
-                              <div className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-0.5 flex items-center justify-end gap-1">
-                                pts
-                                <ChevronRight 
-                                  size={12} 
-                                  className={`transition-transform duration-300 ${expandedUserId === entry.quizUserId ? "rotate-90" : ""}`} 
-                                />
-                              </div>
+                          <div className="text-right">
+                            <div className="text-sm font-bold text-gray-900 dark:text-white leading-none">
+                              {Math.round(entry.totalScore || 0)}
+                            </div>
+                            <div className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-0.5 flex items-center justify-end gap-1">
+                              pts
+                              <ChevronRight
+                                size={12}
+                                className={`transition-transform duration-300 ${expandedUserId === entry.quizUserId ? "rotate-90" : ""}`}
+                              />
                             </div>
                           </div>
+                        </div>
 
                         {/* Inline Report Section */}
                         {expandedUserId === entry.quizUserId && (
@@ -555,10 +604,16 @@ export default function LeaderboardPage() {
                       key={entry.quizUserId}
                       onClick={() => {
                         if (isDeleted) return;
-                        setExpandedUserId(expandedUserId === entry.quizUserId ? null : entry.quizUserId);
+                        setExpandedUserId(
+                          expandedUserId === entry.quizUserId
+                            ? null
+                            : entry.quizUserId,
+                        );
                       }}
                       className={`py-4 px-3 transition-all duration-300 ${isDeleted ? "opacity-60" : "active:bg-gray-100 dark:active:bg-gray-800"} ${
-                        expandedUserId === entry.quizUserId ? "bg-gray-50 dark:bg-gray-800/50" : ""
+                        expandedUserId === entry.quizUserId
+                          ? "bg-gray-50 dark:bg-gray-800/50"
+                          : ""
                       }`}
                     >
                       <div className="flex flex-col gap-3">
@@ -577,7 +632,9 @@ export default function LeaderboardPage() {
                               <div
                                 className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0 ${getAvatarColor(entry.participantName)} ${isDeleted ? "grayscale" : ""}`}
                               >
-                                {entry.participantName?.charAt(0)?.toUpperCase() || "?"}
+                                {entry.participantName
+                                  ?.charAt(0)
+                                  ?.toUpperCase() || "?"}
                               </div>
                             )}
                             <div className="flex flex-col min-w-0">
@@ -591,8 +648,12 @@ export default function LeaderboardPage() {
                                 {entry.participantName}
                               </h3>
                               <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium">
-                                <span className="text-green-600 dark:text-green-400">✓{correctAnswers}</span>
-                                <span className="text-red-600 dark:text-red-400">✗{incorrectAnswers}</span>
+                                <span className="text-green-600 dark:text-green-400">
+                                  ✓{correctAnswers}
+                                </span>
+                                <span className="text-red-600 dark:text-red-400">
+                                  ✗{incorrectAnswers}
+                                </span>
                                 {unanswered > 0 && <span>—{unanswered}</span>}
                               </div>
                             </div>
@@ -601,15 +662,22 @@ export default function LeaderboardPage() {
                           {/* Top Right: Accuracy + Score */}
                           <div className="flex items-center gap-2.5 flex-shrink-0">
                             <div className="relative w-9 h-9">
-                              <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+                              <svg
+                                className="w-9 h-9 -rotate-90"
+                                viewBox="0 0 36 36"
+                              >
                                 <circle
-                                  cx="18" cy="18" r="15"
+                                  cx="18"
+                                  cy="18"
+                                  r="15"
                                   fill="none"
                                   className="stroke-gray-200 dark:stroke-gray-700"
                                   strokeWidth="3.5"
                                 />
                                 <circle
-                                  cx="18" cy="18" r="15"
+                                  cx="18"
+                                  cy="18"
+                                  r="15"
                                   fill="none"
                                   className="stroke-green-500"
                                   strokeWidth="3.5"
@@ -627,9 +695,9 @@ export default function LeaderboardPage() {
                               </div>
                               <div className="text-[9px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-1 flex items-center justify-end gap-1">
                                 pts
-                                <ChevronRight 
-                                  size={10} 
-                                  className={`transition-transform duration-300 ${expandedUserId === entry.quizUserId ? "rotate-90" : ""}`} 
+                                <ChevronRight
+                                  size={10}
+                                  className={`transition-transform duration-300 ${expandedUserId === entry.quizUserId ? "rotate-90" : ""}`}
                                 />
                               </div>
                             </div>
@@ -638,26 +706,36 @@ export default function LeaderboardPage() {
 
                         {/* Bottom: Answer bars */}
                         <div className="flex gap-0.5">
-                          {Array.from({ length: totalQuestions }).map((_, i) => {
-                            const question = quiz?.questions[i];
-                            const answer = entry.answers?.find(
-                              (a) => a.questionId === question?.questionId
-                            );
+                          {Array.from({ length: totalQuestions }).map(
+                            (_, i) => {
+                              const question = quiz?.questions[i];
+                              const answer = entry.answers?.find(
+                                (a) => a.questionId === question?.questionId,
+                              );
 
-                            let bgColor = "bg-gray-100 dark:bg-gray-800";
-                            if (answer) {
-                              bgColor = answer.isCorrect ? "bg-green-500" : "bg-red-500";
-                            } else if (i < (correctAnswers + incorrectAnswers)) {
-                              bgColor = i < correctAnswers ? "bg-green-500" : "bg-red-500";
-                            }
+                              let bgColor = "bg-gray-100 dark:bg-gray-800";
+                              if (answer) {
+                                bgColor = answer.isCorrect
+                                  ? "bg-green-500"
+                                  : "bg-red-500";
+                              } else if (
+                                i <
+                                correctAnswers + incorrectAnswers
+                              ) {
+                                bgColor =
+                                  i < correctAnswers
+                                    ? "bg-green-500"
+                                    : "bg-red-500";
+                              }
 
-                            return (
-                              <div
-                                key={i}
-                                className={`h-1.5 rounded-sm flex-1 ${bgColor}`}
-                              />
-                            );
-                          })}
+                              return (
+                                <div
+                                  key={i}
+                                  className={`h-1.5 rounded-sm flex-1 ${bgColor}`}
+                                />
+                              );
+                            },
+                          )}
                         </div>
 
                         {/* Inline Report Section - Mobile */}

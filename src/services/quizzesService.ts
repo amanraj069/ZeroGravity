@@ -1,5 +1,5 @@
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
-import { QuizListResponse } from "@/types/quiz";
+import { QuizListResponse, QuizSessionSummary, QuizSessionDetail } from "@/types/quiz";
 
 export interface QuizOption {
   key: string;
@@ -288,4 +288,22 @@ export const listUserQuizzes = async (params?: {
     console.log("API response data:", data);
   }
   return data;
+};
+
+// Quiz sessions (history)
+export const getQuizSessions = async (
+  quizId: string,
+): Promise<{ success: boolean; sessions: QuizSessionSummary[] }> => {
+  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.SESSIONS(quizId));
+  return res.json();
+};
+
+export const getSessionDetails = async (
+  quizId: string,
+  sessionId: string,
+): Promise<{ success: boolean; session: QuizSessionDetail }> => {
+  const res = await apiCallWithAuth(
+    API_ENDPOINTS.QUIZZES.SESSION_DETAIL(quizId, sessionId),
+  );
+  return res.json();
 };

@@ -16,23 +16,26 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const isHomePage = pathname === "/";
   const Footer = isHomePage ? LandingFooter : SimpleFooter;
 
-  const isNotesPage = pathname?.startsWith("/notes");
+  const isNotesPage =
+    pathname?.startsWith("/notes") || pathname?.startsWith("/dashboard/notes");
+  const isFullScreenPage = isNotesPage;
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   return (
     <div
-      className={`flex flex-col bg-white dark:bg-gray-900 ${
-        isNotesPage ? "h-screen overflow-hidden" : "min-h-screen"
-      }`}
+      className={`flex flex-col bg-white dark:bg-gray-900 ${isFullScreenPage ? "h-[100dvh] overflow-hidden" : "min-h-screen"
+        }`}
     >
       {!isAuthPage && <LandingNavbar />}
-      <main className={`flex-grow flex flex-col ${isNotesPage ? "overflow-hidden min-h-0" : ""}`}>
+      <main
+        className={`flex-grow flex flex-col ${isFullScreenPage ? "overflow-hidden min-h-0" : ""}`}
+      >
         {children}
       </main>
 
       {isHomePage ? (
         <Footer />
-      ) : isNotesPage || isAuthPage ? null : (
+      ) : isFullScreenPage || isAuthPage ? null : (
         <SimpleFooter />
       )}
     </div>
