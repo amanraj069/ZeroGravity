@@ -125,7 +125,7 @@ export default function HostedQuizPage() {
       setCurrentIndex(-1);
       setIsActive(false);
       setQuizStatus("published");
-      router.push(`/quizzes/host/${quizId}`);
+      router.push(`/dashboard/dashboard/quizzes/host/${quizId}`);
     };
 
     s.on("question:pushed", onQuestion);
@@ -228,7 +228,7 @@ export default function HostedQuizPage() {
   };
 
   const handleBackToPortal = () => {
-    router.push(`/quizzes/host/${quizId}`);
+    router.push(`/dashboard/quizzes/host/${quizId}`);
   };
 
   if (!quiz) {
@@ -286,12 +286,20 @@ export default function HostedQuizPage() {
                 {/* Statistics - Stacked on Mobile, Inline on Desktop */}
                 <div className="flex flex-col sm:flex-row items-end sm:items-center text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-tighter shrink-0 pt-0.5 sm:pt-0 sm:border-l sm:border-gray-200 dark:sm:border-gray-700 sm:pl-4 gap-1 sm:gap-5">
                   <div className="flex items-baseline gap-1.5 leading-none">
-                    <span className="text-gray-900 dark:text-white text-xs sm:text-sm">{participants.length}</span>
-                    <span className="opacity-60 text-[8px] sm:text-[9px]">participants</span>
+                    <span className="text-gray-900 dark:text-white text-xs sm:text-sm">
+                      {participants.length}
+                    </span>
+                    <span className="opacity-60 text-[8px] sm:text-[9px]">
+                      participants
+                    </span>
                   </div>
                   <div className="flex items-baseline gap-1.5 leading-none px-0 sm:px-0 sm:border-l sm:border-gray-100 dark:sm:border-gray-800 sm:pl-5">
-                    <span className="text-gray-900 dark:text-white text-xs sm:text-sm">Q{currentIndex + 1}</span>
-                    <span className="opacity-60 text-[8px] sm:text-[9px]">of {questions.length}</span>
+                    <span className="text-gray-900 dark:text-white text-xs sm:text-sm">
+                      Q{currentIndex + 1}
+                    </span>
+                    <span className="opacity-60 text-[8px] sm:text-[9px]">
+                      of {questions.length}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -318,7 +326,9 @@ export default function HostedQuizPage() {
                   {/* Thumb - Square */}
                   <div
                     className={`absolute top-0 w-5 h-5 sm:w-6 sm:h-6 bg-white border border-gray-300 dark:border-gray-700 transition-transform rounded-full ${
-                      isPresentationMode ? "translate-x-5 sm:translate-x-6" : "translate-x-0"
+                      isPresentationMode
+                        ? "translate-x-5 sm:translate-x-6"
+                        : "translate-x-0"
                     }`}
                   />
                 </div>
@@ -408,7 +418,9 @@ export default function HostedQuizPage() {
                       <span
                         className={`mr-1.5 h-1.5 w-1.5 rounded-full ${isQuestionActive ? "bg-green-500 animate-pulse" : "bg-gray-400"}`}
                       ></span>
-                      <span className="uppercase tracking-widest">{isQuestionActive ? "Live" : "Ended"}</span>
+                      <span className="uppercase tracking-widest">
+                        {isQuestionActive ? "Live" : "Ended"}
+                      </span>
                     </div>
 
                     <div className="w-px h-6 bg-gray-200 dark:bg-gray-700 hidden sm:block mx-0.5"></div>

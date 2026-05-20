@@ -117,9 +117,11 @@ export default function QuizzesPage() {
     if (quiz.status === "active") {
       router.push(`/hosted/${quiz.quizId}`);
     } else if (quiz.status === "published") {
-      router.push(`/quizzes/host/${quiz.quizId}${quiz.joinCode ? `?code=${quiz.joinCode}` : ""}`);
+      router.push(
+        `/dashboard/quizzes/host/${quiz.quizId}${quiz.joinCode ? `?code=${quiz.joinCode}` : ""}`,
+      );
     } else {
-      router.push(`/quizzes/create?quizId=${quiz.quizId}&edit=true`);
+      router.push(`/dashboard/quizzes/create?quizId=${quiz.quizId}&edit=true`);
     }
   };
 
@@ -292,7 +294,7 @@ export default function QuizzesPage() {
       <main className="flex-1 py-4 sm:py-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -313,7 +315,7 @@ export default function QuizzesPage() {
                 <div className="flex items-center gap-2 sm:hidden">
                   {user?.subscription === "pro" && (
                     <button
-                      onClick={() => router.push("/quizzes/deleted")}
+                      onClick={() => router.push("/dashboard/quizzes/deleted")}
                       className="h-9 w-9 flex items-center justify-center border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
                       aria-label="View Deleted"
                       title="View Deleted"
@@ -342,7 +344,7 @@ export default function QuizzesPage() {
                 </button>
                 {user?.subscription === "pro" && (
                   <button
-                    onClick={() => router.push("/quizzes/deleted")}
+                    onClick={() => router.push("/dashboard/quizzes/deleted")}
                     className="hidden sm:flex w-full sm:w-auto items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-lg"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -361,7 +363,7 @@ export default function QuizzesPage() {
           </motion.div>
 
           {/* Search Bar */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
@@ -389,144 +391,149 @@ export default function QuizzesPage() {
 
           {/* Empty State */}
           <AnimatePresence>
-            {!loading && filteredQuizzes.length === 0 && quizzes.length === 0 && (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="py-16 px-4"
-              >
-                <div className="max-w-5xl mx-auto">
-                  <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-                    {/* Image Container - Left Side */}
-                    <div className="flex-shrink-0 lg:w-1/2">
-                      <div className="relative w-80 h-80 lg:w-96 lg:h-96 mx-auto">
-                        <Image
-                          src="/quiz/noQuizzes.png"
-                          alt="No quizzes illustration"
-                          fill
-                          className="object-cover"
-                          priority
-                        />
-                      </div>
-                    </div>
-
-                    {/* Content - Right Side */}
-                    <div className="flex-1 lg:w-1/2 text-center lg:text-left">
-                      <div className="space-y-6">
-                        <h2 className="text-3xl lg:text-4xl font-light text-gray-900 dark:text-white leading-tight">
-                          Ready to create your first quiz?
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
-                          Build engaging quizzes that captivate your audience and
-                          make learning interactive and fun
-                        </p>
-
-                        {/* Feature List - Simple and Clean */}
-                        <div className="space-y-3 max-w-md mx-auto lg:mx-0">
-                          {[
-                            "Real-time results and analytics",
-                            "Support for multiple participants",
-                            "Easy sharing with join codes",
-                            "Detailed performance insights"
-                          ].map((feature, i) => (
-                            <motion.div 
-                              key={i}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.5 + i * 0.1 }}
-                              className="flex items-center space-x-3"
-                            >
-                              <div className="w-2 h-2 bg-black dark:bg-white"></div>
-                              <span className="text-sm text-gray-700 dark:text-gray-300">
-                                {feature}
-                              </span>
-                            </motion.div>
-                          ))}
+            {!loading &&
+              filteredQuizzes.length === 0 &&
+              quizzes.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="py-16 px-4"
+                >
+                  <div className="max-w-5xl mx-auto">
+                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                      {/* Image Container - Left Side */}
+                      <div className="flex-shrink-0 lg:w-1/2">
+                        <div className="relative w-80 h-80 lg:w-96 lg:h-96 mx-auto">
+                          <Image
+                            src="/quiz/noQuizzes.png"
+                            alt="No quizzes illustration"
+                            fill
+                            className="object-cover"
+                            priority
+                          />
                         </div>
+                      </div>
 
-                        {/* Action Button */}
-                        <div className="pt-4">
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => router.push("/createQuiz")}
-                            className="w-full flex items-center justify-center px-8 py-3 bg-black dark:bg-white text-white dark:text-black text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-lg"
-                          >
-                            Create Your First Quiz
-                            <svg
-                              className="ml-2 w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                      {/* Content - Right Side */}
+                      <div className="flex-1 lg:w-1/2 text-center lg:text-left">
+                        <div className="space-y-6">
+                          <h2 className="text-3xl lg:text-4xl font-light text-gray-900 dark:text-white leading-tight">
+                            Ready to create your first quiz?
+                          </h2>
+                          <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-md mx-auto lg:mx-0">
+                            Build engaging quizzes that captivate your audience
+                            and make learning interactive and fun
+                          </p>
+
+                          {/* Feature List - Simple and Clean */}
+                          <div className="space-y-3 max-w-md mx-auto lg:mx-0">
+                            {[
+                              "Real-time results and analytics",
+                              "Support for multiple participants",
+                              "Easy sharing with join codes",
+                              "Detailed performance insights",
+                            ].map((feature, i) => (
+                              <motion.div
+                                key={i}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.5 + i * 0.1 }}
+                                className="flex items-center space-x-3"
+                              >
+                                <div className="w-2 h-2 bg-black dark:bg-white"></div>
+                                <span className="text-sm text-gray-700 dark:text-gray-300">
+                                  {feature}
+                                </span>
+                              </motion.div>
+                            ))}
+                          </div>
+
+                          {/* Action Button */}
+                          <div className="pt-4">
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => router.push("/createQuiz")}
+                              className="w-full flex items-center justify-center px-8 py-3 bg-black dark:bg-white text-white dark:text-black text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-lg"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 4v16m8-8H4"
-                              />
-                            </svg>
-                          </motion.button>
+                              Create Your First Quiz
+                              <svg
+                                className="ml-2 w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 4v16m8-8H4"
+                                />
+                              </svg>
+                            </motion.button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              )}
           </AnimatePresence>
 
           {/* No Search Results */}
-          {!loading && !searchLoading && filteredQuizzes.length === 0 && quizzes.length > 0 && (
-            <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="max-w-md mx-auto text-center">
-                {/* Search Icon */}
-                <div className="mb-6">
-                <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-6">
-                  <svg
-                    className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white opacity-20 dark:opacity-40"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-                </div>
+          {!loading &&
+            !searchLoading &&
+            filteredQuizzes.length === 0 &&
+            quizzes.length > 0 && (
+              <div className="flex flex-col items-center justify-center py-16 px-4">
+                <div className="max-w-md mx-auto text-center">
+                  {/* Search Icon */}
+                  <div className="mb-6">
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-6">
+                      <svg
+                        className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white opacity-20 dark:opacity-40"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
 
-                {/* Content */}
-                <div className="space-y-3">
-                  <h2 className="text-xl font-light text-gray-900 dark:text-white">
-                    No quizzes found
-                  </h2>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                    Try adjusting your search terms to find what you&apos;re
-                    looking for
-                  </p>
-                </div>
+                  {/* Content */}
+                  <div className="space-y-3">
+                    <h2 className="text-xl font-light text-gray-900 dark:text-white">
+                      No quizzes found
+                    </h2>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                      Try adjusting your search terms to find what you&apos;re
+                      looking for
+                    </p>
+                  </div>
 
-                {/* Action Button */}
-                <div className="mt-6">
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-lg"
-                  >
-                    Clear Search
-                  </button>
+                  {/* Action Button */}
+                  <div className="mt-6">
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-lg"
+                    >
+                      Clear Search
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Quizzes Grid */}
           {!loading && filteredQuizzes.length > 0 && (
-            <motion.div 
+            <motion.div
               layout
               className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
             >
@@ -540,7 +547,11 @@ export default function QuizzesPage() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => handleQuizClick(quiz)}
-                    whileHover={{ y: -4, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
+                    whileHover={{
+                      y: -4,
+                      boxShadow:
+                        "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+                    }}
                     className="flex flex-col h-full bg-white dark:bg-gray-800 shadow-sm p-3 sm:p-5 transition-all cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group rounded-xl"
                   >
                     {/* Header with Status + Title and Actions */}

@@ -679,7 +679,7 @@ export default function HostQuizPage() {
                     <button
                       onClick={() =>
                         router.push(
-                          `/quizzes/create?quizId=${quizId}&edit=true`,
+                          `/dashboard/quizzes/create?quizId=${quizId}&edit=true`,
                         )
                       }
                       className="w-full flex items-center justify-between px-3 sm:px-4 py-2 text-[11px] sm:text-xs text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors rounded-lg"

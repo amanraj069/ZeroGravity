@@ -405,7 +405,9 @@ function CreateQuizContent() {
         // Clear modified questions after successful create
         setModifiedQuestions(new Set());
         // Update URL with quizId and savedStatus (only for new quizzes)
-        router.replace(`/quizzes/create?quizId=${newQuizId}&savedStatus=true`);
+        router.replace(
+          `/dashboard/quizzes/create?quizId=${newQuizId}&savedStatus=true`,
+        );
         return;
       }
       const result = await updateDraft(quizId, {
@@ -441,7 +443,7 @@ function CreateQuizContent() {
       }
       const pub = await publishQuiz(id!);
       if (!pub?.success) throw new Error(pub?.message || "Publish failed");
-      router.push(`/quizzes/host/${id}?code=${pub.joinCode}`);
+      router.push(`/dashboard/quizzes/host/${id}?code=${pub.joinCode}`);
     } catch (e) {
       alert((e as Error)?.message || "Failed to publish quiz");
     } finally {
@@ -471,7 +473,11 @@ function CreateQuizContent() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 overflow-hidden">
               <BackButton
-                href={quizId ? `/quizzes/host/${quizId}` : "/quizzes"}
+                href={
+                  quizId
+                    ? `/dashboard/quizzes/host/${quizId}`
+                    : "/dashboard/quizzes"
+                }
                 className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
               />
 

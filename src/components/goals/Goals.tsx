@@ -119,7 +119,7 @@ const Goals: React.FC = () => {
   // Update URL when activeView changes
   const updateURL = (view: ViewType) => {
     const tab = view === "goals" ? "all" : "daily";
-    window.history.pushState(null, "", `/goals?tab=${tab}`);
+    window.history.pushState(null, "", `/dashboard/goals?tab=${tab}`);
   };
 
   // Handle view change
@@ -142,7 +142,7 @@ const Goals: React.FC = () => {
     const tab = searchParams.get("tab");
     if (!tab) {
       // Set default to daily tasks without triggering a full RSC fetch
-      window.history.replaceState(null, "", "/goals?tab=daily");
+      window.history.replaceState(null, "", "/dashboard/goals?tab=daily");
     }
   }, [searchParams]);
 

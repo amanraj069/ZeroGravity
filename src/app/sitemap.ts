@@ -1,32 +1,32 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://zerogravity.vercel.app';
-  
+  const baseUrl = "https://zerogravity.vercel.app";
+
   const routes = [
-    '',
-    '/about',
-    '/contact',
-    '/privacy',
-    '/terms',
-    '/cancellation',
-    '/shipping',
-    '/login',
-    '/signup',
-    '/shop',
-    '/dashboard',
-    '/goals',
-    '/quizzes',
-    '/leaderboard',
-    '/academia',
-    '/notes',
-    '/studentsHub',
+    "",
+    "/about",
+    "/contact",
+    "/privacy",
+    "/terms",
+    "/cancellation",
+    "/shipping",
+    "/login",
+    "/signup",
+    "/shop",
+    "/dashboard",
+    "/dashboard/goals",
+    "/dashboard/quizzes",
+    "/dashboard/academia",
+    "/dashboard/notes",
+    "/leaderboard",
+    "/studentsHub",
   ];
 
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: 'daily',
-    priority: route === '' ? 1 : 0.8,
+    changeFrequency: "daily",
+    priority: route === "" ? 1 : 0.8,
   }));
 }

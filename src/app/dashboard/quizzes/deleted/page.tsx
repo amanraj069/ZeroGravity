@@ -6,7 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { listDeletedQuizzes, restoreQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
-import DeletedQuizzesSkeleton, { DeletedQuizCardsSkeleton } from "@/components/quizzes/DeletedQuizzesSkeleton";
+import DeletedQuizzesSkeleton, {
+  DeletedQuizCardsSkeleton,
+} from "@/components/quizzes/DeletedQuizzesSkeleton";
 
 export default function DeletedQuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
@@ -72,7 +74,7 @@ export default function DeletedQuizzesPage() {
         // If it's a Pro subscription error, redirect back to main quizzes page
         if (response.message?.includes("Pro subscription required")) {
           alert("Pro subscription required to access deleted quizzes.");
-          router.push("/quizzes");
+          router.push("/dashboard/quizzes");
         }
       }
     } catch (error) {
@@ -107,7 +109,7 @@ export default function DeletedQuizzesPage() {
       } else {
         if (response.message?.includes("Pro subscription required")) {
           alert("Pro subscription required to restore quizzes.");
-          router.push("/quizzes");
+          router.push("/dashboard/quizzes");
         } else {
           alert(
             `Failed to restore quiz: ${response.message || "Unknown error"}`,
@@ -204,7 +206,7 @@ export default function DeletedQuizzesPage() {
 
                   <div className="text-center">
                     <button
-                      onClick={() => router.push("/quizzes")}
+                      onClick={() => router.push("/dashboard/quizzes")}
                       className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium mr-4 rounded-lg"
                     >
                       Back to Quizzes
@@ -236,7 +238,7 @@ export default function DeletedQuizzesPage() {
           <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-2 sm:gap-4">
               <button
-                onClick={() => router.push("/quizzes")}
+                onClick={() => router.push("/dashboard/quizzes")}
                 className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
               >
                 <svg
@@ -303,7 +305,7 @@ export default function DeletedQuizzesPage() {
                   permanently delete them.
                 </p>
                 <button
-                  onClick={() => router.push("/quizzes")}
+                  onClick={() => router.push("/dashboard/quizzes")}
                   className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all rounded-lg"
                 >
                   Back to Quizzes
@@ -313,41 +315,44 @@ export default function DeletedQuizzesPage() {
           )}
 
           {/* No Search Results */}
-          {!loading && !searchLoading && filteredQuizzes.length === 0 && quizzes.length > 0 && (
-            <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="max-w-md mx-auto text-center">
-                <div className="mb-6">
-                  <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-6">
-                    <svg
-                      className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white opacity-20 dark:opacity-40"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
+          {!loading &&
+            !searchLoading &&
+            filteredQuizzes.length === 0 &&
+            quizzes.length > 0 && (
+              <div className="flex flex-col items-center justify-center py-16 px-4">
+                <div className="max-w-md mx-auto text-center">
+                  <div className="mb-6">
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-6">
+                      <svg
+                        className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white opacity-20 dark:opacity-40"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
                   </div>
+                  <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
+                    No deleted quizzes found
+                  </h2>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                    Try adjusting your search terms
+                  </p>
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all rounded-lg"
+                  >
+                    Clear Search
+                  </button>
                 </div>
-                <h2 className="text-xl font-light text-gray-900 dark:text-white mb-3">
-                  No deleted quizzes found
-                </h2>
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
-                  Try adjusting your search terms
-                </p>
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all rounded-lg"
-                >
-                  Clear Search
-                </button>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Quizzes Grid */}
           {!loading && filteredQuizzes.length > 0 && (
@@ -436,7 +441,10 @@ export default function DeletedQuizzesPage() {
                     </div>
                     <div className="text-center">
                       <div className="text-base sm:text-lg font-semibold text-black dark:text-white">
-                        {new Date(quiz.createdAt).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: '2-digit' })}
+                        {new Date(quiz.createdAt).toLocaleDateString(
+                          undefined,
+                          { month: "2-digit", day: "2-digit", year: "2-digit" },
+                        )}
                       </div>
                       <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Created

@@ -57,7 +57,7 @@ export default function SemesterDetailPage() {
         err instanceof Error ? err.message : "Failed to load semester";
       setError(errorMessage);
       if (errorMessage.includes("not found")) {
-        router.push("/academia");
+        router.push("/dashboard/academia");
       }
     } finally {
       setLoading(false);
@@ -238,7 +238,7 @@ export default function SemesterDetailPage() {
         <div className="mt-4">
           <div className="flex items-center gap-2 sm:gap-4 mb-8">
             <BackButton
-              href="/academia"
+              href="/dashboard/academia"
               className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
             />
             <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white">
@@ -257,7 +257,7 @@ export default function SemesterDetailPage() {
         <div className="mb-4 sm:mb-8">
           <div className="flex items-center gap-2 sm:gap-4 mb-2">
             <BackButton
-              href="/academia"
+              href="/dashboard/academia"
               className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
             />
             <div className="flex-1 min-w-0">
@@ -275,8 +275,12 @@ export default function SemesterDetailPage() {
             >
               <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:opacity-90" />
               <span className="relative text-lg sm:text-xl">+</span>
-              <span className="relative text-[10px] sm:text-xs font-bold uppercase tracking-widest hidden sm:inline">Add Course</span>
-              <span className="relative text-[10px] font-bold uppercase tracking-widest sm:hidden">Add</span>
+              <span className="relative text-[10px] sm:text-xs font-bold uppercase tracking-widest hidden sm:inline">
+                Add Course
+              </span>
+              <span className="relative text-[10px] font-bold uppercase tracking-widest sm:hidden">
+                Add
+              </span>
             </button>
           </div>
         </div>
@@ -548,36 +552,36 @@ Assignment: 8/10
                             {course.name}
                           </h3>
                         </div>
-                          <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
-                            {course.grade && (
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
-                                  Grade
-                                </span>
-                                <span className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold">
-                                  {course.grade}
-                                </span>
-                              </div>
-                            )}
+                        <div className="flex items-center gap-4 sm:gap-6 flex-wrap">
+                          {course.grade && (
                             <div className="flex items-center gap-2">
                               <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
-                                Credits
-                               </span>
+                                Grade
+                              </span>
                               <span className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold">
-                                {course.credits || 4}
+                                {course.grade}
                               </span>
                             </div>
-                            {course.absents > 0 && (
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
-                                  Absents
-                                </span>
-                                <span className="text-sm sm:text-base text-red-500 dark:text-red-400 font-bold">
-                                  {course.absents}
-                                </span>
-                              </div>
-                            )}
+                          )}
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
+                              Credits
+                            </span>
+                            <span className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold">
+                              {course.credits || 4}
+                            </span>
                           </div>
+                          {course.absents > 0 && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest">
+                                Absents
+                              </span>
+                              <span className="text-sm sm:text-base text-red-500 dark:text-red-400 font-bold">
+                                {course.absents}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <button

@@ -118,14 +118,14 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
 
   // ─── URL sync ─────────────────────────────────────────────
   // Keep the browser URL in sync with the current view state.
-  // When a note is active → /notes/{id}
-  // When no note is active → /notes?tab=all|favorites|trash[&category=...]
+  // When a note is active → /dashboard/notes/{id}
+  // When no note is active → /dashboard/notes?tab=all|favorites|trash[&category=...]
   useEffect(() => {
     if (!initializedRef.current) return;
 
     if (activeNoteId) {
-      if (window.location.pathname !== `/notes/${activeNoteId}`) {
-        const url = `/notes/${activeNoteId}`;
+      if (window.location.pathname !== `/dashboard/notes/${activeNoteId}`) {
+        const url = `/dashboard/notes/${activeNoteId}`;
         window.history.pushState(null, "", url);
       }
     } else {
@@ -134,7 +134,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       if (activeCategory) {
         params.set("category", activeCategory);
       }
-      const newUrl = `/notes?${params.toString()}`;
+      const newUrl = `/dashboard/notes?${params.toString()}`;
       if (window.location.pathname + window.location.search !== newUrl) {
         window.history.pushState(null, "", newUrl);
       }

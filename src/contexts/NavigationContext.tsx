@@ -47,12 +47,12 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
     setNavigationStack((prevStack) => {
       if (isNavigatingBackRef.current) {
         isNavigatingBackRef.current = false;
-        
+
         const existingIndex = prevStack.indexOf(pathname);
         if (existingIndex !== -1) {
           return prevStack.slice(0, existingIndex + 1);
         }
-        
+
         // If we navigated back to a logical parent that wasn't in the stack,
         // reset the stack to just that parent to prevent infinite back-loops.
         return [pathname];
@@ -80,27 +80,28 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({
   const getLogicalParent = (path: string): string => {
     // Direct parent mappings
     if (path === "/dashboard") return "/";
-    if (path === "/academia") return "/dashboard";
-    if (path?.startsWith("/academia/")) return "/academia";
-    if (path === "/goals") return "/dashboard";
-    if (path === "/quizzes") return "/dashboard";
-    if (path === "/quizzes/create") return "/quizzes";
-    if (path?.startsWith("/quizzes/host/")) return "/quizzes";
-    if (path?.startsWith("/quizzes/")) return "/quizzes";
-    if (path === "/notes") return "/dashboard";
-    if (path?.startsWith("/notes/")) return "/notes";
-    if (path === "/badges") return "/dashboard";
-    if (path === "/shop") return "/dashboard";
+    if (path === "/dashboard/academia") return "/dashboard";
+    if (path?.startsWith("/dashboard/academia/")) return "/dashboard/academia";
+    if (path === "/dashboard/goals") return "/dashboard";
+    if (path === "/dashboard/quizzes") return "/dashboard";
+    if (path === "/dashboard/quizzes/create") return "/dashboard/quizzes";
+    if (path?.startsWith("/dashboard/quizzes/host/"))
+      return "/dashboard/quizzes";
+    if (path?.startsWith("/dashboard/quizzes/")) return "/dashboard/quizzes";
+    if (path === "/dashboard/notes") return "/dashboard";
+    if (path?.startsWith("/dashboard/notes/")) return "/dashboard/notes";
+    if (path === "/dashboard/badges") return "/dashboard";
+    if (path === "/dashboard/shop") return "/dashboard";
     if (path === "/leaderboard") return "/dashboard";
-    if (path?.startsWith("/leaderboard/")) return "/quizzes"; // From quiz detail
+    if (path?.startsWith("/leaderboard/")) return "/dashboard/quizzes"; // From quiz detail
     if (path === "/profile") return "/dashboard";
     if (path === "/settings") return "/profile";
     if (path?.startsWith("/profile/")) return "/dashboard"; // Other users
     if (path === "/studentsHub") return "/dashboard";
     if (path?.startsWith("/studentsHub/")) return "/studentsHub";
     if (path === "/joinQuiz") return "/dashboard";
-    if (path === "/createQuiz") return "/quizzes";
-    if (path?.startsWith("/hosted/")) return "/quizzes";
+    if (path === "/createQuiz") return "/dashboard/quizzes";
+    if (path?.startsWith("/hosted/")) return "/dashboard/quizzes";
 
     // Default fallback to dashboard
     return "/dashboard";
