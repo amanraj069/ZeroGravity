@@ -429,10 +429,32 @@ function CreateQuizContent() {
   const onPublish = async () => {
     try {
       setPublishing(true);
+
+      // Validate current question
+      const validation = validateCurrentQuestion();
+      if (!validation.isValid) {
+        alert(validation.message);
+        setPublishing(false);
+        return;
+      }
+
+      // Check for valid title
+      const quizTitle = title.trim();
+      if (
+        !quizTitle ||
+        quizTitle.toLowerCase() === "untitled" ||
+        quizTitle.toLowerCase() === "untitled quiz"
+      ) {
+        setTitleError(true);
+        setPublishing(false);
+        setTimeout(() => setTitleError(false), 1000);
+        return;
+      }
+
       let id = quizId;
       if (!id) {
         const created = await createQuiz({
-          title: title || "Untitled Quiz",
+          title: quizTitle,
           description,
           questions,
         });
@@ -440,7 +462,18 @@ function CreateQuizContent() {
           throw new Error(created?.message || "Create failed");
         id = created.quiz.quizId;
         setQuizId(id);
+        setModifiedQuestions(new Set());
+      } else {
+        // Auto-save existing quiz before publishing
+        const result = await updateDraft(id, {
+          title: quizTitle,
+          description,
+          questions,
+        });
+        if (!result?.success) throw new Error(result?.message || "Save failed before publishing");
+        setModifiedQuestions(new Set());
       }
+
       const pub = await publishQuiz(id!);
       if (!pub?.success) throw new Error(pub?.message || "Publish failed");
       router.push(`/dashboard/quizzes/host/${id}?code=${pub.joinCode}`);
@@ -469,7 +502,7 @@ function CreateQuizContent() {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Full-width header matching website design theme */}
       <div className="bg-white dark:bg-gray-900">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 overflow-hidden">
               <BackButton
@@ -509,13 +542,12 @@ function CreateQuizContent() {
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    className={`text-xl sm:text-3xl font-light text-black dark:text-white !bg-transparent outline-none w-full placeholder-gray-300 dark:placeholder-gray-400 border-b-2 pb-1 transition-colors duration-300 ${
-                      titleError
-                        ? "border-red-500 shake-animation"
-                        : title.trim()
-                          ? "border-transparent"
-                          : "border-gray-200 dark:border-gray-700"
-                    }`}
+                    className={`text-xl sm:text-3xl font-light text-black dark:text-white !bg-transparent outline-none w-full placeholder-gray-300 dark:placeholder-gray-400 border-b-2 pb-1 transition-colors duration-300 ${titleError
+                      ? "border-red-500 shake-animation"
+                      : title.trim()
+                        ? "border-transparent"
+                        : "border-gray-200 dark:border-gray-700"
+                      }`}
                     placeholder="Enter Quiz Title..."
                     value={title}
                     onChange={(e) => {
@@ -596,15 +628,14 @@ function CreateQuizContent() {
                   {questions.map((_, i) => (
                     <button
                       key={i}
-                      className={`border-2 p-2 text-sm transition-all rounded-lg ${
-                        i === currentIndex
-                          ? modifiedQuestions.has(i)
-                            ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
-                            : "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
-                          : modifiedQuestions.has(i)
-                            ? "bg-white dark:bg-gray-700 border-orange-400 dark:border-orange-500 text-gray-900 dark:text-gray-100 hover:border-orange-500"
-                            : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                      }`}
+                      className={`border-2 p-2 text-sm transition-all rounded-lg ${i === currentIndex
+                        ? modifiedQuestions.has(i)
+                          ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
+                          : "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
+                        : modifiedQuestions.has(i)
+                          ? "bg-white dark:bg-gray-700 border-orange-400 dark:border-orange-500 text-gray-900 dark:text-gray-100 hover:border-orange-500"
+                          : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                        }`}
                       onClick={() => setCurrentIndex(i)}
                       title={`Go to question ${i + 1}${modifiedQuestions.has(i) ? " (unsaved changes)" : ""}`}
                     >
@@ -651,7 +682,7 @@ function CreateQuizContent() {
           </aside>
 
           <section className="order-1 md:order-2 md:col-span-9 lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-240px)] md:min-h-[520px] md:h-[580px] flex flex-col rounded-xl">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-240px)] md:min-h-[520px] md:h-[580px] flex flex-col rounded-xl relative">
               {/* Question Header */}
               <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-2.5 sm:py-4">
                 <div className="flex items-center justify-between gap-2 sm:gap-4">
@@ -703,11 +734,11 @@ function CreateQuizContent() {
                       {questions.length > 1 && (
                         <button
                           onClick={() => deleteQuestion(currentIndex)}
-                          className="p-1 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                          className="p-1.5 sm:p-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors rounded-lg"
                           title="Delete this question"
                         >
                           <svg
-                            className="w-3.5 h-3.5"
+                            className="w-5 h-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -751,16 +782,15 @@ function CreateQuizContent() {
                 </div>
 
                 {/* Scrollable Options List */}
-                <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 overscroll-contain">
+                <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 pb-6 sm:pb-8 overscroll-auto">
                   <div className="space-y-3">
                     {(q?.options || []).map((o, oi) => (
                       <div
                         key={o.key}
-                        className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors rounded-lg ${
-                          o.isCorrect
-                            ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
-                            : "bg-white dark:bg-gray-700"
-                        }`}
+                        className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors rounded-lg ${o.isCorrect
+                          ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
+                          : "bg-white dark:bg-gray-700"
+                          }`}
                       >
                         <input
                           type="radio"
@@ -829,7 +859,7 @@ function CreateQuizContent() {
                 </div>
 
                 {/* Sticky Action Buttons at Bottom */}
-                <div className="p-4 lg:p-6 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 bg-white dark:bg-gray-800">
+                <div className="p-4 pb-[76px] md:pb-4 lg:p-6 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 bg-white dark:bg-gray-800">
                   <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:justify-end sm:gap-3">
                     <div className="relative group col-span-2 sm:col-span-1 min-w-[140px] sm:mr-auto">
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-60 blur group-hover:opacity-100 animate-pulse transition duration-500"></div>
@@ -887,89 +917,90 @@ function CreateQuizContent() {
                   </div>
                 </div>
               </div>
+
+              {/* Mobile Question Panel - Bottom Sheet inside the container */}
+              <div
+                className={`block md:hidden absolute bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rounded-xl shadow-[0_-12px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-12px_40px_rgba(0,0,0,0.5)] z-40 ${isQuestionPanelOpen ? 'h-[60%]' : 'h-[60px]'
+                  }`}
+              >
+                <div className="p-4 flex flex-col h-full">
+                  <button
+                    onClick={() => setIsQuestionPanelOpen((prev) => !prev)}
+                    className="flex items-center justify-between mb-3 shrink-0 cursor-pointer w-full bg-transparent border-none outline-none"
+                  >
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      Question Panel
+                    </span>
+                    <div className={`transition-transform duration-500 ${isQuestionPanelOpen ? 'rotate-180' : ''}`}>
+                      <ChevronUp className="w-4 h-4 text-gray-400" />
+                    </div>
+                  </button>
+
+                  <div className={`flex-1 flex flex-col overflow-y-auto pr-1 transition-all duration-500 delay-75 ${isQuestionPanelOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
+                    <div className="grid grid-cols-5 gap-2 sm:gap-3 mb-4">
+                      {questions.map((_, i) => (
+                        <button
+                          key={i}
+                          className={`border-2 p-2 text-sm transition-all rounded-lg ${i === currentIndex
+                            ? modifiedQuestions.has(i)
+                              ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
+                              : "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
+                            : modifiedQuestions.has(i)
+                              ? "bg-white dark:bg-gray-700 border-orange-400 dark:border-orange-500 text-gray-900 dark:text-gray-100 hover:border-orange-500"
+                              : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            }`}
+                          onClick={() => {
+                            setCurrentIndex(i);
+                            setIsQuestionPanelOpen(false);
+                          }}
+                          title={`Go to question ${i + 1}${modifiedQuestions.has(i) ? " (unsaved changes)" : ""}`}
+                        >
+                          {i + 1}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-col gap-2 mt-auto pb-4">
+                      <button
+                        className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 rounded-lg"
+                        onClick={addQuestion}
+                        disabled={questions.length >= 100}
+                        title="Add question"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        Add Question
+                      </button>
+                      <button
+                        className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center rounded-lg"
+                        onClick={() => {
+                          setJsonInput(JSON.stringify(questions, null, 2));
+                          setIsQuestionPanelOpen(false);
+                          setShowJsonModal(true);
+                        }}
+                        title="Add questions with JSON"
+                      >
+                        Add questions with JSON
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         </div>
       </main>
-
-      <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden">
-        <div className="mx-3 mb-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
-          <button
-            onClick={() => setIsQuestionPanelOpen((prev) => !prev)}
-            className="w-full px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between"
-          >
-            <span className="text-sm font-medium text-gray-900 dark:text-white">
-              Question Panel
-            </span>
-            <ChevronUp
-              className={`w-4 h-4 text-gray-600 dark:text-gray-300 transition-transform duration-200 ${
-                isQuestionPanelOpen ? "rotate-180" : "rotate-0"
-              }`}
-            />
-          </button>
-
-          {isQuestionPanelOpen && (
-            <div className="max-h-[42vh] overflow-y-auto p-4">
-              <div className="grid grid-cols-3 gap-2 mb-3">
-                {questions.map((_, i) => (
-                  <button
-                    key={i}
-                    className={`border-2 p-2 text-sm transition-all ${
-                      i === currentIndex
-                        ? modifiedQuestions.has(i)
-                          ? "bg-black dark:bg-white text-white dark:text-black border-orange-400 dark:border-orange-500 shadow-sm"
-                          : "bg-black dark:bg-white text-white dark:text-black border-black dark:border-white shadow-sm"
-                        : modifiedQuestions.has(i)
-                          ? "bg-white dark:bg-gray-700 border-orange-400 dark:border-orange-500 text-gray-900 dark:text-gray-100 hover:border-orange-500"
-                          : "bg-white dark:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                    }`}
-                    onClick={() => {
-                      setCurrentIndex(i);
-                      setIsQuestionPanelOpen(false);
-                    }}
-                    title={`Go to question ${i + 1}${modifiedQuestions.has(i) ? " (unsaved changes)" : ""}`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 mb-2"
-                onClick={addQuestion}
-                disabled={questions.length >= 100}
-                title="Add question"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Add Question
-              </button>
-              <button
-                className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center"
-                onClick={() => {
-                  setJsonInput(JSON.stringify(questions, null, 2));
-                  setIsQuestionPanelOpen(false);
-                  setShowJsonModal(true);
-                }}
-                title="Add questions with JSON"
-              >
-                Add questions with JSON
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
 
       {showJsonModal && (
         <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
@@ -1070,10 +1101,10 @@ Give me the final combined JSON array with the new questions added:`;
                         maxMarks: Number(pq.maxMarks) || 100,
                         options: Array.isArray(pq.options)
                           ? pq.options.map((o: ParsedOption, oIdx: number) => ({
-                              key: o.key || String(oIdx + 1),
-                              text: o.text || "",
-                              isCorrect: !!o.isCorrect,
-                            }))
+                            key: o.key || String(oIdx + 1),
+                            text: o.text || "",
+                            isCorrect: !!o.isCorrect,
+                          }))
                           : [{ key: "1", text: "", isCorrect: true }],
                       }));
                       setQuestions(validated);
@@ -1088,7 +1119,7 @@ Give me the final combined JSON array with the new questions added:`;
                   } catch (err: unknown) {
                     alert(
                       "Failed to parse JSON: " +
-                        (err instanceof Error ? err.message : String(err)),
+                      (err instanceof Error ? err.message : String(err)),
                     );
                   }
                 }}
@@ -1262,19 +1293,19 @@ Give me the final combined JSON array with the new questions added:`;
                     rows={
                       generatedQuestions.length > 0 || isGenerating
                         ? Math.min(
-                            3,
-                            Math.max(
-                              1,
-                              aiPrompt
-                                .split("\n")
-                                .reduce(
-                                  (acc, line) =>
-                                    acc +
-                                    Math.max(1, Math.ceil(line.length / 80)),
-                                  0,
-                                ),
-                            ),
-                          )
+                          3,
+                          Math.max(
+                            1,
+                            aiPrompt
+                              .split("\n")
+                              .reduce(
+                                (acc, line) =>
+                                  acc +
+                                  Math.max(1, Math.ceil(line.length / 80)),
+                                0,
+                              ),
+                          ),
+                        )
                         : 8
                     }
                     value={aiPrompt}
@@ -1393,11 +1424,10 @@ Give me the final combined JSON array with the new questions added:`;
                       return (
                         <div
                           key={idx}
-                          className={`border p-3 transition-all cursor-pointer rounded-lg ${
-                            selectedAiIndices.has(idx)
-                              ? "border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-950/20"
-                              : "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 opacity-60"
-                          }`}
+                          className={`border p-3 transition-all cursor-pointer rounded-lg ${selectedAiIndices.has(idx)
+                            ? "border-green-300 dark:border-green-700 bg-green-50/50 dark:bg-green-950/20"
+                            : "border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 opacity-60"
+                            }`}
                           onClick={() => {
                             setSelectedAiIndices((prev) => {
                               const next = new Set(prev);
@@ -1410,11 +1440,10 @@ Give me the final combined JSON array with the new questions added:`;
                           <div className="flex items-start gap-3">
                             {/* Checkbox */}
                             <div
-                              className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center mt-0.5 transition-colors rounded ${
-                                selectedAiIndices.has(idx)
-                                  ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white"
-                                  : "border-gray-300 dark:border-gray-600"
-                              }`}
+                              className={`flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center mt-0.5 transition-colors rounded ${selectedAiIndices.has(idx)
+                                ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white"
+                                : "border-gray-300 dark:border-gray-600"
+                                }`}
                             >
                               {selectedAiIndices.has(idx) && (
                                 <Check className="w-3 h-3" />
@@ -1430,11 +1459,10 @@ Give me the final combined JSON array with the new questions added:`;
                                 {gq.options.map((opt, oIdx) => (
                                   <li
                                     key={oIdx}
-                                    className={`text-xs p-2 border rounded-lg ${
-                                      opt.isCorrect
-                                        ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300"
-                                        : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
-                                    }`}
+                                    className={`text-xs p-2 border rounded-lg ${opt.isCorrect
+                                      ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300"
+                                      : "bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                                      }`}
                                   >
                                     {opt.isCorrect && (
                                       <span className="font-bold mr-1">✓</span>

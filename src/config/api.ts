@@ -105,6 +105,10 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/api/quizzes/admin/past${params ? `?${params}` : ""}`,
     ADMIN_DETAILS: (quizId: string) =>
       `${API_BASE_URL}/api/quizzes/admin/${quizId}`,
+    SESSIONS: (quizId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/sessions`,
+    SESSION_DETAIL: (quizId: string, sessionId: string) =>
+      `${API_BASE_URL}/api/quizzes/${quizId}/sessions/${sessionId}`,
   },
   // Academia endpoints
   ACADEMIA: {
