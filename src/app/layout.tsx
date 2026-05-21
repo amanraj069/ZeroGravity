@@ -16,16 +16,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://zerogravity.vercel.app"),
+  metadataBase: new URL("https://zerogravity.aman-raj.me"),
   title: {
     default: "zeroGravity - Goals without gravity",
     template: "%s | zeroGravity",
   },
   description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries. Track progress, take quizzes, and join the community.",
   keywords: ["education", "goals", "quizzes", "students", "learning", "zeroGravity", "academic", "study planner"],
-  authors: [{ name: "zeroGravity Team" }],
-  creator: "zeroGravity",
-  publisher: "zeroGravity",
+  authors: [{ name: "Aman Raj" }],
+  creator: "Aman Raj",
+  publisher: "Aman Raj",
   robots: {
     index: true,
     follow: true,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: "zeroGravity - Goals without gravity",
     description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries.",
-    url: "https://zerogravity.vercel.app",
+    url: "https://zerogravity.aman-raj.me",
     siteName: "zeroGravity",
     images: [
       {

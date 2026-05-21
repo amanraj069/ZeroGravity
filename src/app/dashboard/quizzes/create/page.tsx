@@ -616,10 +616,10 @@ function CreateQuizContent() {
         </div>
       </div>
 
-      <main className="flex-1 pt-2 sm:pt-2 pb-24 sm:pb-8">
+      <main className="flex-1 pb-24 sm:pb-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 px-3 sm:px-4">
           <aside className="hidden md:block order-2 md:order-1 md:col-span-3 lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[580px] rounded-xl">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[700px] rounded-xl">
               <div className="p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
                   Question Panel
@@ -684,7 +684,7 @@ function CreateQuizContent() {
           </aside>
 
           <section className="order-1 md:order-2 md:col-span-9 lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-240px)] md:min-h-[520px] md:h-[580px] flex flex-col rounded-xl relative">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-180px)] md:min-h-[600px] md:h-[700px] flex flex-col rounded-xl relative">
               {/* Question Header */}
               <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-2.5 sm:py-4">
                 <div className="flex items-center justify-between gap-2 sm:gap-4">
@@ -922,7 +922,7 @@ function CreateQuizContent() {
 
               {/* Mobile Question Panel - Bottom Sheet inside the container */}
               <div
-                className={`block md:hidden absolute bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rounded-xl shadow-[0_-12px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-12px_40px_rgba(0,0,0,0.5)] z-40 ${isQuestionPanelOpen ? 'h-[60%]' : 'h-[60px]'
+                className={`block md:hidden absolute bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rounded-xl shadow-[0_-12px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-12px_40px_rgba(0,0,0,0.5)] z-20 ${isQuestionPanelOpen ? 'h-[60%]' : 'h-[60px]'
                   }`}
               >
                 <div className="p-4 flex flex-col h-full">

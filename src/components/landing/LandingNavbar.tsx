@@ -110,14 +110,14 @@ function LandingNavbar() {
           {/* Overlay */}
           {isMenuOpen && (
             <div
-              className="fixed inset-0 bg-black/60 backdrop-blur-xl z-30 sm:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[60] sm:hidden"
               onClick={() => setIsMenuOpen(false)}
             />
           )}
 
           {/* Slide-in Menu from Right */}
           <div
-            className={`fixed top-0 right-0 h-full w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-l-[0.5px] border-black/10 dark:border-white/5 z-40 transform transition-transform duration-300 ease-in-out sm:hidden shadow-2xl shadow-black/20 ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+            className={`fixed top-0 right-0 h-full w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-l-[0.5px] border-black/10 dark:border-white/5 z-[70] transform transition-transform duration-300 ease-in-out sm:hidden shadow-2xl shadow-black/20 ${isMenuOpen ? "translate-x-0" : "translate-x-full"
               }`}
           >
             <div className="flex flex-col h-full">
