@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { memo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationBell from "@/components/NotificationBell";
+import StreakIcon from "@/components/StreakIcon";
+import { getBorderStyle, getAnimationClass } from "@/services/shopService";
 import {
   Menu,
   X,
   Home as HomeIcon,
   LayoutDashboard,
-  Trophy,
   Target,
   BrainCircuit,
   FileText,
@@ -21,12 +23,12 @@ import {
 } from "lucide-react";
 
 function LandingNavbar() {
-  const { isLoggedIn, isLoading, logout } = useAuth();
+  const { isLoggedIn, isLoading, logout, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <>
-      <header className="sticky top-0 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-white/20 dark:border-white/10 z-20 shadow-lg shadow-black/5 dark:shadow-black/20">
+      <header className="fixed top-0 left-0 right-0 w-full backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-white/20 dark:border-white/10 z-50 shadow-lg shadow-black/5 dark:shadow-black/20">
         <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
           <Link
             href="/"
@@ -36,18 +38,17 @@ function LandingNavbar() {
           </Link>
           <div className="flex items-center space-x-2 sm:space-x-4">
             <ThemeToggle />
-            {!isLoading && isLoggedIn && <NotificationBell />}
+            {!isLoading && isLoggedIn && (
+              <>
+                <StreakIcon />
+                <NotificationBell />
+              </>
+            )}
             {!isLoading && (
               <>
                 {isLoggedIn ? (
                   <>
-                    {/* Desktop: Show Leaderboard, Goals, Dashboard and Profile links */}
-                    <Link
-                      href="/leaderboard"
-                      className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
-                    >
-                      Leaderboard
-                    </Link>
+                    {/* Desktop: Show Goals, Dashboard and Profile links */}
                     <Link
                       href="/dashboard/goals"
                       className="hidden sm:inline-block text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg"
@@ -116,13 +117,12 @@ function LandingNavbar() {
 
           {/* Slide-in Menu from Right */}
           <div
-            className={`fixed top-0 right-0 h-full w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-l border-white/20 dark:border-white/10 z-40 transform transition-transform duration-300 ease-in-out sm:hidden shadow-2xl shadow-black/20 ${
-              isMenuOpen ? "translate-x-0" : "translate-x-full"
-            }`}
+            className={`fixed top-0 right-0 h-full w-56 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-l-[0.5px] border-black/10 dark:border-white/5 z-40 transform transition-transform duration-300 ease-in-out sm:hidden shadow-2xl shadow-black/20 ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+              }`}
           >
             <div className="flex flex-col h-full">
               {/* Menu Header */}
-              <div className="flex items-center justify-between p-4 border-b border-white/20 dark:border-white/10">
+              <div className="flex items-center justify-between p-4 border-b-[0.5px] border-black/10 dark:border-white/5">
                 <h2 className="text-lg font-semibold text-black dark:text-white">
                   Menu
                 </h2>
@@ -137,6 +137,56 @@ function LandingNavbar() {
 
               {/* Menu Items */}
               <nav className="flex-1 p-4 overflow-y-auto">
+                {/* Profile Header */}
+                {user && (
+                  <div className="flex flex-row items-center justify-start pt-6 pb-6 px-4 gap-6">
+                    <Link
+                      href="/profile"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="group cursor-pointer flex-shrink-0"
+                    >
+                      <div
+                        className={`w-16 h-16 rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${getAnimationClass(
+                          user.equippedBorder || "",
+                        )}`}
+                        style={getBorderStyle(
+                          user.equippedBorder || "default",
+                          64,
+                        )}
+                      >
+                        {user.profilePicture ? (
+                          <Image
+                            src={user.profilePicture}
+                            alt={`${user.firstName || ""} ${user.lastName || ""}`}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="text-xl font-light text-gray-500 dark:text-gray-400">
+                            {(user.firstName?.charAt(0) || user.username?.charAt(0) || "").toUpperCase()}
+                            {(user.lastName?.charAt(0) || "").toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                    <div className="flex flex-col items-start overflow-hidden">
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="group cursor-pointer"
+                      >
+                        <span className="text-sm font-medium text-black dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors truncate block max-w-[120px]">
+                          {user.firstName} {user.lastName}
+                        </span>
+                      </Link>
+                      <div className="mt-1 -ml-1">
+                        <StreakIcon />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Link
                     href="/"
@@ -151,13 +201,6 @@ function LandingNavbar() {
                     className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                   >
                     <LayoutDashboard size={18} /> Dashboard
-                  </Link>
-                  <Link
-                    href="/leaderboard"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                  >
-                    <Trophy size={18} /> Leaderboard
                   </Link>
                   <Link
                     href="/dashboard/goals"
@@ -205,7 +248,7 @@ function LandingNavbar() {
               </nav>
 
               {/* Logout Button at Bottom */}
-              <div className="border-t border-white/20 dark:border-white/10 p-4">
+              <div className="border-t-[0.5px] border-black/10 dark:border-white/5 p-4">
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);

@@ -10,7 +10,7 @@ export default function DashboardSkeleton() {
         <div className="flex items-center gap-4 min-w-0">
           <div className="h-10 sm:h-12 md:h-14 w-48 sm:w-64 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
         </div>
-        
+
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           {/* Points Skeleton */}
           <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 border-r border-black/10 dark:border-white/10">
@@ -21,13 +21,16 @@ export default function DashboardSkeleton() {
             <div className="h-5 w-10 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
           </div>
 
+          {/* Leaderboard Button Skeleton */}
+          <div className="h-8 w-8 sm:h-9 sm:w-9 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+
           {/* Shop Button Skeleton */}
           <div className="h-8 sm:h-9 w-16 sm:w-20 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
         </div>
       </div>
 
       {/* Navigation Grid Skeleton */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-5 lg:mb-8">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] px-4 py-4 md:px-6 md:py-5 rounded-xl flex items-center justify-between animate-pulse">
             <div className="flex items-center gap-4">

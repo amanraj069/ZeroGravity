@@ -10,6 +10,7 @@ import {
   getQuiz,
 } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 const emptyQuestion = (): QuizQuestion => ({
@@ -31,6 +32,7 @@ export default function CreateQuizContent({
 }: CreateQuizContentProps) {
   const router = useRouter();
   const { user, isLoading } = useAuth();
+  const { showToast } = useToast();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<QuizQuestion[]>([emptyQuestion()]);
@@ -171,7 +173,7 @@ export default function CreateQuizContent({
       // Validate current question
       const validation = validateCurrentQuestion();
       if (!validation.isValid) {
-        alert(validation.message);
+        showToast(validation.message, "error");
         setSaving(false);
         return;
       }
@@ -194,7 +196,7 @@ export default function CreateQuizContent({
       });
       if (!result?.success) throw new Error(result?.message || "Save failed");
     } catch (e) {
-      alert((e as Error)?.message || "Failed to save");
+      showToast((e as Error)?.message || "Failed to save", "error");
     } finally {
       setSaving(false);
     }
@@ -219,7 +221,7 @@ export default function CreateQuizContent({
       if (!pub?.success) throw new Error(pub?.message || "Publish failed");
       router.push(`/dashboard/quizzes/host/${id}?code=${pub.joinCode}`);
     } catch (e) {
-      alert((e as Error)?.message || "Failed to publish quiz");
+      showToast((e as Error)?.message || "Failed to publish quiz", "error");
     } finally {
       setPublishing(false);
     }
@@ -579,8 +581,9 @@ export default function CreateQuizContent({
                   navigator.clipboard.writeText(
                     JSON.stringify(format, null, 2),
                   );
-                  alert(
+                  showToast(
                     "Question structure copied to clipboard! You can ask an LLM to generate questions in this JSON format.",
+                    "success",
                   );
                 }}
               >
@@ -640,12 +643,13 @@ export default function CreateQuizContent({
                       setCurrentIndex(0);
                       setShowJsonModal(false);
                     } else {
-                      alert("Question array cannot be empty.");
+                      showToast("Question array cannot be empty.", "error");
                     }
                   } catch (err: unknown) {
-                    alert(
+                    showToast(
                       "Failed to parse JSON: " +
                         (err instanceof Error ? err.message : String(err)),
+                      "error",
                     );
                   }
                 }}

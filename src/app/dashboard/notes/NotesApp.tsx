@@ -148,11 +148,11 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       const params = new URLSearchParams(window.location.search);
 
       // Parse activeNoteId
-      const match = path.match(/^\/notes\/([^\/]+)$/);
+      const match = path.match(/^\/dashboard\/notes\/([^\/]+)$/);
       if (match) {
         const docId = match[1];
         setActiveNoteId(docId);
-      } else if (path === "/notes") {
+      } else if (path === "/dashboard/notes") {
         setActiveNoteId(null);
 
         // Parse tab/sidebarView

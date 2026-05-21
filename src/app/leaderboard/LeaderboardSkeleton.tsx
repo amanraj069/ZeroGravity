@@ -53,17 +53,7 @@ export default function LeaderboardSkeleton() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                   {[1, 2, 3, 4, 5].map((index) => {
-                    let rowBgClass = "bg-transparent";
-                    if (index === 1) {
-                      rowBgClass =
-                        "bg-gradient-to-r from-yellow-500/10 to-transparent dark:from-yellow-400/10 dark:to-transparent border-l-4 border-yellow-500 underline-offset-4";
-                    } else if (index === 2) {
-                      rowBgClass =
-                        "bg-gradient-to-r from-gray-400/10 to-transparent dark:from-gray-400/10 dark:to-transparent border-l-4 border-gray-400";
-                    } else if (index === 3) {
-                      rowBgClass =
-                        "bg-gradient-to-r from-orange-600/10 to-transparent dark:from-orange-500/10 dark:to-transparent border-l-4 border-orange-600";
-                    }
+                    const rowBgClass = "bg-transparent";
 
                     return (
                       <tr
