@@ -49,22 +49,22 @@ export default function QuizzesSkeleton() {
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header Skeleton */}
           <div className="mb-5 sm:mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-              <div className="flex items-start justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-6 h-6 bg-gray-200 dark:bg-gray-800 animate-pulse rounded" />
                   <div className="h-7 sm:h-9 w-40 sm:w-56 bg-gray-200 dark:bg-gray-800 animate-pulse shadow-sm rounded-lg" />
                 </div>
-                {/* Mobile icon actions skeleton */}
+                {/* Mobile icon actions skeleton - Join button + trash icon */}
                 <div className="flex items-center gap-2 sm:hidden">
+                  <div className="h-7 w-16 bg-gray-900 dark:bg-white/20 animate-pulse rounded-lg" />
                   <div className="h-9 w-9 border border-gray-200 dark:border-gray-800 animate-pulse rounded-lg" />
-                  <div className="h-9 w-9 bg-black dark:bg-white/20 animate-pulse rounded-lg" />
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end sm:shrink-0">
-                <div className="w-full sm:w-32 h-11 sm:h-12 border border-gray-200 dark:border-gray-800 animate-pulse rounded-lg" />
-                <div className="hidden sm:block h-12 w-32 border border-gray-200 dark:border-gray-800 animate-pulse rounded-lg" />
-                <div className="hidden sm:block h-12 w-40 bg-black dark:bg-white/20 animate-pulse rounded-lg" />
+              {/* Desktop actions skeleton */}
+              <div className="hidden sm:flex flex-row gap-3 items-center justify-end shrink-0">
+                <div className="h-11 w-28 bg-gray-900 dark:bg-white/20 animate-pulse rounded-xl" />
+                <div className="h-11 w-24 border border-gray-200 dark:border-gray-800 animate-pulse rounded-xl" />
               </div>
             </div>
           </div>

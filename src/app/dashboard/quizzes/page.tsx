@@ -308,8 +308,8 @@ export default function QuizzesPage() {
             transition={{ duration: 0.6 }}
             className="mb-3 sm:mb-8"
           >
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-              <div className="flex items-start justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <BackButton />
                   <div>
@@ -320,25 +320,31 @@ export default function QuizzesPage() {
                 </div>
 
                 {/* Mobile icon actions */}
-                <div className="flex items-center gap-2 sm:hidden">
+                <div className="flex items-center gap-2 sm:hidden h-9">
+                  <button
+                    onClick={() => router.push("/joinQuiz")}
+                    className="h-7 !py-0 flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 border border-transparent hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer rounded-lg box-border"
+                  >
+                    <Users className="w-4 h-4" />
+                    Join
+                  </button>
                   {user?.subscription === "pro" && (
                     <button
                       onClick={() => router.push("/dashboard/quizzes/deleted")}
-                      className="h-9 w-9 flex items-center justify-center border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-xl"
+                      className="h-9 w-9 !p-0 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg box-border"
                       aria-label="View Deleted"
                       title="View Deleted"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   )}
-
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end sm:shrink-0">
+              <div className="hidden sm:flex flex-row gap-3 items-center justify-end shrink-0">
                 <button
                   onClick={() => router.push("/joinQuiz")}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                  className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer rounded-xl"
                 >
                   <Users className="w-4 h-4" />
                   Join Quiz
@@ -346,13 +352,12 @@ export default function QuizzesPage() {
                 {user?.subscription === "pro" && (
                   <button
                     onClick={() => router.push("/dashboard/quizzes/deleted")}
-                    className="hidden sm:flex w-full sm:w-auto items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                    className="flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
                   >
                     <Trash2 className="w-4 h-4" />
                     Trash
                   </button>
                 )}
-
               </div>
             </div>
           </motion.div>
