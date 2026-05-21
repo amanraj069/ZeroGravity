@@ -18,7 +18,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   const isNotesPage =
     pathname?.startsWith("/notes") || pathname?.startsWith("/dashboard/notes");
-  const isFullScreenPage = isNotesPage;
+  const isHostedPage = pathname?.startsWith("/hosted");
+  const isFullScreenPage = isNotesPage || isHostedPage;
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   return (

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { listDeletedQuizzes, restoreQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
@@ -12,6 +13,7 @@ import DeletedQuizzesSkeleton, {
 
 export default function DeletedQuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
+  const { showToast, showDialog } = useToast();
   const router = useRouter();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,14 +75,13 @@ export default function DeletedQuizzesPage() {
         console.error("Failed to fetch deleted quizzes:", response.message);
         // If it's a Pro subscription error, redirect back to main quizzes page
         if (response.message?.includes("Pro subscription required")) {
-          alert("Pro subscription required to access deleted quizzes.");
+          showToast("Pro subscription required to access deleted quizzes.", "error");
           router.push("/dashboard/quizzes");
         }
       }
     } catch (error) {
       console.error("Error fetching deleted quizzes:", error);
-      // Handle network or other errors gracefully
-      alert("Failed to load deleted quizzes. Please try again later.");
+      showToast("Failed to load deleted quizzes. Please try again later.", "error");
     } finally {
       setLoading(false);
     }
@@ -89,7 +90,12 @@ export default function DeletedQuizzesPage() {
   const handleRestoreQuiz = async (quizId: string, event: React.MouseEvent) => {
     event.stopPropagation();
 
-    if (!confirm("Are you sure you want to restore this quiz?")) {
+    const confirmed = await showDialog({
+      title: "Restore Quiz",
+      message: "Are you sure you want to restore this quiz?",
+      confirmLabel: "Restore",
+    });
+    if (!confirmed) {
       return;
     }
 
@@ -105,20 +111,21 @@ export default function DeletedQuizzesPage() {
         setFilteredQuizzes((prevFiltered) =>
           prevFiltered.filter((quiz) => quiz.quizId !== quizId),
         );
-        alert("Quiz restored successfully!");
+        showToast("Quiz restored successfully!", "success");
       } else {
         if (response.message?.includes("Pro subscription required")) {
-          alert("Pro subscription required to restore quizzes.");
+          showToast("Pro subscription required to restore quizzes.", "error");
           router.push("/dashboard/quizzes");
         } else {
-          alert(
+          showToast(
             `Failed to restore quiz: ${response.message || "Unknown error"}`,
+            "error",
           );
         }
       }
     } catch (error) {
       console.error("Error restoring quiz:", error);
-      alert("Failed to restore quiz. Please try again.");
+      showToast("Failed to restore quiz. Please try again.", "error");
     } finally {
       setProcessingQuizId(null);
       setProcessingAction(null);
@@ -214,7 +221,7 @@ export default function DeletedQuizzesPage() {
                     <button
                       onClick={() => {
                         // TODO: Add upgrade functionality
-                        alert("Upgrade functionality coming soon!");
+                        showToast("Upgrade functionality coming soon!", "info");
                       }}
                       className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-8 py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-base font-medium rounded-lg"
                     >

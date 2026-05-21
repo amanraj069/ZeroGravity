@@ -1681,3 +1681,26 @@ html.dark input[type="date"] {
 .dark .tiptap ::selection {
   background: rgba(59, 130, 246, 0.35);
 }
+
+@keyframes toast-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+.animate-toast-slide-down {
+  animation: toast-slide-down 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

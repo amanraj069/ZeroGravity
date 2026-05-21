@@ -125,7 +125,7 @@ export default function HostedQuizPage() {
       setCurrentIndex(-1);
       setIsActive(false);
       setQuizStatus("published");
-      router.push(`/dashboard/dashboard/quizzes/host/${quizId}`);
+      router.push(`/dashboard/quizzes/host/${quizId}`);
     };
 
     s.on("question:pushed", onQuestion);

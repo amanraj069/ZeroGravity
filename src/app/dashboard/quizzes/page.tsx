@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
@@ -16,6 +17,7 @@ import QuizzesSkeleton, {
 
 export default function QuizzesPage() {
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
+  const { showToast, showDialog } = useToast();
   const router = useRouter();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
@@ -133,7 +135,7 @@ export default function QuizzesPage() {
     event.stopPropagation(); // Prevent triggering the quiz click
 
     if (status === "active") {
-      alert("Cannot delete an active quiz. Please end the quiz first.");
+      showToast("Cannot delete an active quiz. Please end the quiz first.", "error");
       return;
     }
 
@@ -142,7 +144,13 @@ export default function QuizzesPage() {
         ? "Are you sure you want to delete this quiz? You can restore it later from the 'View Deleted' section."
         : "Are you sure you want to delete this quiz? This will soft delete the quiz (it won't be permanently removed).";
 
-    if (!confirm(confirmMessage)) {
+    const confirmed = await showDialog({
+      title: "Delete Quiz",
+      message: confirmMessage,
+      confirmLabel: "Delete",
+      variant: "danger",
+    });
+    if (!confirmed) {
       return;
     }
 
@@ -163,13 +171,13 @@ export default function QuizzesPage() {
           user?.subscription === "pro"
             ? "Quiz moved to deleted items. You can restore it anytime from 'View Deleted'."
             : "Quiz has been deleted. Upgrade to Pro to access restore functionality.";
-        alert(successMessage);
+        showToast(successMessage, "success");
       } else {
-        alert(`Failed to delete quiz: ${response.message || "Unknown error"}`);
+        showToast(`Failed to delete quiz: ${response.message || "Unknown error"}`, "error");
       }
     } catch (error) {
       console.error("Error deleting quiz:", error);
-      alert("Failed to delete quiz. Please try again.");
+      showToast("Failed to delete quiz. Please try again.", "error");
     } finally {
       setDeletingQuizId(null);
     }
@@ -270,7 +278,7 @@ export default function QuizzesPage() {
                     <button
                       onClick={() => {
                         // TODO: Add upgrade functionality
-                        alert("Upgrade functionality coming soon!");
+                        showToast("Upgrade functionality coming soon!", "info");
                       }}
                       className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium rounded-lg"
                     >

@@ -11,6 +11,7 @@ import {
   UpdateDailyTaskData,
   DailyTasksAnalytics,
 } from "@/services/dailyTasksService";
+import { useToast } from "@/contexts/ToastContext";
 
 import StudyPlannerModal from "./StudyPlannerModal";
 import AddTaskForm from "./AddTaskForm";
@@ -81,6 +82,7 @@ const DailyTasks: React.FC = () => {
     useState<PointsAnimation | null>(null);
   const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const { showErrorToast } = useToast();
 
   const [showStudyPlanner, setShowStudyPlanner] = useState(false);
 
@@ -109,25 +111,49 @@ const DailyTasks: React.FC = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Load tasks and analytics
+  // Load tasks when date or auth changes
   useEffect(() => {
     const loadTasks = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const fetchedTasks =
-          await dailyTasksService.getDailyTasks(selectedDate);
+        const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
         setTasks(fetchedTasks);
       } catch (error) {
         console.error("Error loading daily tasks:", error);
-        setError(
-          error instanceof Error ? error.message : "Failed to load daily tasks",
-        );
+        let errorMessage = "Failed to load daily tasks";
+        if (error instanceof Error) {
+          if (
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("fetch") ||
+            error.message.includes("Failed to connect to backend server")
+          ) {
+            errorMessage = "Failed to connect to the backend server.";
+          } else if (
+            error.message.includes("http") ||
+            error.message.includes("api/")
+          ) {
+            errorMessage = "The API request failed.";
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
     };
 
+    if (!authLoading && isLoggedIn) {
+      loadTasks();
+    } else if (!authLoading && !isLoggedIn) {
+      setIsLoading(false);
+      setError("Please log in to view your daily tasks");
+    }
+  }, [authLoading, isLoggedIn, selectedDate]);
+
+  // Load analytics (streak info) only on initial load or auth change
+  useEffect(() => {
     const loadAnalytics = async () => {
       try {
         const analyticsData = await dailyTasksService.getStreakInfo();
@@ -138,13 +164,9 @@ const DailyTasks: React.FC = () => {
     };
 
     if (!authLoading && isLoggedIn) {
-      loadTasks();
       loadAnalytics();
-    } else if (!authLoading && !isLoggedIn) {
-      setIsLoading(false);
-      setError("Please log in to view your daily tasks");
     }
-  }, [authLoading, isLoggedIn, selectedDate]);
+  }, [authLoading, isLoggedIn]);
 
   const addTask = async (taskData: CreateDailyTaskData) => {
     try {
@@ -156,9 +178,7 @@ const DailyTasks: React.FC = () => {
       setAnalytics(analyticsData);
     } catch (error) {
       console.error("Error creating daily task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to create task",
-      );
+      showErrorToast(error);
     }
   };
 
@@ -176,9 +196,7 @@ const DailyTasks: React.FC = () => {
       setEditingTask(null);
     } catch (error) {
       console.error("Error updating daily task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update task",
-      );
+      showErrorToast(error);
     }
   };
 
@@ -192,24 +210,32 @@ const DailyTasks: React.FC = () => {
       setAnalytics(analyticsData);
     } catch (error) {
       console.error("Error deleting daily task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to delete task",
-      );
+      showErrorToast(error);
     }
   };
 
   const toggleTaskCompletion = async (taskId: string) => {
-    setTogglingTaskId(taskId);
+    // Optimistic Update
+    const previousTasks = [...tasks];
+    const previousAnalytics = { ...analytics };
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task._id === taskId
+          ? { ...task, isCompletedToday: !task.isCompletedToday }
+          : task
+      )
+    );
+
     try {
       const result = await dailyTasksService.toggleTaskCompletion(
         taskId,
         selectedDate,
       );
-      // Reload tasks and analytics
-      const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
-      setTasks(fetchedTasks);
-      const analyticsData = await dailyTasksService.getStreakInfo();
-      setAnalytics(analyticsData);
+
+      // Fetch in background to sync state
+      dailyTasksService.getDailyTasks(selectedDate).then(setTasks).catch(console.error);
+      dailyTasksService.getStreakInfo().then(setAnalytics).catch(console.error);
 
       // Show points animation if points were awarded
       if (result.pointsAwarded && result.pointsAwarded > 0) {
@@ -244,16 +270,16 @@ const DailyTasks: React.FC = () => {
       }
     } catch (error) {
       console.error("Error toggling task completion:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update task",
-      );
-    } finally {
-      setTogglingTaskId(null);
+      // Revert optimistic update
+      setTasks(previousTasks);
+      setAnalytics(previousAnalytics);
+
+      showErrorToast(error);
     }
   };
 
-  // Show loading state
-  if (authLoading || isLoading) {
+  // Show full page loading state only on initial auth load
+  if (authLoading) {
     return <GoalsSkeleton includeTabs={false} mode="daily" />;
   }
 
@@ -269,7 +295,7 @@ const DailyTasks: React.FC = () => {
               {!isLoggedIn ? (
                 <a
                   href="/login"
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
+                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
                 >
                   Go to Login
                 </a>
@@ -284,16 +310,30 @@ const DailyTasks: React.FC = () => {
                       setTasks(fetchedTasks);
                     } catch (error) {
                       console.error("Error loading daily tasks:", error);
-                      setError(
-                        error instanceof Error
-                          ? error.message
-                          : "Failed to load daily tasks",
-                      );
+                      let errorMessage = "Failed to load daily tasks";
+                      if (error instanceof Error) {
+                        if (
+                          error.message.includes("Failed to fetch") ||
+                          error.message.includes("fetch") ||
+                          error.message.includes("Failed to connect")
+                        ) {
+                          errorMessage =
+                            "Failed to connect to the backend server.";
+                        } else if (
+                          error.message.includes("http") ||
+                          error.message.includes("api/")
+                        ) {
+                          errorMessage = "The API request failed.";
+                        } else {
+                          errorMessage = error.message;
+                        }
+                      }
+                      setError(errorMessage);
                     } finally {
                       setIsLoading(false);
                     }
                   }}
-                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                  className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                 >
                   Try Again
                 </button>
@@ -311,11 +351,10 @@ const DailyTasks: React.FC = () => {
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-fade-in-down">
           <div
-            className={`px-6 py-3 shadow-lg ${
-              pointsAnimation.isDeduction
-                ? "bg-red-600 text-white"
-                : "bg-black dark:bg-white text-white dark:text-black"
-            }`}
+            className={`px-6 py-3 shadow-lg ${pointsAnimation.isDeduction
+              ? "bg-red-600 text-white"
+              : "bg-black dark:bg-white text-white dark:text-black"
+              }`}
           >
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold">
@@ -484,20 +523,18 @@ const DailyTasks: React.FC = () => {
                 <button
                   key={day.date}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${borderClass} ${
-                    isSelected
-                      ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
-                      : day.isToday
-                        ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  }`}
+                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${borderClass} ${isSelected
+                    ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
+                    : day.isToday
+                      ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
                 >
                   <span
-                    className={`text-xs font-medium flex items-center gap-1 ${
-                      day.isToday && !isSelected
-                        ? "text-purple-600 dark:text-purple-400"
-                        : ""
-                    }`}
+                    className={`text-xs font-medium flex items-center gap-1 ${day.isToday && !isSelected
+                      ? "text-purple-600 dark:text-purple-400"
+                      : ""
+                      }`}
                   >
                     {formatted}
                   </span>
@@ -512,33 +549,59 @@ const DailyTasks: React.FC = () => {
       {!isToday && (
         <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2 mt-2 sm:mt-4 rounded-xl">
           <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            You are viewing tasks for a{" "}
-            {selectedDate < getLocalDateString() ? "past" : "future"} date. You
-            can only mark tasks as complete for today.
+          <p className="text-[13px] sm:text-sm text-amber-700 dark:text-amber-300">
+            <span>
+              You are viewing tasks for a{" "}
+              {selectedDate < getLocalDateString() ? "past" : "future"} date.
+            </span>
+            <span className="hidden sm:inline">
+              {" "}
+              You can only mark tasks as complete for today.
+            </span>
           </p>
         </div>
       )}
 
       {/* Tasks Display */}
       <div className="space-y-2 sm:space-y-4 mt-2 sm:mt-4">
-        {tasks.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100dvh-360px)]">
+        {isLoading ? (
+          <div className="space-y-2 sm:space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-white dark:bg-gray-800 p-4 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-800/50 flex items-start gap-3 sm:gap-4 animate-pulse min-h-[90px] sm:min-h-[110px] rounded-xl">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-gray-300 dark:border-gray-600 shrink-0 mt-0.5 rounded-md" />
+                <div className="flex-1 space-y-3 sm:space-y-4">
+                  <div className="space-y-2 sm:space-y-2.5">
+                    <div className="h-4 sm:h-5 w-[60%] sm:w-[40%] bg-gray-200 dark:bg-gray-700 rounded" />
+                    <div className="h-3 sm:h-4 w-[90%] sm:w-[85%] bg-gray-100 dark:bg-gray-800/60 rounded" />
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="h-3 sm:h-3.5 w-20 sm:w-24 bg-gray-100 dark:bg-gray-800/50 rounded" />
+                      <div className="h-4 sm:h-5 w-12 sm:w-20 bg-gray-100 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700 rounded-full" />
+                    </div>
+                    <div className="flex gap-1.5">
+                      <div className="w-8 h-8 bg-gray-50/50 dark:bg-gray-800/40 rounded-lg" />
+                      <div className="w-8 h-8 bg-gray-50/50 dark:bg-gray-800/40 rounded-lg" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : tasks.length === 0 ? (
+          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100dvh-320px)] rounded-xl">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/goals/dTasks.png"
               alt="Goals Art"
               className="w-full max-w-[280px] sm:max-w-[380px] h-auto mx-auto object-contain mb-4"
             />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            <h3 className="text-md font-medium text-gray-900 dark:text-white mb-4">
               No daily tasks for this date
             </h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">
-              Create your first daily task to get started
-            </p>
             <button
               onClick={() => setShowAddTask(true)}
-              className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
+              className="bg-black dark:bg-white text-white dark:text-black px-16 py-2 mb-8 text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
             >
               Create Task
             </button>

@@ -503,7 +503,7 @@ export default function AcademiaPage() {
                         </div>
 
                         <Link
-                          href={`/academia/${semester.semesterId}`}
+                          href={`/dashboard/academia/${semester.semesterId}`}
                           onClick={(e) => {
                             // Prevent navigation when dragging
                             if (draggedSemesterId) {

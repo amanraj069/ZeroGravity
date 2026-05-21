@@ -26,6 +26,7 @@ import {
 import { dailyTasksService } from "@/services/dailyTasksService";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useToast } from "@/contexts/ToastContext";
 
 import GoalsSkeleton from "./GoalsSkeleton";
 
@@ -115,6 +116,7 @@ const Goals: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { showErrorToast } = useToast();
 
   // Update URL when activeView changes
   const updateURL = (view: ViewType) => {
@@ -171,7 +173,24 @@ const Goals: React.FC = () => {
       setGoalsAnalytics(analytics);
     } catch (error) {
       console.error("Error loading goals:", error);
-      setError(error instanceof Error ? error.message : "Failed to load goals");
+      let errorMessage = "Failed to load goals";
+      if (error instanceof Error) {
+        if (
+          error.message.includes("Failed to fetch") ||
+          error.message.includes("fetch") ||
+          error.message.includes("Failed to connect to backend server")
+        ) {
+          errorMessage = "Failed to connect to the backend server.";
+        } else if (
+          error.message.includes("http") ||
+          error.message.includes("api/")
+        ) {
+          errorMessage = "The API request failed.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -219,9 +238,7 @@ const Goals: React.FC = () => {
       await loadGoals();
     } catch (error) {
       console.error("Error creating goal:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to create goal",
-      );
+      showErrorToast(error);
     }
   };
 
@@ -232,9 +249,7 @@ const Goals: React.FC = () => {
       setEditingGoal(null);
     } catch (error) {
       console.error("Error updating goal:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update goal",
-      );
+      showErrorToast(error);
     }
   };
 
@@ -244,21 +259,36 @@ const Goals: React.FC = () => {
       await loadGoals();
     } catch (error) {
       console.error("Error deleting goal:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to delete goal",
-      );
+      showErrorToast(error);
     }
   };
 
   const toggleGoalCompletion = async (goalId: string) => {
+    const previousGoals = [...goals];
+    const previousAnalytics = { ...goalsAnalytics };
+
+    // Optimistic update
+    setGoals((currentGoals) =>
+      currentGoals.map((goal) =>
+        goal._id === goalId ? { ...goal, completed: !goal.completed } : goal
+      )
+    );
+
     try {
       await goalsService.toggleGoalCompletion(goalId);
-      await loadGoals();
+
+      // Fetch in background to sync state
+      goalsService.getGoals().then(({ goals: fetchedGoals, analytics }) => {
+        setGoals(fetchedGoals);
+        setGoalsAnalytics(analytics);
+      }).catch(console.error);
     } catch (error) {
       console.error("Error toggling goal completion:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update goal",
-      );
+      // Revert optimistic update
+      setGoals(previousGoals);
+      setGoalsAnalytics(previousAnalytics);
+
+      showErrorToast(error);
     }
   };
 
@@ -266,40 +296,62 @@ const Goals: React.FC = () => {
     goalId: string,
     milestoneId: string,
   ) => {
-    try {
-      await goalsService.toggleMilestoneCompletion(goalId, milestoneId);
-      await loadGoals();
+    const previousGoals = [...goals];
+    const previousAnalytics = { ...goalsAnalytics };
 
-      const goal = goals.find((g) => g._id === goalId);
-      if (goal && goal.milestones.length > 0) {
-        const { goals: updatedGoals } = await goalsService.getGoals();
-        const updatedGoal = updatedGoals.find((g) => g._id === goalId);
+    let goalStatusChanged = false;
 
-        if (updatedGoal) {
-          const allMilestonesCompleted = updatedGoal.milestones.every(
-            (m) => m.completed,
-          );
-          const anyMilestoneIncomplete = updatedGoal.milestones.some(
-            (m) => !m.completed,
-          );
+    // Optimistic update
+    setGoals((currentGoals) =>
+      currentGoals.map((goal) => {
+        if (goal._id !== goalId) return goal;
 
-          // Auto-complete goal when all milestones are completed
-          if (allMilestonesCompleted && !updatedGoal.completed) {
-            await goalsService.toggleGoalCompletion(goalId);
-            await loadGoals();
-          }
-          // Auto-uncomplete goal when any milestone is unchecked
-          else if (anyMilestoneIncomplete && updatedGoal.completed) {
-            await goalsService.toggleGoalCompletion(goalId);
-            await loadGoals();
+        const updatedMilestones = goal.milestones.map((m) =>
+          m.id === milestoneId ? { ...m, completed: !m.completed } : m
+        );
+
+        let newCompleted = goal.completed;
+        if (updatedMilestones.length > 0) {
+          const allMilestonesCompleted = updatedMilestones.every((m) => m.completed);
+          const anyMilestoneIncomplete = updatedMilestones.some((m) => !m.completed);
+
+          if (allMilestonesCompleted && !goal.completed) {
+            newCompleted = true;
+            goalStatusChanged = true;
+          } else if (anyMilestoneIncomplete && goal.completed) {
+            newCompleted = false;
+            goalStatusChanged = true;
           }
         }
+
+        return {
+          ...goal,
+          milestones: updatedMilestones,
+          completed: newCompleted,
+        };
+      })
+    );
+
+    try {
+      await goalsService.toggleMilestoneCompletion(goalId, milestoneId);
+
+      if (goalStatusChanged) {
+        await goalsService.toggleGoalCompletion(goalId);
       }
+
+      // Sync in background
+      goalsService.getGoals().then(({ goals: fetchedGoals, analytics }) => {
+        setGoals(fetchedGoals);
+        setGoalsAnalytics(analytics);
+      }).catch(console.error);
+
     } catch (error) {
       console.error("Error toggling milestone completion:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update milestone",
-      );
+      // Revert optimistic update
+      setGoals(previousGoals);
+      setGoalsAnalytics(previousAnalytics);
+
+      showErrorToast(error);
     }
   };
 
@@ -322,14 +374,14 @@ const Goals: React.FC = () => {
             {!isLoggedIn ? (
               <a
                 href="/login"
-                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
+                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors inline-block"
               >
                 Go to Login
               </a>
             ) : (
               <button
                 onClick={loadGoals}
-                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 -md text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
               >
                 Try Again
               </button>
@@ -394,9 +446,9 @@ const Goals: React.FC = () => {
             editingGoal={editingGoal}
             initialCategory={
               activeFilter === "weekly" ||
-              activeFilter === "monthly" ||
-              activeFilter === "quarterly" ||
-              activeFilter === "yearly"
+                activeFilter === "monthly" ||
+                activeFilter === "quarterly" ||
+                activeFilter === "yearly"
                 ? activeFilter
                 : undefined
             }
@@ -431,11 +483,10 @@ const Goals: React.FC = () => {
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-3 text-xs sm:text-sm font-medium transition-colors border-b-2 whitespace-nowrap flex-shrink-0 sm:flex-1 sm:flex-shrink ${
-                  activeFilter === filter
-                    ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
-                    : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                }`}
+                className={`px-4 py-3 text-xs sm:text-sm font-medium transition-colors border-b-2 whitespace-nowrap flex-shrink-0 sm:flex-1 sm:flex-shrink ${activeFilter === filter
+                  ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
+                  : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  }`}
               >
                 {filter.charAt(0).toUpperCase() + filter.slice(1)}
               </button>
@@ -446,7 +497,7 @@ const Goals: React.FC = () => {
         {/* Mobile-optimized Goals Display */}
         <div className="space-y-4">
           {filteredGoals.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100dvh-300px)] py-12 px-4 text-center shadow-sm relative mt-4">
+            <div className="bg-white dark:bg-gray-800 flex flex-col items-center justify-center min-h-[calc(100dvh-300px)] py-12 pb-16 px-4 text-center shadow-sm relative mt-4 rounded-xl">
               {/* Dark mode hint - only show in light mode */}
               {theme === "light" && (
                 <div className="absolute top-4 right-4 text-xs text-gray-400 flex items-center gap-1">
@@ -461,16 +512,11 @@ const Goals: React.FC = () => {
                 className="w-full max-w-[280px] sm:max-w-[380px] h-auto object-contain mx-auto mb-4"
                 draggable={false}
               />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="text-md font-medium text-gray-900 dark:text-white mb-4">
                 {activeFilter === "current"
                   ? "No current goals"
                   : "No goals created yet"}
               </h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                {activeFilter === "current"
-                  ? "Create goals for this week, month, quarter, or year"
-                  : "Create your first Goal to get started"}
-              </p>
               {!showAddGoal && (
                 <button
                   onClick={() => setShowAddGoal(true)}
@@ -492,28 +538,26 @@ const Goals: React.FC = () => {
               .map((goal) => (
                 <div
                   key={goal._id}
-                  className={`rounded-xl shadow-sm overflow-hidden ${
-                    goal.completed
-                      ? "bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700"
-                      : isGoalOverdue(goal)
-                        ? "bg-red-50/40 dark:bg-red-950/30 border-2 border-dashed border-red-400 dark:border-red-600"
-                        : goal.priority === "high"
-                          ? "bg-red-50/30 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50"
-                          : goal.priority === "medium"
-                            ? "bg-amber-50/30 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50"
-                            : "bg-emerald-50/30 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50"
-                  }`}
+                  className={`rounded-xl shadow-sm overflow-hidden ${goal.completed
+                    ? "bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700"
+                    : isGoalOverdue(goal)
+                      ? "bg-red-50/40 dark:bg-red-950/30 border-2 border-dashed border-red-400 dark:border-red-600"
+                      : goal.priority === "high"
+                        ? "bg-red-50/30 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50"
+                        : goal.priority === "medium"
+                          ? "bg-amber-50/30 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50"
+                          : "bg-emerald-50/30 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50"
+                    }`}
                 >
                   {/* Goal Header - Mobile optimized */}
                   <div className="p-4">
                     <div className="flex items-start gap-4">
                       <button
                         onClick={() => toggleGoalCompletion(goal._id)}
-                        className={`rounded-md flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${
-                          goal.completed
-                            ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
-                            : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
-                        }`}
+                        className={`rounded-md flex-shrink-0 w-6 h-6  border-2 flex items-center justify-center mt-0.5 transition-colors ${goal.completed
+                          ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
+                          : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                          }`}
                       >
                         {goal.completed && <CheckCircle className="w-4 h-4" />}
                       </button>
@@ -522,11 +566,10 @@ const Goals: React.FC = () => {
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1 min-w-0">
                             <h3
-                              className={`font-medium text-sm sm:text-base ${
-                                goal.completed
-                                  ? "line-through text-gray-500 dark:text-gray-400"
-                                  : "text-gray-900 dark:text-white"
-                              }`}
+                              className={`font-medium text-sm sm:text-base ${goal.completed
+                                ? "line-through text-gray-500 dark:text-gray-400"
+                                : "text-gray-900 dark:text-white"
+                                }`}
                             >
                               {goal.title}
                             </h3>
@@ -580,11 +623,10 @@ const Goals: React.FC = () => {
 
                         <div className="flex items-center justify-between mt-2">
                           <span
-                            className={`text-xs ${
-                              isGoalOverdue(goal)
-                                ? "text-red-600 dark:text-red-400 font-medium"
-                                : "text-gray-500 dark:text-gray-400"
-                            }`}
+                            className={`text-xs ${isGoalOverdue(goal)
+                              ? "text-red-600 dark:text-red-400 font-medium"
+                              : "text-gray-500 dark:text-gray-400"
+                              }`}
                           >
                             {isGoalOverdue(goal) ? (
                               <>
@@ -605,13 +647,12 @@ const Goals: React.FC = () => {
                               {goal.category}
                             </span>
                             <span
-                              className={`rounded-full text-[10px] px-2 py-0.5 font-medium ${
-                                goal.priority === "high"
-                                  ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
-                                  : goal.priority === "medium"
-                                    ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
-                                    : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
-                              }`}
+                              className={`rounded-full text-[10px] px-2 py-0.5 font-medium ${goal.priority === "high"
+                                ? "bg-red-500 dark:bg-red-700 text-white dark:text-red-100 border border-red-600 dark:border-red-600"
+                                : goal.priority === "medium"
+                                  ? "bg-amber-500 dark:bg-amber-700 text-white dark:text-amber-100 border border-amber-600 dark:border-amber-600"
+                                  : "bg-emerald-500 dark:bg-emerald-700 text-white dark:text-emerald-100 border border-emerald-600 dark:border-emerald-600"
+                                }`}
                             >
                               {goal.priority}
                             </span>
@@ -667,9 +708,8 @@ const Goals: React.FC = () => {
                               key={milestone.id}
                               className="flex items-center gap-3 py-2.5 transition-all"
                               style={{
-                                animation: `slideDown 0.3s ease-out ${
-                                  idx * 0.05
-                                }s forwards`,
+                                animation: `slideDown 0.3s ease-out ${idx * 0.05
+                                  }s forwards`,
                                 opacity: 0,
                               }}
                             >
@@ -680,11 +720,10 @@ const Goals: React.FC = () => {
                                     milestone.id,
                                   )
                                 }
-                                className={`rounded-md flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center transition-colors ${
-                                  milestone.completed
-                                    ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
-                                    : "border-gray-300 dark:border-gray-500 hover:border-gray-400 dark:hover:border-gray-400"
-                                }`}
+                                className={`rounded-md flex-shrink-0 w-5 h-5 border-2 flex items-center justify-center transition-colors ${milestone.completed
+                                  ? "bg-black dark:bg-white border-black dark:border-white text-white dark:text-black"
+                                  : "border-gray-300 dark:border-gray-500 hover:border-gray-400 dark:hover:border-gray-400"
+                                  }`}
                               >
                                 {milestone.completed && (
                                   <CheckCircle className="w-3 h-3" />
@@ -692,11 +731,10 @@ const Goals: React.FC = () => {
                               </button>
                               <div className="flex-1 min-w-0 flex items-center justify-between">
                                 <span
-                                  className={`text-sm font-medium ${
-                                    milestone.completed
-                                      ? "line-through text-gray-400 dark:text-gray-500"
-                                      : "text-gray-800 dark:text-gray-200"
-                                  }`}
+                                  className={`text-sm font-medium ${milestone.completed
+                                    ? "line-through text-gray-400 dark:text-gray-500"
+                                    : "text-gray-800 dark:text-gray-200"
+                                    }`}
                                 >
                                   {milestone.title}
                                 </span>
@@ -730,22 +768,20 @@ const Goals: React.FC = () => {
           <div className="flex ">
             <button
               onClick={() => handleViewChange("daily-tasks")}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-                (activeView as ViewType) === "daily-tasks"
-                  ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
-                  : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }`}
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${(activeView as ViewType) === "daily-tasks"
+                ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }`}
             >
               <Clock className="w-4 h-4 inline mr-2" />
               Daily Tasks
             </button>
             <button
               onClick={() => handleViewChange("goals")}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
-                (activeView as ViewType) === "goals"
-                  ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
-                  : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-              }`}
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${(activeView as ViewType) === "goals"
+                ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
+                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }`}
             >
               <Target className="w-4 h-4 inline mr-2" />
               Goals

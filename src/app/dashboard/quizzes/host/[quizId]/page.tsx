@@ -17,12 +17,14 @@ import {
 import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import { Quiz, QuizParticipant, QuizLeaderboardEntry, QuizSessionSummary } from "@/types/quiz";
 import QRCode from "qrcode";
 import { ChevronUp, ChevronDown, X, Clock, Users, Hash } from "lucide-react";
 
 export default function HostQuizPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
+  const { showToast, showDialog } = useToast();
   const params = useParams();
   const router = useRouter();
   const quizId = String(params?.quizId || "");
@@ -44,7 +46,7 @@ export default function HostQuizPage() {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const [sessions, setSessions] = useState<QuizSessionSummary[]>([]);
   const [sessionsExpanded, setSessionsExpanded] = useState<boolean>(false);
-  const [participantsExpanded, setParticipantsExpanded] = useState<boolean>(true);
+  const [participantsExpanded, setParticipantsExpanded] = useState<boolean>(false);
 
   const questions = useMemo(() => quiz?.questions || [], [quiz]);
   const activeJoinCode = isHosted ? generatedJoinCode : "";
@@ -265,7 +267,7 @@ export default function HostQuizPage() {
   const host = async () => {
     const r = await hostQuiz(quizId);
     if (!r?.success) {
-      alert("Failed to host quiz");
+      showToast("Failed to host quiz", "error");
     } else {
       setIsHosted(true);
       setGeneratedJoinCode(r.joinCode || "");
@@ -282,7 +284,7 @@ export default function HostQuizPage() {
 
   const start = async () => {
     const r = await startQuiz(quizId);
-    if (!r?.success) alert("Failed to start quiz");
+    if (!r?.success) showToast("Failed to start quiz", "error");
     else setIsActive(true);
   };
 
@@ -321,7 +323,7 @@ export default function HostQuizPage() {
 
   const push = async (idx: number) => {
     const r = await pushQuestion(quizId, idx);
-    if (!r?.success) alert("Failed to push question");
+    if (!r?.success) showToast("Failed to push question", "error");
     else {
       setViewMode("control");
       // Redirect to hosted page when first question is pushed
@@ -339,14 +341,14 @@ export default function HostQuizPage() {
 
   const stop = async () => {
     const r = await endQuiz(quizId);
-    if (!r?.success) alert("Failed to stop quiz");
+    if (!r?.success) showToast("Failed to stop quiz", "error");
     else setIsActive(false);
   };
 
   const unhost = async () => {
     const r = await unhostQuiz(quizId);
     if (!r?.success) {
-      alert("Failed to unhost quiz");
+      showToast("Failed to unhost quiz", "error");
     } else {
       setIsHosted(false);
       setIsActive(false);
@@ -440,9 +442,12 @@ export default function HostQuizPage() {
                             )}
                             <button
                               onClick={async () => {
-                                const ok = confirm(
-                                  `Remove ${p.participantName} from the quiz?`,
-                                );
+                                const ok = await showDialog({
+                                  title: "Remove Participant",
+                                  message: `Remove ${p.participantName} from the quiz?`,
+                                  confirmLabel: "Remove",
+                                  variant: "danger",
+                                });
                                 if (!ok) return;
                                 try {
                                   const { leaveQuiz } =
@@ -452,7 +457,7 @@ export default function HostQuizPage() {
                                     p.quizUserId,
                                   );
                                   if (!res?.success) {
-                                    alert("Failed to remove participant");
+                                    showToast("Failed to remove participant", "error");
                                   } else {
                                     setParticipants((prev) =>
                                       prev.filter(
@@ -467,7 +472,7 @@ export default function HostQuizPage() {
                                     "Error removing participant:",
                                     error,
                                   );
-                                  alert("Failed to remove participant");
+                                  showToast("Failed to remove participant", "error");
                                 }
                               }}
                               className="absolute top-0 right-0 w-8 h-8 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg border-2 border-white dark:border-gray-800 rounded-full z-10"
@@ -511,14 +516,17 @@ export default function HostQuizPage() {
                   <button
                     className="w-full mt-3 sm:mt-4 px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:border-red-300 dark:hover:border-red-700 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-light rounded-lg"
                     onClick={async () => {
-                      const ok = confirm(
-                        "Clear all participants? This cannot be undone.",
-                      );
+                      const ok = await showDialog({
+                        title: "Clear Participants",
+                        message: "Clear all participants? This cannot be undone.",
+                        confirmLabel: "Clear All",
+                        variant: "danger",
+                      });
                       if (!ok) return;
                       const { clearParticipants } =
                         await import("@/services/quizzesService");
                       const res = await clearParticipants(quizId);
-                      if (!res?.success) alert("Failed to clear participants");
+                      if (!res?.success) showToast("Failed to clear participants", "error");
                       else setParticipants([]);
                     }}
                   >
@@ -557,9 +565,12 @@ export default function HostQuizPage() {
                               <>
                                 <button
                                   onClick={async () => {
-                                    const ok = confirm(
-                                      "Stop hosting this quiz? This will remove the join code and clear all participants.",
-                                    );
+                                    const ok = await showDialog({
+                                      title: "Stop Hosting",
+                                      message: "Stop hosting this quiz? This will remove the join code and clear all participants.",
+                                      confirmLabel: "Stop Hosting",
+                                      variant: "danger",
+                                    });
                                     if (!ok) return;
                                     await unhost();
                                   }}
@@ -639,10 +650,10 @@ export default function HostQuizPage() {
                       </div>
                     )}
 
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
-                      <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-900 px-3 py-2 sm:py-3 text-[11px] sm:text-xs text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 w-full sm:w-[40%] rounded-lg">
+                    <div className="flex flex-row items-center gap-2">
+                      <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-[11px] sm:text-xs text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 flex-1 rounded-lg">
                         <span
-                          className={`inline-block h-2 w-2 ${isActive
+                          className={`inline-block h-2 w-2 flex-shrink-0 ${isActive
                             ? "bg-green-500"
                             : isHosted
                               ? "bg-yellow-500"
@@ -655,7 +666,7 @@ export default function HostQuizPage() {
                             ? "Quiz Hosted"
                             : "Quiz Not Hosted"}
                       </span>
-                      <span className="inline-flex items-center bg-white dark:bg-gray-800 px-3 py-2 sm:py-3 text-[11px] sm:text-xs text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 w-full sm:w-[60%] rounded-lg">
+                      <span className="inline-flex items-center bg-white dark:bg-gray-800 px-3 py-2 text-[11px] sm:text-xs text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 flex-1 rounded-lg">
                         {participants.length} participant
                         {participants.length !== 1 ? "s" : ""} joined
                       </span>
@@ -771,7 +782,7 @@ export default function HostQuizPage() {
                                   No sessions yet
                                 </p>
                                 <p className="text-[10px] text-gray-400 dark:text-gray-500 font-light mt-1">
-                                  Host and end a quiz with 2+ participants to save
+                                  Host and end a quiz with 1+ participants to save
                                   a session
                                 </p>
                               </div>
@@ -862,7 +873,7 @@ export default function HostQuizPage() {
                           if (!activeJoinCode) return;
                           const link = `${window.location.origin}/joinQuiz?code=${activeJoinCode}`;
                           navigator.clipboard.writeText(link);
-                          alert("Quiz link copied to clipboard!");
+                          showToast("Quiz link copied to clipboard!", "success");
                         }}
                         className="w-full flex items-center justify-between px-3 sm:px-4 py-2 text-[11px] sm:text-xs text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors rounded-lg"
                         disabled={!activeJoinCode}
@@ -937,13 +948,9 @@ export default function HostQuizPage() {
 
                   {/* Control mode: single CTA to control flow in the dedicated panel */}
                   {viewMode === "control" && (
-                    <div className="space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-5 sm:pt-6 mt-5 sm:mt-6 mb-4 lg:mb-0 text-center flex flex-col items-center justify-center">
-                      <h2 className="text-sm sm:text-base font-medium text-gray-900 dark:text-white mt-2 sm:mt-3 mb-1">
-                        Quiz Flow Control
-                      </h2>
+                    <div className="space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-6 sm:mt-6 mb-4 lg:mb-0 text-center flex flex-col items-center justify-center">
                       <p className="text-[11px] sm:text-xs font-light text-gray-600 dark:text-gray-400 max-w-sm mb-2 sm:mb-4">
-                        Go to the Control Panel to manage questions, view live
-                        responses, and control the pace of the quiz.
+                        Use the control panel control the quiz flow.
                       </p>
                       <button
                         className={`px-5 sm:px-6 py-2.5 sm:py-3 font-light text-xs sm:text-sm border transition-colors rounded-lg ${isHosted
@@ -1124,44 +1131,60 @@ export default function HostQuizPage() {
                 >
                   <div className="p-4 flex flex-col h-full">
                     <div
-                      className="flex items-center justify-between mb-3 shrink-0 cursor-pointer"
-                      onClick={() => {
-                        setParticipantsExpanded((prev) => {
-                          const next = !prev;
-                          if (next) setSessionsExpanded(false);
-                          return next;
-                        });
-                      }}
+                      className="flex items-center justify-between mb-3 shrink-0"
                     >
-                      <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
-                        Participants ({participants.length})
-                        <div className={`transition-transform duration-500 ${participantsExpanded ? 'rotate-180' : ''}`}>
-                          <ChevronUp className="w-4 h-4 text-gray-400" />
-                        </div>
-                      </h3>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          refreshParticipants();
+                      <h3
+                        className="text-sm font-medium text-gray-900 dark:text-white cursor-pointer"
+                        onClick={() => {
+                          setParticipantsExpanded((prev) => {
+                            const next = !prev;
+                            if (next) setSessionsExpanded(false);
+                            return next;
+                          });
                         }}
-                        className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 text-[11px] text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors rounded-lg"
-                        title="Refresh participants list"
                       >
-                        <svg
-                          className="w-3.5 h-3.5 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                        Participants ({participants.length})
+                      </h3>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            refreshParticipants();
+                          }}
+                          className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 text-[11px] text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors rounded-lg"
+                          title="Refresh participants list"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                          />
-                        </svg>
-                        Refresh
-                      </button>
+                          <svg
+                            className="w-3.5 h-3.5 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
+                          </svg>
+                          Refresh
+                        </button>
+                        <button
+                          onClick={() => {
+                            setParticipantsExpanded((prev) => {
+                              const next = !prev;
+                              if (next) setSessionsExpanded(false);
+                              return next;
+                            });
+                          }}
+                          className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                          aria-label="Toggle participants"
+                        >
+                          <div className={`transition-transform duration-500 ${participantsExpanded ? 'rotate-180' : ''}`}>
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                          </div>
+                        </button>
+                      </div>
                     </div>
 
                     <div className={`flex-1 overflow-y-auto pr-1 transition-all duration-500 delay-75 ${participantsExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}>

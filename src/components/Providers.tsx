@@ -4,6 +4,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SocketProvider } from "@/contexts/SocketContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
+import { ToastProvider } from "@/contexts/ToastContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 interface ProvidersProps {
@@ -18,24 +19,28 @@ export default function Providers({
   if (googleClientId) {
     return (
       <ThemeProvider>
-        <GoogleOAuthProvider clientId={googleClientId}>
-          <AuthProvider>
-            <NavigationProvider>
-              <SocketProvider>{children}</SocketProvider>
-            </NavigationProvider>
-          </AuthProvider>
-        </GoogleOAuthProvider>
+        <ToastProvider>
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <AuthProvider>
+              <NavigationProvider>
+                <SocketProvider>{children}</SocketProvider>
+              </NavigationProvider>
+            </AuthProvider>
+          </GoogleOAuthProvider>
+        </ToastProvider>
       </ThemeProvider>
     );
   }
 
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <NavigationProvider>
-          <SocketProvider>{children}</SocketProvider>
-        </NavigationProvider>
-      </AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <NavigationProvider>
+            <SocketProvider>{children}</SocketProvider>
+          </NavigationProvider>
+        </AuthProvider>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

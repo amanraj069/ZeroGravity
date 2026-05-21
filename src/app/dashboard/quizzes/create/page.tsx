@@ -11,6 +11,7 @@ import {
   generateQuizWithAI,
 } from "@/services/quizzesService";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import {
   Save,
@@ -39,6 +40,7 @@ function CreateQuizContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoading } = useAuth();
+  const { showToast } = useToast();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<QuizQuestion[]>([emptyQuestion()]);
@@ -373,7 +375,7 @@ function CreateQuizContent() {
       // Validate current question
       const validation = validateCurrentQuestion();
       if (!validation.isValid) {
-        alert(validation.message);
+        showToast(validation.message, "error");
         setSaving(false);
         return;
       }
@@ -420,7 +422,7 @@ function CreateQuizContent() {
       setModifiedQuestions(new Set());
       // Don't modify the URL when editing an existing quiz - keep the original URL format
     } catch (e) {
-      alert((e as Error)?.message || "Failed to save");
+      showToast((e as Error)?.message || "Failed to save", "error");
     } finally {
       setSaving(false);
     }
@@ -433,7 +435,7 @@ function CreateQuizContent() {
       // Validate current question
       const validation = validateCurrentQuestion();
       if (!validation.isValid) {
-        alert(validation.message);
+        showToast(validation.message, "error");
         setPublishing(false);
         return;
       }
@@ -478,7 +480,7 @@ function CreateQuizContent() {
       if (!pub?.success) throw new Error(pub?.message || "Publish failed");
       router.push(`/dashboard/quizzes/host/${id}?code=${pub.joinCode}`);
     } catch (e) {
-      alert((e as Error)?.message || "Failed to publish quiz");
+      showToast((e as Error)?.message || "Failed to publish quiz", "error");
     } finally {
       setPublishing(false);
     }
@@ -738,7 +740,7 @@ function CreateQuizContent() {
                           title="Delete this question"
                         >
                           <svg
-                            className="w-5 h-5"
+                            className="w-4 h-4"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1050,9 +1052,7 @@ ${JSON.stringify(questions, null, 2)}
 
 Give me the final combined JSON array with the new questions added:`;
                   navigator.clipboard.writeText(prompt);
-                  alert(
-                    "Prompt with current questions copied to clipboard! Paste it to an LLM.",
-                  );
+                  showToast("Prompt with current questions copied to clipboard! Paste it to an LLM.", "success");
                 }}
               >
                 Copy format for LLMs
@@ -1114,12 +1114,13 @@ Give me the final combined JSON array with the new questions added:`;
                         new Set(validated.map((_: unknown, i: number) => i)),
                       );
                     } else {
-                      alert("Question array cannot be empty.");
+                      showToast("Question array cannot be empty.", "error");
                     }
                   } catch (err: unknown) {
-                    alert(
+                    showToast(
                       "Failed to parse JSON: " +
                       (err instanceof Error ? err.message : String(err)),
+                      "error",
                     );
                   }
                 }}
