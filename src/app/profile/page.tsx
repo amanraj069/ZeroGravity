@@ -788,7 +788,18 @@ export default function Profile() {
                       <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
                         {streakInfo?.currentStreak ?? 0}
                       </div>
-                      <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400 animate-pulse" />
+                      <div className="relative flex items-center justify-center">
+                        <Flame className="w-5 h-5 md:w-6 md:h-6 text-orange-500" fill="url(#orangeFireProfile)" strokeWidth={1.5} />
+                        <svg width="0" height="0" className="absolute">
+                          <defs>
+                            <linearGradient id="orangeFireProfile" x1="0%" y1="100%" x2="0%" y2="0%">
+                              <stop offset="0%" stopColor="#f97316" />
+                              <stop offset="50%" stopColor="#ef4444" />
+                              <stop offset="100%" stopColor="#fbbf24" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -814,7 +825,18 @@ export default function Profile() {
                       <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                         {streakInfo?.longestStreak ?? 0}
                       </div>
-                      <Flame className="w-4 h-4 text-purple-500 dark:text-purple-400 animate-pulse" />
+                      <div className="relative flex items-center justify-center">
+                        <Flame className="w-5 h-5 md:w-6 md:h-6 text-purple-500" fill="url(#purpleFireProfile)" strokeWidth={1.5} />
+                        <svg width="0" height="0" className="absolute">
+                          <defs>
+                            <linearGradient id="purpleFireProfile" x1="0%" y1="100%" x2="0%" y2="0%">
+                              <stop offset="0%" stopColor="#9333ea" />
+                              <stop offset="50%" stopColor="#d946ef" />
+                              <stop offset="100%" stopColor="#ec4899" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                      </div>
                     </div>
                   )}
                 </div>

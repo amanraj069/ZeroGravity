@@ -296,7 +296,7 @@ export default function GoogleSignInButton({
       window.removeEventListener("resize", handleResize);
       hasRenderedButton.current = false;
     };
-  }, [showGoogleButton, disabled, isLoading, isInitialized, theme]); // Removed onError from dependencies - it's used in initialization, not render
+  }, [showGoogleButton, disabled, isLoading, isInitialized, theme, onError]);
 
   if (!showGoogleButton || disabled || isLoading || !isInitialized) {
     return (

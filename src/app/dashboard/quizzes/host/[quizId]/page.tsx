@@ -18,9 +18,14 @@ import { getSocket, joinQuizRoom } from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { Quiz, QuizParticipant, QuizLeaderboardEntry, QuizSessionSummary } from "@/types/quiz";
+import {
+  Quiz,
+  QuizParticipant,
+  QuizLeaderboardEntry,
+  QuizSessionSummary,
+} from "@/types/quiz";
 import QRCode from "qrcode";
-import { ChevronUp, ChevronDown, X, Clock, Users, Hash } from "lucide-react";
+import { ChevronUp, X, Clock, Users, Hash } from "lucide-react";
 
 export default function HostQuizPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -46,7 +51,8 @@ export default function HostQuizPage() {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const [sessions, setSessions] = useState<QuizSessionSummary[]>([]);
   const [sessionsExpanded, setSessionsExpanded] = useState<boolean>(false);
-  const [participantsExpanded, setParticipantsExpanded] = useState<boolean>(false);
+  const [participantsExpanded, setParticipantsExpanded] =
+    useState<boolean>(false);
 
   const questions = useMemo(() => quiz?.questions || [], [quiz]);
   const activeJoinCode = isHosted ? generatedJoinCode : "";
@@ -457,7 +463,10 @@ export default function HostQuizPage() {
                                     p.quizUserId,
                                   );
                                   if (!res?.success) {
-                                    showToast("Failed to remove participant", "error");
+                                    showToast(
+                                      "Failed to remove participant",
+                                      "error",
+                                    );
                                   } else {
                                     setParticipants((prev) =>
                                       prev.filter(
@@ -472,7 +481,10 @@ export default function HostQuizPage() {
                                     "Error removing participant:",
                                     error,
                                   );
-                                  showToast("Failed to remove participant", "error");
+                                  showToast(
+                                    "Failed to remove participant",
+                                    "error",
+                                  );
                                 }
                               }}
                               className="absolute top-0 right-0 w-8 h-8 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg border-2 border-white dark:border-gray-800 rounded-full z-10"
@@ -518,7 +530,8 @@ export default function HostQuizPage() {
                     onClick={async () => {
                       const ok = await showDialog({
                         title: "Clear Participants",
-                        message: "Clear all participants? This cannot be undone.",
+                        message:
+                          "Clear all participants? This cannot be undone.",
                         confirmLabel: "Clear All",
                         variant: "danger",
                       });
@@ -526,7 +539,8 @@ export default function HostQuizPage() {
                       const { clearParticipants } =
                         await import("@/services/quizzesService");
                       const res = await clearParticipants(quizId);
-                      if (!res?.success) showToast("Failed to clear participants", "error");
+                      if (!res?.success)
+                        showToast("Failed to clear participants", "error");
                       else setParticipants([]);
                     }}
                   >
@@ -567,7 +581,8 @@ export default function HostQuizPage() {
                                   onClick={async () => {
                                     const ok = await showDialog({
                                       title: "Stop Hosting",
-                                      message: "Stop hosting this quiz? This will remove the join code and clear all participants.",
+                                      message:
+                                        "Stop hosting this quiz? This will remove the join code and clear all participants.",
                                       confirmLabel: "Stop Hosting",
                                       variant: "danger",
                                     });
@@ -614,10 +629,11 @@ export default function HostQuizPage() {
                           <div className="flex items-center gap-2 shrink-0">
                             <button
                               onClick={copyJoinCode}
-                              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs border transition-colors font-light rounded-lg ${copySuccess
-                                ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400"
-                                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white"
-                                }`}
+                              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs border transition-colors font-light rounded-lg ${
+                                copySuccess
+                                  ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400"
+                                  : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-black dark:hover:border-white"
+                              }`}
                               aria-label="Copy join code"
                             >
                               {copySuccess ? "✓ Copied" : "Copy Code"}
@@ -653,12 +669,13 @@ export default function HostQuizPage() {
                     <div className="flex flex-row items-center gap-2">
                       <span className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-[11px] sm:text-xs text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 flex-1 rounded-lg">
                         <span
-                          className={`inline-block h-2 w-2 flex-shrink-0 ${isActive
-                            ? "bg-green-500"
-                            : isHosted
-                              ? "bg-yellow-500"
-                              : "bg-gray-400"
-                            }`}
+                          className={`inline-block h-2 w-2 flex-shrink-0 ${
+                            isActive
+                              ? "bg-green-500"
+                              : isHosted
+                                ? "bg-yellow-500"
+                                : "bg-gray-400"
+                          }`}
                         />
                         {isActive
                           ? "Quiz Active"
@@ -760,7 +777,7 @@ export default function HostQuizPage() {
                             )}
                           </span>
                           <svg
-                            className={`w-4 h-4 text-gray-400 transform transition-transform ${sessionsExpanded ? 'rotate-90' : ''}`}
+                            className={`w-4 h-4 text-gray-400 transform transition-transform ${sessionsExpanded ? "rotate-90" : ""}`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -782,8 +799,8 @@ export default function HostQuizPage() {
                                   No sessions yet
                                 </p>
                                 <p className="text-[10px] text-gray-400 dark:text-gray-500 font-light mt-1">
-                                  Host and end a quiz with 1+ participants to save
-                                  a session
+                                  Host and end a quiz with 1+ participants to
+                                  save a session
                                 </p>
                               </div>
                             ) : (
@@ -794,16 +811,16 @@ export default function HostQuizPage() {
                                     : null;
                                   const formattedDate = endedDate
                                     ? endedDate.toLocaleDateString(undefined, {
-                                      month: "short",
-                                      day: "numeric",
-                                      year: "numeric",
-                                    })
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "numeric",
+                                      })
                                     : "—";
                                   const formattedTime = endedDate
                                     ? endedDate.toLocaleTimeString(undefined, {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      })
                                     : "";
                                   const durationStr = session.duration
                                     ? session.duration < 60
@@ -873,7 +890,10 @@ export default function HostQuizPage() {
                           if (!activeJoinCode) return;
                           const link = `${window.location.origin}/joinQuiz?code=${activeJoinCode}`;
                           navigator.clipboard.writeText(link);
-                          showToast("Quiz link copied to clipboard!", "success");
+                          showToast(
+                            "Quiz link copied to clipboard!",
+                            "success",
+                          );
                         }}
                         className="w-full flex items-center justify-between px-3 sm:px-4 py-2 text-[11px] sm:text-xs text-left bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors rounded-lg"
                         disabled={!activeJoinCode}
@@ -945,7 +965,6 @@ export default function HostQuizPage() {
                     </div>
                   </div>
 
-
                   {/* Control mode: single CTA to control flow in the dedicated panel */}
                   {viewMode === "control" && (
                     <div className="space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-6 sm:mt-6 mb-4 lg:mb-0 text-center flex flex-col items-center justify-center">
@@ -953,10 +972,11 @@ export default function HostQuizPage() {
                         Use the control panel control the quiz flow.
                       </p>
                       <button
-                        className={`px-5 sm:px-6 py-2.5 sm:py-3 font-light text-xs sm:text-sm border transition-colors rounded-lg ${isHosted
-                          ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 border-black dark:border-white"
-                          : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                          }`}
+                        className={`px-5 sm:px-6 py-2.5 sm:py-3 font-light text-xs sm:text-sm border transition-colors rounded-lg ${
+                          isHosted
+                            ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 border-black dark:border-white"
+                            : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                        }`}
                         onClick={() => {
                           if (currentIndex < 0 && isActive) {
                             pushNextQuestion();
@@ -1039,8 +1059,9 @@ export default function HostQuizPage() {
                                 </div>
                                 <div className="h-3 bg-gray-200 dark:bg-gray-700 overflow-hidden rounded-lg">
                                   <div
-                                    className={`h-3 rounded-lg ${isCorrect ? "bg-green-600" : "bg-red-600"
-                                      }`}
+                                    className={`h-3 rounded-lg ${
+                                      isCorrect ? "bg-green-600" : "bg-red-600"
+                                    }`}
                                     style={{ width: `${pct}%` }}
                                   />
                                 </div>
@@ -1080,20 +1101,22 @@ export default function HostQuizPage() {
                             return (
                               <div
                                 key={b.quizUserId}
-                                className={`flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg ${isDeleted
-                                  ? "bg-gray-100 dark:bg-gray-800/70 opacity-70"
-                                  : "bg-gray-50 dark:bg-gray-900"
-                                  }`}
+                                className={`flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg ${
+                                  isDeleted
+                                    ? "bg-gray-100 dark:bg-gray-800/70 opacity-70"
+                                    : "bg-gray-50 dark:bg-gray-900"
+                                }`}
                               >
                                 <div className="flex items-center gap-3">
                                   <div className="w-7 h-7 flex items-center justify-center text-sm font-bold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg">
                                     {idx + 1}
                                   </div>
                                   <span
-                                    className={`text-sm font-light ${isDeleted
-                                      ? "text-gray-500 dark:text-gray-400 line-through"
-                                      : "text-gray-900 dark:text-white"
-                                      }`}
+                                    className={`text-sm font-light ${
+                                      isDeleted
+                                        ? "text-gray-500 dark:text-gray-400 line-through"
+                                        : "text-gray-900 dark:text-white"
+                                    }`}
                                   >
                                     {b.participantName}
                                   </span>
@@ -1122,17 +1145,16 @@ export default function HostQuizPage() {
                       </div>
                     </div>
                   )}
-                </div> {/* End of scrollable top content */}
-
+                </div>{" "}
+                {/* End of scrollable top content */}
                 {/* Mobile Participants Section - Bottom Sheet */}
                 <div
-                  className={`block lg:hidden absolute bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rounded-t-xl shadow-[0_-12px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-12px_40px_rgba(0,0,0,0.5)] z-20 ${participantsExpanded ? 'h-[60%]' : 'h-[72px]'
-                    }`}
+                  className={`block lg:hidden absolute bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] rounded-t-xl shadow-[0_-12px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-12px_40px_rgba(0,0,0,0.5)] z-20 ${
+                    participantsExpanded ? "h-[60%]" : "h-[72px]"
+                  }`}
                 >
                   <div className="p-4 flex flex-col h-full">
-                    <div
-                      className="flex items-center justify-between mb-3 shrink-0"
-                    >
+                    <div className="flex items-center justify-between mb-3 shrink-0">
                       <h3
                         className="text-sm font-medium text-gray-900 dark:text-white cursor-pointer"
                         onClick={() => {
@@ -1180,14 +1202,18 @@ export default function HostQuizPage() {
                           className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                           aria-label="Toggle participants"
                         >
-                          <div className={`transition-transform duration-500 ${participantsExpanded ? 'rotate-180' : ''}`}>
+                          <div
+                            className={`transition-transform duration-500 ${participantsExpanded ? "rotate-180" : ""}`}
+                          >
                             <ChevronUp className="w-4 h-4 text-gray-400" />
                           </div>
                         </button>
                       </div>
                     </div>
 
-                    <div className={`flex-1 overflow-y-auto pr-1 transition-all duration-500 delay-75 ${participantsExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
+                    <div
+                      className={`flex-1 overflow-y-auto pr-1 transition-all duration-500 delay-75 ${participantsExpanded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"}`}
+                    >
                       {participants.length > 0 ? (
                         <div className="grid grid-cols-4 gap-4 pb-6">
                           {participants
@@ -1214,7 +1240,9 @@ export default function HostQuizPage() {
                                       p.participantName || "U",
                                     )}`}
                                   >
-                                    {p.participantName?.charAt(0)?.toUpperCase() || "?"}
+                                    {p.participantName
+                                      ?.charAt(0)
+                                      ?.toUpperCase() || "?"}
                                   </div>
                                 )}
                                 <span className="text-[11px] font-medium text-gray-700 dark:text-gray-300 mt-2 truncate w-full px-1">

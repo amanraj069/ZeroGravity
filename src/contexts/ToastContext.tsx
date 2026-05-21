@@ -43,7 +43,7 @@ interface AlertState extends AlertOptions {
 
 interface ToastContextType {
   showToast: (message: string, type?: ToastType) => void;
-  showErrorToast: (error: any) => void;
+  showErrorToast: (error: unknown) => void;
   /** Resolves to true if user confirmed, false if cancelled */
   showDialog: (options: DialogOptions) => Promise<boolean>;
   /** Shows an in-app alert modal (no confirm needed) */
@@ -128,7 +128,10 @@ function DialogModal({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
       className="fixed inset-0 z-[200] flex items-center justify-center px-4"
-      style={{ backdropFilter: "blur(4px)", backgroundColor: "rgba(0,0,0,0.4)" }}
+      style={{
+        backdropFilter: "blur(4px)",
+        backgroundColor: "rgba(0,0,0,0.4)",
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose(false);
       }}
@@ -227,7 +230,10 @@ function AlertModal({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
       className="fixed inset-0 z-[200] flex items-center justify-center px-4"
-      style={{ backdropFilter: "blur(4px)", backgroundColor: "rgba(0,0,0,0.4)" }}
+      style={{
+        backdropFilter: "blur(4px)",
+        backgroundColor: "rgba(0,0,0,0.4)",
+      }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -286,7 +292,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const showErrorToast = useCallback(
-    (error: any) => {
+    (error: unknown) => {
       let message = "An unexpected error occurred. Please try again.";
       if (error instanceof Error) {
         if (
@@ -311,16 +317,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     [showToast],
   );
 
-  const showDialog = useCallback(
-    (options: DialogOptions): Promise<boolean> => {
-      return new Promise((resolve) => {
-        const id = Math.random().toString(36).substring(2, 9);
-        resolveRef.current = resolve;
-        setDialog({ ...options, id, resolve });
-      });
-    },
-    [],
-  );
+  const showDialog = useCallback((options: DialogOptions): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const id = Math.random().toString(36).substring(2, 9);
+      resolveRef.current = resolve;
+      setDialog({ ...options, id, resolve });
+    });
+  }, []);
 
   const handleDialogClose = useCallback((confirmed: boolean) => {
     resolveRef.current?.(confirmed);
@@ -358,18 +361,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
       {/* Confirm Dialog */}
       <AnimatePresence>
-        {dialog && (
-          <DialogModal dialog={dialog} onClose={handleDialogClose} />
-        )}
+        {dialog && <DialogModal dialog={dialog} onClose={handleDialogClose} />}
       </AnimatePresence>
 
       {/* Alert Modal */}
       <AnimatePresence>
         {alertModal && (
-          <AlertModal
-            alert={alertModal}
-            onClose={() => setAlertModal(null)}
-          />
+          <AlertModal alert={alertModal} onClose={() => setAlertModal(null)} />
         )}
       </AnimatePresence>
     </ToastContext.Provider>

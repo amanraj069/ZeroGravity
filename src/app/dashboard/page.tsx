@@ -17,6 +17,7 @@ import {
   FileText,
   ChevronRight,
   Sparkles,
+  ArrowRight,
 } from "lucide-react";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { DashboardLayout } from "@/components/dashboard";
@@ -264,7 +265,7 @@ export default function Dashboard() {
         </div>
 
         {/* Navigation Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 mb-5 lg:mb-8">
           {navigationItems.map((item, idx) => (
             <motion.div
               key={item.url}
@@ -300,8 +301,8 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="flex-shrink-0">
-                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-base sm:text-lg font-semibold text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900 dark:group-hover:text-white">
-                      →
+                    <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900 dark:group-hover:text-white">
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                   </div>
                 </div>
@@ -309,6 +310,58 @@ export default function Dashboard() {
             </motion.div>
           ))}
         </div>
+
+        {/* Global Interaction Point - Leaderboard (Prominent) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mb-4 md:mb-5"
+        >
+          <Link
+            href="/leaderboard"
+            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 transition-all duration-500 hover:border-amber-300/30 dark:hover:border-amber-200/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(251,191,36,0.15)] rounded-2xl"
+          >
+            {/* Immersive Star Layer - Golden */}
+            <div className="absolute inset-0 opacity-20 dark:opacity-40 pointer-events-none group-hover:opacity-40 dark:group-hover:opacity-70 transition-opacity">
+              {stars.slice(20, 40).map((star, i) => (
+                <div
+                  key={`leaderboard-${i}`}
+                  className="absolute bg-amber-400 dark:bg-amber-200 rounded-full"
+                  style={{
+                    left: star.left,
+                    top: star.top,
+                    width: (star.size || 1) + 1,
+                    height: (star.size || 1) + 1,
+                    opacity: 0.4,
+                  }}
+                />
+              ))}
+              <div className="absolute top-1/2 -translate-y-1/2 right-0 w-64 h-64 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[80px]" />
+            </div>
+
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-10">
+              <div className="text-center md:text-left">
+                <h2 className="text-xl sm:text-3xl md:text-5xl font-light text-black dark:text-white mb-4 tracking-tight leading-none">
+                  Global <span className="font-normal italic text-amber-600 dark:text-amber-400">Rankings</span>
+                </h2>
+                <p className="text-xs sm:text-base md:text-lg text-gray-500 dark:text-gray-400 font-light max-w-xl mx-auto md:mx-0 leading-relaxed">
+                  Compete on the leaderboard, rise through the ranks & earn rewards.
+                </p>
+              </div>
+
+              <div className="flex flex-row md:flex-col items-center md:items-end gap-4 sm:gap-6 shrink-0">
+                <div className="text-4xl sm:text-5xl md:text-7xl group-hover:scale-110 transition-transform duration-500 group-hover:-rotate-12">
+                  🏆
+                </div>
+                <div className="flex items-center gap-2 text-[9px] sm:text-sm uppercase tracking-[0.3em] font-bold text-gray-600 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                  <span>View Top</span>
+                  <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                </div>
+              </div>
+            </div>
+          </Link>
+        </motion.div>
 
         {/* Global Interaction Point - Students Hub (Prominent) */}
         <motion.div
@@ -339,12 +392,11 @@ export default function Dashboard() {
 
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-10">
               <div className="text-center md:text-left">
-                <h2 className="text-xl sm:text-3xl md:text-5xl font-light text-black dark:text-white mb-2 tracking-tight leading-none">
+                <h2 className="text-xl sm:text-3xl md:text-5xl font-light text-black dark:text-white mb-4 tracking-tight leading-none">
                   Students <span className="font-normal italic">Hub</span>
                 </h2>
                 <p className="text-xs sm:text-base md:text-lg text-gray-500 dark:text-gray-400 font-light max-w-xl mx-auto md:mx-0 leading-relaxed">
-                  Transcend your student experience. Access premium tools,
-                  exclusive resources, and a network designed for growth.
+                  Access premium tools & exclusive resources using your student mail.
                 </p>
               </div>
 

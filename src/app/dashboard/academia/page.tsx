@@ -276,7 +276,8 @@ export default function AcademiaPage() {
                   Academia
                 </h1>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                  Store your academics in encrypted format
+                  <span className="sm:hidden">Store Academics (encrypted)</span>
+                  <span className="hidden sm:inline">Store your Academics in encrypted format</span>
                 </p>
               </div>
               {(() => {
@@ -382,20 +383,17 @@ export default function AcademiaPage() {
                       }
                     }}
                     onDragLeave={handleDragLeave}
-                    className={`group border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] hover:border-purple-300/20 dark:hover:border-purple-200/40 hover:bg-gray-50 dark:hover:bg-[#0a0e17] shadow-sm transition-all duration-300 p-4 sm:p-6 relative cursor-move rounded-xl ${
-                      draggedSemesterId === semester.semesterId
-                        ? "opacity-90 z-50"
-                        : ""
-                    } ${
-                      dragOverIndex === index &&
-                      draggedSemesterId !== semester.semesterId
+                    className={`group border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] hover:border-purple-300/20 dark:hover:border-purple-200/40 hover:bg-gray-50 dark:hover:bg-[#0a0e17] shadow-sm transition-all duration-300 p-4 sm:p-6 relative cursor-move rounded-xl ${draggedSemesterId === semester.semesterId
+                      ? "opacity-90 z-50"
+                      : ""
+                      } ${dragOverIndex === index &&
+                        draggedSemesterId !== semester.semesterId
                         ? "border-purple-500 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/20 ring-1 ring-purple-300 dark:ring-purple-600"
                         : ""
-                    } ${
-                      justSwapped && justSwapped.includes(semester.semesterId)
+                      } ${justSwapped && justSwapped.includes(semester.semesterId)
                         ? "ring-1 ring-emerald-400 dark:ring-emerald-500"
                         : ""
-                    }`}
+                      }`}
                   >
                     {editingSemesterId === semester.semesterId ? (
                       /* Edit Mode */

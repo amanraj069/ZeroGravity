@@ -84,10 +84,10 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
         </button>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex-1 min-w-0">
+          <div className="mb-2">
+            <div className="flex items-start justify-between">
               <h3
-                className={`font-medium text-sm sm:text-base ${
+                className={`font-medium text-sm sm:text-base flex-1 min-w-0 ${
                   task.isCompletedToday
                     ? "line-through text-gray-500 dark:text-gray-400"
                     : "text-gray-900 dark:text-white"
@@ -95,35 +95,36 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
               >
                 {task.title}
               </h3>
-              {task.description && (
-                <p
-                  className={`text-xs sm:text-sm mt-1 leading-relaxed ${
-                    task.isCompletedToday
-                      ? "text-gray-400 dark:text-gray-500"
-                      : "text-gray-600 dark:text-gray-400"
-                  }`}
+
+              <div className="flex items-center gap-1 ml-2 flex-shrink-0">
+                <button
+                  onClick={() => onEdit(task)}
+                  className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  title="Edit task"
                 >
-                  {task.description}
-                </p>
-              )}
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => onDelete(task._id)}
+                  className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                  title="Delete task"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-1 ml-2">
-              <button
-                onClick={() => onEdit(task)}
-                className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                title="Edit task"
+            {task.description && (
+              <p
+                className={`text-xs sm:text-sm mt-1 leading-relaxed ${
+                  task.isCompletedToday
+                    ? "text-gray-400 dark:text-gray-500"
+                    : "text-gray-600 dark:text-gray-400"
+                }`}
               >
-                <Edit2 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => onDelete(task._id)}
-                className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                title="Delete task"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
+                {task.description}
+              </p>
+            )}
           </div>
 
           {/* Task Details */}

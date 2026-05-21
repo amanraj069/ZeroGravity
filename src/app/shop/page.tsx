@@ -109,6 +109,8 @@ export default function ShopPage() {
         await refreshPoints();
         await fetchInventory();
         setShowCalendar(false);
+        // Notify StreakIcon in navbar to refresh immediately
+        window.dispatchEvent(new Event("streak-updated"));
       }
       else setMessage({ type: "error", text: r?.message || "Failed" });
     } catch { setMessage({ type: "error", text: "Error" }); } finally { setUsingTicket(false); }
@@ -119,7 +121,7 @@ export default function ShopPage() {
     setUsingVoyager(true); setMessage(null);
     try {
       const r = await consumeFutureVoyager(futureDate);
-      if (r?.success) { setMessage({ type: "success", text: r.message }); await refreshPoints(); await fetchInventory(); setShowDatePicker(false); setFutureDate(""); }
+      if (r?.success) { setMessage({ type: "success", text: r.message }); await refreshPoints(); await fetchInventory(); setShowDatePicker(false); setFutureDate(""); window.dispatchEvent(new Event("streak-updated")); }
       else setMessage({ type: "error", text: r?.message || "Failed" });
     } catch { setMessage({ type: "error", text: "Error" }); } finally { setUsingVoyager(false); }
   };

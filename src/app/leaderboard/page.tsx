@@ -18,6 +18,9 @@ import { getBorderStyle, getAnimationClass } from "@/services/shopService";
 export default function Leaderboard() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
   const router = useRouter();
+
+  // Premium, smooth animation settings
+  const premiumTransition = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const };
   const [leaderboard, setLeaderboard] = useState<{
     weekStart: string;
     weekEnd: string;
@@ -92,303 +95,38 @@ export default function Leaderboard() {
   };
 
   // Trophy component for top 3 ranks
-  const TrophyIcon = ({ rank, userId }: { rank: number; userId: string }) => {
-    const isGold = rank === 1;
-    const isSilver = rank === 2;
-
-    // Color schemes for different ranks
-    const trophyColor = isGold
-      ? {
-          main: "#FFD700",
-          secondary: "#FFA500",
-          dark: "#B8860B",
-          highlight: "#FFF8DC",
-          glow: "#FFD700", // Golden glow
-        }
-      : isSilver
-        ? {
-            main: "#C0C0C0",
-            secondary: "#A8A8A8",
-            dark: "#808080",
-            highlight: "#E8E8E8",
-            glow: "#E8E8E8", // Silver glow
-          }
-        : {
-            main: "#CD7F32",
-            secondary: "#B87333",
-            dark: "#8B4513",
-            highlight: "#E6C19A",
-            glow: "#CD7F32", // Bronze glow
-          };
-
-    const trophyId = `trophy-${rank}-${userId}`;
-
-    return (
-      <span className="inline-flex items-center flex-shrink-0">
-        <svg
-          viewBox="0 0 200 250"
-          className="w-10 h-10 sm:w-14 sm:h-14 pr-3"
-          xmlns="http://www.w3.org/2000/svg"
-          filter={`url(#glowOuter-${trophyId})`}
+  const TrophyIcon = ({ rank }: { rank: number }) => {
+    if (rank === 1) {
+      return (
+        <span
+          className="text-xl sm:text-4xl inline-block transform hover:scale-110 transition-transform duration-300"
+          style={{ filter: "drop-shadow(0 0 15px rgba(255,215,0,0.6))" }}
         >
-          <defs>
-            <linearGradient
-              id={`trophyMain-${trophyId}`}
-              x1="0%"
-              y1="0%"
-              x2="0%"
-              y2="100%"
-            >
-              <stop offset="0%" stopColor={trophyColor.main} stopOpacity="1" />
-              <stop
-                offset="30%"
-                stopColor={trophyColor.secondary}
-                stopOpacity="1"
-              />
-              <stop offset="60%" stopColor={trophyColor.main} stopOpacity="1" />
-              <stop
-                offset="100%"
-                stopColor={trophyColor.dark}
-                stopOpacity="1"
-              />
-            </linearGradient>
-            <linearGradient
-              id={`trophyHighlight-${trophyId}`}
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="100%"
-            >
-              <stop
-                offset="0%"
-                stopColor={trophyColor.highlight}
-                stopOpacity="0.8"
-              />
-              <stop
-                offset="100%"
-                stopColor={trophyColor.main}
-                stopOpacity="0.3"
-              />
-            </linearGradient>
-            <linearGradient
-              id={`trophyShadow-${trophyId}`}
-              x1="0%"
-              y1="0%"
-              x2="0%"
-              y2="100%"
-            >
-              <stop offset="0%" stopColor="#000000" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#000000" stopOpacity="0.1" />
-            </linearGradient>
-            <filter
-              id={`glow-${trophyId}`}
-              x="-50%"
-              y="-50%"
-              width="200%"
-              height="200%"
-            >
-              <feGaussianBlur stdDeviation="4" in="SourceAlpha" result="blur" />
-              <feFlood
-                floodColor={trophyColor.glow}
-                floodOpacity="0.8"
-                result="glowColor"
-              />
-              <feComposite
-                in="glowColor"
-                in2="blur"
-                operator="in"
-                result="coloredBlur"
-              />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter
-              id={`glowStrong-${trophyId}`}
-              x="-50%"
-              y="-50%"
-              width="200%"
-              height="200%"
-            >
-              <feGaussianBlur stdDeviation="8" in="SourceAlpha" result="blur" />
-              <feFlood
-                floodColor={trophyColor.glow}
-                floodOpacity="0.9"
-                result="glowColor"
-              />
-              <feComposite
-                in="glowColor"
-                in2="blur"
-                operator="in"
-                result="coloredBlur"
-              />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter
-              id={`glowOuter-${trophyId}`}
-              x="-100%"
-              y="-100%"
-              width="300%"
-              height="300%"
-            >
-              <feGaussianBlur
-                stdDeviation="12"
-                in="SourceAlpha"
-                result="blur"
-              />
-              <feFlood
-                floodColor={trophyColor.glow}
-                floodOpacity="0.7"
-                result="glowColor"
-              />
-              <feComposite
-                in="glowColor"
-                in2="blur"
-                operator="in"
-                result="coloredBlur"
-              />
-              <feMerge>
-                <feMergeNode in="coloredBlur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-          {/* Base/Pedestal */}
-          <ellipse
-            cx="100"
-            cy="240"
-            rx="70"
-            ry="15"
-            fill={`url(#trophyShadow-${trophyId})`}
-            opacity="0.4"
-          />
-          <rect
-            x="60"
-            y="200"
-            width="80"
-            height="40"
-            rx="5"
-            fill={`url(#trophyMain-${trophyId})`}
-          />
-          <rect
-            x="65"
-            y="205"
-            width="70"
-            height="30"
-            rx="3"
-            fill={`url(#trophyHighlight-${trophyId})`}
-            opacity="0.4"
-          />
-          {/* Cup body */}
-          <path
-            d="M 80 60 Q 80 40 100 40 Q 120 40 120 60 L 120 180 Q 120 200 100 200 Q 80 200 80 180 Z"
-            fill={`url(#trophyMain-${trophyId})`}
-            filter={`url(#glowStrong-${trophyId})`}
-          />
-          {/* Cup highlight */}
-          <path
-            d="M 85 65 Q 85 50 100 50 Q 115 50 115 65 L 115 175 Q 115 190 100 190 Q 85 190 85 175 Z"
-            fill={`url(#trophyHighlight-${trophyId})`}
-            opacity="0.6"
-          />
-          {/* Left handle */}
-          <path
-            d="M 80 80 Q 50 80 50 120 Q 50 160 80 160"
-            fill="none"
-            stroke={`url(#trophyMain-${trophyId})`}
-            strokeWidth="8"
-            strokeLinecap="round"
-            filter={`url(#glow-${trophyId})`}
-          />
-          <path
-            d="M 75 85 Q 55 85 55 120 Q 55 155 75 155"
-            fill="none"
-            stroke={`url(#trophyHighlight-${trophyId})`}
-            strokeWidth="4"
-            strokeLinecap="round"
-            opacity="0.7"
-          />
-          {/* Right handle */}
-          <path
-            d="M 120 80 Q 150 80 150 120 Q 150 160 120 160"
-            fill="none"
-            stroke={`url(#trophyMain-${trophyId})`}
-            strokeWidth="8"
-            strokeLinecap="round"
-            filter={`url(#glow-${trophyId})`}
-          />
-          <path
-            d="M 125 85 Q 145 85 145 120 Q 145 155 125 155"
-            fill="none"
-            stroke={`url(#trophyHighlight-${trophyId})`}
-            strokeWidth="4"
-            strokeLinecap="round"
-            opacity="0.7"
-          />
-          {/* Crown/Star on top */}
-          <g transform="translate(100, 30)" filter={`url(#glow-${trophyId})`}>
-            <path
-              d="M 0 -15 L 4 -4 L 15 -4 L 6 2 L 9 13 L 0 7 L -9 13 L -6 2 L -15 -4 L -4 -4 Z"
-              fill={trophyColor.main}
-              stroke={trophyColor.secondary}
-              strokeWidth="1"
-            />
-            <path
-              d="M -20 -5 L -18 0 L -13 0 L -16 3 L -15 8 L -20 5 L -25 8 L -24 3 L -27 0 L -22 0 Z"
-              fill={trophyColor.main}
-              opacity="0.8"
-            />
-            <path
-              d="M 20 -5 L 22 0 L 27 0 L 24 3 L 25 8 L 20 5 L 15 8 L 16 3 L 13 0 L 18 0 Z"
-              fill={trophyColor.main}
-              opacity="0.8"
-            />
-          </g>
-          {/* Sparkles */}
-          <circle
-            cx="90"
-            cy="100"
-            r="2"
-            fill={trophyColor.highlight}
-            opacity="0.9"
-          >
-            <animate
-              attributeName="opacity"
-              values="0.3;1;0.3"
-              dur="2s"
-              repeatCount="indefinite"
-            />
-          </circle>
-          <circle
-            cx="110"
-            cy="120"
-            r="1.5"
-            fill={trophyColor.highlight}
-            opacity="0.8"
-          >
-            <animate
-              attributeName="opacity"
-              values="0.3;1;0.3"
-              dur="2.5s"
-              repeatCount="indefinite"
-            />
-          </circle>
-          {/* Rim highlight */}
-          <ellipse
-            cx="100"
-            cy="60"
-            rx="20"
-            ry="3"
-            fill={`url(#trophyHighlight-${trophyId})`}
-            opacity="0.8"
-          />
-        </svg>
-      </span>
-    );
+          🏆
+        </span>
+      );
+    }
+    if (rank === 2) {
+      return (
+        <span
+          className="text-xl sm:text-4xl inline-block transform hover:scale-110 transition-transform duration-300"
+          style={{ filter: "grayscale(1) brightness(1.2) drop-shadow(0 0 15px rgba(192,192,192,0.6))" }}
+        >
+          🏆
+        </span>
+      );
+    }
+    if (rank === 3) {
+      return (
+        <span
+          className="text-xl sm:text-4xl inline-block transform hover:scale-110 transition-transform duration-300"
+          style={{ filter: "sepia(1) saturate(3) hue-rotate(-30deg) brightness(0.8) drop-shadow(0 0 15px rgba(205,127,50,0.6))" }}
+        >
+          🏆
+        </span>
+      );
+    }
+    return null;
   };
 
   if (authLoading || loading) {
@@ -430,14 +168,14 @@ export default function Leaderboard() {
 
   return (
     <DashboardLayout>
-      <div className="relative mt-4 mb-12 space-y-4 sm:space-y-8">
+      <div className="relative mt-4 mb-12 space-y-4 sm:space-y-8 overflow-hidden">
         {/* Background Atmosphere */}
         <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[120px]" />
           <div className="absolute bottom-20 left-0 w-[400px] h-[400px] bg-blue-500/[0.02] dark:bg-blue-900/[0.03] rounded-full blur-[100px]" />
 
           {/* Subtle Stars in Dark Mode */}
-          <div className="hidden dark:block absolute inset-0">
+          <div className="hidden dark:block absolute inset-0 overflow-hidden">
             {stars.map((star, i) => (
               <motion.div
                 key={i}
@@ -464,8 +202,9 @@ export default function Leaderboard() {
 
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ ...premiumTransition, delay: 0.1 }}
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-6"
         >
           <div className="flex items-center gap-4">
@@ -492,7 +231,7 @@ export default function Leaderboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ ...premiumTransition, delay: 0.2 }}
           className="relative group "
         >
           {/* Glass Card Container */}
@@ -533,31 +272,19 @@ export default function Leaderboard() {
                   ) : (
                     leaderboard.entries.filter((e) => e.user !== null).map((entry) => {
                       // Determine background color based on rank (only for top 3)
-                      let rowBgClass = "";
+                      const rowBgClass = "bg-transparent";
                       let rewardPoints = null;
 
                       if (entry.rank === 1) {
-                        rowBgClass =
-                          "bg-gradient-to-r from-yellow-500/10 to-transparent dark:from-yellow-400/10 dark:to-transparent border-l-4 border-yellow-500 underline-offset-4";
                         rewardPoints = 1000;
                       } else if (entry.rank === 2) {
-                        rowBgClass =
-                          "bg-gradient-to-r from-gray-400/10 to-transparent dark:from-gray-400/10 dark:to-transparent border-l-4 border-gray-400";
                         rewardPoints = 500;
                       } else if (entry.rank === 3) {
-                        rowBgClass =
-                          "bg-gradient-to-r from-orange-600/10 to-transparent dark:from-orange-500/10 dark:to-transparent border-l-4 border-orange-600";
                         rewardPoints = 250;
-                      } else {
-                        // No special background for ranks 4 and below
-                        rowBgClass = "bg-transparent";
                       }
                       return (
                         <motion.tr
                           key={entry.userId}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.1 + (entry.rank || 0) * 0.05 }}
                           whileHover={{
                             backgroundColor: "rgba(255, 255, 255, 0.03)",
                           }}
@@ -623,19 +350,16 @@ export default function Leaderboard() {
                             {(entry.rank === 1 ||
                               entry.rank === 2 ||
                               entry.rank === 3) && (
-                              <div className="flex items-center justify-center">
-                                <TrophyIcon
-                                  rank={entry.rank}
-                                  userId={entry.userId}
-                                />
-                              </div>
-                            )}
+                                <div className="flex items-center justify-center">
+                                  <TrophyIcon rank={entry.rank} />
+                                </div>
+                              )}
                           </td>
                           <td className="px-2 sm:px-6 py-2.5 sm:py-6 whitespace-nowrap text-center">
                             <div className="text-xs sm:text-sm text-black dark:text-white">
                               {entry.user?.currentStreak || 0}{" "}
                               {(entry.user?.currentStreak || 0) === 0 ||
-                              (entry.user?.currentStreak || 0) === 1
+                                (entry.user?.currentStreak || 0) === 1
                                 ? "day"
                                 : "days"}
                             </div>
@@ -675,9 +399,9 @@ export default function Leaderboard() {
         {leaderboard.notEligibleEntries &&
           leaderboard.notEligibleEntries.length > 0 && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...premiumTransition, delay: 0.4 }}
               className="mt-12 pb-12"
             >
               <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white my-6 tracking-tight">
@@ -710,11 +434,6 @@ export default function Leaderboard() {
                       {leaderboard.notEligibleEntries.map((entry) => (
                         <motion.tr
                           key={entry.userId}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{
-                            delay: 0.9 + leaderboard.entries.length * 0.05,
-                          }}
                           whileHover={{
                             backgroundColor: "rgba(255, 255, 255, 0.03)",
                           }}
@@ -781,7 +500,7 @@ export default function Leaderboard() {
                             <div className="text-xs sm:text-sm text-black dark:text-white">
                               {entry.user?.currentStreak || 0}{" "}
                               {(entry.user?.currentStreak || 0) === 0 ||
-                              (entry.user?.currentStreak || 0) === 1
+                                (entry.user?.currentStreak || 0) === 1
                                 ? "day"
                                 : "days"}
                             </div>

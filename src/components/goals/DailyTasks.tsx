@@ -117,7 +117,8 @@ const DailyTasks: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const fetchedTasks = await dailyTasksService.getDailyTasks(selectedDate);
+        const fetchedTasks =
+          await dailyTasksService.getDailyTasks(selectedDate);
         setTasks(fetchedTasks);
       } catch (error) {
         console.error("Error loading daily tasks:", error);
@@ -215,6 +216,8 @@ const DailyTasks: React.FC = () => {
   };
 
   const toggleTaskCompletion = async (taskId: string) => {
+    setTogglingTaskId(taskId);
+
     // Optimistic Update
     const previousTasks = [...tasks];
     const previousAnalytics = { ...analytics };
@@ -223,8 +226,8 @@ const DailyTasks: React.FC = () => {
       currentTasks.map((task) =>
         task._id === taskId
           ? { ...task, isCompletedToday: !task.isCompletedToday }
-          : task
-      )
+          : task,
+      ),
     );
 
     try {
@@ -234,7 +237,10 @@ const DailyTasks: React.FC = () => {
       );
 
       // Fetch in background to sync state
-      dailyTasksService.getDailyTasks(selectedDate).then(setTasks).catch(console.error);
+      dailyTasksService
+        .getDailyTasks(selectedDate)
+        .then(setTasks)
+        .catch(console.error);
       dailyTasksService.getStreakInfo().then(setAnalytics).catch(console.error);
 
       // Show points animation if points were awarded
@@ -262,6 +268,9 @@ const DailyTasks: React.FC = () => {
       // Refresh user points in context
       await refreshPoints();
 
+      // Notify StreakIcon in navbar to refresh immediately
+      window.dispatchEvent(new Event("streak-updated"));
+
       // Show success message if all tasks are completed
       if (result.allTasksCompleted && result.isCompleted) {
         if (process.env.NODE_ENV === "development") {
@@ -275,6 +284,10 @@ const DailyTasks: React.FC = () => {
       setAnalytics(previousAnalytics);
 
       showErrorToast(error);
+    } finally {
+      setTogglingTaskId((currentTaskId) =>
+        currentTaskId === taskId ? null : currentTaskId,
+      );
     }
   };
 
@@ -351,10 +364,11 @@ const DailyTasks: React.FC = () => {
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-fade-in-down">
           <div
-            className={`px-6 py-3 shadow-lg ${pointsAnimation.isDeduction
-              ? "bg-red-600 text-white"
-              : "bg-black dark:bg-white text-white dark:text-black"
-              }`}
+            className={`px-6 py-3 shadow-lg ${
+              pointsAnimation.isDeduction
+                ? "bg-red-600 text-white"
+                : "bg-black dark:bg-white text-white dark:text-black"
+            }`}
           >
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold">
@@ -523,18 +537,20 @@ const DailyTasks: React.FC = () => {
                 <button
                   key={day.date}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${borderClass} ${isSelected
-                    ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
-                    : day.isToday
-                      ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    }`}
+                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${borderClass} ${
+                    isSelected
+                      ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
+                      : day.isToday
+                        ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  }`}
                 >
                   <span
-                    className={`text-xs font-medium flex items-center gap-1 ${day.isToday && !isSelected
-                      ? "text-purple-600 dark:text-purple-400"
-                      : ""
-                      }`}
+                    className={`text-xs font-medium flex items-center gap-1 ${
+                      day.isToday && !isSelected
+                        ? "text-purple-600 dark:text-purple-400"
+                        : ""
+                    }`}
                   >
                     {formatted}
                   </span>
@@ -567,7 +583,10 @@ const DailyTasks: React.FC = () => {
         {isLoading ? (
           <div className="space-y-2 sm:space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white dark:bg-gray-800 p-4 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-800/50 flex items-start gap-3 sm:gap-4 animate-pulse min-h-[90px] sm:min-h-[110px] rounded-xl">
+              <div
+                key={i}
+                className="bg-white dark:bg-gray-800 p-4 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-800/50 flex items-start gap-3 sm:gap-4 animate-pulse min-h-[90px] sm:min-h-[110px] rounded-xl"
+              >
                 <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-gray-300 dark:border-gray-600 shrink-0 mt-0.5 rounded-md" />
                 <div className="flex-1 space-y-3 sm:space-y-4">
                   <div className="space-y-2 sm:space-y-2.5">

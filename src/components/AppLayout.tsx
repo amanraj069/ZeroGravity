@@ -29,7 +29,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     >
       {!isAuthPage && <LandingNavbar />}
       <main
-        className={`flex-grow flex flex-col ${isFullScreenPage ? "overflow-hidden min-h-0" : ""}`}
+        className={`flex-grow flex flex-col ${!isAuthPage ? "pt-16" : ""} ${isFullScreenPage ? "overflow-hidden min-h-0" : ""}`}
       >
         {children}
       </main>
