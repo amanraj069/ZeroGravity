@@ -46,6 +46,8 @@ export default function EditProfile() {
   // Platform settings state
   const [autoStopQuizDuration, setAutoStopQuizDuration] = useState(4);
   const [savingPlatform, setSavingPlatform] = useState(false);
+  const [isProfilePublic, setIsProfilePublic] = useState(true);
+  const [togglingPrivacy, setTogglingPrivacy] = useState(false);
 
   // OTP state
   const [editMode, setEditMode] = useState<EditMode>("none");
@@ -65,6 +67,7 @@ export default function EditProfile() {
       setUsername(user.username || "");
       setPhoneNumber(user.phoneNumber || "");
       setAutoStopQuizDuration(user.autoStopQuizDuration || 4);
+      setIsProfilePublic(user.isProfilePublic !== false); // default to true
     }
   }, [isLoggedIn, authLoading, user, router]);
 
@@ -217,6 +220,31 @@ export default function EditProfile() {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setSavingPlatform(false);
+    }
+  };
+
+  const handleToggleProfilePrivacy = async (newValue: boolean) => {
+    setTogglingPrivacy(true);
+    setError("");
+    try {
+      const response = await apiCallWithAuth(API_ENDPOINTS.AUTH.UPDATE_PROFILE, {
+        method: "PUT",
+        body: JSON.stringify({ isProfilePublic: newValue }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setIsProfilePublic(newValue);
+        if (data.user && setUser) setUser(data.user);
+        setSuccess(newValue ? "Profile is now public" : "Profile is now private");
+        setTimeout(() => setSuccess(""), 3000);
+      } else {
+        setError(data.message || "Failed to update privacy setting");
+      }
+    } catch (err) {
+      console.error("Toggle privacy error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setTogglingPrivacy(false);
     }
   };
 
@@ -658,36 +686,32 @@ export default function EditProfile() {
               <div className="mt-8 flex flex-col gap-2 w-full">
                 <button
                   onClick={() => setActiveTab("basic")}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
-                    activeTab === "basic"
-                      ? "bg-black text-white dark:bg-white dark:text-black font-medium"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
-                  }`}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === "basic"
+                    ? "bg-black text-white dark:bg-white dark:text-black font-medium"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                    }`}
                 >
                   Basic Information
                 </button>
                 <button
                   onClick={() => setActiveTab("security")}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
-                    activeTab === "security"
-                      ? "bg-black text-white dark:bg-white dark:text-black font-medium"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
-                  }`}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === "security"
+                    ? "bg-black text-white dark:bg-white dark:text-black font-medium"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                    }`}
                 >
                   Security Settings
                 </button>
-                {user.subscription === "pro" && (
-                  <button
-                    onClick={() => setActiveTab("platform")}
-                    className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
-                      activeTab === "platform"
-                        ? "bg-black text-white dark:bg-white dark:text-black font-medium"
-                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                {/* Platform Settings - visible to ALL users */}
+                <button
+                  onClick={() => setActiveTab("platform")}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === "platform"
+                    ? "bg-black text-white dark:bg-white dark:text-black font-medium"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
                     }`}
-                  >
-                    Platform Settings
-                  </button>
-                )}
+                >
+                  Platform Settings
+                </button>
               </div>
             </div>
           </div>
@@ -696,413 +720,181 @@ export default function EditProfile() {
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
             {activeTab === "basic" && (
-            <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl min-h-[80vh]">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
-                  Basic Information
-                </h2>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
-                    />
-                  </div>
+              <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl min-h-[40vh] lg:min-h-[75vh]">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
+                    Basic Information
+                  </h2>
                 </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
-                      Username
-                    </label>
-                    {user && (user.usernameChangesCount || 0) < 2 && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs text-gray-500">Cost:</span>
-                        <span className={`text-xs font-medium ${(user.points || 0) >= ((user.usernameChangesCount || 0) === 0 ? 500 : 1000) ? "text-gray-700 dark:text-gray-300" : "text-red-500"}`}>
-                          {((user.usernameChangesCount || 0) === 0 ? 500 : 1000).toLocaleString()}
-                        </span>
-                        <CurrencyIcon size={12} />
-                      </div>
-                    )}
+                <div className="p-6 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                      />
+                    </div>
                   </div>
-                  <div className="relative group">
-                    <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-colors ${
-                      (user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-xs font-medium text-gray-700 dark:text-gray-300">
+                        Username
+                      </label>
+                      {user && (user.usernameChangesCount || 0) < 2 && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-500">Cost:</span>
+                          <span className={`text-xs font-medium ${(user.points || 0) >= ((user.usernameChangesCount || 0) === 0 ? 500 : 1000) ? "text-gray-700 dark:text-gray-300" : "text-red-500"}`}>
+                            {((user.usernameChangesCount || 0) === 0 ? 500 : 1000).toLocaleString()}
+                          </span>
+                          <CurrencyIcon size={12} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="relative group">
+                      <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-colors ${(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)
                         ? "text-gray-500"
                         : "text-gray-400 group-focus-within:text-black dark:group-focus-within:text-white"
-                    }`}>
-                      @
-                    </span>
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      disabled={(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)}
-                      className={`w-full pl-7 pr-10 py-2.5 border rounded-lg text-sm focus:outline-none transition-all ${
-                        (user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)
+                        }`}>
+                        @
+                      </span>
+                      <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        disabled={(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)}
+                        className={`w-full pl-7 pr-10 py-2.5 border rounded-lg text-sm focus:outline-none transition-all ${(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)
                           ? "bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-70"
                           : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-black dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-1 focus:ring-purple-500/20"
-                      }`}
-                    />
-                    {((user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)) && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <Lock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Status Messages */}
-                  <div className="mt-2">
-                    {(user?.usernameChangesCount || 0) >= 2 ? (
-                      <p className="text-[11px] text-red-500 dark:text-red-400 flex items-center gap-1">
-                        You have reached the maximum number of username changes (2/2).
-                      </p>
-                    ) : (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) ? (
-                      <p className="text-[11px] text-red-500 dark:text-red-400">
-                        You need {((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) - (user?.points || 0)} more shards to change your username.
-                      </p>
-                    ) : (
-                      <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                        You can change your username up to 2 times. ({(user?.usernameChangesCount || 0)}/2 used)
-                      </p>
-                    )}
-                  </div>
-                </div>
+                          }`}
+                      />
+                      {((user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)) && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Lock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                        </div>
+                      )}
+                    </div>
 
-                <div>
-                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    Phone Number
-                  </label>
-                  <div className="relative flex">
-                    <span className="inline-flex items-center px-3 py-2.5 border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 rounded-l-lg">
-                      +91
-                    </span>
-                    <input
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e) => {
-                        const value = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 10);
-                        setPhoneNumber(value);
-                      }}
-                      placeholder="9876543210"
-                      maxLength={10}
-                      className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 rounded-r-lg"
-                    />
+                    {/* Status Messages */}
+                    <div className="mt-2">
+                      {(user?.usernameChangesCount || 0) >= 2 ? (
+                        <p className="text-[11px] text-red-500 dark:text-red-400 flex items-center gap-1">
+                          You have reached the maximum number of username changes (2/2).
+                        </p>
+                      ) : (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) ? (
+                        <p className="text-[11px] text-red-500 dark:text-red-400">
+                          You need {((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) - (user?.points || 0)} more shards to change your username.
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                          You can change your username up to 2 times. ({(user?.usernameChangesCount || 0)}/2 used)
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <button
-                  onClick={handleSaveProfile}
-                  disabled={saving}
-                  className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
-                >
-                  {saving ? "Saving..." : "Save Changes"}
-                </button>
+                  <div>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2">
+                      Phone Number
+                    </label>
+                    <div className="relative flex">
+                      <span className="inline-flex items-center px-3 py-2.5 border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 rounded-l-lg">
+                        +91
+                      </span>
+                      <input
+                        type="tel"
+                        value={phoneNumber}
+                        onChange={(e) => {
+                          const value = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+                          setPhoneNumber(value);
+                        }}
+                        placeholder="9876543210"
+                        maxLength={10}
+                        className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 rounded-r-lg"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleSaveProfile}
+                    disabled={saving}
+                    className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
+                  >
+                    {saving ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
               </div>
-            </div>
             )}
 
             {/* Security Settings */}
             {activeTab === "security" && (
-            <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl min-h-[80vh]">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
-                  Security Settings
-                </h2>
-              </div>
-
-              {/* Change Email */}
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-sm font-medium text-black dark:text-white">
-                      Email Address
-                    </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Current: {user.email}
-                    </p>
-                  </div>
+              <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl min-h-[40vh] lg:min-h-[75vh]">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
+                    Security Settings
+                  </h2>
                 </div>
-                <div className="flex flex-col md:flex-row gap-3">
-                  <input
-                    type="email"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    placeholder="Enter new email"
-                    disabled={editMode === "email"}
-                    className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-                  />
-                  <button
-                    onClick={handleSendEmailOtp}
-                    disabled={sendingOtp || !newEmail || editMode === "email"}
-                    className="w-full md:w-auto px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap rounded-lg"
-                  >
-                    {sendingOtp ? "Sending..." : "Change Email"}
-                  </button>
-                </div>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                  OTP will be sent to your new email for verification
-                </p>
 
-                {/* OTP Input Section - Shown when OTP is sent for email change */}
-                {editMode === "email" && (
-                  <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium text-black dark:text-white mb-2">
-                        Enter OTP
-                      </h4>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Enter the 6-digit code sent to {newEmail}
-                      </p>
-                    </div>
-
-                    {otpError && (
-                      <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg">
-                        {otpError}
-                      </div>
-                    )}
-
-                    {/* OTP Input */}
-                    <div className="flex justify-center gap-2 mb-4">
-                      {otp.map((digit, index) => (
-                        <input
-                          key={index}
-                          ref={(el) => {
-                            otpInputRefs.current[index] = el;
-                          }}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={6}
-                          value={digit}
-                          onChange={(e) =>
-                            handleOtpChange(index, e.target.value)
-                          }
-                          onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
-                          autoFocus={index === 0 && otp.join("") === ""}
-                        />
-                      ))}
-                    </div>
-
-                    <div className="flex gap-3">
-                      <button
-                        onClick={handleVerifyOtp}
-                        disabled={verifyingOtp || otp.join("").length !== 6}
-                        className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
-                      >
-                        {verifyingOtp
-                          ? "Verifying..."
-                          : "Verify & Update Email"}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditMode("none");
-                          setOtp(["", "", "", "", "", ""]);
-                          setOtpError("");
-                          setNewEmail("");
-                        }}
-                        disabled={verifyingOtp}
-                        className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-
-                    <div className="text-center mt-4">
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        Didn&apos;t receive the code?{" "}
-                        {resendCooldown > 0 ? (
-                          <span className="text-gray-500">
-                            Resend in {resendCooldown}s
-                          </span>
-                        ) : (
-                          <button
-                            onClick={handleResendOtp}
-                            disabled={sendingOtp}
-                            className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
-                          >
-                            {sendingOtp ? "Sending..." : "Resend OTP"}
-                          </button>
-                        )}
+                {/* Change Email */}
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-medium text-black dark:text-white">
+                        Email Address
+                      </h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Current: {user.email}
                       </p>
                     </div>
                   </div>
-                )}
-              </div>
-
-              {/* Change Password */}
-              <div className="p-6">
-                <div className="mb-4">
-                  <h3 className="text-sm font-medium text-black dark:text-white">
-                    Change Password
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Enter your new password below. An OTP will be sent to verify
-                    the change.
-                  </p>
-                </div>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">
-                        New Password
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          placeholder="Enter new password"
-                          disabled={editMode === "password"}
-                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                        >
-                          {showPassword ? (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                              />
-                            </svg>
-                          ) : (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              />
-                            </svg>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">
-                        Confirm New Password
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showConfirmPassword ? "text" : "password"}
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="Confirm new password"
-                          disabled={editMode === "password"}
-                          className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                        >
-                          {showConfirmPassword ? (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                              />
-                            </svg>
-                          ) : (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              />
-                            </svg>
-                          )}
-                        </button>
-                      </div>
-                    </div>
+                  <div className="flex flex-col md:flex-row gap-3">
+                    <input
+                      type="email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      placeholder="Enter new email"
+                      disabled={editMode === "email"}
+                      className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                    />
+                    <button
+                      onClick={handleSendEmailOtp}
+                      disabled={sendingOtp || !newEmail || editMode === "email"}
+                      className="w-full md:w-auto px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap rounded-lg"
+                    >
+                      {sendingOtp ? "Sending..." : "Change Email"}
+                    </button>
                   </div>
-                  <button
-                    onClick={handleSendPasswordOtp}
-                    disabled={
-                      sendingOtp ||
-                      !newPassword ||
-                      !confirmPassword ||
-                      editMode === "password"
-                    }
-                    className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
-                  >
-                    {sendingOtp ? "Sending..." : "Send OTP"}
-                  </button>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
-                    OTP will be sent to your current email for verification
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                    OTP will be sent to your new email for verification
                   </p>
 
-                  {/* OTP Input Section - Shown when OTP is sent for password change */}
-                  {editMode === "password" && (
+                  {/* OTP Input Section - Shown when OTP is sent for email change */}
+                  {editMode === "email" && (
                     <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                       <div className="mb-4">
                         <h4 className="text-sm font-medium text-black dark:text-white mb-2">
                           Enter OTP
                         </h4>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          Enter the 6-digit code sent to {user.email}
+                          Enter the 6-digit code sent to {newEmail}
                         </p>
                       </div>
 
@@ -1142,15 +934,14 @@ export default function EditProfile() {
                         >
                           {verifyingOtp
                             ? "Verifying..."
-                            : "Verify & Update Password"}
+                            : "Verify & Update Email"}
                         </button>
                         <button
                           onClick={() => {
                             setEditMode("none");
                             setOtp(["", "", "", "", "", ""]);
                             setOtpError("");
-                            setNewPassword("");
-                            setConfirmPassword("");
+                            setNewEmail("");
                           }}
                           disabled={verifyingOtp}
                           className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
@@ -1180,56 +971,331 @@ export default function EditProfile() {
                     </div>
                   )}
                 </div>
+
+                {/* Change Password */}
+                <div className="p-6">
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium text-black dark:text-white">
+                      Change Password
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Enter your new password below. An OTP will be sent to verify
+                      the change.
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">
+                          New Password
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="Enter new password"
+                            disabled={editMode === "password"}
+                            className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                          >
+                            {showPassword ? (
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1.5">
+                          Confirm New Password
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirm new password"
+                            disabled={editMode === "password"}
+                            className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                          >
+                            {showConfirmPassword ? (
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleSendPasswordOtp}
+                      disabled={
+                        sendingOtp ||
+                        !newPassword ||
+                        !confirmPassword ||
+                        editMode === "password"
+                      }
+                      className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
+                    >
+                      {sendingOtp ? "Sending..." : "Send OTP"}
+                    </button>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                      OTP will be sent to your current email for verification
+                    </p>
+
+                    {/* OTP Input Section - Shown when OTP is sent for password change */}
+                    {editMode === "password" && (
+                      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <div className="mb-4">
+                          <h4 className="text-sm font-medium text-black dark:text-white mb-2">
+                            Enter OTP
+                          </h4>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Enter the 6-digit code sent to {user.email}
+                          </p>
+                        </div>
+
+                        {otpError && (
+                          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg">
+                            {otpError}
+                          </div>
+                        )}
+
+                        {/* OTP Input */}
+                        <div className="flex justify-center gap-2 mb-4">
+                          {otp.map((digit, index) => (
+                            <input
+                              key={index}
+                              ref={(el) => {
+                                otpInputRefs.current[index] = el;
+                              }}
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={6}
+                              value={digit}
+                              onChange={(e) =>
+                                handleOtpChange(index, e.target.value)
+                              }
+                              onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                              className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                              autoFocus={index === 0 && otp.join("") === ""}
+                            />
+                          ))}
+                        </div>
+
+                        <div className="flex gap-3">
+                          <button
+                            onClick={handleVerifyOtp}
+                            disabled={verifyingOtp || otp.join("").length !== 6}
+                            className="flex-1 bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
+                          >
+                            {verifyingOtp
+                              ? "Verifying..."
+                              : "Verify & Update Password"}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditMode("none");
+                              setOtp(["", "", "", "", "", ""]);
+                              setOtpError("");
+                              setNewPassword("");
+                              setConfirmPassword("");
+                            }}
+                            disabled={verifyingOtp}
+                            className="px-4 py-2.5 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+
+                        <div className="text-center mt-4">
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            Didn&apos;t receive the code?{" "}
+                            {resendCooldown > 0 ? (
+                              <span className="text-gray-500">
+                                Resend in {resendCooldown}s
+                              </span>
+                            ) : (
+                              <button
+                                onClick={handleResendOtp}
+                                disabled={sendingOtp}
+                                className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
+                              >
+                                {sendingOtp ? "Sending..." : "Resend OTP"}
+                              </button>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
             )}
 
             {/* Platform Settings */}
-            {activeTab === "platform" && user.subscription === "pro" && (
-              <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl min-h-[80vh]">
+            {activeTab === "platform" && (
+              <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 rounded-xl min-h-[40vh] lg:min-h-[75vh]">
                 <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                   <h2 className="text-sm font-medium text-black dark:text-white uppercase tracking-wider">
                     Platform Settings
                   </h2>
                 </div>
-                
+
+                {/* Profile Privacy — available to ALL users */}
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-sm font-medium text-black dark:text-white">
-                        Auto Stop Quiz Duration
-                      </h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Automatically end active quizzes after a certain number of
-                        hours (1-72 hours).
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-sm font-medium text-black dark:text-white">
+                          Profile Visibility
+                        </h3>
+                        {!isProfilePublic && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                            <Lock className="w-2.5 h-2.5" />
+                            Private
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {isProfilePublic
+                          ? "Your profile's activity is public. Anyone on ZeroGravity can view it."
+                          : "Your profile's activity is private. Only you can view it - others will see a locked icon."}
                       </p>
                     </div>
-                  </div>
-                  <div className="flex flex-col md:flex-row gap-3">
-                    <input
-                      type="number"
-                      min="1"
-                      max="72"
-                      value={autoStopQuizDuration}
-                      onChange={(e) =>
-                        setAutoStopQuizDuration(Number(e.target.value))
-                      }
-                      className="w-full flex-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white transition-shadow text-sm"
-                      placeholder="e.g. 4"
-                    />
+                    {/* Toggle Switch */}
                     <button
-                      onClick={handleSavePlatformSettings}
-                      disabled={
-                        savingPlatform ||
-                        autoStopQuizDuration < 1 ||
-                        autoStopQuizDuration > 72
-                      }
-                      className="px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center min-w-[120px] rounded-lg shrink-0"
+                      id="profile-visibility-toggle"
+                      onClick={() => handleToggleProfilePrivacy(!isProfilePublic)}
+                      disabled={togglingPrivacy}
+                      aria-pressed={isProfilePublic}
+                      aria-label={isProfilePublic ? "Make profile private" : "Make profile public"}
+                      className={`relative inline-flex items-center h-6 w-11 flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white disabled:opacity-60 disabled:cursor-not-allowed ${isProfilePublic
+                        ? "bg-black dark:bg-white"
+                        : "bg-gray-300 dark:bg-gray-600"
+                        }`}
                     >
-                      {savingPlatform ? "Saving..." : "Save Duration"}
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-black shadow transition-transform duration-200 ${isProfilePublic ? "translate-x-6" : "translate-x-1"
+                          }`}
+                      />
                     </button>
                   </div>
                 </div>
+
+                {/* Auto Stop Quiz Duration — PRO only */}
+                {user.subscription === "pro" && (
+                  <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-sm font-medium text-black dark:text-white">
+                          Auto Stop Quiz Duration
+                        </h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Automatically end active quizzes after a certain number of
+                          hours (1-72 hours).
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-3">
+                      <input
+                        type="number"
+                        min="1"
+                        max="72"
+                        value={autoStopQuizDuration}
+                        onChange={(e) =>
+                          setAutoStopQuizDuration(Number(e.target.value))
+                        }
+                        className="w-full flex-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white transition-shadow text-sm"
+                        placeholder="e.g. 4"
+                      />
+                      <button
+                        onClick={handleSavePlatformSettings}
+                        disabled={
+                          savingPlatform ||
+                          autoStopQuizDuration < 1 ||
+                          autoStopQuizDuration > 72
+                        }
+                        className="px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center min-w-[120px] rounded-lg shrink-0"
+                      >
+                        {savingPlatform ? "Saving..." : "Save Duration"}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

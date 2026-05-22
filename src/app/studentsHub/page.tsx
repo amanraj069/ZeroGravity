@@ -132,7 +132,7 @@ export default function StudentsHub() {
     return Array.from({ length: 40 }, () => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
-      size: Math.random() * 3 + 1,
+      size: Math.random() * 2 + 1,
       opacity: Math.random() * 0.8 + 0.2,
       delay: Math.random() * 3,
       twinkleDuration: 2 + Math.random() * 3,
@@ -207,7 +207,7 @@ export default function StudentsHub() {
                 Students Hub
               </h1>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                Discover all the amazing benefits available to you
+                Discover all the amazing benefits.
               </p>
             </div>
           </div>
@@ -622,11 +622,10 @@ export default function StudentsHub() {
               <Link
                 key={index}
                 href={category.url}
-                className={`overflow-hidden border-2 rounded-2xl hover:border-gray-400/70 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px] ${
-                  isLightTheme
-                    ? "text-gray-900 border-white/80 shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
-                    : "text-white border-gray-800/60"
-                }`}
+                className={`overflow-hidden border-2 rounded-2xl hover:border-gray-400/70 dark:hover:border-white/30 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300 group cursor-pointer relative min-h-[120px] sm:min-h-[180px] ${isLightTheme
+                  ? "text-gray-900 border-white/80 shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
+                  : "text-white border-gray-800/60"
+                  }`}
                 data-testid="students-hub-category-card"
                 style={{
                   background: isLightTheme
@@ -636,11 +635,10 @@ export default function StudentsHub() {
               >
                 {/* Theme-aware overlay to soften gradients */}
                 <div
-                  className={`absolute inset-0 transition-all duration-300 ${
-                    isLightTheme
-                      ? "bg-white/50 group-hover:bg-white/60"
-                      : "bg-gray-700/40 opacity-100"
-                  }`}
+                  className={`absolute inset-0 transition-all duration-300 ${isLightTheme
+                    ? "bg-white/50 group-hover:bg-white/60"
+                    : "bg-gray-700/40 opacity-100"
+                    }`}
                 />
 
                 {/* Subtle gradient overlay on hover */}
@@ -648,37 +646,33 @@ export default function StudentsHub() {
 
                 {/* Distinct border treatment */}
                 <div
-                  className={`absolute inset-0 transition-all duration-300 pointer-events-none rounded-2xl ${
-                    isLightTheme
-                      ? "border-[3px] border-white/80"
-                      : "border-2 border-white/10"
-                  }`}
+                  className={`absolute inset-0 transition-all duration-300 pointer-events-none rounded-2xl ${isLightTheme
+                    ? "border-[3px] border-white/80"
+                    : "border-2 border-white/10"
+                    }`}
                 />
 
                 {/* Content */}
                 <div className="p-4 sm:p-6 md:p-10 flex flex-col items-center justify-center h-full relative z-10">
                   <h3
-                    className={`text-lg sm:text-xl font-light transition-all duration-300 group-hover:-translate-y-3 group-hover:scale-105 tracking-tight relative z-10 ${
-                      isLightTheme
-                        ? "text-gray-900 group-hover:text-gray-900"
-                        : "text-white group-hover:text-white"
-                    }`}
+                    className={`text-lg sm:text-xl font-light transition-all duration-300 group-hover:-translate-y-3 group-hover:scale-105 tracking-tight relative z-10 ${isLightTheme
+                      ? "text-gray-900 group-hover:text-gray-900"
+                      : "text-white group-hover:text-white"
+                      }`}
                   >
                     {category.title}
                   </h3>
                   {/* Arrow indicator on hover - hidden on mobile */}
                   <div className="absolute top-1/2 mt-3 hidden sm:flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 z-0">
                     <span
-                      className={`text-sm ${
-                        isLightTheme ? "text-gray-900/70" : "text-white/80"
-                      }`}
+                      className={`text-sm ${isLightTheme ? "text-gray-900/70" : "text-white/80"
+                        }`}
                     >
                       Explore
                     </span>
                     <span
-                      className={`ml-2 transform group-hover:translate-x-1 transition-transform duration-300 ${
-                        isLightTheme ? "text-gray-900/80" : "text-white/80"
-                      }`}
+                      className={`ml-2 transform group-hover:translate-x-1 transition-transform duration-300 ${isLightTheme ? "text-gray-900/80" : "text-white/80"
+                        }`}
                     >
                       →
                     </span>
