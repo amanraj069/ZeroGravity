@@ -15,6 +15,7 @@ export interface PublicUser {
   selectedBadges?: string[];
   highestBadgeId?: string | null;
   displayBadge?: string | null;
+  isProfilePublic: boolean;
 }
 
 export interface PublicProfileStreakInfo {
@@ -27,6 +28,14 @@ export interface PublicProfileStreakInfo {
 export interface PublicProfileResponse {
   user: PublicUser;
   streakInfo: PublicProfileStreakInfo;
+}
+
+export class PrivateProfileError extends Error {
+  isPrivate = true;
+  constructor(message = "This profile is private") {
+    super(message);
+    this.name = "PrivateProfileError";
+  }
 }
 
 class ProfileService {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Plus, AlertCircle, TrendingUp, Sparkles } from "lucide-react";
+import { Plus, AlertCircle, Sparkles } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -364,11 +364,10 @@ const DailyTasks: React.FC = () => {
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-fade-in-down">
           <div
-            className={`px-6 py-3 shadow-lg ${
-              pointsAnimation.isDeduction
-                ? "bg-red-600 text-white"
-                : "bg-black dark:bg-white text-white dark:text-black"
-            }`}
+            className={`px-6 py-3 rounded-lg shadow-lg ${pointsAnimation.isDeduction
+              ? "bg-red-600 text-white"
+              : "bg-black dark:bg-white text-white dark:text-black"
+              }`}
           >
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold">
@@ -382,7 +381,7 @@ const DailyTasks: React.FC = () => {
       )}
 
       {/* Header with Analytics */}
-      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm rounded-lg">
         <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2 md:mb-0">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="flex items-center gap-3">
@@ -391,58 +390,28 @@ const DailyTasks: React.FC = () => {
                 Daily Tasks
               </h1>
             </div>
-            {/* Desktop Stats */}
-            <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-              <span className="flex items-center gap-1 whitespace-nowrap">
-                <TrendingUp className="w-4 h-4 flex-shrink-0" />
-                {analytics.currentStreak} day streak
-              </span>
-              <span className="flex-shrink-0">•</span>
-              <span className="whitespace-nowrap">
-                {analytics.completedToday} completed today
-              </span>
-              <span className="flex-shrink-0">•</span>
-              <span className="whitespace-nowrap">
-                {analytics.totalActiveTasks} active tasks
-              </span>
-            </div>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative group hidden sm:block">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
                 onClick={() => setShowStudyPlanner(true)}
-                className="relative flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
+                className="relative flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-4 py-2.5 text-sm font-medium hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
                 title="AI Study Planner"
               >
-                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                <Sparkles className="w-4 h-4" />
                 <span className="hidden sm:inline">AI Study Planner</span>
                 <span className="sm:hidden">AI Plan</span>
               </button>
             </div>
             <button
               onClick={() => setShowAddTask(true)}
-              className="flex items-center justify-center gap-1 sm:gap-1.5 bg-black dark:bg-white text-white dark:text-black px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs md:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
+              className="flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-4 py-2.5 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
             >
-              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+              <Plus className="w-4 h-4" />
               <span>Add Task</span>
             </button>
           </div>
-        </div>
-        {/* Mobile Stats */}
-        <div className="flex md:hidden items-center gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full mt-2">
-          <span className="flex items-center gap-1 whitespace-nowrap">
-            <TrendingUp className="w-3 h-3 flex-shrink-0" />
-            {analytics.currentStreak} day streak
-          </span>
-          <span className="flex-shrink-0">•</span>
-          <span className="whitespace-nowrap">
-            {analytics.completedToday} completed today
-          </span>
-          <span className="flex-shrink-0">•</span>
-          <span className="whitespace-nowrap">
-            {analytics.totalActiveTasks} active tasks
-          </span>
         </div>
       </div>
 
@@ -466,7 +435,7 @@ const DailyTasks: React.FC = () => {
       )}
 
       {/* Date Selector with Upcoming Days */}
-      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4">
+      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4 rounded-lg">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex items-center gap-3 w-full sm:w-auto">
             {/* AI Plan Button - Mobile Only */}
@@ -537,20 +506,18 @@ const DailyTasks: React.FC = () => {
                 <button
                   key={day.date}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`flex flex-col items-center px-3 py-2 flex-1 min-w-0 transition-all ${borderClass} ${
-                    isSelected
-                      ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
-                      : day.isToday
-                        ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  }`}
+                  className={`flex flex-col items-center px-2 py-2 flex-1 min-w-0 transition-all ${borderClass} ${isSelected
+                    ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
+                    : day.isToday
+                      ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
                 >
                   <span
-                    className={`text-xs font-medium flex items-center gap-1 ${
-                      day.isToday && !isSelected
-                        ? "text-purple-600 dark:text-purple-400"
-                        : ""
-                    }`}
+                    className={`text-xs font-medium flex items-center gap-1 ${day.isToday && !isSelected
+                      ? "text-purple-600 dark:text-purple-400"
+                      : ""
+                      }`}
                   >
                     {formatted}
                   </span>
@@ -582,10 +549,10 @@ const DailyTasks: React.FC = () => {
       <div className="space-y-2 sm:space-y-4 mt-2 sm:mt-4">
         {isLoading ? (
           <div className="space-y-2 sm:space-y-4">
-            {[1, 2, 3].map((i) => (
+            {[1, 2].map((i) => (
               <div
                 key={i}
-                className="bg-white dark:bg-gray-800 p-4 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-800/50 flex items-start gap-3 sm:gap-4 animate-pulse min-h-[90px] sm:min-h-[110px] rounded-xl"
+                className="bg-white dark:bg-gray-800 p-4 sm:p-5 shadow-sm border border-gray-100 dark:border-gray-800/50 flex items-start gap-3 sm:gap-4 animate-pulse min-h-[90px] sm:min-h-[110px] rounded-lg"
               >
                 <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-gray-300 dark:border-gray-600 shrink-0 mt-0.5 rounded-md" />
                 <div className="flex-1 space-y-3 sm:space-y-4">
@@ -608,7 +575,7 @@ const DailyTasks: React.FC = () => {
             ))}
           </div>
         ) : tasks.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100dvh-320px)] rounded-xl">
+          <div className="bg-white dark:bg-gray-800 p-8 text-center shadow-sm flex flex-col justify-center items-center min-h-[calc(100dvh-320px)] rounded-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/goals/dTasks.png"

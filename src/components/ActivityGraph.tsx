@@ -28,6 +28,7 @@ interface ActivityGraphProps {
   userId?: string; // Optional userId for viewing other users' activity
   onDateClick?: (date: string) => void;
   selectedDate?: string;
+  isPrivate?: boolean; // When true, show a lock placeholder instead of the heatmap
 }
 
 const MONTHS = [
@@ -51,6 +52,7 @@ export default function ActivityGraph({
   userId,
   onDateClick,
   selectedDate,
+  isPrivate = false,
 }: ActivityGraphProps) {
   const [activityData, setActivityData] = useState<ActivityData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,6 +61,11 @@ export default function ActivityGraph({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchActivityData = useCallback(async () => {
+    // Don't fetch if the profile is marked private
+    if (isPrivate) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const url = userId
@@ -78,7 +85,7 @@ export default function ActivityGraph({
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId, isPrivate]);
 
   useEffect(() => {
     fetchActivityData();
@@ -227,6 +234,37 @@ export default function ActivityGraph({
       year: "numeric",
     });
   };
+
+  // Private profile: show a lock placeholder instead of the heatmap
+  if (isPrivate) {
+    return (
+      <div
+        className={`border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-gray-800 rounded-xl ${className}`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Activity
+          </h3>
+        </div>
+        <div className="flex flex-col items-center justify-center h-32 gap-2 select-none">
+          <svg
+            className="w-5 h-5 text-gray-400 dark:text-gray-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+            />
+          </svg>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Activity is private</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

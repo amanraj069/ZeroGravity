@@ -33,6 +33,7 @@ interface User {
   selectedBadges?: string[];
   displayBadge?: string;
   usernameChangesCount?: number;
+  isProfilePublic?: boolean;
 }
 
 interface LoginReward {

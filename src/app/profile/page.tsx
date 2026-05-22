@@ -77,6 +77,18 @@ export default function Profile() {
   const [showDisplayBadgePicker, setShowDisplayBadgePicker] = useState(false);
   const displayBadgePickerRef = useRef<HTMLDivElement>(null);
 
+  // Lock background scroll when border picker is open
+  useEffect(() => {
+    if (showBorderPicker) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showBorderPicker]);
+
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
@@ -217,8 +229,8 @@ export default function Profile() {
         credentials: "include",
         headers: token
           ? {
-              Authorization: `Bearer ${token}`,
-            }
+            Authorization: `Bearer ${token}`,
+          }
           : {},
         body: formData,
       });
@@ -422,7 +434,7 @@ export default function Profile() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 w-full h-full relative">
               <div className="flex flex-row items-center gap-6 lg:gap-12 w-full sm:w-auto mt-1 sm:mt-0">
                 {/* Profile Picture */}
-                <div className="relative group flex-shrink-0 ml-2 lg:ml-6">
+                <div className="relative group flex-shrink-0 ml-1 lg:ml-6">
                   <div
                     className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
                       user.equippedBorder || "",
@@ -506,8 +518,8 @@ export default function Profile() {
                       (() => {
                         const displayBadge = displayBadgeId
                           ? badgeData.badges.find(
-                              (b) => b.id === displayBadgeId && b.unlocked,
-                            )
+                            (b) => b.id === displayBadgeId && b.unlocked,
+                          )
                           : null;
                         const badge =
                           displayBadge || getHighestBadge(badgeData.badges);
@@ -583,11 +595,10 @@ export default function Profile() {
                                             saveDisplayBadge(user.userId, b.id);
                                             setShowDisplayBadgePicker(false);
                                           }}
-                                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors ${
-                                            isSelected
-                                              ? "bg-gray-100 dark:bg-gray-800"
-                                              : "hover:bg-gray-50 dark:hover:bg-gray-800/60"
-                                          }`}
+                                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors ${isSelected
+                                            ? "bg-gray-100 dark:bg-gray-800"
+                                            : "hover:bg-gray-50 dark:hover:bg-gray-800/60"
+                                            }`}
                                         >
                                           <span
                                             className={`text-sm font-bold bg-gradient-to-r ${bv.gradient} bg-clip-text text-transparent flex-shrink-0 w-5 text-center`}
@@ -718,13 +729,13 @@ export default function Profile() {
                                   className={`bg-gradient-to-br ${visual?.gradient} bg-clip-text text-transparent`}
                                   style={
                                     badge?.id === "the-perfectionist" ||
-                                    badge?.id === "full-house"
+                                      badge?.id === "full-house"
                                       ? { fontSize: "1.15em" }
                                       : badge?.id === "the-keeper" ||
-                                          badge?.id === "goal-crusher"
+                                        badge?.id === "goal-crusher"
                                         ? {
-                                            WebkitTextStroke: "1px transparent",
-                                          }
+                                          WebkitTextStroke: "1px transparent",
+                                        }
                                         : {}
                                   }
                                 >
@@ -877,11 +888,10 @@ export default function Profile() {
                   Subscription
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                    user.subscription === "pro"
-                      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-                  }`}
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${user.subscription === "pro"
+                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
+                    }`}
                 >
                   {user.subscription}
                 </span>
@@ -904,11 +914,10 @@ export default function Profile() {
                   Account Status
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                    user.isActive
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
-                      : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"
-                  }`}
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${user.isActive
+                    ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
+                    : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"
+                    }`}
                 >
                   {user.isActive ? "Active" : "Inactive"}
                 </span>
@@ -927,12 +936,18 @@ export default function Profile() {
         />
       )}
 
-      {/* Border Picker Modal */}
+      {/* Border Picker Modal — locks body scroll, closes on backdrop click */}
       {showBorderPicker && (
-        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] overflow-hidden rounded-2xl">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
-              <h2 className="text-xl font-medium text-black dark:text-white">
+        <div
+          className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4"
+          onClick={() => setShowBorderPicker(false)}
+        >
+          <div
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[75dvh] overflow-hidden rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-5 py-3.5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <h2 className="text-base font-medium text-black dark:text-white">
                 Choose Border
               </h2>
               <button
@@ -954,7 +969,7 @@ export default function Profile() {
                 </svg>
               </button>
             </div>
-            <div className="p-6 overflow-y-auto max-h-[70dvh]">
+            <div className="p-4 overflow-y-auto max-h-[52dvh]">
               {userBorders.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -974,11 +989,10 @@ export default function Profile() {
                       key={border.id}
                       onClick={() => handleEquipBorder(border.id)}
                       disabled={equipping || border.equipped}
-                      className={`p-3 md:p-6 border transition-all rounded-xl ${
-                        border.equipped
-                          ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
-                          : "border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600"
-                      }`}
+                      className={`p-3 md:p-6 border transition-all rounded-xl ${border.equipped
+                        ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
+                        : "border-gray-200 dark:border-gray-800 hover:border-gray-400 dark:hover:border-gray-600"
+                        }`}
                     >
                       <div className="flex flex-col items-center gap-2 md:gap-4">
                         <BorderPreview
@@ -997,7 +1011,7 @@ export default function Profile() {
                 </div>
               )}
             </div>
-            <div className="p-5 border-t border-gray-200 dark:border-gray-800">
+            <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-800">
               <Link
                 href="/shop"
                 onClick={() => setShowBorderPicker(false)}
@@ -1012,8 +1026,14 @@ export default function Profile() {
 
       {/* Badge Picker Modal */}
       {editingBadgeSlot !== null && badgeData && (
-        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[90dvh] flex flex-col overflow-hidden rounded-2xl">
+        <div
+          className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4"
+          onClick={() => setEditingBadgeSlot(null)}
+        >
+          <div
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-4xl max-h-[75dvh] overflow-hidden rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between shadow-sm">
               <h2 className="text-xl font-bold text-black dark:text-white">
                 Choose Badge for Slot {editingBadgeSlot + 1}

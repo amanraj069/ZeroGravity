@@ -126,8 +126,8 @@ export default function PublicProfile() {
       <div className="space-y-3 md:space-y-4 pb-12 pt-2 lg:pt-4">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2 lg:mb-6">
-          <div className="flex items-center justify-between sm:justify-start sm:gap-3">
-            <BackButton className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors mr-1" />
+          <div className="flex items-center gap-3">
+            <BackButton className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors" />
             <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">
               Profile
             </h1>
@@ -186,7 +186,7 @@ export default function PublicProfile() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4 w-full h-full relative">
               <div className="flex flex-row items-center gap-6 lg:gap-12 w-full sm:w-auto mt-1 sm:mt-0">
                 {/* Profile Picture */}
-                <div className="relative group flex-shrink-0 ml-2 lg:ml-6">
+                <div className="relative group flex-shrink-0 ml-1 lg:ml-6">
                   <div
                     className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
                       user.equippedBorder || "",
@@ -288,8 +288,8 @@ export default function PublicProfile() {
                     badgeData?.badges.find((b) => b.id === badgeId)?.name ||
                     (badgeId
                       ? badgeId
-                          .replace(/-/g, " ")
-                          .replace(/\b\w/g, (l) => l.toUpperCase())
+                        .replace(/-/g, " ")
+                        .replace(/\b\w/g, (l) => l.toUpperCase())
                       : "");
 
                   return (
@@ -408,7 +408,11 @@ export default function PublicProfile() {
         </div>
 
         {/* Activity Graph */}
-        <ActivityGraph joinedDate={user.createdAt} userId={user.userId} />
+        <ActivityGraph
+          joinedDate={user.createdAt}
+          userId={user.userId}
+          isPrivate={!user.isProfilePublic && currentUser?.userId !== user.userId}
+        />
 
         {/* Profile Details Card */}
         <div className="border border-gray-200 dark:border-gray-800 p-4 md:p-6 bg-white dark:bg-gray-800 rounded-xl">
@@ -427,11 +431,10 @@ export default function PublicProfile() {
                   Subscription
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                    user.subscription === "pro"
-                      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-                  }`}
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${user.subscription === "pro"
+                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
+                    }`}
                 >
                   {user.subscription}
                 </span>
@@ -451,11 +454,10 @@ export default function PublicProfile() {
                   Account Status
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${
-                    user.isActive
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
-                      : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"
-                  }`}
+                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${user.isActive
+                    ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
+                    : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"
+                    }`}
                 >
                   {user.isActive ? "Active" : "Inactive"}
                 </span>

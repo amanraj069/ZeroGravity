@@ -44,21 +44,12 @@ export const metadata: Metadata = {
     description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries.",
     url: "https://zerogravity.aman-raj.me",
     siteName: "zeroGravity",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "zeroGravity - Goals without gravity",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "zeroGravity - Goals without gravity",
     description: "zeroGravity is a platform that empowers students to achieve their academic goals without boundaries.",
     creator: "@zeroGravity",
-    images: ["/opengraph-image"],
   },
 };
 

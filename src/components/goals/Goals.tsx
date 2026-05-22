@@ -394,7 +394,7 @@ const Goals: React.FC = () => {
     // Goals content
     return (
       <>
-        <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
+        <div className="bg-white dark:bg-gray-800 p-4 shadow-sm rounded-lg">
           <div className="flex items-center justify-between mb-2 md:mb-0">
             <div className="flex flex-col md:flex-row md:items-center md:gap-4">
               <div className="flex items-center gap-3">
@@ -405,7 +405,7 @@ const Goals: React.FC = () => {
               </div>
 
               {/* Desktop Stats */}
-              <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              {/* <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <span className="whitespace-nowrap">
                   {goalsAnalytics?.totalCompleted || 0} completed
                 </span>
@@ -415,11 +415,11 @@ const Goals: React.FC = () => {
                 <span className="whitespace-nowrap">
                   {goalsAnalytics?.completionRate || 0}% completion rate
                 </span>
-              </div>
+              </div> */}
             </div>
             <button
               onClick={() => setShowAddGoal(true)}
-              className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 py-1.5 text-xs sm:text-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
+              className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-4 py-2.5 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Goal
@@ -427,6 +427,7 @@ const Goals: React.FC = () => {
           </div>
 
           {/* Mobile Stats */}
+          {/*
           <div className="flex md:hidden items-center gap-1.5 text-[11px] sm:text-sm text-gray-500 dark:text-gray-400 w-full mt-2">
             <span className="whitespace-nowrap">
               {goalsAnalytics?.totalCompleted || 0} completed
@@ -437,7 +438,7 @@ const Goals: React.FC = () => {
             <span className="whitespace-nowrap">
               {goalsAnalytics?.completionRate || 0}% completion rate
             </span>
-          </div>
+          </div> */}
         </div>
 
         {/* Inline Goal Form (like DailyTasks) - before filter */}
@@ -468,7 +469,7 @@ const Goals: React.FC = () => {
         )}
 
         {/* Mobile-optimized Filter */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm mt-4">
+        <div className="bg-white dark:bg-gray-800 shadow-sm mt-2 rounded-lg overflow-hidden">
           <div className="flex overflow-x-auto sm:overflow-visible justify-start scrollbar-hide">
             {(
               [
@@ -762,9 +763,9 @@ const Goals: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
-      <div className="max-w-6xl mx-auto px-4 py-3 sm:py-6 space-y-2 sm:space-y-6 ">
+      <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 space-y-2 sm:space-y-4">
         {/* Main Navigation - Always visible */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden ">
+        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden rounded-lg">
           <div className="flex ">
             <button
               onClick={() => handleViewChange("daily-tasks")}

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin', '/private'],
     },
-    sitemap: 'https://zerogravity.vercel.app/sitemap.xml',
+    sitemap: 'https://zerogravity.aman-raj.me/sitemap.xml',
   };
 }
