@@ -16,7 +16,6 @@ import {
   Trophy,
   FileText,
   ChevronRight,
-  Sparkles,
   ArrowRight,
 } from "lucide-react";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
@@ -164,12 +163,11 @@ export default function Dashboard() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
-            className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black shadow-2xl flex items-center gap-3"
+            className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black shadow-2xl flex items-center justify-center rounded-xl"
           >
-            <Sparkles className="w-5 h-5 text-yellow-400 fill-current" />
-            <span className="text-xl font-bold">+{pointsAnimation.points}</span>
-            <span className="text-sm uppercase tracking-widest opacity-70">
-              Points
+            <span className="text-xl font-bold flex items-center gap-1.5">
+              +{pointsAnimation.points}
+              <CurrencyIcon size={16} className="shrink-0 !ml-1.5" />
             </span>
           </motion.div>
         </div>
@@ -231,7 +229,7 @@ export default function Dashboard() {
         </div>
 
         {/* Header Section */}
-        <div className="flex items-center justify-between gap-4 pb-4 border-b border-black/5 dark:border-white/5 mb-5 space-x-2">
+        <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-white/5 mb-5 space-x-2">
           <div className="flex items-center gap-4 min-w-0">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-black dark:text-white leading-none tracking-tight shrink-0">
               Dash<span className="font-normal italic">board</span>

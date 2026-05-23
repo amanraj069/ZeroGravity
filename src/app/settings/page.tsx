@@ -798,8 +798,10 @@ export default function EditProfile() {
                           You have reached the maximum number of username changes (2/2).
                         </p>
                       ) : (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) ? (
-                        <p className="text-[11px] text-red-500 dark:text-red-400">
-                          You need {((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) - (user?.points || 0)} more shards to change your username.
+                        <p className="text-[11px] text-red-500 dark:text-red-400 flex items-center">
+                          You need {((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) - (user?.points || 0)} more
+                          <CurrencyIcon size={12} className="mx-1 shrink-0" />
+                          to change your username.
                         </p>
                       ) : (
                         <p className="text-[11px] text-gray-500 dark:text-gray-400">

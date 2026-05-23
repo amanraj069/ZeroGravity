@@ -6,7 +6,7 @@ export default function DashboardSkeleton() {
   return (
     <div className="relative mt-2 mb-24">
       {/* Header Skeleton */}
-      <div className="flex items-center justify-between gap-4 pb-4 border-b border-black/5 dark:border-white/5 mb-5 space-x-2">
+      <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-white/5 mb-5 space-x-2">
         <div className="flex items-center gap-4 min-w-0">
           <div className="h-10 sm:h-12 md:h-14 w-48 sm:w-64 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
         </div>
@@ -46,7 +46,7 @@ export default function DashboardSkeleton() {
       </div>
 
       {/* Students Hub Skeleton */}
-      <div className="w-full border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-[#050710] py-6 sm:py-10 px-6 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse rounded-2xl">
+      <div className="w-full border border-slate-200/80 dark:border-white/5 bg-black/[0.02] dark:bg-[#050710] py-6 sm:py-10 px-6 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse rounded-2xl">
         <div className="text-center md:text-left space-y-3 w-full md:w-2/3">
           <div className="h-8 sm:h-12 w-48 sm:w-72 bg-gray-200 dark:bg-gray-800 rounded mx-auto md:mx-0" />
           <div className="space-y-2">

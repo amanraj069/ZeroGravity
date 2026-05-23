@@ -17,7 +17,7 @@ const features = [
     image: "/landing/zerogravity-goal.webp",
     icon: Target,
     gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
-    border: "group-hover:border-purple-500/30",
+    border: "group-hover:border-purple-500/50 dark:group-hover:border-purple-500/30",
     iconColor: "text-purple-400",
     size: "lg:col-span-7"
   },
@@ -29,7 +29,7 @@ const features = [
     image: "/landing/zerogravity-icecream.webp",
     icon: TrendingUp,
     gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
-    border: "group-hover:border-blue-500/30",
+    border: "group-hover:border-blue-500/50 dark:group-hover:border-blue-500/30",
     iconColor: "text-blue-400",
     size: "lg:col-span-5"
   },
@@ -41,7 +41,7 @@ const features = [
     image: "/landing/zerogravity-meditate.webp",
     icon: Bell,
     gradient: "from-violet-500/10 via-violet-500/5 to-transparent",
-    border: "group-hover:border-violet-500/30",
+    border: "group-hover:border-violet-500/50 dark:group-hover:border-violet-500/30",
     iconColor: "text-violet-400",
     size: "lg:col-span-5"
   },
@@ -53,7 +53,7 @@ const features = [
     image: "/landing/zerogravity-flex.webp",
     icon: ShieldCheck,
     gradient: "from-emerald-500/10 via-emerald-500/5 to-transparent",
-    border: "group-hover:border-emerald-500/30",
+    border: "group-hover:border-emerald-500/50 dark:group-hover:border-emerald-500/30",
     iconColor: "text-emerald-400",
     size: "lg:col-span-7"
   }
@@ -124,7 +124,7 @@ export default function FeaturesSection() {
           {features.map((feature) => (
             <AnimatedFeatureItem 
               key={feature.id} 
-              className={`group relative overflow-hidden bg-white/50 dark:bg-white/[0.02] sm:backdrop-blur-md rounded-3xl border border-black/5 dark:border-white/[0.05] transition-all duration-500 ${feature.border} ${feature.size}`}
+              className={`group relative overflow-hidden bg-white/70 dark:bg-white/[0.02] sm:backdrop-blur-md rounded-3xl border border-slate-200/80 dark:border-white/[0.05] shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] dark:hover:shadow-none transition-all duration-500 cursor-default ${feature.border} ${feature.size}`}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
               
@@ -165,7 +165,7 @@ export default function FeaturesSection() {
                 </div>
 
                 <div className="mt-auto relative">
-                  <div className="relative overflow-hidden rounded-2xl border border-black/5 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.01]">
+                  <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.01]">
                     <Image
                       src={feature.image}
                       alt={feature.title}
