@@ -185,6 +185,25 @@ export default function Signup() {
     setOtpError("");
   };
 
+  const handleOtpPaste = (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData("text");
+    if (!paste) return;
+    const digits = paste.replace(/\D/g, "").slice(0, 6);
+    if (!digits) return;
+    const newOtp = [...otp];
+    digits.split("").forEach((digit, i) => {
+      if (index + i < 6) newOtp[index + i] = digit;
+    });
+    setOtp(newOtp);
+    const nextIndex = Math.min(index + digits.length, 5);
+    otpInputRefs.current[nextIndex]?.focus();
+    setOtpError("");
+  };
+
   const handleOtpKeyDown = (
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -409,7 +428,8 @@ export default function Signup() {
                 }}
                 type="text"
                 inputMode="numeric"
-                maxLength={6}
+                maxLength={1}
+                onPaste={(e) => handleOtpPaste(index, e)}
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(index, e)}

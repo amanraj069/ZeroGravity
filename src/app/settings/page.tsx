@@ -44,7 +44,11 @@ export default function EditProfile() {
   const [activeTab, setActiveTab] = useState<Tab>("basic");
 
   // Platform settings state
-  const [autoStopQuizDuration, setAutoStopQuizDuration] = useState(4);
+  const [autoStopQuizDuration, setAutoStopQuizDuration] = useState("4");
+  const [autoStopQuizDurationError, setAutoStopQuizDurationError] =
+    useState("");
+  const [autoStopQuizDurationShake, setAutoStopQuizDurationShake] =
+    useState(false);
   const [savingPlatform, setSavingPlatform] = useState(false);
   const [isProfilePublic, setIsProfilePublic] = useState(true);
   const [togglingPrivacy, setTogglingPrivacy] = useState(false);
@@ -53,7 +57,8 @@ export default function EditProfile() {
   const [editMode, setEditMode] = useState<EditMode>("none");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [otpError, setOtpError] = useState("");
-  const [sendingOtp, setSendingOtp] = useState(false);
+  const [sendingEmailOtp, setSendingEmailOtp] = useState(false);
+  const [sendingPasswordOtp, setSendingPasswordOtp] = useState(false);
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -66,7 +71,7 @@ export default function EditProfile() {
       setLastName(user.lastName || "");
       setUsername(user.username || "");
       setPhoneNumber(user.phoneNumber || "");
-      setAutoStopQuizDuration(user.autoStopQuizDuration || 4);
+      setAutoStopQuizDuration(String(user.autoStopQuizDuration ?? 4));
       setIsProfilePublic(user.isProfilePublic !== false); // default to true
     }
   }, [isLoggedIn, authLoading, user, router]);
@@ -189,6 +194,18 @@ export default function EditProfile() {
   };
 
   const handleSavePlatformSettings = async () => {
+    const durationValue = Number(autoStopQuizDuration);
+
+    if (
+      autoStopQuizDuration === "" ||
+      Number.isNaN(durationValue) ||
+      durationValue < 1 ||
+      durationValue > 99
+    ) {
+      triggerAutoStopQuizDurationError("Enter a value from 1 to 99.");
+      return;
+    }
+
     setError("");
     setSuccess("");
     setSavingPlatform(true);
@@ -199,7 +216,7 @@ export default function EditProfile() {
         {
           method: "PUT",
           body: JSON.stringify({
-            autoStopQuizDuration: Number(autoStopQuizDuration) || 4,
+            autoStopQuizDuration: durationValue,
           }),
         },
       );
@@ -227,15 +244,20 @@ export default function EditProfile() {
     setTogglingPrivacy(true);
     setError("");
     try {
-      const response = await apiCallWithAuth(API_ENDPOINTS.AUTH.UPDATE_PROFILE, {
-        method: "PUT",
-        body: JSON.stringify({ isProfilePublic: newValue }),
-      });
+      const response = await apiCallWithAuth(
+        API_ENDPOINTS.AUTH.UPDATE_PROFILE,
+        {
+          method: "PUT",
+          body: JSON.stringify({ isProfilePublic: newValue }),
+        },
+      );
       const data = await response.json();
       if (data.success) {
         setIsProfilePublic(newValue);
         if (data.user && setUser) setUser(data.user);
-        setSuccess(newValue ? "Profile is now public" : "Profile is now private");
+        setSuccess(
+          newValue ? "Profile is now public" : "Profile is now private",
+        );
         setTimeout(() => setSuccess(""), 3000);
       } else {
         setError(data.message || "Failed to update privacy setting");
@@ -248,6 +270,30 @@ export default function EditProfile() {
     }
   };
 
+  const triggerAutoStopQuizDurationError = (message: string) => {
+    setAutoStopQuizDurationError(message);
+    setAutoStopQuizDurationShake(true);
+    window.setTimeout(() => setAutoStopQuizDurationShake(false), 350);
+  };
+
+  const handleAutoStopQuizDurationChange = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+
+    if (digits === "") {
+      setAutoStopQuizDuration("");
+      setAutoStopQuizDurationError("");
+      return;
+    }
+
+    if (digits.length > 2 || Number(digits) > 99) {
+      triggerAutoStopQuizDurationError("It cannot be more than 99.");
+      return;
+    }
+
+    setAutoStopQuizDuration(digits);
+    setAutoStopQuizDurationError("");
+  };
+
   const handleSendEmailOtp = async () => {
     if (!newEmail) {
       setError("Please enter a new email address");
@@ -255,7 +301,7 @@ export default function EditProfile() {
     }
 
     setError("");
-    setSendingOtp(true);
+    setSendingEmailOtp(true);
 
     try {
       const response = await apiCallWithAuth(
@@ -302,7 +348,7 @@ export default function EditProfile() {
           : "Failed to send OTP. Please check your connection and try again.",
       );
     } finally {
-      setSendingOtp(false);
+      setSendingEmailOtp(false);
     }
   };
 
@@ -323,7 +369,7 @@ export default function EditProfile() {
     }
 
     setError("");
-    setSendingOtp(true);
+    setSendingPasswordOtp(true);
 
     try {
       const response = await apiCallWithAuth(
@@ -369,7 +415,7 @@ export default function EditProfile() {
           : "Failed to send OTP. Please check your connection and try again.",
       );
     } finally {
-      setSendingOtp(false);
+      setSendingPasswordOtp(false);
     }
   };
 
@@ -404,6 +450,25 @@ export default function EditProfile() {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpInputRefs.current[index - 1]?.focus();
     }
+  };
+
+  const handleOtpPaste = (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData("text");
+    if (!paste) return;
+    const digits = paste.replace(/\D/g, "").slice(0, 6);
+    if (!digits) return;
+    const newOtp = [...otp];
+    digits.split("").forEach((digit, i) => {
+      if (index + i < 6) newOtp[index + i] = digit;
+    });
+    setOtp(newOtp);
+    const nextIndex = Math.min(index + digits.length, 5);
+    otpInputRefs.current[nextIndex]?.focus();
+    setOtpError("");
   };
 
   const handleVerifyOtp = async () => {
@@ -487,7 +552,11 @@ export default function EditProfile() {
   const handleResendOtp = async () => {
     if (resendCooldown > 0) return;
 
-    setSendingOtp(true);
+    if (editMode === "email") {
+      setSendingEmailOtp(true);
+    } else {
+      setSendingPasswordOtp(true);
+    }
     setOtpError("");
     setError("");
 
@@ -554,7 +623,11 @@ export default function EditProfile() {
         setOtpError("Failed to resend OTP");
       }
     } finally {
-      setSendingOtp(false);
+      if (editMode === "email") {
+        setSendingEmailOtp(false);
+      } else {
+        setSendingPasswordOtp(false);
+      }
     }
   };
 
@@ -686,29 +759,32 @@ export default function EditProfile() {
               <div className="mt-8 flex flex-col gap-2 w-full">
                 <button
                   onClick={() => setActiveTab("basic")}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === "basic"
-                    ? "bg-black text-white dark:bg-white dark:text-black font-medium"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
-                    }`}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
+                    activeTab === "basic"
+                      ? "bg-black text-white dark:bg-white dark:text-black font-medium"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                  }`}
                 >
                   Basic Information
                 </button>
                 <button
                   onClick={() => setActiveTab("security")}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === "security"
-                    ? "bg-black text-white dark:bg-white dark:text-black font-medium"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
-                    }`}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
+                    activeTab === "security"
+                      ? "bg-black text-white dark:bg-white dark:text-black font-medium"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                  }`}
                 >
                   Security Settings
                 </button>
                 {/* Platform Settings - visible to ALL users */}
                 <button
                   onClick={() => setActiveTab("platform")}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${activeTab === "platform"
-                    ? "bg-black text-white dark:bg-white dark:text-black font-medium"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
-                    }`}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-colors ${
+                    activeTab === "platform"
+                      ? "bg-black text-white dark:bg-white dark:text-black font-medium"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50"
+                  }`}
                 >
                   Platform Settings
                 </button>
@@ -760,31 +836,58 @@ export default function EditProfile() {
                       {user && (user.usernameChangesCount || 0) < 2 && (
                         <div className="flex items-center gap-1">
                           <span className="text-xs text-gray-500">Cost:</span>
-                          <span className={`text-xs font-medium ${(user.points || 0) >= ((user.usernameChangesCount || 0) === 0 ? 500 : 1000) ? "text-gray-700 dark:text-gray-300" : "text-red-500"}`}>
-                            {((user.usernameChangesCount || 0) === 0 ? 500 : 1000).toLocaleString()}
+                          <span
+                            className={`text-xs font-medium ${(user.points || 0) >= ((user.usernameChangesCount || 0) === 0 ? 500 : 1000) ? "text-gray-700 dark:text-gray-300" : "text-red-500"}`}
+                          >
+                            {((user.usernameChangesCount || 0) === 0
+                              ? 500
+                              : 1000
+                            ).toLocaleString()}
                           </span>
                           <CurrencyIcon size={12} />
                         </div>
                       )}
                     </div>
                     <div className="relative group">
-                      <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-colors ${(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)
-                        ? "text-gray-500"
-                        : "text-gray-400 group-focus-within:text-black dark:group-focus-within:text-white"
-                        }`}>
+                      <span
+                        className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm transition-colors ${
+                          (user?.usernameChangesCount || 0) >= 2 ||
+                          (user?.points || 0) <
+                            ((user?.usernameChangesCount || 0) === 0
+                              ? 500
+                              : 1000)
+                            ? "text-gray-500"
+                            : "text-gray-400 group-focus-within:text-black dark:group-focus-within:text-white"
+                        }`}
+                      >
                         @
                       </span>
                       <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        disabled={(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)}
-                        className={`w-full pl-7 pr-10 py-2.5 border rounded-lg text-sm focus:outline-none transition-all ${(user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)
-                          ? "bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-70"
-                          : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-black dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-1 focus:ring-purple-500/20"
-                          }`}
+                        disabled={
+                          (user?.usernameChangesCount || 0) >= 2 ||
+                          (user?.points || 0) <
+                            ((user?.usernameChangesCount || 0) === 0
+                              ? 500
+                              : 1000)
+                        }
+                        className={`w-full pl-7 pr-10 py-2.5 border rounded-lg text-sm focus:outline-none transition-all ${
+                          (user?.usernameChangesCount || 0) >= 2 ||
+                          (user?.points || 0) <
+                            ((user?.usernameChangesCount || 0) === 0
+                              ? 500
+                              : 1000)
+                            ? "bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-70"
+                            : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-black dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-1 focus:ring-purple-500/20"
+                        }`}
                       />
-                      {((user?.usernameChangesCount || 0) >= 2 || (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000)) && (
+                      {((user?.usernameChangesCount || 0) >= 2 ||
+                        (user?.points || 0) <
+                          ((user?.usernameChangesCount || 0) === 0
+                            ? 500
+                            : 1000)) && (
                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
                           <Lock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                         </div>
@@ -795,17 +898,26 @@ export default function EditProfile() {
                     <div className="mt-2">
                       {(user?.usernameChangesCount || 0) >= 2 ? (
                         <p className="text-[11px] text-red-500 dark:text-red-400 flex items-center gap-1">
-                          You have reached the maximum number of username changes (2/2).
+                          You have reached the maximum number of username
+                          changes (2/2).
                         </p>
-                      ) : (user?.points || 0) < ((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) ? (
+                      ) : (user?.points || 0) <
+                        ((user?.usernameChangesCount || 0) === 0
+                          ? 500
+                          : 1000) ? (
                         <p className="text-[11px] text-red-500 dark:text-red-400 flex items-center">
-                          You need {((user?.usernameChangesCount || 0) === 0 ? 500 : 1000) - (user?.points || 0)} more
+                          You need{" "}
+                          {((user?.usernameChangesCount || 0) === 0
+                            ? 500
+                            : 1000) - (user?.points || 0)}{" "}
+                          more
                           <CurrencyIcon size={12} className="mx-1 shrink-0" />
                           to change your username.
                         </p>
                       ) : (
                         <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                          You can change your username up to 2 times. ({(user?.usernameChangesCount || 0)}/2 used)
+                          You can change your username up to 2 times. (
+                          {user?.usernameChangesCount || 0}/2 used)
                         </p>
                       )}
                     </div>
@@ -878,10 +990,12 @@ export default function EditProfile() {
                     />
                     <button
                       onClick={handleSendEmailOtp}
-                      disabled={sendingOtp || !newEmail || editMode === "email"}
+                      disabled={
+                        sendingEmailOtp || !newEmail || editMode === "email"
+                      }
                       className="w-full md:w-auto px-4 py-2.5 bg-black dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap rounded-lg"
                     >
-                      {sendingOtp ? "Sending..." : "Change Email"}
+                      {sendingEmailOtp ? "Sending..." : "Change Email"}
                     </button>
                   </div>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
@@ -916,7 +1030,8 @@ export default function EditProfile() {
                             }}
                             type="text"
                             inputMode="numeric"
-                            maxLength={6}
+                            maxLength={1}
+                            onPaste={(e) => handleOtpPaste(index, e)}
                             value={digit}
                             onChange={(e) =>
                               handleOtpChange(index, e.target.value)
@@ -962,10 +1077,10 @@ export default function EditProfile() {
                           ) : (
                             <button
                               onClick={handleResendOtp}
-                              disabled={sendingOtp}
+                              disabled={sendingEmailOtp}
                               className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
                             >
-                              {sendingOtp ? "Sending..." : "Resend OTP"}
+                              {sendingEmailOtp ? "Sending..." : "Resend OTP"}
                             </button>
                           )}
                         </p>
@@ -981,8 +1096,8 @@ export default function EditProfile() {
                       Change Password
                     </h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Enter your new password below. An OTP will be sent to verify
-                      the change.
+                      Enter your new password below. An OTP will be sent to
+                      verify the change.
                     </p>
                   </div>
                   <div className="space-y-3">
@@ -1105,14 +1220,14 @@ export default function EditProfile() {
                     <button
                       onClick={handleSendPasswordOtp}
                       disabled={
-                        sendingOtp ||
+                        sendingPasswordOtp ||
                         !newPassword ||
                         !confirmPassword ||
                         editMode === "password"
                       }
                       className="w-full bg-black dark:bg-red-700 text-white py-2.5 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm rounded-lg"
                     >
-                      {sendingOtp ? "Sending..." : "Send OTP"}
+                      {sendingPasswordOtp ? "Sending..." : "Send OTP"}
                     </button>
                     <p className="text-xs text-gray-400 dark:text-gray-500">
                       OTP will be sent to your current email for verification
@@ -1146,7 +1261,8 @@ export default function EditProfile() {
                               }}
                               type="text"
                               inputMode="numeric"
-                              maxLength={6}
+                              maxLength={1}
+                              onPaste={(e) => handleOtpPaste(index, e)}
                               value={digit}
                               onChange={(e) =>
                                 handleOtpChange(index, e.target.value)
@@ -1193,10 +1309,12 @@ export default function EditProfile() {
                             ) : (
                               <button
                                 onClick={handleResendOtp}
-                                disabled={sendingOtp}
+                                disabled={sendingPasswordOtp}
                                 className="text-black dark:text-white hover:underline font-medium disabled:opacity-50"
                               >
-                                {sendingOtp ? "Sending..." : "Resend OTP"}
+                                {sendingPasswordOtp
+                                  ? "Sending..."
+                                  : "Resend OTP"}
                               </button>
                             )}
                           </p>
@@ -1241,18 +1359,26 @@ export default function EditProfile() {
                     {/* Toggle Switch */}
                     <button
                       id="profile-visibility-toggle"
-                      onClick={() => handleToggleProfilePrivacy(!isProfilePublic)}
+                      onClick={() =>
+                        handleToggleProfilePrivacy(!isProfilePublic)
+                      }
                       disabled={togglingPrivacy}
                       aria-pressed={isProfilePublic}
-                      aria-label={isProfilePublic ? "Make profile private" : "Make profile public"}
-                      className={`relative inline-flex items-center h-6 w-11 flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white disabled:opacity-60 disabled:cursor-not-allowed ${isProfilePublic
-                        ? "bg-black dark:bg-white"
-                        : "bg-gray-300 dark:bg-gray-600"
-                        }`}
+                      aria-label={
+                        isProfilePublic
+                          ? "Make profile private"
+                          : "Make profile public"
+                      }
+                      className={`relative inline-flex items-center h-6 w-11 flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white disabled:opacity-60 disabled:cursor-not-allowed ${
+                        isProfilePublic
+                          ? "bg-black dark:bg-white"
+                          : "bg-gray-300 dark:bg-gray-600"
+                      }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-black shadow transition-transform duration-200 ${isProfilePublic ? "translate-x-6" : "translate-x-1"
-                          }`}
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-black shadow transition-transform duration-200 ${
+                          isProfilePublic ? "translate-x-6" : "translate-x-1"
+                        }`}
                       />
                     </button>
                   </div>
@@ -1267,35 +1393,42 @@ export default function EditProfile() {
                           Auto Stop Quiz Duration
                         </h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Automatically end active quizzes after a certain number of
-                          hours (1-72 hours).
+                          Automatically end active quizzes after a certain
+                          number of hours (1-72 hours).
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-col md:flex-row gap-3">
                       <input
-                        type="number"
-                        min="1"
-                        max="72"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         value={autoStopQuizDuration}
                         onChange={(e) =>
-                          setAutoStopQuizDuration(Number(e.target.value))
+                          handleAutoStopQuizDurationChange(e.target.value)
                         }
-                        className="w-full flex-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2.5 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white transition-shadow text-sm"
+                        aria-invalid={Boolean(autoStopQuizDurationError)}
+                        className={`w-full flex-1 bg-white dark:bg-gray-900 border rounded-lg px-4 py-2.5 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white transition-shadow text-sm ${autoStopQuizDurationError || autoStopQuizDurationShake ? "border-red-500 shake-light" : "border-gray-300 dark:border-gray-700"}`}
                         placeholder="e.g. 4"
                       />
                       <button
                         onClick={handleSavePlatformSettings}
                         disabled={
                           savingPlatform ||
-                          autoStopQuizDuration < 1 ||
-                          autoStopQuizDuration > 72
+                          autoStopQuizDuration === "" ||
+                          Number(autoStopQuizDuration) < 1 ||
+                          Number(autoStopQuizDuration) > 99
                         }
                         className="px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium disabled:opacity-50 flex items-center justify-center min-w-[120px] rounded-lg shrink-0"
                       >
                         {savingPlatform ? "Saving..." : "Save Duration"}
                       </button>
                     </div>
+                    {autoStopQuizDurationError && (
+                      <p className="mt-2 text-xs text-red-500">
+                        {autoStopQuizDurationError}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

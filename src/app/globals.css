@@ -92,7 +92,8 @@ html.dark {
 /* Firefox scrollbar support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb, rgba(156, 163, 175, 0.3)) var(--scrollbar-track, transparent);
+  scrollbar-color: var(--scrollbar-thumb, rgba(156, 163, 175, 0.3))
+    var(--scrollbar-track, transparent);
 }
 
 /* Hide scrollbar but keep functionality */
@@ -282,7 +283,6 @@ textarea::placeholder {
 
 /* Golden particles fade animations */
 @keyframes sparkle-fade {
-
   0%,
   100% {
     opacity: 0;
@@ -397,15 +397,42 @@ textarea::placeholder {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.05) 45%,
-      rgba(255, 255, 255, 0.2) 50%,
-      rgba(255, 255, 255, 0.05) 55%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 100%
+  );
   z-index: 5;
   animation: purchase-glint 1s ease-in-out forwards;
   pointer-events: none;
+}
+
+@keyframes subtle-shake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-3px);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.shake-light {
+  animation: subtle-shake 0.35s ease-in-out;
 }
 
 .animate-purchase-premium::after {
@@ -483,7 +510,14 @@ textarea::placeholder {
   width: 100px;
   height: 100px;
   border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 100%
+  );
   transform: translate(-50%, -50%) scale(0);
   animation: powerup-shockwave 0.8s ease-out forwards;
   pointer-events: none;
@@ -497,7 +531,11 @@ textarea::placeholder {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 70%
+  );
   opacity: 0;
   animation: fade-in-out 1s ease-out forwards;
   pointer-events: none;
@@ -625,7 +663,6 @@ textarea::placeholder {
 
 /* Quantum particles layer 1 - dense field */
 @keyframes quantum-particles-1 {
-
   0%,
   100% {
     box-shadow:
@@ -694,7 +731,6 @@ textarea::placeholder {
 
 /* Quantum particles layer 2 - offset positions */
 @keyframes quantum-particles-2 {
-
   0%,
   100% {
     box-shadow:
@@ -755,7 +791,6 @@ textarea::placeholder {
 
 /* Quantum particles layer 3 - more scattered */
 @keyframes quantum-particles-3 {
-
   0%,
   100% {
     box-shadow:
@@ -807,7 +842,6 @@ textarea::placeholder {
 }
 
 @keyframes quantum-twinkle {
-
   0%,
   100% {
     opacity: 1;
@@ -931,102 +965,210 @@ textarea::placeholder {
 
 /* Continuous star stream - Layer 1 */
 @keyframes galaxy-stars-1 {
-
   0%,
   100% {
     box-shadow:
-      calc(-72px * var(--star-scale, 1)) calc(-20px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.95),
-      calc(45px * var(--star-scale, 1)) calc(-70px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.9),
-      calc(-30px * var(--star-scale, 1)) calc(72px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.95),
-      calc(78px * var(--star-scale, 1)) calc(28px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(-65px * var(--star-scale, 1)) calc(52px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.95),
-      calc(20px * var(--star-scale, 1)) calc(-75px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(70px * var(--star-scale, 1)) calc(-45px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.95),
-      calc(-55px * var(--star-scale, 1)) calc(-60px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.9),
-      calc(5px * var(--star-scale, 1)) calc(74px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.95),
-      calc(-78px * var(--star-scale, 1)) calc(-5px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.9);
+      calc(-72px * var(--star-scale, 1)) calc(-20px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(45px * var(--star-scale, 1)) calc(-70px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.9),
+      calc(-30px * var(--star-scale, 1)) calc(72px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.95),
+      calc(78px * var(--star-scale, 1)) calc(28px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(-65px * var(--star-scale, 1)) calc(52px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.95),
+      calc(20px * var(--star-scale, 1)) calc(-75px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(70px * var(--star-scale, 1)) calc(-45px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(-55px * var(--star-scale, 1)) calc(-60px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.9),
+      calc(5px * var(--star-scale, 1)) calc(74px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(-78px * var(--star-scale, 1)) calc(-5px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.9);
   }
 
   50% {
     box-shadow:
-      calc(-105px * var(--star-scale, 1)) calc(-30px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.4),
-      calc(65px * var(--star-scale, 1)) calc(-102px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.35),
-      calc(-44px * var(--star-scale, 1)) calc(105px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.4),
-      calc(114px * var(--star-scale, 1)) calc(41px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(-95px * var(--star-scale, 1)) calc(76px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.4),
-      calc(29px * var(--star-scale, 1)) calc(-110px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(102px * var(--star-scale, 1)) calc(-66px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.4),
-      calc(-80px * var(--star-scale, 1)) calc(-88px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.35),
-      calc(7px * var(--star-scale, 1)) calc(108px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.4),
-      calc(-114px * var(--star-scale, 1)) calc(-7px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.35);
+      calc(-105px * var(--star-scale, 1)) calc(-30px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(65px * var(--star-scale, 1)) calc(-102px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.35),
+      calc(-44px * var(--star-scale, 1)) calc(105px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.4),
+      calc(114px * var(--star-scale, 1)) calc(41px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(-95px * var(--star-scale, 1)) calc(76px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.4),
+      calc(29px * var(--star-scale, 1)) calc(-110px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(102px * var(--star-scale, 1)) calc(-66px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(-80px * var(--star-scale, 1)) calc(-88px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.35),
+      calc(7px * var(--star-scale, 1)) calc(108px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(-114px * var(--star-scale, 1)) calc(-7px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.35);
   }
 }
 
 /* Continuous star stream - Layer 2 (offset positions) */
 @keyframes galaxy-stars-2 {
-
   0%,
   100% {
     box-shadow:
-      calc(-48px * var(--star-scale, 1)) calc(-68px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(72px * var(--star-scale, 1)) calc(-15px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.95),
-      calc(-70px * var(--star-scale, 1)) calc(35px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(38px * var(--star-scale, 1)) calc(70px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.95),
-      calc(60px * var(--star-scale, 1)) calc(-58px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.9),
-      calc(-75px * var(--star-scale, 1)) calc(-40px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.95),
-      calc(15px * var(--star-scale, 1)) calc(72px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.9),
-      calc(68px * var(--star-scale, 1)) calc(48px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.95),
-      calc(-25px * var(--star-scale, 1)) calc(-72px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.9),
-      calc(-68px * var(--star-scale, 1)) calc(62px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.95);
+      calc(-48px * var(--star-scale, 1)) calc(-68px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(72px * var(--star-scale, 1)) calc(-15px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.95),
+      calc(-70px * var(--star-scale, 1)) calc(35px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(38px * var(--star-scale, 1)) calc(70px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(60px * var(--star-scale, 1)) calc(-58px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.9),
+      calc(-75px * var(--star-scale, 1)) calc(-40px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(15px * var(--star-scale, 1)) calc(72px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.9),
+      calc(68px * var(--star-scale, 1)) calc(48px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.95),
+      calc(-25px * var(--star-scale, 1)) calc(-72px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.9),
+      calc(-68px * var(--star-scale, 1)) calc(62px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.95);
   }
 
   50% {
     box-shadow:
-      calc(-70px * var(--star-scale, 1)) calc(-99px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(105px * var(--star-scale, 1)) calc(-22px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.4),
-      calc(-102px * var(--star-scale, 1)) calc(51px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(55px * var(--star-scale, 1)) calc(102px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.4),
-      calc(88px * var(--star-scale, 1)) calc(-85px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.35),
-      calc(-110px * var(--star-scale, 1)) calc(-58px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.4),
-      calc(22px * var(--star-scale, 1)) calc(105px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.35),
-      calc(99px * var(--star-scale, 1)) calc(70px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.4),
-      calc(-36px * var(--star-scale, 1)) calc(-105px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.35),
-      calc(-99px * var(--star-scale, 1)) calc(91px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.4);
+      calc(-70px * var(--star-scale, 1)) calc(-99px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(105px * var(--star-scale, 1)) calc(-22px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.4),
+      calc(-102px * var(--star-scale, 1)) calc(51px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(55px * var(--star-scale, 1)) calc(102px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(88px * var(--star-scale, 1)) calc(-85px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.35),
+      calc(-110px * var(--star-scale, 1)) calc(-58px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(22px * var(--star-scale, 1)) calc(105px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.35),
+      calc(99px * var(--star-scale, 1)) calc(70px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.4),
+      calc(-36px * var(--star-scale, 1)) calc(-105px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.35),
+      calc(-99px * var(--star-scale, 1)) calc(91px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.4);
   }
 }
 
 /* Continuous star stream - Layer 3 (more offset) */
 @keyframes galaxy-stars-3 {
-
   0%,
   100% {
     box-shadow:
-      calc(-58px * var(--star-scale, 1)) calc(-52px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.95),
-      calc(52px * var(--star-scale, 1)) calc(-65px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(75px * var(--star-scale, 1)) calc(5px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.95),
-      calc(-12px * var(--star-scale, 1)) calc(75px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(-72px * var(--star-scale, 1)) calc(15px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.95),
-      calc(42px * var(--star-scale, 1)) calc(68px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.9),
-      calc(-38px * var(--star-scale, 1)) calc(-72px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.95),
-      calc(72px * var(--star-scale, 1)) calc(-32px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.9);
+      calc(-58px * var(--star-scale, 1)) calc(-52px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(52px * var(--star-scale, 1)) calc(-65px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(75px * var(--star-scale, 1)) calc(5px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.95),
+      calc(-12px * var(--star-scale, 1)) calc(75px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(-72px * var(--star-scale, 1)) calc(15px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.95),
+      calc(42px * var(--star-scale, 1)) calc(68px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.9),
+      calc(-38px * var(--star-scale, 1)) calc(-72px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.95),
+      calc(72px * var(--star-scale, 1)) calc(-32px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.9);
   }
 
   50% {
     box-shadow:
-      calc(-85px * var(--star-scale, 1)) calc(-76px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.4),
-      calc(76px * var(--star-scale, 1)) calc(-95px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(110px * var(--star-scale, 1)) calc(7px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.4),
-      calc(-18px * var(--star-scale, 1)) calc(110px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(-105px * var(--star-scale, 1)) calc(22px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(196, 181, 253, 0.4),
-      calc(61px * var(--star-scale, 1)) calc(99px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(255, 255, 255, 0.35),
-      calc(-55px * var(--star-scale, 1)) calc(-105px * var(--star-scale, 1)) calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(199, 210, 254, 0.4),
-      calc(105px * var(--star-scale, 1)) calc(-47px * var(--star-scale, 1)) calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1)) rgba(251, 207, 232, 0.35);
+      calc(-85px * var(--star-scale, 1)) calc(-76px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(76px * var(--star-scale, 1)) calc(-95px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(110px * var(--star-scale, 1)) calc(7px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.4),
+      calc(-18px * var(--star-scale, 1)) calc(110px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(-105px * var(--star-scale, 1)) calc(22px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(196, 181, 253, 0.4),
+      calc(61px * var(--star-scale, 1)) calc(99px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(255, 255, 255, 0.35),
+      calc(-55px * var(--star-scale, 1)) calc(-105px * var(--star-scale, 1))
+        calc(3px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(199, 210, 254, 0.4),
+      calc(105px * var(--star-scale, 1)) calc(-47px * var(--star-scale, 1))
+        calc(2px * var(--star-scale, 1)) calc(1px * var(--star-scale, 1))
+        rgba(251, 207, 232, 0.35);
   }
 }
 
 /* Twinkling effect */
 @keyframes galaxy-twinkle {
-
   0%,
   100% {
     opacity: 1;
@@ -1151,14 +1293,14 @@ html.dark input[type="date"] {
   padding: 2px 0;
 }
 
-.tiptap ul[data-type="taskList"] li>label {
+.tiptap ul[data-type="taskList"] li > label {
   flex-shrink: 0;
   user-select: none;
   display: flex;
   align-items: center;
 }
 
-.tiptap ul[data-type="taskList"] li>label input[type="checkbox"] {
+.tiptap ul[data-type="taskList"] li > label input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   width: 18px;
@@ -1172,16 +1314,20 @@ html.dark input[type="date"] {
   flex-shrink: 0;
 }
 
-.tiptap ul[data-type="taskList"] li>label input[type="checkbox"]:hover {
+.tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:hover {
   border-color: #3b82f6;
 }
 
-.tiptap ul[data-type="taskList"] li>label input[type="checkbox"]:checked {
+.tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:checked {
   background-color: #3b82f6;
   border-color: #3b82f6;
 }
 
-.tiptap ul[data-type="taskList"] li>label input[type="checkbox"]:checked::after {
+.tiptap
+  ul[data-type="taskList"]
+  li
+  > label
+  input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
   top: 2px;
@@ -1193,16 +1339,16 @@ html.dark input[type="date"] {
   transform: rotate(45deg);
 }
 
-.tiptap ul[data-type="taskList"] li>div {
+.tiptap ul[data-type="taskList"] li > div {
   flex: 1;
   min-width: 0;
 }
 
-.tiptap ul[data-type="taskList"] li>div>p {
+.tiptap ul[data-type="taskList"] li > div > p {
   margin: 0;
 }
 
-.tiptap ul[data-type="taskList"] li[data-checked="true"]>div>p {
+.tiptap ul[data-type="taskList"] li[data-checked="true"] > div > p {
   text-decoration: line-through;
   opacity: 0.5;
 }
@@ -1689,7 +1835,6 @@ html.dark input[type="date"] {
 
 /* Subtle pulse for active fire */
 @keyframes streak-pulse {
-
   0%,
   100% {
     filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5));
@@ -1704,12 +1849,15 @@ html.dark input[type="date"] {
 
 /* Glow behind the icon when active */
 .streak-glow {
-  background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(249, 115, 22, 0.25) 0%,
+    transparent 70%
+  );
   animation: streak-glow-pulse 2s ease-in-out infinite;
 }
 
 @keyframes streak-glow-pulse {
-
   0%,
   100% {
     opacity: 0.6;

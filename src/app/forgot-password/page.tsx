@@ -10,7 +10,7 @@ import { API_ENDPOINTS, apiCall } from "@/config/api";
 export default function ForgotPassword() {
   const router = useRouter();
   const { user } = useAuth();
-  
+
   // State management
   const [step, setStep] = useState<"email" | "password">("email");
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function ForgotPassword() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -40,7 +40,10 @@ export default function ForgotPassword() {
   // Resend cooldown timer
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      const timer = setTimeout(
+        () => setResendCooldown(resendCooldown - 1),
+        1000,
+      );
       return () => clearTimeout(timer);
     }
   }, [resendCooldown]);
@@ -88,11 +91,14 @@ export default function ForgotPassword() {
       // 1. Send OTP
       setIsLoading(true);
       try {
-        const response = await apiCall(API_ENDPOINTS.AUTH.FORGOT_PASSWORD_SEND_OTP, {
-          method: "POST",
-          body: JSON.stringify({ email }),
-        });
-        
+        const response = await apiCall(
+          API_ENDPOINTS.AUTH.FORGOT_PASSWORD_SEND_OTP,
+          {
+            method: "POST",
+            body: JSON.stringify({ email }),
+          },
+        );
+
         const data = await response.json();
 
         if (data.success) {
@@ -108,12 +114,16 @@ export default function ForgotPassword() {
             setSuccess("");
           }, 4000);
         } else {
-          setError(data.message || "Failed to send reset OTP. Please try again.");
+          setError(
+            data.message || "Failed to send reset OTP. Please try again.",
+          );
         }
       } catch (err) {
         console.error("Forgot password send OTP error:", err);
         const error = err as Error;
-        setError(error.message || "An unexpected error occurred. Please try again.");
+        setError(
+          error.message || "An unexpected error occurred. Please try again.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -127,10 +137,13 @@ export default function ForgotPassword() {
 
       setIsLoading(true);
       try {
-        const response = await apiCall(API_ENDPOINTS.AUTH.FORGOT_PASSWORD_VERIFY_OTP, {
-          method: "POST",
-          body: JSON.stringify({ email, otp: otpCode }),
-        });
+        const response = await apiCall(
+          API_ENDPOINTS.AUTH.FORGOT_PASSWORD_VERIFY_OTP,
+          {
+            method: "POST",
+            body: JSON.stringify({ email, otp: otpCode }),
+          },
+        );
 
         const data = await response.json();
 
@@ -147,7 +160,9 @@ export default function ForgotPassword() {
       } catch (err) {
         console.error("Forgot password verify OTP error:", err);
         const error = err as Error;
-        setError(error.message || "An unexpected error occurred. Please try again.");
+        setError(
+          error.message || "An unexpected error occurred. Please try again.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -162,10 +177,13 @@ export default function ForgotPassword() {
     setSuccess("");
 
     try {
-      const response = await apiCall(API_ENDPOINTS.AUTH.FORGOT_PASSWORD_SEND_OTP, {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      });
+      const response = await apiCall(
+        API_ENDPOINTS.AUTH.FORGOT_PASSWORD_SEND_OTP,
+        {
+          method: "POST",
+          body: JSON.stringify({ email }),
+        },
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -192,7 +210,7 @@ export default function ForgotPassword() {
   const handleStage2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join("");
-    
+
     if (!newPassword || !confirmPassword) {
       setError("Please fill in all password fields");
       return;
@@ -223,7 +241,9 @@ export default function ForgotPassword() {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess("Password has been reset successfully! Redirecting to login...");
+        setSuccess(
+          "Password has been reset successfully! Redirecting to login...",
+        );
         setTimeout(() => {
           router.push("/login");
         }, 2000);
@@ -233,7 +253,9 @@ export default function ForgotPassword() {
     } catch (err) {
       console.error("Forgot password reset error:", err);
       const error = err as Error;
-      setError(error.message || "An unexpected error occurred. Please try again.");
+      setError(
+        error.message || "An unexpected error occurred. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -272,6 +294,25 @@ export default function ForgotPassword() {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       otpInputRefs.current[index - 1]?.focus();
     }
+  };
+
+  const handleOtpPaste = (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement>,
+  ) => {
+    e.preventDefault();
+    const paste = e.clipboardData.getData("text");
+    if (!paste) return;
+    const digits = paste.replace(/\D/g, "").slice(0, 6);
+    if (!digits) return;
+    const newOtp = [...otp];
+    digits.split("").forEach((digit, i) => {
+      if (index + i < 6) newOtp[index + i] = digit;
+    });
+    setOtp(newOtp);
+    const nextIndex = Math.min(index + digits.length, 5);
+    otpInputRefs.current[nextIndex]?.focus();
+    setError("");
   };
 
   return (
@@ -355,7 +396,8 @@ export default function ForgotPassword() {
                     Forgot Password
                   </h1>
                   <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                    Enter your email to receive a 6-digit OTP code to verify your identity.
+                    Enter your email to receive a 6-digit OTP code to verify
+                    your identity.
                   </p>
                 </div>
 
@@ -365,9 +407,10 @@ export default function ForgotPassword() {
                   </div>
                 )}
 
-
-
-                <form onSubmit={handleStage1Submit} className="space-y-4 sm:space-y-5">
+                <form
+                  onSubmit={handleStage1Submit}
+                  className="space-y-4 sm:space-y-5"
+                >
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <label
@@ -398,7 +441,9 @@ export default function ForgotPassword() {
                         required
                         disabled={otpSent}
                         className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20 ${
-                          otpSent ? "pr-10 opacity-70 bg-gray-50 dark:bg-gray-800/20 cursor-not-allowed" : ""
+                          otpSent
+                            ? "pr-10 opacity-70 bg-gray-50 dark:bg-gray-800/20 cursor-not-allowed"
+                            : ""
                         }`}
                         placeholder="Enter your registered email"
                       />
@@ -456,8 +501,11 @@ export default function ForgotPassword() {
                                 type="text"
                                 inputMode="numeric"
                                 maxLength={1}
+                                onPaste={(e) => handleOtpPaste(idx, e)}
                                 value={digit}
-                                onChange={(e) => handleOtpChange(idx, e.target.value)}
+                                onChange={(e) =>
+                                  handleOtpChange(idx, e.target.value)
+                                }
                                 onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                                 className="w-10 h-12 sm:w-11 sm:h-13 text-center text-lg sm:text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                               />
@@ -469,7 +517,9 @@ export default function ForgotPassword() {
                           <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                             Didn&apos;t receive the code?{" "}
                             {resendCooldown > 0 ? (
-                              <span className="text-gray-500 font-medium">Resend in {resendCooldown}s</span>
+                              <span className="text-gray-500 font-medium">
+                                Resend in {resendCooldown}s
+                              </span>
                             ) : (
                               <button
                                 type="button"
@@ -493,9 +543,13 @@ export default function ForgotPassword() {
                     disabled={isLoading}
                     className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base rounded-xl shadow-lg hover:shadow-black/20 dark:hover:shadow-red-900/40"
                   >
-                    {isLoading 
-                      ? (otpSent ? "Verifying code..." : "Sending code...") 
-                      : (otpSent ? "Verify OTP & Continue" : "Send Verification OTP")}
+                    {isLoading
+                      ? otpSent
+                        ? "Verifying code..."
+                        : "Sending code..."
+                      : otpSent
+                        ? "Verify OTP & Continue"
+                        : "Send Verification OTP"}
                   </motion.button>
                 </form>
               </motion.div>
@@ -529,7 +583,10 @@ export default function ForgotPassword() {
                   </div>
                 )}
 
-                <form onSubmit={handleStage2Submit} className="space-y-4 sm:space-y-5">
+                <form
+                  onSubmit={handleStage2Submit}
+                  className="space-y-4 sm:space-y-5"
+                >
                   {/* New Password */}
                   <div>
                     <label
@@ -554,12 +611,28 @@ export default function ForgotPassword() {
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none transition-colors"
                       >
                         {showPassword ? (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                             <circle cx="12" cy="12" r="3" />
                           </svg>
                         ) : (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                             <line x1="1" y1="1" x2="23" y2="23" />
                           </svg>
@@ -588,16 +661,34 @@ export default function ForgotPassword() {
                       />
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white focus:outline-none transition-colors"
                       >
                         {showConfirmPassword ? (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                             <circle cx="12" cy="12" r="3" />
                           </svg>
                         ) : (
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                             <line x1="1" y1="1" x2="23" y2="23" />
                           </svg>
@@ -613,7 +704,9 @@ export default function ForgotPassword() {
                     disabled={isLoading}
                     className="w-full bg-black dark:bg-red-700 text-white py-2.5 sm:py-3 px-4 font-medium hover:bg-gray-800 dark:hover:bg-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base rounded-xl shadow-lg hover:shadow-black/20 dark:hover:shadow-red-900/40"
                   >
-                    {isLoading ? "Resetting password..." : "Reset & Save Password"}
+                    {isLoading
+                      ? "Resetting password..."
+                      : "Reset & Save Password"}
                   </motion.button>
                 </form>
               </motion.div>
@@ -698,7 +791,8 @@ export default function ForgotPassword() {
             transition={{ delay: 0.9, duration: 0.6 }}
             className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-10 max-w-xs"
           >
-            Every setback is just a setup for an even stronger comeback. Recover your account and resume your streak.
+            Every setback is just a setup for an even stronger comeback. Recover
+            your account and resume your streak.
           </motion.p>
 
           {/* Feature tags */}
