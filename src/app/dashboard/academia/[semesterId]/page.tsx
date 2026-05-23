@@ -262,7 +262,9 @@ export default function SemesterDetailPage() {
             />
             <div className="flex-1 min-w-0">
               <h1 className="text-2xl sm:text-4xl font-light text-black dark:text-white mb-0.5 sm:mb-1">
-                {semester.name}
+                {semester.name.includes(":")
+                  ? `Semester ${semester.order + 1}`
+                  : semester.name}
               </h1>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 Manage your Courses

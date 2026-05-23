@@ -101,7 +101,11 @@ export default function AcademiaPage() {
 
   const handleEditSemester = (semester: Semester) => {
     setEditingSemesterId(semester.semesterId);
-    setEditSemesterName(semester.name);
+    setEditSemesterName(
+      semester.name.includes(":")
+        ? `Semester ${semester.order + 1}`
+        : semester.name,
+    );
   };
 
   const handleSaveEdit = async (semesterId: string) => {
@@ -512,7 +516,9 @@ export default function AcademiaPage() {
                         >
                           <div className="flex items-center gap-2 mb-3">
                             <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white transition-colors truncate">
-                              {semester.name}
+                              {semester.name.includes(":")
+                                ? `Semester ${semester.order + 1}`
+                                : semester.name}
                             </h3>
                           </div>
                           <div className="mb-2">

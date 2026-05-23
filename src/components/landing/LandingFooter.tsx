@@ -4,9 +4,12 @@ import { AnimatedFooter } from "@/components/AnimatedSection";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function LandingFooter() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
   const [windowWidth, setWindowWidth] = useState(1200);
   const [isClient, setIsClient] = useState(false);
 
@@ -25,7 +28,7 @@ export default function LandingFooter() {
   const floatingParticles = Array.from({ length: 3 }, (_, i) => i);
 
   return (
-    <AnimatedFooter className="relative overflow-hidden bg-gradient-to-br from-slate-950 to-black border-t border-gray-800">
+    <AnimatedFooter className="relative overflow-hidden bg-[#050505] border-t border-white/[0.03]">
       <div className="absolute inset-0 overflow-hidden">
         {isClient &&
           floatingParticles.map((i) => (
@@ -49,7 +52,9 @@ export default function LandingFooter() {
           ))}
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-[#050505] via-[#080808] to-[#0a0a0a]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-indigo-600/[0.05] rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-violet-600/[0.07] rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 py-4 lg:pt-12 lg:pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_0.5fr] mb-2 lg:mb-6">
@@ -364,24 +369,53 @@ export default function LandingFooter() {
           </motion.div>
         </div>
 
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          transition={{ duration: 0.8 }}
-          className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-2 sm:mb-4"
-        />
+        {!isHomePage && (
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ duration: 0.8 }}
+            className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-2 sm:mb-4"
+          />
+        )}
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center"
-        >
-          <p className="text-gray-500 text-xs sm:text-sm px-4 sm:px-0">
-            © {currentYear} ZeroGravity.
-          </p>
-        </motion.div>
+        {!isHomePage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-center"
+          >
+            <p className="text-gray-500 text-xs sm:text-sm px-4 sm:px-0">
+              © {currentYear} ZeroGravity.
+            </p>
+          </motion.div>
+        )}
       </div>
+
+      {isHomePage && (
+        <div
+          className="relative w-full overflow-hidden select-none pointer-events-none flex items-start justify-center"
+          style={{ height: "clamp(80px, 14vw, 220px)" }}
+        >
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="whitespace-nowrap font-light text-white/[0.09] leading-none"
+            style={{ fontSize: "clamp(18px, 18vw, 240px)", letterSpacing: "-0.01em" }}
+          >
+            Zero<span className="italic font-normal">Gravity</span>
+          </motion.p>
+          {/* Dissolve overlay — blends into actual footer bg colour */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "linear-gradient(to bottom, transparent 0%, rgba(5,5,5,0.5) 55%, #050505 90%)",
+            }}
+          />
+        </div>
+      )}
+
     </AnimatedFooter>
   );
 }

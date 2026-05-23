@@ -74,6 +74,9 @@ function CreateQuizContent() {
   const [localAiCount, setLocalAiCount] = useState<number>(
     user?.aiGenerationCount || 0,
   );
+  const limit = user?.subscription === "pro"
+    ? (user?.aiGenerationLimit === 10 ? 200 : (user?.aiGenerationLimit || 200))
+    : (user?.aiGenerationLimit === 10 ? 100 : (user?.aiGenerationLimit || 100));
   const [aiError, setAiError] = useState<string | null>(null);
   const aiPromptRef = useRef<HTMLTextAreaElement>(null);
   const [quizLoadingMsgIdx, setQuizLoadingMsgIdx] = useState(0);
@@ -1155,7 +1158,7 @@ Give me the final combined JSON array with the new questions added:`;
               </h2>
               <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                 <span className="text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 whitespace-nowrap rounded-lg">
-                  {Math.max(0, 100 - localAiCount)} Ques left
+                  {Math.max(0, limit - localAiCount)} Ques left
                 </span>
                 <button
                   onClick={() => setShowAiModal(false)}
@@ -1262,7 +1265,7 @@ Give me the final combined JSON array with the new questions added:`;
                             value={aiNumQuestions}
                             onChange={(e) => setAiNumQuestions(e.target.value)}
                           >
-                            {[1, 5, 10, 15, 20].map((num) => (
+                            {[1, 5, 10, 15].map((num) => (
                               <option key={num} value={num}>
                                 {num}
                               </option>
@@ -1330,7 +1333,7 @@ Give me the final combined JSON array with the new questions added:`;
                         onChange={(e) => setAiNumQuestions(e.target.value)}
                         disabled={isGenerating}
                       >
-                        {[1, 5, 10, 15, 20].map((num) => (
+                        {[1, 5, 10, 15].map((num) => (
                           <option key={num} value={num}>
                             {num} questions
                           </option>
@@ -1361,10 +1364,10 @@ Give me the final combined JSON array with the new questions added:`;
                         disabled={
                           isGenerating ||
                           !aiPrompt.trim() ||
-                          localAiCount >= 100
+                          localAiCount >= limit
                         }
                       >
-                        {localAiCount >= 100
+                        {localAiCount >= limit
                           ? "Out of Credits"
                           : isGenerating
                             ? "Generating..."
@@ -1505,7 +1508,7 @@ Give me the final combined JSON array with the new questions added:`;
                     className="flex-shrink-0 w-9 h-9 sm:w-[38px] sm:h-[38px] flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white transition-colors rounded-lg"
                     title="Regenerate quiz"
                     onClick={handleGenerateAI}
-                    disabled={isGenerating || localAiCount >= 100}
+                    disabled={isGenerating || localAiCount >= limit}
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>

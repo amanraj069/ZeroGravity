@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Plus, AlertCircle, Sparkles } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 import {
   dailyTasksService,
   DailyTask,
@@ -364,17 +365,17 @@ const DailyTasks: React.FC = () => {
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-fade-in-down">
           <div
-            className={`px-6 py-3 rounded-lg shadow-lg ${pointsAnimation.isDeduction
+            className={`px-6 py-3 rounded-xl shadow-lg ${pointsAnimation.isDeduction
               ? "bg-red-600 text-white"
               : "bg-black dark:bg-white text-white dark:text-black"
               }`}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="text-xl font-bold">
                 {pointsAnimation.isDeduction ? "-" : "+"}
                 {pointsAnimation.points}
               </span>
-              <span className="text-sm">points</span>
+              <CurrencyIcon size={16} className="shrink-0 !ml-1.5" />
             </div>
           </div>
         </div>

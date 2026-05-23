@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import LandingFooter from "@/components/landing/LandingFooter";
-import SimpleFooter from "@/components/landing/SimpleFooter";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -12,15 +11,14 @@ interface AppLayoutProps {
 export default function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname();
 
-  // Use LandingFooter for home page, SimpleFooter for all other pages
-  const isHomePage = pathname === "/";
-  const Footer = isHomePage ? LandingFooter : SimpleFooter;
-
   const isNotesPage =
     pathname?.startsWith("/notes") || pathname?.startsWith("/dashboard/notes");
   const isHostedPage = pathname?.startsWith("/hosted");
   const isFullScreenPage = isNotesPage || isHostedPage;
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isAuthPage =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgot-password";
 
   return (
     <div
@@ -34,11 +32,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         {children}
       </main>
 
-      {isHomePage ? (
-        <Footer />
-      ) : isFullScreenPage || isAuthPage ? null : (
-        <SimpleFooter />
-      )}
+      {isFullScreenPage || isAuthPage ? null : <LandingFooter />}
     </div>
   );
 }

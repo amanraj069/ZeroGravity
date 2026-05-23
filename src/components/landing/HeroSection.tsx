@@ -122,7 +122,7 @@ export default function HeroSection() {
                     </Link>
                     <Link
                       href="/profile"
-                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-black/5 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl hover:bg-white/60 dark:hover:bg-white/10 shadow-lg hover:shadow-black/5 rounded-xl"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-10 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-slate-200/80 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl hover:bg-white/60 dark:hover:bg-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] dark:shadow-none rounded-xl"
                     >
                       <span className="relative">My Profile</span>
                     </Link>
@@ -153,7 +153,7 @@ export default function HeroSection() {
                     </Link>
                     <Link
                       href="/login"
-                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-black/5 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl hover:bg-white/60 dark:hover:bg-white/10 shadow-lg hover:shadow-black/5 rounded-xl"
+                      className="group relative inline-flex items-center justify-center px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-medium tracking-wide text-black dark:text-white transition-all duration-300 w-[85%] sm:w-auto border border-slate-200/80 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl hover:bg-white/60 dark:hover:bg-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] dark:shadow-none rounded-xl"
                     >
                       <span className="relative">Log In</span>
                     </Link>

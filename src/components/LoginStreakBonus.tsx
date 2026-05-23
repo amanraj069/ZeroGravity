@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, CheckCircle } from "lucide-react";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 interface StreakInfo {
   currentDay: number;
@@ -195,8 +196,9 @@ export default function LoginStreakBonus({
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-400 mb-1">
                   {isCurrentDay ? "Available Now" : "Next Reward"}
                 </div>
-                <div className="text-xl md:text-2xl font-bold text-black dark:text-white">
-                  +{pointsToAward.toLocaleString()} points
+                <div className="text-xl md:text-2xl font-bold text-black dark:text-white flex items-center gap-1.5">
+                  <span>+{pointsToAward.toLocaleString()}</span>
+                  <CurrencyIcon size={14} className="shrink-0 !ml-1.5" />
                 </div>
               </div>
               <div className="text-right">
@@ -240,7 +242,10 @@ export default function LoginStreakBonus({
                 <span>Claiming...</span>
               </>
             ) : (
-              <span>Claim {pointsToAward.toLocaleString()} Points</span>
+              <span className="flex items-center gap-1.5">
+                Claim {pointsToAward.toLocaleString()}
+                <CurrencyIcon size={14} className="shrink-0 !ml-1.5" />
+              </span>
             )}
           </button>
         </div>

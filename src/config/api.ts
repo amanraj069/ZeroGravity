@@ -33,6 +33,9 @@ export const API_ENDPOINTS = {
     GET_PUBLIC_PROFILE: (userId: string) =>
       `${API_BASE_URL}/api/auth/profile/${encodeURIComponent(userId)}`,
     GET_PROFILE_VISITORS: `${API_BASE_URL}/api/auth/profile-visitors`,
+    FORGOT_PASSWORD_SEND_OTP: `${API_BASE_URL}/api/auth/forgot-password/send-otp`,
+    FORGOT_PASSWORD_VERIFY_OTP: `${API_BASE_URL}/api/auth/forgot-password/verify-otp`,
+    FORGOT_PASSWORD_RESET: `${API_BASE_URL}/api/auth/forgot-password/reset`,
   },
   // Waitlist endpoints
   WAITLIST: {

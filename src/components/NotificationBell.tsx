@@ -7,6 +7,7 @@ import {
   Notification,
 } from "@/services/notificationService";
 import { useAuth } from "@/contexts/AuthContext";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 interface PointsAnimation {
   points: number;
@@ -141,11 +142,11 @@ export default function NotificationBell() {
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] pointer-events-none animate-fade-in-down">
           <div className="px-6 py-3 shadow-lg bg-black dark:bg-white text-white dark:text-black rounded-xl">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="text-xl font-bold">
                 +{pointsAnimation.points}
               </span>
-              <span className="text-sm">points</span>
+              <CurrencyIcon size={16} className="shrink-0 !ml-1.5" />
             </div>
           </div>
         </div>
@@ -233,7 +234,10 @@ export default function NotificationBell() {
                                   }
                                   className="px-3 py-1 text-xs bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                                 >
-                                  Claim {notification.points} points
+                                  <span className="flex items-center gap-1">
+                                    Claim {notification.points}
+                                    <CurrencyIcon size={12} className="shrink-0" />
+                                  </span>
                                 </button>
                               )}
                             {notification.points > 0 &&
