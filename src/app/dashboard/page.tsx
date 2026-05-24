@@ -141,7 +141,7 @@ export default function Dashboard() {
       setTimeout(() => setPointsAnimation(null), 2000);
     }
     await refreshPoints();
-    await checkSession();
+    await checkSession(true);
   };
 
   if (authLoading) {
@@ -206,7 +206,7 @@ export default function Dashboard() {
           }}
           onRestoreSuccess={async () => {
             await refreshPoints();
-            await checkSession();
+            await checkSession(true);
           }}
         />
       )}

@@ -366,12 +366,47 @@ export default function NotesGrid({
                         </>
                       ) : (
                         <>
-                          {note.favorite && (
-                            <Star
-                              size={11}
-                              className="text-yellow-500 fill-yellow-500 flex-shrink-0"
-                            />
-                          )}
+                          <div className="hidden sm:block">
+                            {note.favorite && (
+                              <Star
+                                size={11}
+                                className="text-yellow-500 fill-yellow-500 flex-shrink-0"
+                              />
+                            )}
+                          </div>
+                          <div className="flex sm:hidden items-center gap-1">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onToggleFavorite(note._id);
+                              }}
+                              className="p-1 text-gray-400 hover:text-yellow-500 rounded transition-colors"
+                              title={
+                                note.favorite
+                                  ? "Remove from favorites"
+                                  : "Add to favorites"
+                              }
+                            >
+                              <Star
+                                size={12}
+                                className={
+                                  note.favorite
+                                    ? "fill-yellow-500 text-yellow-500"
+                                    : ""
+                                }
+                              />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onTrashNote(note._id);
+                              }}
+                              className="p-1 text-gray-400 hover:text-red-500 rounded transition-colors"
+                              title="Move to trash"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
                         </>
                       )}
                     </div>
@@ -379,7 +414,7 @@ export default function NotesGrid({
 
                   {/* Hover actions (non-trash only) */}
                   {!isTrash && (
-                    <div className="absolute top-2 right-2 hidden group-hover:flex items-center gap-0.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm px-0.5 py-0.5">
+                    <div className="absolute top-2 right-2 hidden sm:group-hover:flex items-center gap-0.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm px-0.5 py-0.5">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

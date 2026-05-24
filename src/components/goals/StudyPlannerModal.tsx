@@ -324,7 +324,7 @@ export default function StudyPlannerModal({
   if (!shouldRender || !mounted) return null;
 
   return createPortal(
-    <div className={`fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[99999] flex items-center justify-center bg-black/60 p-4 overflow-hidden transition-all duration-300 ease-out ${
+    <div className={`fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 p-4 overflow-hidden transition-all duration-300 ease-out ${
       isOpen && isAnimating ? "opacity-100 backdrop-blur-xl" : "opacity-0 backdrop-blur-none pointer-events-none"
     }`}>
       <div className={`bg-white dark:bg-gray-900 w-full max-w-6xl shadow-2xl flex flex-col max-h-full rounded-2xl overflow-hidden relative transition-all duration-300 ease-out ${
