@@ -397,15 +397,12 @@ export default function LandingFooter() {
           className="relative w-full overflow-hidden select-none pointer-events-none flex items-start justify-center"
           style={{ height: "clamp(80px, 14vw, 220px)" }}
         >
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="whitespace-nowrap font-light text-white/[0.09] leading-none"
+          <p
+            className="whitespace-nowrap font-light text-white/[0.22] leading-none"
             style={{ fontSize: "clamp(18px, 18vw, 240px)", letterSpacing: "-0.01em" }}
           >
             Zero<span className="italic font-normal">Gravity</span>
-          </motion.p>
+          </p>
           {/* Dissolve overlay — blends into actual footer bg colour */}
           <div
             className="absolute inset-0 pointer-events-none"

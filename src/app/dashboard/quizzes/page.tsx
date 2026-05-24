@@ -33,7 +33,7 @@ export default function QuizzesPage() {
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
-    } else if (isLoggedIn && user?.subscription === "pro") {
+    } else if (isLoggedIn) {
       fetchQuizzes();
     }
   }, [isLoggedIn, authLoading, user, router]);
@@ -139,14 +139,9 @@ export default function QuizzesPage() {
       return;
     }
 
-    const confirmMessage =
-      user?.subscription === "pro"
-        ? "Are you sure you want to delete this quiz? You can restore it later from the 'View Deleted' section."
-        : "Are you sure you want to delete this quiz? This will soft delete the quiz (it won't be permanently removed).";
-
     const confirmed = await showDialog({
       title: "Delete Quiz",
-      message: confirmMessage,
+      message: "Are you sure you want to delete this quiz?",
       confirmLabel: "Delete",
       variant: "danger",
     });
@@ -165,13 +160,7 @@ export default function QuizzesPage() {
         setFilteredQuizzes((prevFiltered) =>
           prevFiltered.filter((quiz) => quiz.quizId !== quizId),
         );
-
-        // Show success message based on subscription
-        const successMessage =
-          user?.subscription === "pro"
-            ? "Quiz moved to deleted items. You can restore it anytime from 'View Deleted'."
-            : "Quiz has been deleted. Upgrade to Pro to access restore functionality.";
-        showToast(successMessage, "success");
+        showToast("Quiz deleted.", "success");
       } else {
         showToast(`Failed to delete quiz: ${response.message || "Unknown error"}`, "error");
       }
@@ -197,105 +186,6 @@ export default function QuizzesPage() {
     );
   }
 
-  // Check if user has pro subscription
-  if (user?.subscription !== "pro") {
-    return (
-      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-        <main className="flex-1 py-10 max-w-6xl mx-auto">
-          <div className="max-w-4xl px-4 mx-auto">
-            <div className="text-center py-16">
-              <div className="max-w-2xl mx-auto">
-                <div className="mb-8">
-                  <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto flex items-center justify-center mb-8">
-                    <svg
-                      className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                  </div>
-                  <h1 className="text-3xl font-light text-gray-900 dark:text-white mb-4">
-                    Pro Subscription Required
-                  </h1>
-                  <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8">
-                    Quiz creation and management features are available with a
-                    Pro subscription. Upgrade your account to start creating
-                    engaging quizzes for your audience.
-                  </p>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 shadow-sm p-8 border border-gray-100 dark:border-gray-700 rounded-xl">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                    Pro Features Include:
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Create unlimited quizzes
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Real-time participant tracking
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Detailed analytics and insights
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Custom join codes
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Live leaderboards
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-500"></div>
-                      <span className="text-gray-700 dark:text-gray-300">
-                        Quiz hosting controls
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="text-center">
-                    <button
-                      onClick={() => {
-                        // TODO: Add upgrade functionality
-                        showToast("Upgrade functionality coming soon!", "info");
-                      }}
-                      className="bg-black dark:bg-white text-white dark:text-black px-8 py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-base font-medium rounded-lg"
-                    >
-                      Upgrade to Pro
-                    </button>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
-                      Contact support to upgrade your account
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
@@ -328,16 +218,14 @@ export default function QuizzesPage() {
                     <Users className="w-4 h-4" />
                     Join
                   </button>
-                  {user?.subscription === "pro" && (
-                    <button
-                      onClick={() => router.push("/dashboard/quizzes/deleted")}
-                      className="h-9 w-9 !p-0 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg box-border"
-                      aria-label="View Deleted"
-                      title="View Deleted"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => router.push("/dashboard/quizzes/deleted")}
+                    className="h-9 w-9 !p-0 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg box-border"
+                    aria-label="View Deleted"
+                    title="View Deleted"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
@@ -349,15 +237,13 @@ export default function QuizzesPage() {
                   <Users className="w-4 h-4" />
                   Join Quiz
                 </button>
-                {user?.subscription === "pro" && (
-                  <button
-                    onClick={() => router.push("/dashboard/quizzes/deleted")}
-                    className="flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Trash
-                  </button>
-                )}
+                <button
+                  onClick={() => router.push("/dashboard/quizzes/deleted")}
+                  className="flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Trash
+                </button>
               </div>
             </div>
           </motion.div>

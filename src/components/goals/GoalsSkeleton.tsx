@@ -13,7 +13,7 @@ export default function GoalsSkeleton({
     <div className={`${includeTabs ? "max-w-6xl mx-auto px-4 py-3 sm:py-6" : ""} space-y-2 sm:space-y-6`}>
       {/* Main Navigation Tabs Skeleton */}
       {includeTabs && (
-        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden mb-1">
+        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden rounded-lg">
           <div className="flex h-12">
             <div className={`flex-1 flex items-center justify-center bg-white dark:bg-gray-800 border-b-2 ${mode === 'daily' ? 'border-black dark:border-white' : 'border-transparent'} animate-pulse`}>
               <div className="h-4 w-20 sm:w-24 bg-gray-100 dark:bg-gray-700/50" />
@@ -26,20 +26,12 @@ export default function GoalsSkeleton({
       )}
 
       {/* Header Section Skeleton */}
-      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm">
-        <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2 md:mb-0">
+      <div className="bg-white dark:bg-gray-800 p-3 lg:p-4 shadow-sm rounded-lg">
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4 flex-1">
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 animate-pulse" />
-              <div className="h-7 sm:h-8 w-32 sm:w-40 bg-gray-200 dark:bg-gray-700 animate-pulse" />
-            </div>
-            {/* Desktop Stats dots skeleton */}
-            <div className="hidden md:flex items-center gap-2">
-              <div className="h-5 w-24 bg-gray-100 dark:bg-gray-800 animate-pulse" />
-              <span className="text-gray-300 dark:text-gray-700 select-none">•</span>
-              <div className="h-5 w-32 bg-gray-100 dark:bg-gray-800 animate-pulse" />
-              <span className="text-gray-300 dark:text-gray-700 select-none">•</span>
-              <div className="h-5 w-28 bg-gray-100 dark:bg-gray-800 animate-pulse" />
+              <div className="h-6 sm:h-7 w-28 sm:w-36 bg-gray-200 dark:bg-gray-700 animate-pulse" />
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -53,19 +45,11 @@ export default function GoalsSkeleton({
             <div className="h-9 sm:h-10 w-20 sm:w-28 bg-black dark:bg-white animate-pulse rounded-lg" />
           </div>
         </div>
-        {/* Mobile Stats skeleton */}
-        <div className="flex md:hidden items-center gap-1.5 mt-2">
-          <div className="h-3 w-16 bg-gray-100 dark:bg-gray-800 animate-pulse" />
-          <span className="text-gray-400 dark:text-gray-600 text-[10px]">•</span>
-          <div className="h-3 w-20 bg-gray-100 dark:bg-gray-800 animate-pulse" />
-          <span className="text-gray-400 dark:text-gray-600 text-[10px]">•</span>
-          <div className="h-3 w-14 bg-gray-100 dark:bg-gray-800 animate-pulse" />
-        </div>
       </div>
 
       {mode === 'daily' ? (
         /* Date Selector Skeleton (Daily Tasks) */
-        <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4">
+        <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4 rounded-lg">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <div className="relative sm:hidden flex-1">
@@ -90,7 +74,7 @@ export default function GoalsSkeleton({
         </div>
       ) : (
         /* Filter Tabs Skeleton (Goals) */
-        <div className="bg-white dark:bg-gray-800 p-0 shadow-sm mt-2 sm:mt-4 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 p-0 shadow-sm mt-2 sm:mt-4 rounded-lg overflow-hidden">
           <div className="flex items-center bg-white dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
             {[1, 2, 3, 4, 5].map((i) => (
               <div 

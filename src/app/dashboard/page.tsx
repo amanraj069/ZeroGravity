@@ -90,12 +90,20 @@ export default function Dashboard() {
     if (!authLoading && !isLoggedIn) {
       router.push("/login");
     } else if (isLoggedIn && user) {
+      // Bug 19 fix: only show the streak bonus once per browser session.
+      // Without this guard it re-fires on every hard refresh because the
+      // server-side loginStreakClaimed flag only changes after the user claims.
+      const streakSeenKey = `streakBonusSeen_${user.userId || ""}`;
+      const alreadySeenThisSession = sessionStorage.getItem(streakSeenKey);
+
       if (
         user.loginStreakDay !== undefined &&
         user.loginStreakDay > 0 &&
-        user.loginStreakClaimed === false
+        user.loginStreakClaimed === false &&
+        !alreadySeenThisSession
       ) {
         setShowStreakBonus(true);
+        sessionStorage.setItem(streakSeenKey, "true");
       }
 
       // Check for broken daily task streak

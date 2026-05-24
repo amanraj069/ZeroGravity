@@ -26,6 +26,7 @@ import {
 } from "@/types/quiz";
 import QRCode from "qrcode";
 import { ChevronUp, X, Clock, Users, Hash } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 export default function HostQuizPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -384,9 +385,15 @@ export default function HostQuizPage() {
               {/* Participants List with Avatars */}
               <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm p-4 sm:p-8 h-[48dvh] lg:h-[85dvh] min-h-[320px] flex flex-col rounded-xl">
                 <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 border-b border-gray-200 dark:border-gray-700 pb-3 sm:pb-4">
-                  <h2 className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white">
-                    Participants
-                  </h2>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <BackButton
+                      href="/dashboard/quizzes"
+                      className="p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0"
+                    />
+                    <h2 className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white">
+                      Participants
+                    </h2>
+                  </div>
                   <div className="flex items-center gap-2 sm:gap-3">
                     <button
                       onClick={refreshParticipants}
@@ -553,17 +560,23 @@ export default function HostQuizPage() {
             {/* Right Panel - Quiz Info and Controls - 45% width */}
             <div className="w-full lg:w-[45%] relative">
               <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm h-[calc(100dvh-110px)] lg:min-h-[560px] lg:h-[85dvh] flex flex-col overflow-hidden rounded-xl relative">
-                <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:pb-4 pb-24">
+                <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:pb-8 pb-24 flex flex-col">
                   {/* Quiz Info (moved from top header) */}
                   <div className="space-y-2 sm:space-y-3">
                     <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h2 className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white tracking-tight">
-                          {quiz?.title || "Host Quiz"}
-                        </h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-light leading-relaxed">
-                          {quiz?.description || "Ready to host your quiz?"}
-                        </p>
+                      <div className="flex items-start gap-1 sm:gap-2">
+                        <BackButton
+                          href="/dashboard/quizzes"
+                          className="lg:hidden p-2 -ml-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors shrink-0 mt-0.5"
+                        />
+                        <div>
+                          <h2 className="text-xl sm:text-2xl font-light text-gray-900 dark:text-white tracking-tight">
+                            {quiz?.title || "Host Quiz"}
+                          </h2>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 font-light leading-relaxed">
+                            {quiz?.description || "Ready to host?"}
+                          </p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                         {!isHosted ? (
@@ -967,7 +980,7 @@ export default function HostQuizPage() {
 
                   {/* Control mode: single CTA to control flow in the dedicated panel */}
                   {viewMode === "control" && (
-                    <div className="space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-6 sm:mt-6 mb-4 lg:mb-0 text-center flex flex-col items-center justify-center">
+                    <div className="space-y-2 sm:space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-5 mt-auto mb-4 lg:mb-4 text-center flex flex-col items-center justify-center">
                       <p className="text-[11px] sm:text-xs font-light text-gray-600 dark:text-gray-400 max-w-sm mb-2 sm:mb-4">
                         Use the control panel control the quiz flow.
                       </p>

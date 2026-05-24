@@ -382,12 +382,12 @@ const DailyTasks: React.FC = () => {
       )}
 
       {/* Header with Analytics */}
-      <div className="bg-white dark:bg-gray-800 p-4 shadow-sm rounded-lg">
-        <div className="flex items-center justify-between gap-2 sm:gap-4 mb-2 md:mb-0">
+      <div className="bg-white dark:bg-gray-800 p-3 lg:p-4 shadow-sm rounded-lg">
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="flex items-center gap-3">
               <BackButton />
-              <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
                 Daily Tasks
               </h1>
             </div>
@@ -397,7 +397,7 @@ const DailyTasks: React.FC = () => {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
                 onClick={() => setShowStudyPlanner(true)}
-                className="relative flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-4 py-2.5 text-sm font-medium hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
+                className="relative flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black h-9 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
                 title="AI Study Planner"
               >
                 <Sparkles className="w-4 h-4" />
@@ -407,7 +407,7 @@ const DailyTasks: React.FC = () => {
             </div>
             <button
               onClick={() => setShowAddTask(true)}
-              className="flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-4 py-2.5 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
+              className="flex items-center justify-center gap-1.5 border border-black dark:border-white bg-transparent text-black dark:text-white h-9 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out whitespace-nowrap flex-shrink-0 rounded-lg"
             >
               <Plus className="w-4 h-4" />
               <span>Add Task</span>

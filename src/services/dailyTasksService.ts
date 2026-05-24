@@ -71,6 +71,7 @@ export interface GenerateStudyPlanResponse {
   startDate?: string;
   endDate?: string;
   hoursPerDay?: number;
+  studyStyle?: string;
   quota?: StudyPlanQuota;
   message?: string;
   fallbackOccurred?: boolean;
@@ -296,13 +297,14 @@ class DailyTasksService {
     topic: string,
     startDate: string,
     endDate: string,
-    hoursPerDay: number = 2
+    hoursPerDay: number = 2,
+    studyStyle: string = "balanced"
   ): Promise<GenerateStudyPlanResponse> {
     const response = await apiCallWithAuth(
       API_ENDPOINTS.STUDY_PLANNER.GENERATE,
       {
         method: "POST",
-        body: JSON.stringify({ topic, startDate, endDate, hoursPerDay }),
+        body: JSON.stringify({ topic, startDate, endDate, hoursPerDay, studyStyle }),
       }
     );
 

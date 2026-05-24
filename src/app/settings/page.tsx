@@ -1021,7 +1021,7 @@ export default function EditProfile() {
                       )}
 
                       {/* OTP Input */}
-                      <div className="flex justify-center gap-2 mb-4">
+                      <div className="grid grid-cols-6 gap-2 w-full max-w-[280px] mx-auto mb-4">
                         {otp.map((digit, index) => (
                           <input
                             key={index}
@@ -1037,7 +1037,7 @@ export default function EditProfile() {
                               handleOtpChange(index, e.target.value)
                             }
                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                            className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                            className="w-full h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                             autoFocus={index === 0 && otp.join("") === ""}
                           />
                         ))}
@@ -1252,7 +1252,7 @@ export default function EditProfile() {
                         )}
 
                         {/* OTP Input */}
-                        <div className="flex justify-center gap-2 mb-4">
+                        <div className="grid grid-cols-6 gap-2 w-full max-w-[280px] mx-auto mb-4">
                           {otp.map((digit, index) => (
                             <input
                               key={index}
@@ -1268,7 +1268,7 @@ export default function EditProfile() {
                                 handleOtpChange(index, e.target.value)
                               }
                               onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                              className="w-10 h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                              className="w-full h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
                               autoFocus={index === 0 && otp.join("") === ""}
                             />
                           ))}

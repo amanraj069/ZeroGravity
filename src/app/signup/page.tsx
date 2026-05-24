@@ -419,7 +419,7 @@ export default function Signup() {
           )}
 
           {/* OTP Input */}
-          <div className="flex justify-center gap-2 sm:gap-3 mb-6">
+          <div className="grid grid-cols-6 gap-2 sm:gap-3 w-full max-w-[280px] sm:max-w-[320px] mx-auto mb-6">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -433,7 +433,7 @@ export default function Signup() {
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl"
+                className="w-full h-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl"
                 autoFocus={index === 0}
               />
             ))}

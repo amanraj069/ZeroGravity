@@ -74,9 +74,12 @@ function CreateQuizContent() {
   const [localAiCount, setLocalAiCount] = useState<number>(
     user?.aiGenerationCount || 0,
   );
+  // Bug 12 fix: removed fragile magic-number === 10 check. The limit is now read
+  // directly from the user record without substitution. The backend default is
+  // correctly set during signup so no client-side override is needed.
   const limit = user?.subscription === "pro"
-    ? (user?.aiGenerationLimit === 10 ? 200 : (user?.aiGenerationLimit || 200))
-    : (user?.aiGenerationLimit === 10 ? 100 : (user?.aiGenerationLimit || 100));
+    ? (user?.aiGenerationLimit || 200)
+    : (user?.aiGenerationLimit || 100);
   const [aiError, setAiError] = useState<string | null>(null);
   const aiPromptRef = useRef<HTMLTextAreaElement>(null);
   const [quizLoadingMsgIdx, setQuizLoadingMsgIdx] = useState(0);
@@ -192,7 +195,6 @@ function CreateQuizContent() {
     setAiConfigExpanded(false);
   };
 
-  const isPro = user?.subscription === "pro";
 
   // Load existing quiz or prefill from /createQuiz
   useEffect(() => {
@@ -490,16 +492,6 @@ function CreateQuizContent() {
   };
 
   if (isLoading || loadingExisting) return <CreateQuizSkeleton />;
-  if (!isPro)
-    return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center p-6">
-          <p className="text-lg text-black dark:text-white">
-            Pro subscription required to create quizzes.
-          </p>
-        </div>
-      </div>
-    );
 
   const q = questions[currentIndex];
 
@@ -512,7 +504,12 @@ function CreateQuizContent() {
             <div className="flex items-center gap-3 flex-1 overflow-hidden">
               <BackButton
                 href={
-                  quizId
+                  // Bug 16 fix: only link to the host page if the quiz was
+                  // loaded from URL params (an existing, already-published quiz).
+                  // For a brand-new draft, quizId is set in state after first save
+                  // but the quiz is still in 'draft' status — the host page doesn't
+                  // exist yet, so we always fall back to the quizzes list.
+                  quizId && searchParams?.get("quizId")
                     ? `/dashboard/quizzes/host/${quizId}`
                     : "/dashboard/quizzes"
                 }
@@ -622,7 +619,7 @@ function CreateQuizContent() {
       <main className="flex-1 pb-24 sm:pb-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 px-3 sm:px-4">
           <aside className="hidden md:block order-2 md:order-1 md:col-span-3 lg:col-span-3">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[700px] rounded-xl">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-auto md:h-[600px] rounded-xl">
               <div className="p-4 sm:p-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
                   Question Panel
@@ -687,7 +684,7 @@ function CreateQuizContent() {
           </aside>
 
           <section className="order-1 md:order-2 md:col-span-9 lg:col-span-9">
-            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-180px)] md:min-h-[600px] md:h-[700px] flex flex-col rounded-xl relative">
+            <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden h-[calc(100dvh-180px)] md:min-h-[600px] md:h-[580px] flex flex-col rounded-xl relative">
               {/* Question Header */}
               <div className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-2.5 sm:py-4">
                 <div className="flex items-center justify-between gap-2 sm:gap-4">
