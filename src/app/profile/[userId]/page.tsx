@@ -431,8 +431,8 @@ export default function PublicProfile() {
                   Subscription
                 </label>
                 <span
-                  className={`inline-block px-2 py-0.5 text-xs rounded-full ${user.subscription === "pro"
-                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
+                  className={`inline-block px-2.5 py-0.5 text-xs rounded-full font-semibold capitalize ${user.subscription === "pro"
+                    ? "bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40 shadow-[0_0_8px_rgba(245,158,11,0.1)]"
                     : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
                     }`}
                 >

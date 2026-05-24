@@ -394,12 +394,12 @@ const Goals: React.FC = () => {
     // Goals content
     return (
       <>
-        <div className="bg-white dark:bg-gray-800 p-4 shadow-sm rounded-lg">
-          <div className="flex items-center justify-between mb-2 md:mb-0">
+        <div className="bg-white dark:bg-gray-800 p-3 lg:p-4 shadow-sm rounded-lg">
+          <div className="flex items-center justify-between">
             <div className="flex flex-col md:flex-row md:items-center md:gap-4">
               <div className="flex items-center gap-3">
                 <BackButton />
-                <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">
+                <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
                   Goals
                 </h1>
               </div>
@@ -419,7 +419,7 @@ const Goals: React.FC = () => {
             </div>
             <button
               onClick={() => setShowAddGoal(true)}
-              className="flex items-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-4 py-2.5 text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
+              className="flex items-center justify-center gap-1.5 border border-black dark:border-white bg-transparent text-black dark:text-white h-9 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out whitespace-nowrap flex-shrink-0 rounded-lg"
             >
               <Plus className="w-3.5 h-3.5" />
               Add Goal

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
 
 interface User {
@@ -121,7 +121,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // };
 
   // Check session status on component mount and when needed
-  const checkSession = async (silent = false) => {
+  // Bug 9/15 fix: wrap in useCallback so the periodic interval and event
+  // handlers always reference a stable function and never capture a stale closure.
+  const checkSession = useCallback(async (silent = false) => {
     try {
       if (!silent) setIsLoading(true);
       if (process.env.NODE_ENV === "development") {
@@ -172,7 +174,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       if (!silent) setIsLoading(false);
     }
-  };
+  }, []); // no deps — only touches state setters which are stable
 
   // Login function
   const login = async (
@@ -508,7 +510,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Check session on mount
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [checkSession]);
 
   // Optional: Set up periodic session checking (silent — no loading state)
   useEffect(() => {
@@ -516,7 +518,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const interval = setInterval(() => checkSession(true), 5 * 60 * 1000); // Check every 5 minutes
       return () => clearInterval(interval);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, checkSession]);
 
   const value: AuthContextType = {
     user,

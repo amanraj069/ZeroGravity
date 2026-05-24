@@ -491,7 +491,7 @@ export default function ForgotPassword() {
                           <label className="block text-sm font-medium text-black dark:text-white text-center mb-2.5">
                             Enter Verification Code
                           </label>
-                          <div className="flex justify-center gap-2 sm:gap-3">
+                          <div className="grid grid-cols-6 gap-2 sm:gap-3 w-full max-w-[280px] sm:max-w-[300px] mx-auto">
                             {otp.map((digit, idx) => (
                               <input
                                 key={idx}
@@ -507,7 +507,7 @@ export default function ForgotPassword() {
                                   handleOtpChange(idx, e.target.value)
                                 }
                                 onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                className="w-10 h-12 sm:w-11 sm:h-13 text-center text-lg sm:text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                className="w-full h-12 sm:h-13 text-center text-lg sm:text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                               />
                             ))}
                           </div>
