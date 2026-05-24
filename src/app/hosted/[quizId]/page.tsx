@@ -254,7 +254,7 @@ export default function HostedQuizPage() {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <main className="flex-1 flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10 w-full">
-        <div className="w-full max-w-6xl space-y-3 sm:space-y-6 flex flex-col">
+        <div className="w-full max-w-6xl space-y-3 sm:space-y-6 flex flex-col flex-1">
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 lg:gap-6 flex-shrink-0 mb-2 sm:mb-0">
             <div className="flex-1 sm:flex-none w-full sm:w-auto">
@@ -350,7 +350,7 @@ export default function HostedQuizPage() {
           </div>
 
           {currentIndex === -1 && isActive && quizStatus !== "ended" ? (
-            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 h-[70dvh] sm:h-[76dvh] rounded-xl">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[65dvh] sm:min-h-[75dvh] rounded-xl">
               <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center rounded-xl">
                 <svg
                   className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-400"
@@ -380,7 +380,7 @@ export default function HostedQuizPage() {
             </div>
           ) : currentQuestion ? (
             /* Question Box */
-            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 overflow-hidden shadow-sm rounded-xl h-[70dvh] sm:h-[76dvh] flex flex-col">
+            <div className="border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 overflow-hidden shadow-sm rounded-xl min-h-[65dvh] sm:min-h-[75dvh] flex-1 flex flex-col">
               {/* Question Header with Timer and Actions */}
               <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
@@ -583,7 +583,7 @@ export default function HostedQuizPage() {
             </div>
           ) : quizStatus === "ended" ? (
             /* Quiz Ended */
-            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 h-[70dvh] sm:h-[76dvh] rounded-xl">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[65dvh] sm:min-h-[75dvh] rounded-xl">
               <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
                   className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white"
@@ -621,7 +621,7 @@ export default function HostedQuizPage() {
             </div>
           ) : !isActive ? (
             /* Quiz Not Started Yet */
-            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 h-[70dvh] sm:h-[76dvh] rounded-xl">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[65dvh] sm:min-h-[75dvh] rounded-xl">
               <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
                   className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white"
@@ -651,7 +651,7 @@ export default function HostedQuizPage() {
             </div>
           ) : (
             /* Quiz Active - Waiting for First Question */
-            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 h-[70dvh] sm:h-[76dvh] rounded-xl">
+            <div className="text-center py-8 sm:py-12 flex-1 flex flex-col items-center justify-center border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/30 min-h-[65dvh] sm:min-h-[75dvh] rounded-xl">
               <div className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
                 <svg
                   className="w-12 h-12 sm:w-20 sm:h-20 text-black dark:text-white"

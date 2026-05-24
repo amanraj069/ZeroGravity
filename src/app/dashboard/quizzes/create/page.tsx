@@ -1133,7 +1133,7 @@ Give me the final combined JSON array with the new questions added:`;
       )}
 
       {showAiModal && (
-        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
+        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
           <div className="bg-white dark:bg-gray-900 w-full max-w-6xl shadow-xl flex flex-col max-h-full rounded-xl overflow-hidden">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-2">

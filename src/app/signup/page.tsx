@@ -323,7 +323,7 @@ export default function Signup() {
   // Show OTP verification screen
   if (showOtpScreen) {
     return (
-      <div className="h-[100dvh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="h-[100dvh] w-full flex relative overflow-hidden">
         {/* Base Background Layer – light mode */}
         <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-purple-50 dark:hidden z-0" />
         {/* Base Background Layer – dark mode */}
@@ -377,12 +377,19 @@ export default function Signup() {
             ))}
           </div>
         </div>
-        <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl relative z-20">
+        <div className="relative z-20 w-full max-w-6xl mx-auto flex items-center justify-center px-6 lg:px-10 gap-10 lg:gap-24">
+          {/* ── LEFT: OTP Card ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          >
           <div className="text-center mb-6 sm:mb-8">
             {/* Email icon */}
-            <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-6 sm:mb-8 flex items-center justify-center">
+            <div className="w-12 h-12 sm:w-28 sm:h-28 mx-auto mb-4 sm:mb-8 flex items-center justify-center bg-gray-50 dark:bg-gray-800/50 sm:bg-transparent sm:dark:bg-transparent rounded-full">
               <svg
-                className="w-16 h-16 sm:w-24 sm:h-24 text-black dark:text-white"
+                className="w-6 h-6 sm:w-24 sm:h-24 text-black dark:text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -476,6 +483,84 @@ export default function Signup() {
               ← Back to signup
             </button>
           </div>
+          </motion.div>
+
+          {/* ── RIGHT: Hero Panel (desktop only) ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+            className="hidden lg:flex flex-col justify-center w-fit"
+          >
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-[10px] uppercase tracking-[0.5em] font-bold text-gray-400 dark:text-gray-500 mb-6"
+            >
+              ZeroGravity
+            </motion.p>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.7 }}
+              className="text-5xl xl:text-6xl font-light text-black dark:text-white tracking-tighter leading-[1.1] mb-6"
+            >
+              Start your
+              <br />
+              <span className="italic">journey now.</span>
+            </motion.h2>
+
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.85, duration: 0.5, ease: "easeOut" }}
+              className="origin-left w-12 h-px bg-black dark:bg-white mb-6"
+            />
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.6 }}
+              className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-10 max-w-xs"
+            >
+              Push your limits, earn streaks, and rise up the leaderboard - one
+              task at a time.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.05, duration: 0.6 }}
+              className="flex flex-col gap-2"
+            >
+              <div className="flex gap-3">
+                {["Daily Streaks", "Leaderboards"].map((tag) => (
+                  <motion.span
+                    key={tag}
+                    whileHover={{ y: -1.5 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]"
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
+              </div>
+              <div className="flex gap-3">
+                {["Power-Ups", "Quizzes"].map((tag) => (
+                  <motion.span
+                    key={tag}
+                    whileHover={{ y: -1.5 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-bold text-gray-600 dark:text-gray-400 bg-black/[0.03] dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/5 backdrop-blur-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-500 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 hover:text-black dark:hover:text-white hover:shadow-[0_8px_16px_-6px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_8px_16px_-6px_rgba(255,255,255,0.15)]"
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     );

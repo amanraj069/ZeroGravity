@@ -39,7 +39,7 @@ export default function StreakBrokenPopup({
           setRestored(true);
           setTimeout(() => onClose(), 2500);
         }
-        onRestoreSuccess();
+        await onRestoreSuccess();
       } else setError(result?.message || "Failed to restore streak");
     } catch {
       setError("Network error occurred.");

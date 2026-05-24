@@ -539,7 +539,7 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       {/* Click overlay to close sidebar on mobile */}
       {sidebarOpen && (
         <div
-          className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 bg-black/60 backdrop-blur-xl lg:hidden"
+          className="fixed top-[65px] left-0 right-0 bottom-0 z-40 bg-black/60 backdrop-blur-xl lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -547,9 +547,9 @@ export default function NotesApp({ initialDocId }: NotesAppProps = {}) {
       {/* Sidebar - overlay on mobile, inline on desktop */}
       <div
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-200 ease-in-out
+          fixed top-[65px] bottom-0 left-0 z-50 w-64 transition-transform duration-200 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:relative lg:z-auto lg:translate-x-0 lg:transition-[width,min-width] lg:duration-200
+          lg:relative lg:top-auto lg:bottom-auto lg:z-auto lg:translate-x-0 lg:transition-[width,min-width] lg:duration-200
           ${sidebarOpen ? "lg:w-64 lg:min-w-[256px]" : "lg:w-0 lg:min-w-0 lg:overflow-hidden"}
         `}
       >
