@@ -74,12 +74,8 @@ function CreateQuizContent() {
   const [localAiCount, setLocalAiCount] = useState<number>(
     user?.aiGenerationCount || 0,
   );
-  // Bug 12 fix: removed fragile magic-number === 10 check. The limit is now read
-  // directly from the user record without substitution. The backend default is
-  // correctly set during signup so no client-side override is needed.
-  const limit = user?.subscription === "pro"
-    ? (user?.aiGenerationLimit || 200)
-    : (user?.aiGenerationLimit || 100);
+  // Limit calculation: 100 for basic, 200 for pro. 
+  const limit = user?.subscription === "pro" ? 200 : 100;
   const [aiError, setAiError] = useState<string | null>(null);
   const aiPromptRef = useRef<HTMLTextAreaElement>(null);
   const [quizLoadingMsgIdx, setQuizLoadingMsgIdx] = useState(0);

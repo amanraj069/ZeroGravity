@@ -30,7 +30,7 @@ interface User {
   loginStreakCompleted?: boolean;
   loginStreakClaimed?: boolean;
   aiGenerationCount?: number;
-  aiGenerationLimit?: number;
+  studyPlanGenerationCount?: number;
   selectedBadges?: string[];
   displayBadge?: string;
   usernameChangesCount?: number;
