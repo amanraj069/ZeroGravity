@@ -264,7 +264,7 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <main className="flex-1 flex flex-col items-center px-3 sm:px-4 py-4 sm:py-10">
         <div className="w-full max-w-6xl space-y-3 sm:space-y-6">
           {/* Header */}

@@ -24,7 +24,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative h-[92dvh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-gray-900">
+    <div className="relative h-[92dvh] flex flex-col items-center justify-center overflow-hidden bg-transparent">
       {/* Top Banner for Quiz Join - Redesigned as a floating glass bar */}
       <div className="absolute top-20 lg:top-12 left-0 right-0 z-10 flex justify-center px-4">
         <motion.div

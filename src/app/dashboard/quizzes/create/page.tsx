@@ -21,10 +21,12 @@ import {
   Settings2,
   RefreshCw,
   Check,
+  Sparkles,
 } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import CreateQuizSkeleton from "@/components/quizzes/CreateQuizSkeleton";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { motion } from "framer-motion";
 
 const emptyQuestion = (): QuizQuestion => ({
   text: "",
@@ -62,6 +64,7 @@ function CreateQuizContent() {
   const [aiConfigExpanded, setAiConfigExpanded] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiNumOptions, setAiNumOptions] = useState("4");
+  const [aiDifficulty, setAiDifficulty] = useState("Medium");
   const [aiNumQuestions, setAiNumQuestions] = useState("5");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedQuestions, setGeneratedQuestions] = useState<QuizQuestion[]>(
@@ -132,6 +135,7 @@ function CreateQuizContent() {
         aiPrompt,
         parseInt(aiNumOptions, 10),
         parseInt(aiNumQuestions, 10),
+        aiDifficulty,
       );
       if (response.success && response.questions) {
         setGeneratedQuestions(response.questions);
@@ -492,9 +496,9 @@ function CreateQuizContent() {
   const q = questions[currentIndex];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-[#121216]">
       {/* Full-width header matching website design theme */}
-      <div className="bg-white dark:bg-gray-900">
+      <div className="bg-transparent">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3 flex-1 overflow-hidden">
@@ -594,7 +598,7 @@ function CreateQuizContent() {
             </div>
             <div className="hidden sm:flex sm:ml-4 items-center gap-3">
               <button
-                className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium rounded-lg"
+                className="w-full sm:w-auto px-4 py-2 bg-white dark:bg-[#1C1C22] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium rounded-lg"
                 onClick={saveCurrent}
                 disabled={saving}
               >
@@ -645,7 +649,7 @@ function CreateQuizContent() {
               {/* Add Question Button at Bottom */}
               <div className="p-4 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex flex-col gap-2">
                 <button
-                  className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-600 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 rounded-lg"
+                  className="w-full border border-dashed border-gray-300 dark:border-gray-600 p-3 text-sm bg-white dark:bg-[#1C1C22] hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all text-gray-600 dark:text-gray-300 flex items-center justify-center gap-2 rounded-lg"
                   onClick={addQuestion}
                   disabled={questions.length >= 100}
                   title="Add question"
@@ -666,7 +670,7 @@ function CreateQuizContent() {
                   Add Question
                 </button>
                 <button
-                  className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all font-medium flex items-center justify-center rounded-lg"
+                  className="w-full border border-gray-200 dark:border-gray-700 p-3 text-sm bg-white dark:bg-[#1C1C22] text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all font-medium flex items-center justify-center rounded-lg"
                   onClick={() => {
                     setJsonInput(JSON.stringify(questions, null, 2));
                     setShowJsonModal(true);
@@ -866,24 +870,12 @@ function CreateQuizContent() {
                         onClick={() => setShowAiModal(true)}
                         title="Generate with AI"
                       >
-                        <svg
-                          className="w-4 h-4 shrink-0 text-pink-500 dark:text-purple-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
-                        </svg>
+                        <Sparkles className="w-4 h-4 shrink-0" />
                         <span>Generate with AI</span>
                       </button>
                     </div>
                     <button
-                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-[11px] sm:text-sm font-medium rounded-lg"
+                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-3 py-2 bg-white dark:bg-[#1C1C22] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-[11px] sm:text-sm font-medium rounded-lg"
                       onClick={addQuestion}
                       disabled={questions.length >= 100}
                       title="Add question"
@@ -896,7 +888,7 @@ function CreateQuizContent() {
                       </span>
                     </button>
                     <button
-                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-[11px] sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                      className="w-full sm:w-auto h-9 sm:h-auto px-2.5 sm:px-4 py-2 bg-white dark:bg-[#1C1C22] border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-[11px] sm:text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                       onClick={saveCurrent}
                       disabled={saving || !q?.options?.some((o) => o.isCorrect)}
                       title={
@@ -1001,8 +993,14 @@ function CreateQuizContent() {
       </main>
 
       {showJsonModal && (
-        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-full rounded-xl">
+        <div 
+          className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden"
+          onClick={() => setShowJsonModal(false)}
+        >
+          <div 
+            className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-full rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
                 Add Questions with JSON
@@ -1056,7 +1054,7 @@ Give me the final combined JSON array with the new questions added:`;
             </div>
 
             <textarea
-              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto rounded-lg"
+              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto rounded-lg"
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
               placeholder="Paste the array of questions JSON here..."
@@ -1129,25 +1127,19 @@ Give me the final combined JSON array with the new questions added:`;
       )}
 
       {showAiModal && (
-        <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-6xl shadow-xl flex flex-col max-h-full rounded-xl overflow-hidden">
+        <div 
+          className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4 overflow-hidden"
+          onClick={() => setShowAiModal(false)}
+        >
+          <div 
+            className="bg-white dark:bg-gray-900 w-full max-w-6xl shadow-xl flex flex-col max-h-full rounded-xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-2">
               <h2 className="text-base sm:text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
-                <svg
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 dark:text-gray-100 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-                Generate Quiz with AI
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 dark:text-gray-100 shrink-0" />
+                AI Quiz Generator
               </h2>
               <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                 <span className="text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 whitespace-nowrap rounded-lg">
@@ -1248,45 +1240,112 @@ Give me the final combined JSON array with the new questions added:`;
                   {generatedQuestions.length > 0 &&
                     !isGenerating &&
                     aiConfigExpanded && (
-                      <div className="grid grid-cols-2 gap-3 p-3 mb-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 animate-in fade-in slide-in-from-top-1 duration-200 rounded-lg">
-                        <div className="flex flex-col gap-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 mb-1 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 animate-in fade-in slide-in-from-top-1 duration-200 rounded-lg">
+                        <div className="flex flex-col gap-1.5">
                           <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
                             Questions
                           </label>
-                          <select
-                            className="px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
-                            value={aiNumQuestions}
-                            onChange={(e) => setAiNumQuestions(e.target.value)}
-                          >
-                            {[1, 5, 10, 15].map((num) => (
-                              <option key={num} value={num}>
-                                {num}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 p-0.5 rounded-lg border border-gray-200/50 dark:border-white/5 relative z-0">
+                            {[1, 5, 10, 15].map((num) => {
+                              const isActive = aiNumQuestions === String(num);
+                              return (
+                                <button
+                                  key={num}
+                                  type="button"
+                                  onClick={() => setAiNumQuestions(String(num))}
+                                  disabled={isGenerating}
+                                  className={`flex-1 relative px-1 py-1 text-[11px] font-medium rounded-md transition-colors z-10 ${
+                                    isActive
+                                      ? "text-black dark:text-white"
+                                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                  }`}
+                                >
+                                  {isActive && (
+                                    <motion.div
+                                      layoutId="ai-questions-tab-after"
+                                      className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_2px_8px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-md"
+                                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                      style={{ zIndex: -1 }}
+                                    />
+                                  )}
+                                  {num}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-1.5">
                           <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
                             Options per Q
                           </label>
-                          <select
-                            className="px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
-                            value={aiNumOptions}
-                            onChange={(e) => setAiNumOptions(e.target.value)}
-                          >
-                            {[2, 3, 4, 5, 6, 7, 8].map((num) => (
-                              <option key={num} value={num}>
-                                {num}
-                              </option>
-                            ))}
-                          </select>
+                          <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 p-0.5 rounded-lg border border-gray-200/50 dark:border-white/5 relative z-0">
+                            {[2, 3, 4, 5, 6].map((num) => {
+                              const isActive = aiNumOptions === String(num);
+                              return (
+                                <button
+                                  key={num}
+                                  type="button"
+                                  onClick={() => setAiNumOptions(String(num))}
+                                  disabled={isGenerating}
+                                  className={`flex-1 relative px-1 py-1 text-[11px] font-medium rounded-md transition-colors z-10 ${
+                                    isActive
+                                      ? "text-black dark:text-white"
+                                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                  }`}
+                                >
+                                  {isActive && (
+                                    <motion.div
+                                      layoutId="ai-options-tab-after"
+                                      className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_2px_8px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-md"
+                                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                      style={{ zIndex: -1 }}
+                                    />
+                                  )}
+                                  {num}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5 col-span-1 sm:col-span-1">
+                          <label className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                            Difficulty
+                          </label>
+                          <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 p-0.5 rounded-lg border border-gray-200/50 dark:border-white/5 relative z-0">
+                            {["Easy", "Medium", "Hard"].map((level) => {
+                              const isActive = aiDifficulty === level;
+                              return (
+                                <button
+                                  key={level}
+                                  type="button"
+                                  onClick={() => setAiDifficulty(level)}
+                                  disabled={isGenerating}
+                                  className={`flex-1 relative px-1 py-1 text-[11px] font-medium rounded-md transition-colors z-10 ${
+                                    isActive
+                                      ? "text-black dark:text-white"
+                                      : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                  }`}
+                                >
+                                  {isActive && (
+                                    <motion.div
+                                      layoutId="ai-difficulty-tab-after"
+                                      className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_2px_8px_rgba(0,0,0,0.05)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-md"
+                                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                      style={{ zIndex: -1 }}
+                                    />
+                                  )}
+                                  {level.charAt(0)}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                     )}
 
                   <textarea
                     ref={aiPromptRef}
-                    className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out rounded-lg"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out rounded-lg"
                     rows={
                       generatedQuestions.length > 0 || isGenerating
                         ? Math.min(
@@ -1315,57 +1374,134 @@ Give me the final combined JSON array with the new questions added:`;
 
                 {/* Config Row — Before Generation */}
                 {generatedQuestions.length === 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                        Questions
-                      </label>
-                      <select
-                        className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500"
-                        value={aiNumQuestions}
-                        onChange={(e) => setAiNumQuestions(e.target.value)}
-                        disabled={isGenerating}
-                      >
-                        {[1, 5, 10, 15].map((num) => (
-                          <option key={num} value={num}>
-                            {num} questions
-                          </option>
-                        ))}
-                      </select>
+                  <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Number of Questions */}
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          Questions
+                        </label>
+                        <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 p-1 rounded-xl border border-gray-200/50 dark:border-white/5 relative z-0">
+                          {[1, 5, 10, 15].map((num) => {
+                            const isActive = aiNumQuestions === String(num);
+                            return (
+                              <button
+                                key={num}
+                                type="button"
+                                onClick={() => setAiNumQuestions(String(num))}
+                                disabled={isGenerating}
+                                className={`flex-1 relative px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap transition-colors z-10 ${
+                                  isActive
+                                    ? "text-black dark:text-white"
+                                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                }`}
+                              >
+                                {isActive && (
+                                  <motion.div
+                                    layoutId="ai-questions-tab-before"
+                                    className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-xl"
+                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                    style={{ zIndex: -1 }}
+                                  />
+                                )}
+                                {num}Q
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Options per Question */}
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          Options per Q
+                        </label>
+                        <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 p-1 rounded-xl border border-gray-200/50 dark:border-white/5 relative z-0">
+                          {[2, 3, 4, 5, 6].map((num) => {
+                            const isActive = aiNumOptions === String(num);
+                            return (
+                              <button
+                                key={num}
+                                type="button"
+                                onClick={() => setAiNumOptions(String(num))}
+                                disabled={isGenerating}
+                                className={`flex-1 relative px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap transition-colors z-10 ${
+                                  isActive
+                                    ? "text-black dark:text-white"
+                                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                }`}
+                              >
+                                {isActive && (
+                                  <motion.div
+                                    layoutId="ai-options-tab-before"
+                                    className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-xl"
+                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                    style={{ zIndex: -1 }}
+                                  />
+                                )}
+                                {num}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                        Options per Q
-                      </label>
-                      <select
-                        className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
-                        value={aiNumOptions}
-                        onChange={(e) => setAiNumOptions(e.target.value)}
-                        disabled={isGenerating}
-                      >
-                        {[2, 3, 4, 5, 6, 7, 8].map((num) => (
-                          <option key={num} value={num}>
-                            {num} options
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex flex-col gap-1 justify-end col-span-2">
-                      <button
-                        className="w-full px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px] rounded-lg"
-                        onClick={handleGenerateAI}
-                        disabled={
-                          isGenerating ||
-                          !aiPrompt.trim() ||
-                          localAiCount >= limit
-                        }
-                      >
-                        {localAiCount >= limit
-                          ? "Out of Credits"
-                          : isGenerating
-                            ? "Generating..."
-                            : "Generate"}
-                      </button>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                      {/* Difficulty */}
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                          Difficulty
+                        </label>
+                        <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 p-1 rounded-xl border border-gray-200/50 dark:border-white/5 relative z-0">
+                          {["Easy", "Medium", "Hard"].map((level) => {
+                            const isActive = aiDifficulty === level;
+                            return (
+                              <button
+                                key={level}
+                                type="button"
+                                onClick={() => setAiDifficulty(level)}
+                                disabled={isGenerating}
+                                className={`flex-1 relative px-2 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap transition-colors z-10 ${
+                                  isActive
+                                    ? "text-black dark:text-white"
+                                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                                }`}
+                              >
+                                {isActive && (
+                                  <motion.div
+                                    layoutId="ai-difficulty-tab-before"
+                                    className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-xl"
+                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                    style={{ zIndex: -1 }}
+                                  />
+                                )}
+                                {level}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Generate Button */}
+                      <div className="flex flex-col gap-2">
+                        <button
+                          className="w-full px-4 py-2 text-xs sm:text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[36px] sm:h-[44px] rounded-xl flex items-center justify-center gap-1.5 sm:gap-2"
+                          onClick={handleGenerateAI}
+                          disabled={
+                            isGenerating ||
+                            !aiPrompt.trim() ||
+                            localAiCount >= limit
+                          }
+                        >
+                          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          {localAiCount >= limit
+                            ? "Out of Credits"
+                            : isGenerating
+                              ? "Generating..."
+                              : "Generate"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

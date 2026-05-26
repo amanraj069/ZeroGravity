@@ -49,7 +49,7 @@ export function DeletedQuizCardsSkeleton() {
 
 export default function DeletedQuizzesSkeleton() {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <main className="py-6 sm:py-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header Skeleton */}

@@ -97,8 +97,8 @@ export default function RootLayout({
                     } else {
                       document.documentElement.classList.remove('dark');
                       document.documentElement.style.colorScheme = 'light';
-                      document.documentElement.style.backgroundColor = '#ffffff';
-                      document.body.style.backgroundColor = '#ffffff';
+                      document.documentElement.style.backgroundColor = '#f9fafb';
+                      document.body.style.backgroundColor = '#f9fafb';
                       document.documentElement.style.setProperty('--scrollbar-thumb', 'rgba(156, 163, 175, 0.3)');
                     }
                   } else {

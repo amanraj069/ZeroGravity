@@ -59,7 +59,7 @@ body {
 
 html {
   height: 100%;
-  background-color: #ffffff;
+  background-color: #f9fafb;
   /* Default light theme background */
 }
 
@@ -216,7 +216,7 @@ textarea::placeholder {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 20% 98%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -232,7 +232,7 @@ textarea::placeholder {
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
+    --border: 215 16% 84%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;

@@ -376,7 +376,7 @@ export default function HostQuizPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <main className="flex-1">
         <div className="max-w-7xl mx-auto p-3 sm:p-6 py-6 lg:py-6 space-y-4 sm:space-y-6">
           <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">

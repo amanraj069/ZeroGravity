@@ -37,7 +37,7 @@ export default function AdminQuizDetailPage() {
     );
   if (!isAdmin)
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center p-6">
           <p className="text-lg text-black dark:text-white">
             Admin access required.

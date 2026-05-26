@@ -288,7 +288,7 @@ export default function ShopPage() {
                           <select 
                             value={futureDate} 
                             onChange={e => setFutureDate(e.target.value)} 
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-violet-500 appearance-none pr-8 cursor-pointer transition-colors"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-transparent text-sm text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-violet-500 appearance-none pr-8 cursor-pointer transition-colors"
                           >
                             <option value="" disabled>Select Date...</option>
                             <option value={tomorrowValue}>{tomorrowLabel}</option>
@@ -374,8 +374,8 @@ export default function ShopPage() {
       {/* ─── Activity Calendar Modal ─── */}
       {showCalendar && (
         <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
-          <div className="relative w-full max-w-3xl bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl max-h-[85vh] overflow-y-auto">
-            <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between rounded-t-xl">
+          <div className="relative w-full max-w-3xl bg-transparent rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div className="sticky top-0 z-10 bg-transparent border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between rounded-t-xl">
               <h3 className="text-sm md:text-base font-semibold text-black dark:text-white">Activity Calendar</h3>
               <button onClick={() => setShowCalendar(false)} className="text-gray-400 hover:text-black dark:hover:text-white"><X size={18} /></button>
             </div>

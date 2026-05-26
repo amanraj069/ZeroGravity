@@ -238,7 +238,7 @@ export default function Login() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <div className="text-center mb-6 sm:mb-8">
             <motion.h1
@@ -285,7 +285,7 @@ export default function Login() {
                 onChange={handleChange}
                 required
                 autoComplete="email"
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-transparent text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
                 placeholder="Enter your email here"
               />
             </motion.div>
@@ -318,7 +318,7 @@ export default function Login() {
                   onChange={handleChange}
                   required
                   autoComplete="current-password"
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-transparent text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
                   placeholder="••••••••"
                 />
                 <button

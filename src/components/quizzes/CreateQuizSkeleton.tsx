@@ -6,7 +6,7 @@ export default function CreateQuizSkeleton() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 overflow-hidden">
       {/* Header Skeleton */}
-      <div className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shrink-0">
+      <div className="bg-transparent border-b border-gray-100 dark:border-gray-800 shrink-0">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">

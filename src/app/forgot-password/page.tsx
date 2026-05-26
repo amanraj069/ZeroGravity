@@ -379,7 +379,7 @@ export default function ForgotPassword() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 min-w-0 py-10 sm:py-12 px-6 sm:px-8 min-h-[540px] sm:min-h-[590px] flex flex-col bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          className="w-full max-w-md flex-shrink-0 min-w-0 py-10 sm:py-12 px-6 sm:px-8 min-h-[540px] sm:min-h-[590px] flex flex-col bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <AnimatePresence mode="wait">
             {step === "email" ? (
@@ -440,7 +440,7 @@ export default function ForgotPassword() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={otpSent}
-                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20 ${
+                        className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-transparent text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20 ${
                           otpSent
                             ? "pr-10 opacity-70 bg-gray-50 dark:bg-gray-800/20 cursor-not-allowed"
                             : ""
@@ -507,7 +507,7 @@ export default function ForgotPassword() {
                                   handleOtpChange(idx, e.target.value)
                                 }
                                 onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                                className="w-full h-12 sm:h-13 text-center text-lg sm:text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
+                                className="w-full h-12 sm:h-13 text-center text-lg sm:text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-transparent rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                               />
                             ))}
                           </div>
@@ -602,7 +602,7 @@ export default function ForgotPassword() {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         required
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-transparent text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
                         placeholder="Min 8 characters"
                       />
                       <button
@@ -656,7 +656,7 @@ export default function ForgotPassword() {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-white dark:bg-gray-900 text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-all bg-transparent text-black dark:text-white text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-purple-500/20"
                         placeholder="Re-enter new password"
                       />
                       <button

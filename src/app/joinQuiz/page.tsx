@@ -624,9 +624,9 @@ function JoinQuizContent() {
 
   if (!joined) {
     return (
-      <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
-        <div className="pt-6 sm:pt-8 lg:pt-10 pb-4 sm:pb-6 lg:pb-8 bg-white dark:bg-gray-900">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full">
+      <div className="min-h-screen flex flex-col bg-transparent">
+        <div className="pt-6 sm:pt-8 lg:pt-10 pb-4 sm:pb-6 lg:pb-8 bg-transparent">
+          <div className="max-w-6xl mx-auto px-4 w-full">
             <div className="flex items-center justify-start gap-3">
               <BackButton />
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-light text-black dark:text-white tracking-tight">
@@ -655,7 +655,7 @@ function JoinQuizContent() {
                       Quiz Access Code
                     </label>
                     <input
-                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm rounded-lg"
+                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-transparent text-gray-900 dark:text-gray-100 shadow-sm rounded-lg"
                       placeholder="Enter 6-letter code"
                       value={joinCode}
                       onChange={(e) =>
@@ -670,7 +670,7 @@ function JoinQuizContent() {
                       Your Name
                     </label>
                     <input
-                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm rounded-lg"
+                      className="w-full border sm:border-2 border-gray-300 dark:border-gray-600 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-light focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-2 focus:ring-black/10 dark:focus:ring-gray-500/20 transition-all placeholder-gray-500 dark:placeholder-gray-400 bg-transparent text-gray-900 dark:text-gray-100 shadow-sm rounded-lg"
                       placeholder="Enter your name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -745,7 +745,7 @@ function JoinQuizContent() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Hero-style header section */}
-      <div className="bg-white dark:bg-gray-900">
+      <div className="bg-transparent">
         <div className="max-w-6xl mx-auto px-4 lg:py-8 pt-4 pb-2">
           {/* Mobile Layout */}
           <div className="lg:hidden mb-4">

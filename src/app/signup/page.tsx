@@ -383,7 +383,7 @@ export default function Signup() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+            className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
           >
           <div className="text-center mb-6 sm:mb-8">
             {/* Email icon */}
@@ -440,7 +440,7 @@ export default function Signup() {
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                className="w-full h-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-xl"
+                className="w-full h-12 sm:h-14 text-center text-xl sm:text-2xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-transparent rounded-xl"
                 autoFocus={index === 0}
               />
             ))}
@@ -629,7 +629,7 @@ export default function Signup() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white dark:bg-gray-900/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <div className="text-center mb-6 sm:mb-8">
             <motion.h1
@@ -667,7 +667,7 @@ export default function Signup() {
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
+                className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-transparent placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                 required
                 autoComplete="name"
               />
@@ -684,7 +684,7 @@ export default function Signup() {
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
+                className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-transparent placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                 required
                 autoComplete="username"
               />
@@ -701,7 +701,7 @@ export default function Signup() {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
+                className="w-full px-3 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-transparent placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                 required
                 autoComplete="email"
               />
@@ -719,7 +719,7 @@ export default function Signup() {
                   placeholder="Setup your Password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-3 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
+                  className="w-full px-3 py-2.5 sm:py-3 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm sm:text-base text-black dark:text-white bg-transparent placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:ring-2 focus:ring-purple-500/20 transition-all"
                   required
                   minLength={8}
                   autoComplete="new-password"

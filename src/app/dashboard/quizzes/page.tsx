@@ -1,24 +1,30 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { listUserQuizzes, deleteQuiz } from "@/services/quizzesService";
 import { Quiz } from "@/types/quiz";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import Image from "next/image";
-import { Plus, Trash2, Users, Search } from "lucide-react";
+import { Plus, Trash2, Search, BarChart2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BackButton } from "@/components/BackButton";
 import QuizzesSkeleton, {
   QuizCardsSkeleton,
 } from "@/components/quizzes/QuizzesSkeleton";
+import PracticeQuizzesTab from "./PracticeQuizzesTab";
 
-export default function QuizzesPage() {
+function QuizzesContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const typeParam = searchParams.get("type");
+  const [activeTab, setActiveTab] = useState<"hosted" | "practice">(
+    typeParam === "host" ? "hosted" : "practice"
+  );
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
   const { showToast, showDialog } = useToast();
-  const router = useRouter();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -188,7 +194,7 @@ export default function QuizzesPage() {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <main className="flex-1 py-4 sm:py-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header */}
@@ -210,36 +216,50 @@ export default function QuizzesPage() {
                 </div>
 
                 {/* Mobile icon actions */}
-                <div className="flex items-center gap-2 sm:hidden h-9">
+                <div className="flex items-center gap-2 sm:hidden">
                   <button
                     onClick={() => router.push("/joinQuiz")}
-                    className="h-7 !py-0 flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3 border border-transparent hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer rounded-lg box-border"
+                    className="h-8 flex items-center justify-center border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-black dark:text-white px-3.5 hover:bg-black/10 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out text-[13px] font-medium cursor-pointer rounded-xl box-border"
                   >
-                    <Users className="w-4 h-4" />
                     Join
                   </button>
-                  <button
-                    onClick={() => router.push("/dashboard/quizzes/deleted")}
-                    className="h-9 w-9 !p-0 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors rounded-lg box-border"
-                    aria-label="View Deleted"
-                    title="View Deleted"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {activeTab === "practice" && (
+                    <div className="relative group">
+                      <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500 rounded-xl"></div>
+                      <button
+                        onClick={() => router.push("/dashboard/quizzes/practice/progress")}
+                        className="relative h-8 flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3.5 hover:bg-gray-900 dark:hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-[13px] font-medium rounded-xl box-border shadow-sm"
+                      >
+                        <BarChart2 className="w-3.5 h-3.5" />
+                        Progress
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
               <div className="hidden sm:flex flex-row gap-3 items-center justify-end shrink-0">
                 <button
                   onClick={() => router.push("/joinQuiz")}
-                  className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                  className="flex items-center justify-center border border-black dark:border-white bg-white dark:bg-[#1C1C22] text-black dark:text-white px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out text-sm font-medium cursor-pointer rounded-xl"
                 >
-                  <Users className="w-4 h-4" />
                   Join Quiz
                 </button>
+                {activeTab === "practice" && (
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500 rounded-xl"></div>
+                    <button
+                      onClick={() => router.push("/dashboard/quizzes/practice/progress")}
+                      className="relative flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                    >
+                      <BarChart2 className="w-4 h-4" />
+                      AI Progress
+                    </button>
+                  </div>
+                )}
                 <button
-                  onClick={() => router.push("/dashboard/quizzes/deleted")}
-                  className="flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                  onClick={() => router.push(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
+                  className="flex items-center justify-center gap-2 bg-white dark:bg-[#1C1C22] border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
                 >
                   <Trash2 className="w-4 h-4" />
                   Trash
@@ -248,29 +268,83 @@ export default function QuizzesPage() {
             </div>
           </motion.div>
 
-          {/* Search Bar */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="mb-3 sm:mb-6 relative"
-          >
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              <Search className="w-4 h-4" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search quizzes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 pl-10 pr-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all rounded-xl"
-            />
-            {searchLoading && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-700 border-t-black dark:border-t-white  animate-spin"></div>
+          {/* Tabs and Search */}
+          <div className="flex flex-col sm:flex-row sm:items-stretch justify-between gap-2 sm:gap-4 mb-3 sm:mb-6">
+            {/* Tabs and Mobile Trash */}
+            <div className="flex items-stretch gap-2 w-full sm:flex-[3]">
+              <div className="flex flex-1 bg-gray-100/80 dark:bg-[#121216]/80 backdrop-blur-xl p-1.5 rounded-xl border border-gray-200/50 dark:border-white/5 overflow-hidden relative z-0">
+              {(["practice", "hosted"] as const).map((tab) => {
+                const isActive = activeTab === tab;
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => {
+                      setActiveTab(tab);
+                      setSearchTerm("");
+                      router.push(`/dashboard/quizzes?type=${tab === "hosted" ? "host" : "practice"}`);
+                    }}
+                    className={`flex-1 relative px-5 py-2 sm:px-8 sm:py-2.5 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap transition-colors z-10 ${
+                      isActive 
+                        ? "text-black dark:text-white" 
+                        : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="active-quiz-type-tab"
+                        className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-xl"
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                        style={{ zIndex: -1 }}
+                      />
+                    )}
+                    {tab === "hosted" ? "Hosted Quizzes" : "Practice Quizzes"}
+                  </button>
+                );
+              })}
               </div>
-            )}
-          </motion.div>
+              
+              {/* Mobile Trash Button */}
+              <button
+                onClick={() => router.push(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
+                className="sm:hidden px-4 shrink-0 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 bg-gray-100/80 dark:bg-[#121216]/80 backdrop-blur-xl border border-gray-200/50 dark:border-white/5 hover:border-red-200 dark:hover:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all rounded-xl box-border"
+                aria-label="View Deleted"
+                title="View Deleted"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Global Search Bar */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="relative w-full sm:flex-[2] flex items-center sm:items-stretch gap-2"
+            >
+              <div className="relative flex-1">
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10">
+                  <Search className="w-4 h-4" />
+                </div>
+                <input
+                  type="text"
+                  placeholder={`Search ${activeTab === "hosted" ? "hosted" : "practice"} quizzes...`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full h-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#15151a] text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 pl-10 pr-4 py-3 sm:py-0 text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 rounded-xl sm:rounded-xl shadow-sm min-h-[48px] sm:min-h-0"
+                />
+                {searchLoading && activeTab === "hosted" && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10">
+                    <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-700 border-t-black dark:border-t-white animate-spin rounded-full"></div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+
+          {activeTab === "practice" ? (
+            <PracticeQuizzesTab searchTerm={searchTerm} />
+          ) : (
+            <>
 
           {/* Loading State */}
           {loading && <QuizCardsSkeleton />}
@@ -424,38 +498,18 @@ export default function QuizzesPage() {
                 whileHover={{
                   y: -4,
                   scale: 1.005,
-                  transition: { type: "spring", stiffness: 300, damping: 20 }
+                  transition: { duration: 0.2, ease: "easeOut" }
                 }}
-                className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-colors duration-300 p-3 sm:p-5 rounded-xl group/add overflow-hidden"
+                className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151a]/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-colors duration-300 p-8 rounded-xl group/add"
+                style={{ minHeight: "180px" }}
               >
-                {/* Invisible dummy structure to match exact quiz card height */}
-                <div className="invisible w-full flex flex-col pointer-events-none" aria-hidden="true">
-                  <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
-                    <div className="min-w-0 flex items-center gap-2 sm:gap-3 flex-1">
-                      <span className="shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full opacity-0">Draft</span>
-                      <h3 className="text-base sm:text-lg font-semibold line-clamp-1 sm:line-clamp-2 min-w-0">Title</h3>
-                    </div>
-                  </div>
-                  <div className="hidden sm:flex mb-3 items-center justify-between gap-2 text-xs">
-                    <span className="truncate">Created Date</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-transparent">
-                    <div>
-                      <div className="text-sm sm:text-base font-semibold">0</div>
-                      <div className="text-[11px] sm:text-xs">Questions</div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Actual button content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover/add:border-gray-400 transition-colors">
-                    <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors" />
-                  </div>
-                  <span className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors">
-                    ADD QUIZ
-                  </span>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover/add:border-gray-400 transition-colors mb-3">
+                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors" />
                 </div>
+                <span className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors">
+                  ADD QUIZ
+                </span>
               </motion.button>
               <AnimatePresence>
                 {filteredQuizzes.map((quiz, index) => (
@@ -466,35 +520,27 @@ export default function QuizzesPage() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
                     transition={{
-                      layout: { type: "spring", stiffness: 350, damping: 25, mass: 0.8 },
+                      layout: { duration: 0.3, ease: "easeInOut" },
                       opacity: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: (index + 1) * 0.06 },
-                      y: { type: "spring", stiffness: 350, damping: 25, delay: (index + 1) * 0.06 },
-                      scale: { type: "spring", stiffness: 350, damping: 25, delay: (index + 1) * 0.06 }
+                      y: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: (index + 1) * 0.06 },
+                      scale: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: (index + 1) * 0.06 }
                     }}
                     onClick={() => handleQuizClick(quiz)}
                     whileHover={{
                       y: -4,
                       boxShadow:
                         "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                      transition: { type: "spring", stiffness: 300, damping: 20 }
+                      transition: { duration: 0.2, ease: "easeOut" }
                     }}
-                    className="flex flex-col h-full bg-white dark:bg-gray-800 shadow-sm p-3 sm:p-5 transition-colors cursor-pointer border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 group rounded-xl"
+                    className="flex flex-col h-full bg-white dark:bg-[#15151a] shadow-sm p-5 sm:p-6 transition-all cursor-pointer border border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 group rounded-xl"
+                    style={{ minHeight: "180px" }}
                   >
-                    {/* Header with Status + Title and Actions */}
-                    <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
-                      <div className="min-w-0 flex items-center gap-2 sm:gap-3 flex-1">
-                        <span
-                          className={`shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-full ${getStatusColor(
-                            quiz.status,
-                          )}`}
-                        >
-                          {getStatusText(quiz.status)}
-                        </span>
-                        <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-1 sm:line-clamp-2 min-w-0">
-                          {quiz.title}
-                        </h3>
-                      </div>
-                      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                    {/* Header with Title and Actions */}
+                    <div className="flex items-start justify-between gap-4 mb-auto">
+                      <h3 className="text-xl sm:text-2xl font-light text-black dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2 leading-snug">
+                        {quiz.title}
+                      </h3>
+                      <div className="flex flex-col items-end gap-2 shrink-0 mt-1">
                         <button
                           onClick={(e) =>
                             handleDeleteQuiz(quiz.quizId, e, quiz.status)
@@ -503,7 +549,7 @@ export default function QuizzesPage() {
                             deletingQuizId === quiz.quizId ||
                             quiz.status === "active"
                           }
-                          className="p-1 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors rounded-xl"
+                          className="p-1.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors rounded-xl border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
                           title={
                             quiz.status === "active"
                               ? "Cannot delete an active quiz"
@@ -511,15 +557,15 @@ export default function QuizzesPage() {
                           }
                         >
                           {deletingQuizId === quiz.quizId ? (
-                            <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-red-500 dark:border-red-400 border-t-transparent animate-spin"></div>
+                            <div className="w-4 h-4 border-2 border-red-500 dark:border-red-400 border-t-transparent animate-spin"></div>
                           ) : (
-                            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <Trash2 className="w-4 h-4" />
                           )}
                         </button>
                       </div>
                     </div>
 
-                    <div className="hidden sm:flex mb-3 items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div className="flex mb-4 mt-2 items-center justify-between gap-2 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">
                       <span className="truncate">
                         Created {new Date(quiz.createdAt).toLocaleDateString()}
                       </span>
@@ -536,22 +582,26 @@ export default function QuizzesPage() {
                     )}
 
                     {/* Quiz Stats */}
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-gray-100 dark:border-gray-700">
-                      <div className="text-center">
-                        <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
-                          {quiz.questions.length}
-                        </div>
-                        <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
-                          Questions
+                    <div className="flex items-end justify-between mt-auto pt-4 border-t border-gray-100 dark:border-gray-800">
+                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-black dark:text-white">
+                            {quiz.questions.length}
+                          </span>
+                          <span className="text-xs sm:text-sm">
+                            Qs
+                          </span>
                         </div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-sm sm:text-base font-semibold text-black dark:text-white">
-                          {quiz.participants || 0}
-                        </div>
-                        <div className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400">
-                          Participants
-                        </div>
+                      
+                      <div className="flex items-center shrink-0">
+                        <span
+                          className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-xl ${getStatusColor(
+                            quiz.status,
+                          )}`}
+                        >
+                          {getStatusText(quiz.status)}
+                        </span>
                       </div>
                     </div>
                   </motion.div>
@@ -559,8 +609,18 @@ export default function QuizzesPage() {
               </AnimatePresence>
             </motion.div>
           )}
+          </>
+          )}
         </div>
       </main>
     </div>
+  );
+}
+
+export default function QuizzesPage() {
+  return (
+    <Suspense fallback={<QuizzesSkeleton />}>
+      <QuizzesContent />
+    </Suspense>
   );
 }

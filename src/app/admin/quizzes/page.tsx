@@ -40,7 +40,7 @@ export default function AdminQuizzesPage() {
     );
   if (!isAdmin)
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center p-6">
           <p className="text-lg text-black dark:text-white">
             Admin access required.
@@ -52,7 +52,7 @@ export default function AdminQuizzesPage() {
   const maxPage = Math.max(1, Math.ceil(total / limit));
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-transparent">
       <main className="py-10">
         <div className="max-w-6xl mx-auto px-4">
           {/* Header with Search */}

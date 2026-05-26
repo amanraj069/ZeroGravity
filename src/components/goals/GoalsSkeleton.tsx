@@ -75,7 +75,7 @@ export default function GoalsSkeleton({
       ) : (
         /* Filter Tabs Skeleton (Goals) */
         <div className="bg-white dark:bg-gray-800 p-0 shadow-sm mt-2 sm:mt-4 rounded-lg overflow-hidden">
-          <div className="flex items-center bg-white dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center bg-transparent/50 border-b border-gray-100 dark:border-gray-800">
             {[1, 2, 3, 4, 5].map((i) => (
               <div 
                 key={i} 

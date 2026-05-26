@@ -101,7 +101,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8 sm:py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-transparent py-8 sm:py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <AnimatedSection className="mb-6 mt-8">
@@ -117,7 +117,7 @@ export default function ContactPage() {
 
         {/* Contact Form */}
         <AnimatedSection>
-          <div className="bg-white dark:bg-gray-900 mb-12">
+          <div className="bg-transparent mb-12">
             <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-8 sm:mb-10">
               Share Your Ideas or Report Issues
             </h2>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                   value={formData.fullName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -180,7 +180,7 @@ export default function ContactPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
                   placeholder="Enter your email address"
                 />
               </div>
@@ -198,7 +198,7 @@ export default function ContactPage() {
                   name="contactNumber"
                   value={formData.contactNumber}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
+                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors"
                   placeholder="Enter your contact number (optional)"
                 />
               </div>
@@ -220,7 +220,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors resize-none"
+                  className="w-full px-4 py-3.5 text-base border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 transition-colors resize-none"
                   placeholder="Share your ideas for new features or describe any issues you're experiencing (minimum 10 characters)"
                 />
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">

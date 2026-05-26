@@ -13,7 +13,7 @@ export default function ZeroGravityLoading({
   subtitle = "Preparing your cosmic experience...",
 }: ZeroGravityLoadingProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <div className="relative flex items-center justify-center w-16 h-16 mx-auto mb-6">
