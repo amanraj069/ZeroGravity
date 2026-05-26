@@ -2,11 +2,25 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Check, AlertCircle, Sparkles, RefreshCw, ChevronDown, ChevronUp, Settings2, BookOpen, Zap, FlaskConical, Wrench } from "lucide-react";
+import {
+  X,
+  Check,
+  AlertCircle,
+  Sparkles,
+  RefreshCw,
+  ChevronDown,
+  ChevronUp,
+  Settings2,
+  BookOpen,
+  Zap,
+  FlaskConical,
+  Wrench,
+} from "lucide-react";
 import {
   dailyTasksService,
   StudyPlanTask,
   StudyPlanQuota,
+  DailyTask,
 } from "@/services/dailyTasksService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +28,10 @@ import { useAuth } from "@/contexts/AuthContext";
 interface StudyPlannerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onTasksCreated: () => Promise<void>;
+  onAddSelectedTasks: (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    tasks: any[],
+  ) => void;
   initialPrompt?: string;
   initialStyle?: string;
 }
@@ -65,7 +82,7 @@ const getLocalDateString = (date: Date = new Date()): string => {
 export default function StudyPlannerModal({
   isOpen,
   onClose,
-  onTasksCreated,
+  onAddSelectedTasks,
   initialPrompt = "",
   initialStyle = "balanced",
 }: StudyPlannerModalProps) {
@@ -83,7 +100,6 @@ export default function StudyPlannerModal({
   const [spError, setSpError] = useState<string | null>(null);
   const [spNotice, setSpNotice] = useState<string | null>(null);
   const [spQuota, setSpQuota] = useState<StudyPlanQuota | null>(null);
-  const [spIsCreating, setSpIsCreating] = useState(false);
   const [spCreatedCount, setSpCreatedCount] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
   const [spConfigExpanded, setSpConfigExpanded] = useState(false);
@@ -118,7 +134,7 @@ export default function StudyPlannerModal({
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
-  
+
   // Rotating loading messages
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const loadingMessages = [
@@ -128,7 +144,7 @@ export default function StudyPlannerModal({
     "Assembling your unique roadmap...",
     "Optimizing neural pathways...",
     "Bending space-time for your schedule...",
-    "Mapping out your neural journey..."
+    "Mapping out your neural journey...",
   ];
 
   useEffect(() => {
@@ -184,7 +200,9 @@ export default function StudyPlannerModal({
   const renderStyleSelector = (isCompact = false) => {
     return (
       <div className="flex flex-col gap-2">
-        <label className={`${isCompact ? "text-[11px] font-medium text-gray-500 dark:text-gray-400" : "text-xs font-medium text-gray-700 dark:text-gray-300"}`}>
+        <label
+          className={`${isCompact ? "text-[11px] font-medium text-gray-500 dark:text-gray-400" : "text-xs font-medium text-gray-700 dark:text-gray-300"}`}
+        >
           Study Focus Style
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -202,21 +220,35 @@ export default function StudyPlannerModal({
                 }`}
               >
                 <div className="flex items-center gap-1.5 w-full">
-                  <span className={isSelected ? "text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-400"}>
+                  <span
+                    className={
+                      isSelected
+                        ? "text-gray-900 dark:text-white"
+                        : "text-gray-600 dark:text-gray-400"
+                    }
+                  >
                     {style.icon}
                   </span>
-                  <span className={`text-xs font-semibold truncate ${
-                    isSelected ? "text-gray-900 dark:text-white" : "text-gray-700 dark:text-gray-300"
-                  }`}>
+                  <span
+                    className={`text-xs font-semibold truncate ${
+                      isSelected
+                        ? "text-gray-900 dark:text-white"
+                        : "text-gray-700 dark:text-gray-300"
+                    }`}
+                  >
                     {style.label}
                   </span>
                   {isSelected && (
                     <Check className="w-3 h-3 ml-auto flex-shrink-0 text-gray-900 dark:text-white" />
                   )}
                 </div>
-                <p className={`hidden sm:block text-[10px] leading-tight ${
-                  isSelected ? "text-gray-600 dark:text-gray-400" : "text-gray-500 dark:text-gray-500"
-                }`}>
+                <p
+                  className={`hidden sm:block text-[10px] leading-tight ${
+                    isSelected
+                      ? "text-gray-600 dark:text-gray-400"
+                      : "text-gray-500 dark:text-gray-500"
+                  }`}
+                >
                   {style.description}
                 </p>
               </button>
@@ -244,9 +276,12 @@ export default function StudyPlannerModal({
       setSpError("End date must be on or after start date.");
       return;
     }
-    const dayCount = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const dayCount =
+      Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
     if (dayCount > 30) {
-      setSpError("Study plans are limited to a maximum of 30 days. Please adjust your date range.");
+      setSpError(
+        "Study plans are limited to a maximum of 30 days. Please adjust your date range.",
+      );
       return;
     }
 
@@ -261,24 +296,28 @@ export default function StudyPlannerModal({
         spStartDate,
         spEndDate,
         parseInt(spHoursPerDay, 10),
-        selectedStyle
+        selectedStyle,
       );
       if (result.success && result.plan) {
         setSpPlan(result.plan);
         if (result.quota) setSpQuota(result.quota);
         if (result.fallbackOccurred) {
-          setSpNotice("The primary model was busy. We've used our secondary AI to generate your plan without any delay.");
+          setSpNotice(
+            "The primary model was busy. We've used our secondary AI to generate your plan without any delay.",
+          );
         }
       } else {
-          // Show the specific backend error if it's a limit/quota error, otherwise generic
-          const errorMsg = result.message?.includes("limit") 
-            ? result.message 
-            : "Study plan generation failed due to high AI traffic. Please try again later or contact the administrator.";
-          setSpError(errorMsg);
-          if (result.quota) setSpQuota(result.quota);
+        // Show the specific backend error if it's a limit/quota error, otherwise generic
+        const errorMsg = result.message?.includes("limit")
+          ? result.message
+          : "Study plan generation failed due to high AI traffic. Please try again later or contact the administrator.";
+        setSpError(errorMsg);
+        if (result.quota) setSpQuota(result.quota);
       }
     } catch {
-      setSpError("A system connection error occurred. Please contact the administrator.");
+      setSpError(
+        "A system connection error occurred. Please contact the administrator.",
+      );
     } finally {
       setSpIsGenerating(false);
     }
@@ -292,9 +331,12 @@ export default function StudyPlannerModal({
       setSpError("End date must be on or after start date.");
       return;
     }
-    const dayCount = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const dayCount =
+      Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
     if (dayCount > 30) {
-      setSpError("Study plans are limited to a maximum of 30 days. Please adjust your date range.");
+      setSpError(
+        "Study plans are limited to a maximum of 30 days. Please adjust your date range.",
+      );
       return;
     }
 
@@ -309,24 +351,28 @@ export default function StudyPlannerModal({
         spStartDate,
         spEndDate,
         parseInt(spHoursPerDay, 10),
-        selectedStyle
+        selectedStyle,
       );
       if (result.success && result.plan) {
         setSpPlan(result.plan);
         if (result.quota) setSpQuota(result.quota);
         if (result.fallbackOccurred) {
-          setSpNotice("The primary model was busy. We've used our secondary AI to generate your plan without any delay.");
+          setSpNotice(
+            "The primary model was busy. We've used our secondary AI to generate your plan without any delay.",
+          );
         }
       } else {
         // Show the specific backend error if it's a limit/quota error, otherwise generic
-        const errorMsg = result.message?.includes("limit") 
-          ? result.message 
+        const errorMsg = result.message?.includes("limit")
+          ? result.message
           : "Regeneration failed. Please try again later or contact the administrator.";
         setSpError(errorMsg);
         if (result.quota) setSpQuota(result.quota);
       }
     } catch {
-      setSpError("System communication failure. Please contact the administrator.");
+      setSpError(
+        "System communication failure. Please contact the administrator.",
+      );
     } finally {
       setSpIsGenerating(false);
     }
@@ -335,19 +381,22 @@ export default function StudyPlannerModal({
   if (!shouldRender || !mounted) return null;
 
   return createPortal(
-    <div 
+    <div
       className={`fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 p-4 overflow-hidden transition-all duration-300 ease-out ${
-        isOpen && isAnimating ? "opacity-100 backdrop-blur-xl" : "opacity-0 backdrop-blur-none pointer-events-none"
+        isOpen && isAnimating
+          ? "opacity-100 backdrop-blur-xl"
+          : "opacity-0 backdrop-blur-none pointer-events-none"
       }`}
       onClick={onClose}
     >
-      <div 
+      <div
         className={`bg-white dark:bg-gray-900 w-full max-w-6xl shadow-2xl flex flex-col max-h-full rounded-2xl overflow-hidden relative transition-all duration-300 ease-out ${
-          isOpen && isAnimating ? "scale-100 opacity-100 translate-y-0" : "scale-[0.97] opacity-0 translate-y-4"
+          isOpen && isAnimating
+            ? "scale-100 opacity-100 translate-y-0"
+            : "scale-[0.97] opacity-0 translate-y-4"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-
         {/* Modal Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-2 relative z-10">
           <h2 className="text-base sm:text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
@@ -355,14 +404,17 @@ export default function StudyPlannerModal({
             <span className="truncate">
               AI Study Plan
               {isPro && (
-                <span className="text-amber-500 dark:text-amber-400 font-light ml-1">Pro</span>
+                <span className="text-amber-500 dark:text-amber-400 font-light ml-1">
+                  Pro
+                </span>
               )}
             </span>
           </h2>
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {spQuota && (
               <span className="text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 whitespace-nowrap rounded-full">
-                {spQuota.remaining} <span className="hidden sm:inline">plans </span>left
+                {spQuota.remaining}{" "}
+                <span className="hidden sm:inline">plans </span>left
               </span>
             )}
             <button
@@ -413,7 +465,8 @@ export default function StudyPlannerModal({
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/50 p-3 flex items-start gap-3 mb-4 rounded-xl">
               <Check className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
               <p className="text-sm font-medium text-green-800 dark:text-green-300 flex-1">
-                {spCreatedCount} study task{spCreatedCount === 1 ? "" : "s"} created successfully! They will appear in your daily tasks.
+                {spCreatedCount} study task{spCreatedCount === 1 ? "" : "s"}{" "}
+                created successfully! They will appear in your daily tasks.
               </p>
               <button
                 onClick={() => setSpCreatedCount(null)}
@@ -433,26 +486,28 @@ export default function StudyPlannerModal({
               </label>
               <textarea
                 className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out rounded-xl"
-                  rows={
-                    spPlan.length > 0 || spIsGenerating
-                      ? Math.min(
-                          3,
-                          Math.max(
-                            1,
-                            spTopic
-                              .split("\n")
-                              .reduce(
-                                (acc, line) =>
-                                  acc + Math.max(1, Math.ceil(line.length / 80)),
-                                0
-                              )
-                          )
-                        )
-                      : 8
-                  }
+                rows={
+                  spPlan.length > 0 || spIsGenerating
+                    ? Math.min(
+                        3,
+                        Math.max(
+                          1,
+                          spTopic
+                            .split("\n")
+                            .reduce(
+                              (acc, line) =>
+                                acc + Math.max(1, Math.ceil(line.length / 80)),
+                              0,
+                            ),
+                        ),
+                      )
+                    : 8
+                }
                 value={spTopic}
                 onChange={(e) => setSpTopic(e.target.value)}
-                placeholder={"Describe what you want to study...\ne.g. \"Binary Trees & BST for my DSA exam\""}
+                placeholder={
+                  'Describe what you want to study...\ne.g. "Binary Trees & BST for my DSA exam"'
+                }
                 disabled={spIsGenerating}
                 maxLength={500}
               />
@@ -475,7 +530,9 @@ export default function StudyPlannerModal({
                       value={spStartDate}
                       min={getLocalDateString()}
                       onChange={(e) => setSpStartDate(e.target.value)}
-                      onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                      onClick={(e) =>
+                        (e.target as HTMLInputElement).showPicker?.()
+                      }
                       className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                       disabled={spIsGenerating}
                     />
@@ -489,7 +546,9 @@ export default function StudyPlannerModal({
                       value={spEndDate}
                       min={getLocalDateString()}
                       onChange={(e) => setSpEndDate(e.target.value)}
-                      onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                      onClick={(e) =>
+                        (e.target as HTMLInputElement).showPicker?.()
+                      }
                       className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                       disabled={spIsGenerating}
                     />
@@ -515,11 +574,17 @@ export default function StudyPlannerModal({
                     <button
                       className="w-full px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 h-[38px] rounded-lg"
                       onClick={handleGenerate}
-                      disabled={spIsGenerating || !spTopic.trim() || !!(spQuota && spQuota.used >= spQuota.limit)}
+                      disabled={
+                        spIsGenerating ||
+                        !spTopic.trim() ||
+                        !!(spQuota && spQuota.used >= spQuota.limit)
+                      }
                     >
-                      {spQuota && spQuota.used >= spQuota.limit 
-                        ? "Out of Credits" 
-                        : spIsGenerating ? "Generating..." : "Generate"}
+                      {spQuota && spQuota.used >= spQuota.limit
+                        ? "Out of Credits"
+                        : spIsGenerating
+                          ? "Generating..."
+                          : "Generate"}
                     </button>
                   </div>
                 </div>
@@ -542,9 +607,13 @@ export default function StudyPlannerModal({
                       <ChevronDown className="w-4 h-4" />
                     )}
                   </button>
-                  <div className={`grid transition-all duration-300 ease-in-out ${
-                    spConfigExpanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}>
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      spConfigExpanded
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
                     <div className="overflow-hidden">
                       <div className="px-3 pb-3 pt-2 border-t border-gray-200 dark:border-gray-700 space-y-3">
                         {/* Study Focus Style Selector */}
@@ -560,7 +629,9 @@ export default function StudyPlannerModal({
                               value={spStartDate}
                               min={getLocalDateString()}
                               onChange={(e) => setSpStartDate(e.target.value)}
-                              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                              onClick={(e) =>
+                                (e.target as HTMLInputElement).showPicker?.()
+                              }
                               className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                             />
                           </div>
@@ -573,7 +644,9 @@ export default function StudyPlannerModal({
                               value={spEndDate}
                               min={getLocalDateString()}
                               onChange={(e) => setSpEndDate(e.target.value)}
-                              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                              onClick={(e) =>
+                                (e.target as HTMLInputElement).showPicker?.()
+                              }
                               className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                             />
                           </div>
@@ -622,7 +695,8 @@ export default function StudyPlannerModal({
             <div className="mt-4 flex flex-col min-h-0 flex-1">
               <div className="flex items-center justify-between mb-3 flex-shrink-0">
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                  Generated Plan ({spPlan.filter((t) => t.selected).length}/{spPlan.length} selected)
+                  Generated Plan ({spPlan.filter((t) => t.selected).length}/
+                  {spPlan.length} selected)
                 </h3>
                 <div className="flex items-center gap-2">
                   <button
@@ -630,7 +704,7 @@ export default function StudyPlannerModal({
                     onClick={() => {
                       const allSelected = spPlan.every((t) => t.selected);
                       setSpPlan((prev) =>
-                        prev.map((t) => ({ ...t, selected: !allSelected }))
+                        prev.map((t) => ({ ...t, selected: !allSelected })),
                       );
                     }}
                   >
@@ -666,10 +740,8 @@ export default function StudyPlannerModal({
                       onClick={() =>
                         setSpPlan((prev) =>
                           prev.map((t, i) =>
-                            i === idx
-                              ? { ...t, selected: !t.selected }
-                              : t
-                          )
+                            i === idx ? { ...t, selected: !t.selected } : t,
+                          ),
                         )
                       }
                     >
@@ -699,8 +771,8 @@ export default function StudyPlannerModal({
                                   task.priority === "high"
                                     ? "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
                                     : task.priority === "medium"
-                                    ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
-                                    : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                                      ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+                                      : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
                                 }`}
                               >
                                 {task.priority}
@@ -745,7 +817,6 @@ export default function StudyPlannerModal({
                   setSpCreatedCount(null);
                   setSpConfigExpanded(false);
                 }}
-                disabled={spIsCreating}
               >
                 Generate New
               </button>
@@ -755,7 +826,9 @@ export default function StudyPlannerModal({
                 className="rounded-lg flex-shrink-0 w-9 h-9 sm:w-[38px] sm:h-[38px] flex items-center justify-center border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white transition-colors"
                 title="Regenerate plan"
                 onClick={handleRegenerate}
-                disabled={spIsGenerating || !!(spQuota && spQuota.used >= spQuota.limit)}
+                disabled={
+                  spIsGenerating || !!(spQuota && spQuota.used >= spQuota.limit)
+                }
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
@@ -763,56 +836,43 @@ export default function StudyPlannerModal({
               {/* Add Tasks — right, fills remaining space on mobile */}
               <button
                 className="rounded-lg flex-1 sm:flex-none ml-auto px-3 sm:px-6 py-2 text-xs sm:text-sm bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 truncate"
-                onClick={async () => {
+                onClick={() => {
                   const selected = spPlan.filter((t) => t.selected);
                   if (selected.length === 0) {
                     setSpError("Please select at least one task to add.");
                     return;
                   }
-                  setSpIsCreating(true);
-                  setSpError(null);
-                  try {
-                    await dailyTasksService.bulkCreateStudyTasks(
+
+                  // Hide modal immediately
+                  onClose();
+
+                  // Tell parent to show loader and process tasks
+                  if (onAddSelectedTasks) {
+                    onAddSelectedTasks(
                       selected.map((t) => ({
                         date: t.date,
                         title: t.title,
                         description: t.description,
                         priority: t.priority,
-                      }))
+                      })),
                     );
-                    
-                    // Reset state
-                    setSpPlan([]);
-                    setSpTopic("");
-                    setSpConfigExpanded(false);
-                    setSpCreatedCount(null);
-                    
-                    // Call parent callback to refresh data
-                    await onTasksCreated();
-
-                    // Close the popup automatically
-                    onClose();
-                  } catch (e) {
-                    setSpError(
-                      e instanceof Error ? e.message : "Failed to create tasks."
-                    );
-                  } finally {
-                    setSpIsCreating(false);
                   }
+
+                  // Reset state for next time
+                  setSpPlan([]);
+                  setSpTopic("");
+                  setSpConfigExpanded(false);
+                  setSpCreatedCount(null);
                 }}
-                disabled={spIsCreating || spPlan.filter((t) => t.selected).length === 0}
+                disabled={spPlan.filter((t) => t.selected).length === 0}
               >
-                {spIsCreating
-                  ? "Creating..."
-                  : `Add ${spPlan.filter((t) => t.selected).length} Task${spPlan.filter((t) => t.selected).length === 1 ? "" : "s"}`}
+                {`Add ${spPlan.filter((t) => t.selected).length} Task${spPlan.filter((t) => t.selected).length === 1 ? "" : "s"}`}
               </button>
             </div>
           </div>
         )}
       </div>
-
-
     </div>,
-    document.body
+    document.body,
   );
 }
