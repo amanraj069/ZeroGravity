@@ -73,6 +73,7 @@ interface AuthContextType {
   ) => Promise<{ success: boolean; message: string }>;
   loginWithGoogle: (
     credential: string,
+    luckyCode?: string | null,
   ) => Promise<{ success: boolean; message: string; streakInfo?: StreakInfo }>;
   checkSession: (silent?: boolean) => Promise<void>;
   sendOtp: (
@@ -81,6 +82,7 @@ interface AuthContextType {
   verifyOtp: (
     email: string,
     otp: string,
+    luckyCode?: string | null,
   ) => Promise<{ success: boolean; message: string }>;
   resendOtp: (email: string) => Promise<{ success: boolean; message: string }>;
   refreshPoints: () => Promise<void>;
@@ -319,11 +321,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const verifyOtp = async (
     email: string,
     otp: string,
+    luckyCode?: string | null,
   ): Promise<{ success: boolean; message: string }> => {
     try {
       const response = await apiCall(API_ENDPOINTS.AUTH.VERIFY_OTP, {
         method: "POST",
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ email, otp, luckyCode }),
       });
 
       const data = await response.json();
@@ -388,6 +391,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Google OAuth login function
   const loginWithGoogle = async (
     credential: string,
+    luckyCode?: string | null,
   ): Promise<{
     success: boolean;
     message: string;
@@ -399,7 +403,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       const response = await apiCall(API_ENDPOINTS.AUTH.GOOGLE, {
         method: "POST",
-        body: JSON.stringify({ credential }),
+        body: JSON.stringify({ credential, luckyCode }),
       });
 
       const data = await response.json();

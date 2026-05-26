@@ -73,7 +73,7 @@ export default function PracticeQuizzesTab({ searchTerm }: { searchTerm: string 
     }
   };
 
-  if (loading) return <QuizCardsSkeleton />;
+  if (loading) return <QuizCardsSkeleton type="practice" />;
 
   return (
     <div className="w-full">

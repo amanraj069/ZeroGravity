@@ -2,39 +2,61 @@
 
 import React from "react";
 
-export function QuizCardsSkeleton() {
+export function QuizCardsSkeleton({ type = "hosted" }: { type?: "hosted" | "practice" }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full">
+      {/* Action Button Skeleton */}
+      <div 
+        className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151a]/40 p-8 rounded-xl"
+        style={{ minHeight: "180px" }}
+      >
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 dark:bg-gray-800 animate-pulse mb-3" />
+        <div className="h-4 w-24 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+      </div>
+
       {[1, 2, 3].map((i) => (
         <div
           key={i}
-          className="bg-white dark:bg-gray-800 shadow-sm p-3 sm:p-5 border border-gray-100 dark:border-gray-700 rounded-xl"
+          className="flex flex-col bg-white dark:bg-[#15151a] shadow-sm p-5 sm:p-6 border border-gray-100 dark:border-gray-800 rounded-xl"
+          style={{ minHeight: "180px" }}
         >
-          {/* Header with Status + Title and Actions */}
-          <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
-            <div className="min-w-0 flex items-center gap-2 sm:gap-3 flex-1">
-              <div className="shrink-0 h-5 sm:h-6 w-16 sm:w-20 bg-gray-100 dark:bg-gray-700 animate-pulse rounded-full" />
-              <div className="h-5 sm:h-6 w-full max-w-[200px] bg-gray-200 dark:bg-gray-700 animate-pulse rounded-md" />
-            </div>
-            <div className="shrink-0 w-5 h-5 bg-gray-100 dark:bg-gray-700 animate-pulse rounded" />
+          {/* Header */}
+          <div className="flex items-start justify-between gap-4 mb-auto">
+            <div className="h-6 sm:h-8 w-3/4 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-md" />
+            <div className="shrink-0 w-8 h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-xl mt-1" />
           </div>
           
-          <div className="hidden sm:flex mb-3 justify-between items-center gap-2">
-            <div className="h-3 w-32 bg-gray-50/50 dark:bg-gray-800/40 animate-pulse rounded" />
-            <div className="h-3 w-32 bg-gray-50/50 dark:bg-gray-800/40 animate-pulse rounded" />
-          </div>
+          {type === "hosted" ? (
+            <>
+              {/* Hosted Quiz specific skeleton items */}
+              <div className="flex mb-4 mt-2 items-center justify-between gap-2">
+                <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+                <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+              </div>
+              <div className="hidden sm:block space-y-2 mb-3">
+                <div className="h-3 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+                <div className="h-3 w-2/3 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Practice Quiz specific skeleton items */}
+              <div className="flex flex-row flex-wrap items-center gap-1.5 mt-3 mb-auto">
+                <div className="h-5 w-16 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-xl" />
+                <div className="h-5 w-20 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-xl" />
+              </div>
+            </>
+          )}
 
-
-
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-gray-100 dark:border-gray-700">
-            <div className="text-center space-y-1.5 sm:space-y-2">
-              <div className="h-5 sm:h-6 w-8 sm:w-10 mx-auto bg-gray-100 dark:bg-gray-700 animate-pulse rounded" />
-              <div className="h-3 w-14 sm:w-16 mx-auto bg-gray-50/50 dark:bg-gray-800/30 animate-pulse rounded" />
+          {/* Bottom Stats */}
+          <div className="flex items-end justify-between mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex items-center gap-4">
+              <div className="h-5 w-12 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+              {type === "practice" && (
+                <div className="h-5 w-16 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+              )}
             </div>
-            <div className="text-center space-y-1.5 sm:space-y-2">
-              <div className="h-5 sm:h-6 w-8 sm:w-10 mx-auto bg-gray-100 dark:bg-gray-700 animate-pulse rounded" />
-              <div className="h-3 w-16 sm:w-20 mx-auto bg-gray-50/50 dark:bg-gray-800/30 animate-pulse rounded" />
-            </div>
+            <div className="shrink-0 h-6 w-16 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-xl" />
           </div>
         </div>
       ))}

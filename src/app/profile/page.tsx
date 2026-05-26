@@ -566,7 +566,7 @@ export default function Profile() {
 
                             {/* Display Badge Picker Dropdown */}
                             {showDisplayBadgePicker && (
-                              <div className="absolute top-full left-0 mt-1.5 z-50 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[200px] max-w-[260px] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                              <div className="absolute top-full left-0 mt-1.5 z-50 bg-white dark:bg-[#1c1c24] border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[200px] max-w-[260px] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
                                 <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
                                   <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                                     Display Badge

@@ -12,8 +12,8 @@ const features = [
   {
     id: "goals",
     title: "Master Your Goals",
-    description: "Transform ambitious dreams into achievable milestones with smart goal management that adapts to your unique journey.",
-    bullets: ["Contextual notes", "Smart categorization", "Real-time visualization"],
+    description: "Transform ambitious dreams into achievable milestones with our AI-based daily planner that adapts to your unique journey.",
+    bullets: ["Achievement streaks", "Daily planning", "Progress visualization"],
     image: "/landing/zerogravity-goal.webp",
     icon: Target,
     gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
@@ -22,10 +22,10 @@ const features = [
     size: "lg:col-span-7"
   },
   {
-    id: "insights",
-    title: "Deep Insights",
-    description: "Beautiful tracking that learns from your patterns to keep you engaged.",
-    bullets: ["Habit tracking", "Achievement streaks", "Interactive checklists"],
+    id: "quizzes",
+    title: "AI-Powered Quizzes",
+    description: "Practice with AI-generated quizzes, test your knowledge in real-time, and track your progress seamlessly over time.",
+    bullets: ["Personalised Quizzes", "Live multiplayer", "Detailed analytics"],
     image: "/landing/zerogravity-icecream.webp",
     icon: TrendingUp,
     gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
@@ -34,10 +34,10 @@ const features = [
     size: "lg:col-span-5"
   },
   {
-    id: "reminders",
-    title: "Smart Reminders",
-    description: "Intelligent nudges that turn procrastination into progress effortlessly.",
-    bullets: ["Flexible scheduling", "Motivation points", "Visual countdowns"],
+    id: "academia",
+    title: "Academic Manager",
+    description: "Comprehensive academic management featuring integrated attendance tracking for all your courses.",
+    bullets: ["Encrypted CGPA store","Attendance tracking", "Course management"],
     image: "/landing/zerogravity-meditate.webp",
     icon: Bell,
     gradient: "from-violet-500/10 via-violet-500/5 to-transparent",

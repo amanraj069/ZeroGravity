@@ -1,19 +1,21 @@
 "use client";
 
-import { Puzzle, BrainCircuit, Medal, GraduationCap } from "lucide-react";
+import { Puzzle, BrainCircuit, Medal, GraduationCap, Gift, X, Sparkles } from "lucide-react";
 import {
   AnimatedSection,
   AnimatedFeatureGrid,
 } from "@/components/AnimatedSection";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { API_ENDPOINTS, apiCall } from "@/config/api";
 
 const highlights = [
   {
     title: "Interactive Quizzes",
     description:
-      "Host live sessions for participants or join hosted quizzes to test your speed and knowledge in real-time.",
+      "Practice with AI-generated quizzes, test your knowledge in real-time, and track your progress seamlessly.",
     icon: Puzzle,
     href: "/dashboard/quizzes",
     gradient: "from-blue-500/20 via-blue-500/5 to-transparent",
@@ -57,6 +59,40 @@ export default function HighlightsSection() {
     { id: number; top: string; left: string; size: number; delay: number }[]
   >([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [showPromoPopup, setShowPromoPopup] = useState(false);
+  const [promoCount, setPromoCount] = useState<number | null>(null);
+  const [loadingCode, setLoadingCode] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchPromoStatus = async () => {
+      try {
+        const res = await apiCall(API_ENDPOINTS.PROMO.STATUS);
+        const data = await res.json();
+        if (data.success) {
+          setPromoCount(data.availableCount);
+        }
+      } catch (error) {
+        console.error("Failed to fetch promo status:", error);
+      }
+    };
+    fetchPromoStatus();
+  }, []);
+
+  const handleClaimPromo = async () => {
+    try {
+      setLoadingCode(true);
+      const res = await apiCall(API_ENDPOINTS.PROMO.GET_CODE);
+      const data = await res.json();
+      if (data.success && data.code) {
+        router.push(`/login?luckyCode=${data.code}`);
+      }
+    } catch (error) {
+      console.error("Failed to claim promo code:", error);
+    } finally {
+      setLoadingCode(false);
+    }
+  };
 
   useEffect(() => {
     // Responsive Check first to determine star count
@@ -137,10 +173,32 @@ export default function HighlightsSection() {
                 Beyond Beta
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white leading-[1.2] tracking-tight">
-              The Evolution of{" "}
-              <span className="font-normal italic bg-clip-text text-transparent bg-gradient-to-r from-black via-black to-black dark:from-white dark:via-purple-200 dark:to-blue-200">
-                ZeroGravity
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-black dark:text-white leading-[1.2] tracking-tight flex flex-wrap items-center justify-center md:justify-start gap-x-2 gap-y-1">
+              <span>The Evolution of</span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="font-normal italic bg-clip-text text-transparent bg-gradient-to-r from-black via-black to-black dark:from-white dark:via-purple-200 dark:to-blue-200">
+                  ZeroGravity
+                </span>
+                {promoCount !== null && promoCount > 0 && (
+                  <motion.button
+                    onClick={() => setShowPromoPopup(true)}
+                    className="text-black dark:text-white hover:opacity-85 focus:outline-none inline-flex items-center flex-shrink-0 leading-none"
+                    aria-label="Free Pro Subscription Offer"
+                    animate={{
+                      x: [0, -1, 1, -1, 1, 0],
+                      y: [0, 1, -1, 1, -1, 0],
+                      rotate: [0, -3, 3, -3, 3, 0]
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      repeatDelay: 2.5
+                    }}
+                  >
+                    <Gift className="w-5 h-5 sm:w-7 sm:h-7" />
+                  </motion.button>
+                )}
               </span>
             </h2>
           </div>
@@ -199,6 +257,85 @@ export default function HighlightsSection() {
           ))}
         </AnimatedFeatureGrid>
       </div>
+
+      {/* Promo Popup */}
+      <AnimatePresence>
+        {showPromoPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop with rich blur */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPromoPopup(false)}
+              className="absolute inset-0 bg-black/70 backdrop-blur-2xl"
+            />
+            {/* Modal Container */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              transition={{ type: "spring", stiffness: 350, damping: 28 }}
+              className="relative w-full max-w-xl bg-white dark:bg-[#13131a] border border-gray-200 dark:border-white/[0.08] rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-5 border-b border-gray-150 dark:border-white/[0.08] flex-shrink-0 gap-2">
+                <h2 className="text-base sm:text-lg font-light text-gray-900 dark:text-white flex items-center gap-2 whitespace-nowrap">
+                  <Gift className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                  <span>
+                    Unlock Pro <span className="text-amber-600 dark:text-amber-500 font-normal italic">Free</span>
+                  </span>
+                </h2>
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span className="text-xs font-medium px-2.5 py-1 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] text-gray-500 dark:text-white/60 rounded-full">
+                    {promoCount} spots left
+                  </span>
+                  <button
+                    onClick={() => setShowPromoPopup(false)}
+                    className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-6">
+                <div>
+                  <label className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest block mb-2">
+                    LUCKY PROMO DETAILS
+                  </label>
+                  <div className="w-full p-4 border border-gray-200 dark:border-white/[0.06] bg-gray-50 dark:bg-black/30 text-gray-800 dark:text-white rounded-xl leading-relaxed space-y-3">
+                    <p className="text-sm">
+                      ZeroGravity is giving away <strong className="text-gray-950 dark:text-white font-semibold">Pro Subscriptions</strong> to the next <strong className="text-purple-600 dark:text-purple-400 font-semibold">{promoCount} users</strong> who register.
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      By claiming this account, you will unlock unlimited access to the AI Study Planner, interactive quizzes, achievement badges, and cosmic personalization features- completely free.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Claim Button */}
+                <button
+                  onClick={handleClaimPromo}
+                  disabled={loadingCode}
+                  className="w-full h-12 bg-black dark:bg-white text-white dark:text-black font-semibold text-sm rounded-xl transition-all active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100 hover:bg-gray-800 dark:hover:bg-gray-150 flex items-center justify-center gap-2"
+                >
+                  {loadingCode ? (
+                    <span className="w-5 h-5 border-2 border-white/30 dark:border-black/35 border-t-white dark:border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 text-white-400 dark:text-white-600 animate-pulse" />
+                      <span>Claim Your Pro Account</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
