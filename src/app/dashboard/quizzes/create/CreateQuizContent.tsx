@@ -237,7 +237,7 @@ export default function CreateQuizContent({
     );
   if (!isPro)
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center p-6">
           <p className="text-lg text-black dark:text-white">
             Pro subscription required to create quizzes.
@@ -524,7 +524,7 @@ export default function CreateQuizContent({
 
       {showJsonModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh] rounded-xl">
+          <div className="bg-transparent w-full max-w-4xl p-6 shadow-xl flex flex-col gap-4 max-h-[90vh] rounded-xl">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-light text-gray-900 dark:text-gray-100">
                 Add Questions with JSON
@@ -592,7 +592,7 @@ export default function CreateQuizContent({
             </div>
 
             <textarea
-              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto rounded-lg"
+              className="flex-1 w-full min-h-[400px] p-4 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white font-mono text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 overflow-auto rounded-lg"
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
               placeholder="Paste the array of questions JSON here..."

@@ -11,11 +11,12 @@ import {
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/contexts/AuthContext";
 
-
 interface StudyPlannerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onTasksCreated: () => Promise<void>;
+  initialPrompt?: string;
+  initialStyle?: string;
 }
 
 // Study Focus Styles definition
@@ -65,9 +66,11 @@ export default function StudyPlannerModal({
   isOpen,
   onClose,
   onTasksCreated,
+  initialPrompt = "",
+  initialStyle = "balanced",
 }: StudyPlannerModalProps) {
   // Study Planner State
-  const [spTopic, setSpTopic] = useState("");
+  const [spTopic, setSpTopic] = useState(initialPrompt);
   const [spStartDate, setSpStartDate] = useState(getLocalDateString());
   const [spEndDate, setSpEndDate] = useState(() => {
     const d = new Date();
@@ -84,7 +87,15 @@ export default function StudyPlannerModal({
   const [spCreatedCount, setSpCreatedCount] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
   const [spConfigExpanded, setSpConfigExpanded] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState("balanced");
+  const [selectedStyle, setSelectedStyle] = useState(initialStyle);
+
+  // Initialize from props when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      if (initialPrompt) setSpTopic(initialPrompt);
+      if (initialStyle) setSelectedStyle(initialStyle);
+    }
+  }, [isOpen, initialPrompt, initialStyle]);
 
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -187,7 +198,7 @@ export default function StudyPlannerModal({
                 className={`flex flex-col items-start gap-1 p-2.5 sm:p-3 rounded-xl border text-left transition-all duration-200 ${
                   isSelected
                     ? "border-black dark:border-white bg-gray-50 dark:bg-gray-800"
-                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                    : "border-gray-200 dark:border-gray-700 bg-transparent hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                 }`}
               >
                 <div className="flex items-center gap-1.5 w-full">
@@ -324,12 +335,18 @@ export default function StudyPlannerModal({
   if (!shouldRender || !mounted) return null;
 
   return createPortal(
-    <div className={`fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 p-4 overflow-hidden transition-all duration-300 ease-out ${
-      isOpen && isAnimating ? "opacity-100 backdrop-blur-xl" : "opacity-0 backdrop-blur-none pointer-events-none"
-    }`}>
-      <div className={`bg-white dark:bg-gray-900 w-full max-w-6xl shadow-2xl flex flex-col max-h-full rounded-2xl overflow-hidden relative transition-all duration-300 ease-out ${
-        isOpen && isAnimating ? "scale-100 opacity-100 translate-y-0" : "scale-[0.97] opacity-0 translate-y-4"
-      }`}>
+    <div 
+      className={`fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-40 flex items-center justify-center bg-black/60 p-4 overflow-hidden transition-all duration-300 ease-out ${
+        isOpen && isAnimating ? "opacity-100 backdrop-blur-xl" : "opacity-0 backdrop-blur-none pointer-events-none"
+      }`}
+      onClick={onClose}
+    >
+      <div 
+        className={`bg-white dark:bg-gray-900 w-full max-w-6xl shadow-2xl flex flex-col max-h-full rounded-2xl overflow-hidden relative transition-all duration-300 ease-out ${
+          isOpen && isAnimating ? "scale-100 opacity-100 translate-y-0" : "scale-[0.97] opacity-0 translate-y-4"
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* Modal Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-2 relative z-10">
@@ -415,7 +432,7 @@ export default function StudyPlannerModal({
                 Topic / Subject
               </label>
               <textarea
-                className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out rounded-xl"
+                className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm resize-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-all duration-300 ease-in-out rounded-xl"
                   rows={
                     spPlan.length > 0 || spIsGenerating
                       ? Math.min(
@@ -459,7 +476,7 @@ export default function StudyPlannerModal({
                       min={getLocalDateString()}
                       onChange={(e) => setSpStartDate(e.target.value)}
                       onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
+                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                       disabled={spIsGenerating}
                     />
                   </div>
@@ -473,7 +490,7 @@ export default function StudyPlannerModal({
                       min={getLocalDateString()}
                       onChange={(e) => setSpEndDate(e.target.value)}
                       onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
+                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                       disabled={spIsGenerating}
                     />
                   </div>
@@ -484,7 +501,7 @@ export default function StudyPlannerModal({
                     <select
                       value={spHoursPerDay}
                       onChange={(e) => setSpHoursPerDay(e.target.value)}
-                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
+                      className="px-2 py-2 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
                       disabled={spIsGenerating}
                     >
                       {[1, 2, 3, 4, 5, 6, 8].map((h) => (
@@ -544,7 +561,7 @@ export default function StudyPlannerModal({
                               min={getLocalDateString()}
                               onChange={(e) => setSpStartDate(e.target.value)}
                               onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                              className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
+                              className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                             />
                           </div>
                           <div className="flex flex-col gap-1 min-w-0">
@@ -557,7 +574,7 @@ export default function StudyPlannerModal({
                               min={getLocalDateString()}
                               onChange={(e) => setSpEndDate(e.target.value)}
                               onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-                              className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
+                              className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 cursor-pointer dark:[color-scheme:dark] rounded-lg"
                             />
                           </div>
                           <div className="flex flex-col gap-1 col-span-2 sm:col-span-1">
@@ -567,7 +584,7 @@ export default function StudyPlannerModal({
                             <select
                               value={spHoursPerDay}
                               onChange={(e) => setSpHoursPerDay(e.target.value)}
-                              className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
+                              className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-700 bg-transparent text-black dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-500 rounded-lg"
                             >
                               {[1, 2, 3, 4, 5, 6, 8].map((h) => (
                                 <option key={h} value={h}>

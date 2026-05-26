@@ -70,7 +70,7 @@ export default function Dashboard() {
     },
     {
       name: "Quizzes",
-      url: "/dashboard/quizzes",
+      url: "/dashboard/quizzes?type=practice",
       description: "Create and take quizzes to test your knowledge",
       icon: <Trophy className="w-5 h-5" />,
       accent: "from-amber-500 to-orange-500",

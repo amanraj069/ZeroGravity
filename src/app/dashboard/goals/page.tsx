@@ -37,7 +37,7 @@ function GoalsPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col pb-12 sm:pb-16">
+    <div className="min-h-screen bg-transparent flex flex-col pb-12 sm:pb-16">
       <main className="flex-1">
         <Goals />
       </main>

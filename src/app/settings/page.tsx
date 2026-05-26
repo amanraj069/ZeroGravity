@@ -812,7 +812,7 @@ export default function EditProfile() {
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-transparent rounded-lg"
                       />
                     </div>
                     <div>
@@ -823,7 +823,7 @@ export default function EditProfile() {
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                        className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-transparent rounded-lg"
                       />
                     </div>
                   </div>
@@ -880,7 +880,7 @@ export default function EditProfile() {
                               ? 500
                               : 1000)
                             ? "bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-70"
-                            : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-black dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-1 focus:ring-purple-500/20"
+                            : "bg-transparent border-gray-300 dark:border-gray-700 text-black dark:text-white focus:border-purple-500 dark:focus:border-purple-400 focus:ring-1 focus:ring-purple-500/20"
                         }`}
                       />
                       {((user?.usernameChangesCount || 0) >= 2 ||
@@ -942,7 +942,7 @@ export default function EditProfile() {
                         }}
                         placeholder="9876543210"
                         maxLength={10}
-                        className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 rounded-r-lg"
+                        className="flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-transparent placeholder-gray-400 rounded-r-lg"
                       />
                     </div>
                   </div>
@@ -986,7 +986,7 @@ export default function EditProfile() {
                       onChange={(e) => setNewEmail(e.target.value)}
                       placeholder="Enter new email"
                       disabled={editMode === "email"}
-                      className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                      className="w-full md:flex-1 px-3 py-2.5 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-transparent placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                     />
                     <button
                       onClick={handleSendEmailOtp}
@@ -1037,7 +1037,7 @@ export default function EditProfile() {
                               handleOtpChange(index, e.target.value)
                             }
                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                            className="w-full h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                            className="w-full h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-transparent rounded-lg"
                             autoFocus={index === 0 && otp.join("") === ""}
                           />
                         ))}
@@ -1113,7 +1113,7 @@ export default function EditProfile() {
                             onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Enter new password"
                             disabled={editMode === "password"}
-                            className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                            className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-transparent placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                           />
                           <button
                             type="button"
@@ -1169,7 +1169,7 @@ export default function EditProfile() {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Confirm new password"
                             disabled={editMode === "password"}
-                            className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                            className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-sm text-black dark:text-white bg-transparent placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                           />
                           <button
                             type="button"
@@ -1268,7 +1268,7 @@ export default function EditProfile() {
                                 handleOtpChange(index, e.target.value)
                               }
                               onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                              className="w-full h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-white dark:bg-gray-900 rounded-lg"
+                              className="w-full h-12 text-center text-xl font-semibold border border-gray-300 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:outline-none text-black dark:text-white bg-transparent rounded-lg"
                               autoFocus={index === 0 && otp.join("") === ""}
                             />
                           ))}
@@ -1408,7 +1408,7 @@ export default function EditProfile() {
                           handleAutoStopQuizDurationChange(e.target.value)
                         }
                         aria-invalid={Boolean(autoStopQuizDurationError)}
-                        className={`w-full flex-1 bg-white dark:bg-gray-900 border rounded-lg px-4 py-2.5 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white transition-shadow text-sm ${autoStopQuizDurationError || autoStopQuizDurationShake ? "border-red-500 shake-light" : "border-gray-300 dark:border-gray-700"}`}
+                        className={`w-full flex-1 bg-transparent border rounded-lg px-4 py-2.5 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white transition-shadow text-sm ${autoStopQuizDurationError || autoStopQuizDurationShake ? "border-red-500 shake-light" : "border-gray-300 dark:border-gray-700"}`}
                         placeholder="e.g. 4"
                       />
                       <button

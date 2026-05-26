@@ -141,7 +141,7 @@ function DialogModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
         transition={{ type: "spring", stiffness: 420, damping: 30 }}
-        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl w-full max-w-sm overflow-hidden"
+        className="bg-transparent border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl w-full max-w-sm overflow-hidden"
       >
         {/* Icon + Header */}
         <div className="px-6 pt-6 pb-4">
@@ -243,7 +243,7 @@ function AlertModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
         transition={{ type: "spring", stiffness: 420, damping: 30 }}
-        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl w-full max-w-sm overflow-hidden"
+        className="bg-transparent border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl w-full max-w-sm overflow-hidden"
       >
         <div className="px-6 pt-6 pb-4">
           <div className="flex items-start gap-3">

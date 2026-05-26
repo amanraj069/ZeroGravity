@@ -41,6 +41,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     if (newTheme === "dark") {
       root.classList.add("dark");
       root.style.colorScheme = "dark";
+      root.style.backgroundColor = '#111116';
+      document.body.style.backgroundColor = '#111116';
       // Manually update variables to force instant scrollbar update
       root.style.setProperty("--scrollbar-thumb", "rgba(75, 85, 99, 0.4)");
       root.style.setProperty(
@@ -50,6 +52,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       root.classList.remove("dark");
       root.style.colorScheme = "light";
+      root.style.backgroundColor = '#f9fafb';
+      document.body.style.backgroundColor = '#f9fafb';
       // Manually update variables to force instant scrollbar update
       root.style.setProperty("--scrollbar-thumb", "rgba(156, 163, 175, 0.3)");
       root.style.setProperty(

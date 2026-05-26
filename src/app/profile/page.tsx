@@ -383,7 +383,7 @@ export default function Profile() {
             {user?.subscription === "pro" && (
               <Link
                 href="/profileVisitors"
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap min-w-0 rounded-lg"
               >
                 <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
                 History
@@ -398,14 +398,14 @@ export default function Profile() {
             </Link>
             <button
               onClick={handleOpenBorderPicker}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Edit Card
             </button>
             <Link
               href="/settings"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors whitespace-nowrap min-w-0 rounded-lg"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <Settings className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Settings
@@ -566,7 +566,7 @@ export default function Profile() {
 
                             {/* Display Badge Picker Dropdown */}
                             {showDisplayBadgePicker && (
-                              <div className="absolute top-full left-0 mt-1.5 z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[200px] max-w-[260px] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                              <div className="absolute top-full left-0 mt-1.5 z-50 bg-transparent border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl min-w-[200px] max-w-[260px] overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
                                 <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
                                   <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                                     Display Badge

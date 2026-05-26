@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Plus, AlertCircle, Sparkles } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
@@ -84,8 +85,23 @@ const DailyTasks: React.FC = () => {
   const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const { showErrorToast } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [showStudyPlanner, setShowStudyPlanner] = useState(false);
+  const [initialPlannerPrompt, setInitialPlannerPrompt] = useState("");
+  const [initialPlannerStyle, setInitialPlannerStyle] = useState("balanced");
+
+  useEffect(() => {
+    const shouldOpenPlanner = searchParams.get("aiPlanner") === "true";
+    if (shouldOpenPlanner) {
+      setInitialPlannerPrompt(searchParams.get("prompt") || "");
+      setInitialPlannerStyle(searchParams.get("style") || "balanced");
+      setShowStudyPlanner(true);
+      // Clean up URL so refresh doesn't reopen it
+      router.replace("/dashboard/goals?tab=daily");
+    }
+  }, [searchParams, router]);
 
   // Stable callbacks for the StudyPlannerModal to prevent re-renders
   const handleCloseStudyPlanner = useCallback(
@@ -459,7 +475,7 @@ const DailyTasks: React.FC = () => {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-              className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark] min-w-0 rounded-lg"
+              className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-gray-100 text-sm focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-gray-500 transition-colors cursor-pointer dark:[color-scheme:dark] min-w-0 rounded-lg"
             />
           </div>
           {/* Upcoming Days - full width */}
@@ -611,6 +627,8 @@ const DailyTasks: React.FC = () => {
         isOpen={showStudyPlanner}
         onClose={handleCloseStudyPlanner}
         onTasksCreated={handleTasksCreated}
+        initialPrompt={initialPlannerPrompt}
+        initialStyle={initialPlannerStyle}
       />
     </>
   );

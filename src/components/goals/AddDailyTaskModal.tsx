@@ -215,7 +215,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
+              className={`w-full px-3 py-2 border rounded-lg text-sm bg-transparent text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors focus:outline-none ${
                 errors.title
                   ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                   : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -244,7 +244,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
               rows={3}
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-transparent text-black dark:text-white rounded-lg text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               placeholder="Enter task description (optional)"
               disabled={isSubmitting}
             />
@@ -268,7 +268,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                   priority: e.target.value as "low" | "medium" | "high",
                 }))
               }
-              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
+              className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 bg-transparent text-black dark:text-white rounded-lg text-sm focus:outline-none focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white transition-colors"
               disabled={isSubmitting}
             >
               <option value="low">Low</option>
@@ -293,7 +293,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dateStarted"
                 value={formData.dateStarted}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-transparent text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dateStarted
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -321,7 +321,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dateEnded"
                 value={formData.dateEnded}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-transparent text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dateEnded
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -352,7 +352,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dailyStartTime"
                 value={formData.dailyStartTime}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-transparent text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dailyStartTime
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"
@@ -380,7 +380,7 @@ const AddDailyTaskModal: React.FC<AddDailyTaskModalProps> = ({
                 name="dailyEndTime"
                 value={formData.dailyEndTime}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border rounded-lg text-sm bg-white dark:bg-gray-900 text-black dark:text-white transition-colors focus:outline-none ${
+                className={`w-full px-3 py-2 border rounded-lg text-sm bg-transparent text-black dark:text-white transition-colors focus:outline-none ${
                   errors.dailyEndTime
                     ? "border-red-300 dark:border-red-700 focus:border-red-500 dark:focus:border-red-400 focus:ring-1 focus:ring-red-500 dark:focus:ring-red-400"
                     : "border-gray-200 dark:border-gray-700 focus:border-black dark:focus:border-gray-500 focus:ring-1 focus:ring-black dark:focus:ring-white"

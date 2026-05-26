@@ -272,38 +272,38 @@ export default function BadgesPage() {
                   Sort
                 </option>
                 <option
-                  className="bg-white dark:bg-gray-900"
+                  className="bg-transparent"
                   value="prestige-asc"
                 >
                   {sortBy === "prestige" && sortOrder === "asc" ? "✓ " : ""}
                   Prestige (Asc)
                 </option>
                 <option
-                  className="bg-white dark:bg-gray-900"
+                  className="bg-transparent"
                   value="prestige-desc"
                 >
                   {sortBy === "prestige" && sortOrder === "desc" ? "✓ " : ""}
                   Prestige (Desc)
                 </option>
                 <option
-                  className="bg-white dark:bg-gray-900"
+                  className="bg-transparent"
                   value="progress-desc"
                 >
                   {sortBy === "progress" && sortOrder === "desc" ? "✓ " : ""}
                   Progress (High to Low)
                 </option>
                 <option
-                  className="bg-white dark:bg-gray-900"
+                  className="bg-transparent"
                   value="progress-asc"
                 >
                   {sortBy === "progress" && sortOrder === "asc" ? "✓ " : ""}
                   Progress (Low to High)
                 </option>
-                <option className="bg-white dark:bg-gray-900" value="name-asc">
+                <option className="bg-transparent" value="name-asc">
                   {sortBy === "name" && sortOrder === "asc" ? "✓ " : ""}Name
                   (A-Z)
                 </option>
-                <option className="bg-white dark:bg-gray-900" value="name-desc">
+                <option className="bg-transparent" value="name-desc">
                   {sortBy === "name" && sortOrder === "desc" ? "✓ " : ""}Name
                   (Z-A)
                 </option>

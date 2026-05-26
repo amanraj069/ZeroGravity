@@ -13,7 +13,7 @@ export default function DashboardHeader({ onLogout }: DashboardHeaderProps) {
   // const { user } = useAuth(); // Currently not used
 
   return (
-    <header className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+    <header className="border-b border-gray-200 dark:border-gray-800 bg-transparent">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           href="/"

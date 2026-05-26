@@ -44,7 +44,7 @@ export function QuizCardsSkeleton() {
 
 export default function QuizzesSkeleton() {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-transparent overflow-hidden">
       <main className="flex-1 py-4 sm:py-10">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header Skeleton */}

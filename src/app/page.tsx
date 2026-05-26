@@ -27,7 +27,7 @@ export default function Home() {
   ));
 
   return (
-    <div className="bg-white dark:bg-gray-900">
+    <div className="bg-transparent">
       <div className="relative">
         <HeroSection />
         
