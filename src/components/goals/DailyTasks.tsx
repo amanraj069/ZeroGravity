@@ -82,7 +82,6 @@ const DailyTasks: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [pointsAnimation, setPointsAnimation] =
     useState<PointsAnimation | null>(null);
-  const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const { showErrorToast } = useToast();
   const router = useRouter();
@@ -114,6 +113,28 @@ const DailyTasks: React.FC = () => {
     const analyticsData = await dailyTasksService.getStreakInfo();
     setAnalytics(analyticsData);
   }, [selectedDate]);
+
+  const handleAddSelectedTasks = useCallback(
+    async (
+      tasksToCreate: Omit<
+        DailyTask,
+        "_id" | "userId" | "createdAt" | "updatedAt" | "isCompletedToday"
+      >[],
+    ) => {
+      try {
+        setIsLoading(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await dailyTasksService.bulkCreateStudyTasks(tasksToCreate as any);
+        await handleTasksCreated();
+      } catch (error) {
+        console.error("Error creating study tasks:", error);
+        showErrorToast(error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [handleTasksCreated, showErrorToast],
+  );
 
   // Check if selected date is today
   const isToday = selectedDate === getLocalDateString();
@@ -233,8 +254,6 @@ const DailyTasks: React.FC = () => {
   };
 
   const toggleTaskCompletion = async (taskId: string) => {
-    setTogglingTaskId(taskId);
-
     // Optimistic Update
     const previousTasks = [...tasks];
     const previousAnalytics = { ...analytics };
@@ -301,10 +320,6 @@ const DailyTasks: React.FC = () => {
       setAnalytics(previousAnalytics);
 
       showErrorToast(error);
-    } finally {
-      setTogglingTaskId((currentTaskId) =>
-        currentTaskId === taskId ? null : currentTaskId,
-      );
     }
   };
 
@@ -381,10 +396,11 @@ const DailyTasks: React.FC = () => {
       {pointsAnimation && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none animate-fade-in-down">
           <div
-            className={`px-6 py-3 rounded-xl shadow-lg ${pointsAnimation.isDeduction
-              ? "bg-red-600 text-white"
-              : "bg-black dark:bg-white text-white dark:text-black"
-              }`}
+            className={`px-6 py-3 rounded-xl shadow-lg ${
+              pointsAnimation.isDeduction
+                ? "bg-red-600 text-white"
+                : "bg-black dark:bg-white text-white dark:text-black"
+            }`}
           >
             <div className="flex items-center gap-1.5">
               <span className="text-xl font-bold">
@@ -523,18 +539,20 @@ const DailyTasks: React.FC = () => {
                 <button
                   key={day.date}
                   onClick={() => setSelectedDate(day.date)}
-                  className={`flex flex-col items-center px-2 py-2 flex-1 min-w-0 transition-all ${borderClass} ${isSelected
-                    ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
-                    : day.isToday
-                      ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
-                      : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    }`}
+                  className={`flex flex-col items-center px-2 py-2 flex-1 min-w-0 transition-all ${borderClass} ${
+                    isSelected
+                      ? "bg-gray-50 dark:bg-gray-700 text-black dark:text-white"
+                      : day.isToday
+                        ? "bg-purple-50/30 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400"
+                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  }`}
                 >
                   <span
-                    className={`text-xs font-medium flex items-center gap-1 ${day.isToday && !isSelected
-                      ? "text-purple-600 dark:text-purple-400"
-                      : ""
-                      }`}
+                    className={`text-xs font-medium flex items-center gap-1 ${
+                      day.isToday && !isSelected
+                        ? "text-purple-600 dark:text-purple-400"
+                        : ""
+                    }`}
                   >
                     {formatted}
                   </span>
@@ -614,7 +632,6 @@ const DailyTasks: React.FC = () => {
             <DailyTaskItem
               key={task._id}
               task={task}
-              togglingTaskId={togglingTaskId}
               isToday={isToday}
               onToggleCompletion={toggleTaskCompletion}
               onEdit={setEditingTask}
@@ -626,7 +643,7 @@ const DailyTasks: React.FC = () => {
       <StudyPlannerModal
         isOpen={showStudyPlanner}
         onClose={handleCloseStudyPlanner}
-        onTasksCreated={handleTasksCreated}
+        onAddSelectedTasks={handleAddSelectedTasks}
         initialPrompt={initialPlannerPrompt}
         initialStyle={initialPlannerStyle}
       />

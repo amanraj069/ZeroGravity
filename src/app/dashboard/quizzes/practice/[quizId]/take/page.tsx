@@ -193,7 +193,27 @@ export default function TakePracticeQuizPage() {
   };
 
   if (authLoading || loading) return <ZeroGravityLoading title="Loading Quiz" showNavigation={false} />;
-  if (!quiz || !quiz.questions) return null;
+  if (!quiz || !quiz.questions || quiz.questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 max-w-md w-full text-center">
+          <div className="w-14 h-14 bg-red-50 dark:bg-red-900/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-7 h-7 text-red-500" />
+          </div>
+          <h1 className="text-xl font-medium text-black dark:text-white mb-2">Unable to Load Quiz</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            This quiz could not be loaded. It may have been deleted or is temporarily unavailable.
+          </p>
+          <button
+            onClick={() => router.push("/dashboard/quizzes")}
+            className="w-full bg-black dark:bg-white text-white dark:text-black py-2.5 rounded-xl text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+          >
+            Back to Quizzes
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasStarted && !isFinished) {
     return (
