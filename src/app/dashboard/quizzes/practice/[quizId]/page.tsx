@@ -11,7 +11,7 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 export default function PracticeQuizDetailsPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
-  const { showToast, showDialog } = useToast();
+  const { showToast } = useToast();
   const router = useRouter();
   const params = useParams();
   const quizId = params.quizId as string;
@@ -58,60 +58,35 @@ export default function PracticeQuizDetailsPage() {
     router.push(`/dashboard/quizzes/practice/${quizId}/take`);
   };
 
-  const handleViewInsights = async () => {
-    if (quiz?.isGivenUp) {
-      router.push(`/dashboard/quizzes/practice/${quizId}/insights`);
-      return;
-    }
 
+  const handleViewInsights = async () => {
     if (attempts.length === 0) {
       showToast("You need to attempt the quiz at least once to view insights.", "error");
       return;
     }
 
+    // If out of trials and not yet given up, auto-give-up silently before navigating
     const trialsRemaining = quiz ? quiz.maxTrials - attempts.length : 0;
-    const isOutOfTrials = trialsRemaining <= 0;
-
-    if (isOutOfTrials) {
+    if (!quiz?.isGivenUp && trialsRemaining <= 0) {
       setLoading(true);
       try {
         const response = await giveUpPracticeQuiz(quizId);
-        if (response.success) {
-          router.push(`/dashboard/quizzes/practice/${quizId}/insights`);
-        } else {
+        if (!response.success) {
           showToast(response.message || "Failed to view insights", "error");
+          return;
         }
       } catch (error) {
         showToast((error as Error).message || "Error", "error");
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
-
-    const confirmed = await showDialog({
-      title: "Give Up and View Insights?",
-      message: "You still have trials left. If you view insights now, you will give up on this quiz and won't be able to attempt it again. Are you sure?",
-      confirmLabel: "Give Up & View Insights",
-      variant: "danger"
-    });
-
-    if (confirmed) {
-      setLoading(true);
-      try {
-        const response = await giveUpPracticeQuiz(quizId);
-        if (response.success) {
-          router.push(`/dashboard/quizzes/practice/${quizId}/insights`);
-        } else {
-          showToast(response.message || "Failed to give up", "error");
-        }
-      } catch (error) {
-        showToast((error as Error).message || "Error", "error");
+        return;
       } finally {
         setLoading(false);
       }
     }
+
+    // Navigate — insights page will handle the lock if still has trials
+    router.push(`/dashboard/quizzes/practice/${quizId}/insights`);
   };
+
 
   if (authLoading || loading) return <ZeroGravityLoading title="Loading Details" showNavigation={false} />;
   if (!quiz) return null;
@@ -153,13 +128,18 @@ export default function PracticeQuizDetailsPage() {
                       </span>
                       
                       {quiz.categories && quiz.categories.length > 0 && (
-                        <div className="flex flex-col items-end gap-1">
-                          {quiz.categories.map((cat, idx) => (
-                            <span key={idx} className="flex items-center gap-1.5 px-2 py-0.5 text-[9px] font-medium rounded-md border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 bg-white dark:bg-[#15151a] whitespace-nowrap">
-                              <Folder className="w-2.5 h-2.5 text-gray-400" />
+                        <div className="flex items-center gap-1 mt-1 flex-wrap">
+                          {quiz.categories.slice(0, 2).map((cat, idx) => (
+                            <span key={idx} className="flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-medium rounded-md border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 bg-white dark:bg-[#15151a] whitespace-nowrap">
+                              <Folder className="w-2 h-2 text-gray-400" />
                               {cat}
                             </span>
                           ))}
+                          {quiz.categories.length > 2 && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-medium rounded-md border border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-500 bg-white dark:bg-[#15151a]">
+                              +{quiz.categories.length - 2}
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -168,7 +148,8 @@ export default function PracticeQuizDetailsPage() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto md:pt-2 sm:ml-[3.25rem] md:ml-0 mt-2 sm:mt-0">
+            {/* Buttons: mobile = single row (Insights left, Take Quiz right), desktop = row */}
+            <div className="flex flex-row sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto md:pt-2 sm:ml-[3.25rem] md:ml-0 mt-2 sm:mt-0">
               <div className="hidden md:flex items-center">
                 <span className={`flex items-center justify-center px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg ${
                   quiz.difficulty === "hard" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
@@ -178,22 +159,24 @@ export default function PracticeQuizDetailsPage() {
                   {quiz.difficulty}
                 </span>
               </div>
-              
-              {!quiz.isGivenUp && !isOutOfTrials && (
-                <button
-                  onClick={handleTakeQuiz}
-                  className="flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-medium text-sm w-full sm:w-auto whitespace-nowrap"
-                >
-                  <Play className="w-4 h-4" /> Take Quiz
-                </button>
-              )}
-              
+
+              {/* View Insights — left on mobile */}
               {(attempts.length > 0 || quiz.isGivenUp) && (
                 <button
                   onClick={handleViewInsights}
-                  className="flex items-center justify-center gap-2 border border-black dark:border-white bg-transparent text-black dark:text-white px-6 py-2.5 rounded-lg hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out font-medium text-sm w-full sm:w-auto whitespace-nowrap"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 border border-black dark:border-white bg-transparent text-black dark:text-white px-4 sm:px-6 py-2.5 rounded-lg hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out font-medium text-sm whitespace-nowrap"
                 >
-                  <BarChart2 className="w-4 h-4" /> View Insights
+                  <BarChart2 className="w-4 h-4" /> <span className="hidden sm:inline">View Insights</span><span className="sm:hidden">Insights</span>
+                </button>
+              )}
+
+              {/* Take Quiz — right on mobile */}
+              {!quiz.isGivenUp && !isOutOfTrials && (
+                <button
+                  onClick={handleTakeQuiz}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-medium text-sm whitespace-nowrap"
+                >
+                  <Play className="w-4 h-4" /> Take Quiz
                 </button>
               )}
             </div>

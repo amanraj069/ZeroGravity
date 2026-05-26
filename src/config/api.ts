@@ -192,6 +192,11 @@ export const API_ENDPOINTS = {
     DELETE_CATEGORY: (id: string) =>
       `${API_BASE_URL}/api/notes/categories/${id}`,
   },
+  // Promo endpoints
+  PROMO: {
+    STATUS: `${API_BASE_URL}/api/promo/status`,
+    GET_CODE: `${API_BASE_URL}/api/promo/get-code`,
+  },
 };
 
 // Helper function for making API calls with consistent error handling

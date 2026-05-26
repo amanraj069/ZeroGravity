@@ -23,6 +23,15 @@ function QuizzesContent() {
   const [activeTab, setActiveTab] = useState<"hosted" | "practice">(
     typeParam === "host" ? "hosted" : "practice"
   );
+
+  useEffect(() => {
+    if (!typeParam) {
+      router.replace("/dashboard/quizzes?type=practice");
+    } else {
+      setActiveTab(typeParam === "host" ? "hosted" : "practice");
+    }
+  }, [typeParam, router]);
+
   const { isLoggedIn, isLoading: authLoading, user } = useAuth();
   const { showToast, showDialog } = useToast();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -347,7 +356,7 @@ function QuizzesContent() {
             <>
 
           {/* Loading State */}
-          {loading && <QuizCardsSkeleton />}
+          {loading && <QuizCardsSkeleton type="hosted" />}
 
           {/* Empty State */}
           <AnimatePresence>

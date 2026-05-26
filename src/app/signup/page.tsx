@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +10,8 @@ import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 
 export default function Signup() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const luckyCode = searchParams?.get("luckyCode");
   const { sendOtp, verifyOtp, resendOtp, loginWithGoogle, user } = useAuth();
   const [isLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -224,7 +226,7 @@ export default function Signup() {
     setOtpError("");
 
     try {
-      const result = await verifyOtp(verificationEmail, otpCode);
+      const result = await verifyOtp(verificationEmail, otpCode, luckyCode);
 
       if (result.success) {
         setSuccessMessage("Email verified successfully! Redirecting...");
@@ -282,7 +284,7 @@ export default function Signup() {
       setIsSignupInProgress(true);
       setError("");
       try {
-        const result = await loginWithGoogle(credential);
+        const result = await loginWithGoogle(credential, luckyCode);
         if (result.success) router.push("/dashboard");
         else {
           setError(result.message || "Google authentication failed");
@@ -296,7 +298,7 @@ export default function Signup() {
         setIsGoogleLoading(false);
       }
     },
-    [loginWithGoogle, router],
+    [loginWithGoogle, router, luckyCode],
   );
 
   const handleGoogleSignInError = useCallback(() => {
@@ -383,7 +385,7 @@ export default function Signup() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+            className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white/70 dark:bg-black/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
           >
           <div className="text-center mb-6 sm:mb-8">
             {/* Email icon */}
@@ -629,7 +631,7 @@ export default function Signup() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white/70 dark:bg-black/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <div className="text-center mb-6 sm:mb-8">
             <motion.h1

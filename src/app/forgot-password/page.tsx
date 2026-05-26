@@ -379,7 +379,7 @@ export default function ForgotPassword() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 min-w-0 py-10 sm:py-12 px-6 sm:px-8 min-h-[540px] sm:min-h-[590px] flex flex-col bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          className="w-full max-w-md flex-shrink-0 min-w-0 py-10 sm:py-12 px-6 sm:px-8 min-h-[540px] sm:min-h-[590px] flex flex-col bg-white/70 dark:bg-black/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <AnimatePresence mode="wait">
             {step === "email" ? (

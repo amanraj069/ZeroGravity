@@ -6,8 +6,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { getPracticeQuizById, submitPracticeAttempt, PracticeQuiz } from "@/services/practiceQuizService";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, X, ChevronRight, Check, AlertTriangle, Play } from "lucide-react";
+import { Clock, X, ChevronRight, AlertTriangle, Play } from "lucide-react";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
 
 export default function TakePracticeQuizPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -238,14 +239,7 @@ export default function TakePracticeQuizPage() {
           transition={{ type: "spring", bounce: 0.4, duration: 0.6 }}
           className="bg-white dark:bg-[#15151a] p-8 sm:p-10 rounded-3xl shadow-2xl max-w-md w-[92%] sm:w-full text-center border border-gray-100 dark:border-gray-800"
         >
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-6">
-            <div className="absolute inset-0 bg-green-400 dark:bg-green-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <div className="relative w-full h-full bg-green-50 dark:bg-green-500/10 rounded-full flex items-center justify-center border border-green-100 dark:border-green-500/20">
-              <Check className="w-8 h-8 sm:w-10 sm:h-10 text-green-500 dark:text-green-400" />
-            </div>
-          </div>
-          
-          <h1 className="text-2xl sm:text-3xl font-semibold text-black dark:text-white mb-2 tracking-tight">Quiz Completed!</h1>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-emerald-500 dark:text-emerald-400 mb-2 tracking-tight">Quiz Completed!</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Your attempt has been recorded and scored.</p>
           
           <div className="bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center divide-x divide-gray-200 dark:divide-gray-800 mb-8 overflow-hidden">
@@ -260,7 +254,7 @@ export default function TakePracticeQuizPage() {
               <p className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium tracking-widest uppercase mb-1.5">Points</p>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl sm:text-4xl font-bold text-emerald-500 dark:text-emerald-400">+{pointsEarned}</span>
-                <span className="text-xs font-medium text-emerald-600/50 dark:text-emerald-400/50 uppercase tracking-wider">xp</span>
+                <CurrencyIcon size={18} className="text-emerald-500 dark:text-emerald-400 mb-0.5" />
               </div>
             </div>
           </div>

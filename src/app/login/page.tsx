@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCall } from "@/config/api";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 
-export default function Login() {
+function LoginForm() {
   const { login, loginWithGoogle, user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -147,7 +148,8 @@ export default function Login() {
           return;
         }
 
-        const result = await loginWithGoogle(credential);
+        const luckyCode = searchParams?.get("luckyCode");
+        const result = await loginWithGoogle(credential, luckyCode);
 
         if (result.success) {
           router.push("/dashboard");
@@ -161,7 +163,7 @@ export default function Login() {
         setIsGoogleLoading(false);
       }
     },
-    [loginWithGoogle, router],
+    [loginWithGoogle, router, searchParams],
   );
 
   const handleGoogleSignInError = useCallback(() => {
@@ -238,7 +240,7 @@ export default function Login() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-transparent/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
+          className="w-full max-w-md flex-shrink-0 min-w-0 p-6 sm:p-8 bg-white/70 dark:bg-black/40 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-gray-800 shadow-2xl"
         >
           <div className="text-center mb-6 sm:mb-8">
             <motion.h1
@@ -407,7 +409,7 @@ export default function Login() {
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
               Don&apos;t have an account?{" "}
               <Link
-                href="/signup"
+                href={`/signup${searchParams?.toString() ? `?${searchParams.toString()}` : ""}`}
                 className="text-black dark:text-white hover:underline font-medium"
               >
                 Sign up
@@ -514,5 +516,13 @@ export default function Login() {
       </div>
       {/* end two-column wrapper */}
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
