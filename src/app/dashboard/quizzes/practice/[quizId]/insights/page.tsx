@@ -126,7 +126,7 @@ export default function PracticeQuizInsightsPage() {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
                 onClick={() => router.push(`/dashboard/quizzes/practice/progress?category=${encodeURIComponent(quiz.categories?.[0] || 'General')}`)}
-                className="relative flex items-center justify-center gap-1.5 bg-white text-black dark:bg-white dark:text-black px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
+                className="relative flex items-center justify-center gap-1.5 bg-black text-white dark:bg-white dark:text-black px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
               >
                 <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Category AI insights</span>
@@ -274,9 +274,20 @@ export default function PracticeQuizInsightsPage() {
                     Detailed Breakdown
                   </h3>
                   {quiz.questions.map((question, index) => {
-                    const userAnswerKey = selectedAttempt.userAnswers[question.questionId];
-                    const isCorrect = userAnswerKey === question.correctKey;
-                    const isUnanswered = !userAnswerKey;
+                    const userAnswerKey = selectedAttempt.userAnswers[question.questionId] || "";
+                    // GOD mode: correctKey is a comma-joined sorted string e.g. "A,C"
+                    const isGodQuestion = quiz.difficulty === "god" && question.correctKey?.includes(",");
+                    const correctKeys = new Set(
+                      question.correctKey ? question.correctKey.split(",").map(k => k.trim()).filter(Boolean) : []
+                    );
+                    const userKeys = new Set(
+                      userAnswerKey ? userAnswerKey.split(",").map(k => k.trim()).filter(Boolean) : []
+                    );
+                    // Correct only if sets are identical (all-or-nothing for GOD, exact match for others)
+                    const isCorrect = question.correctKey
+                      ? [...correctKeys].sort().join(",") === [...userKeys].sort().join(",") && userKeys.size > 0
+                      : false;
+                    const isUnanswered = userKeys.size === 0;
                     const isExpanded = expandedQuestion === question.questionId;
 
                     return (
@@ -292,7 +303,7 @@ export default function PracticeQuizInsightsPage() {
                           onClick={() => setExpandedQuestion(isExpanded ? null : question.questionId)}
                           className="w-full p-4 sm:p-6 flex items-start sm:items-center justify-between gap-4 text-left"
                         >
-                          <div className="flex items-start gap-4">
+                        <div className="flex items-start gap-4">
                             <div className="mt-1 sm:mt-0 shrink-0">
                               {isCorrect ? (
                                 <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
@@ -303,7 +314,12 @@ export default function PracticeQuizInsightsPage() {
                               )}
                             </div>
                             <div>
-                              <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 block">Question {index + 1}</span>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[10px] sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 block">Question {index + 1}</span>
+                                {isGodQuestion && (
+                                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40 mb-1"> Multi-answer</span>
+                                )}
+                              </div>
                               <p className="text-sm sm:text-base font-medium text-black dark:text-white leading-normal sm:leading-snug">
                                 {question.text}
                               </p>
@@ -317,10 +333,10 @@ export default function PracticeQuizInsightsPage() {
                         <div className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                           <div className="overflow-hidden">
                             <div className="border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-[#15151a]/50 px-3 sm:px-6 py-3 sm:py-6">
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
                                 {question.options.map(opt => {
-                                  const isSelected = userAnswerKey === opt.key;
-                                  const isActualCorrect = question.correctKey === opt.key;
+                                  const isSelected = userKeys.has(opt.key);
+                                  const isActualCorrect = correctKeys.has(opt.key);
                                   let optionClass = "border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1c1c21] text-gray-600 dark:text-gray-400";
                                   if (isActualCorrect) {
                                     optionClass = "border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400";

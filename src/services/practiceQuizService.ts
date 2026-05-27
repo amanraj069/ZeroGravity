@@ -9,9 +9,12 @@ export interface PracticeQuizQuestion {
   questionId: string;
   text: string;
   options: PracticeQuizOption[];
-  // correctKey and explanation are only available if the quiz is given up, or if fetched via attempt insights
+  // correctKey and explanation are only available if the quiz is given up, or fetched via attempt insights.
+  // For GOD difficulty, correctKey is a comma-joined sorted string of keys e.g. "A,C".
   correctKey?: string;
   explanation?: string;
+  // Per-question timer set by AI for Hard/GOD mode. Null/absent for Easy/Medium.
+  timePerQuestion?: number | null;
 }
 
 export interface PracticeQuiz {
