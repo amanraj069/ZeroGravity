@@ -21,17 +21,29 @@ function StatCard({
   label,
   value,
   sub,
+  index = 0,
+  isVisible = false,
 }: {
   label: string;
   value: number | string;
   sub?: string;
+  index?: number;
+  isVisible?: boolean;
 }) {
   return (
-    <div className="border border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-[#050710] shadow-sm flex flex-col gap-1 rounded-xl">
-      <div className="text-2xl font-black text-gray-900 dark:text-white tabular-nums">
+    <div
+      className={`group relative overflow-hidden border border-gray-200/90 dark:border-gray-800 p-4 bg-white dark:bg-[#050710] shadow-sm flex flex-col gap-1 rounded-xl transition-all duration-300 ease-out will-change-transform
+      ${isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-1.5 scale-[0.99]"}
+      hover:-translate-y-0.5 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-[0_10px_24px_rgba(2,8,23,0.12)] dark:hover:shadow-[0_14px_34px_rgba(5,8,20,0.42)]`}
+      style={{ transitionDelay: isVisible ? `${index * 25}ms` : "0ms" }}
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/35 to-transparent dark:via-white/5 group-hover:opacity-100" />
+      <div className="text-2xl font-black text-gray-900 dark:text-white tabular-nums tracking-tight transition-transform duration-200 group-hover:scale-[1.015]">
         {value}
       </div>
-      <div className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-tight">{label}</div>
+      <div className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest leading-tight">
+        {label}
+      </div>
       {sub && (
         <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
           {sub}
@@ -202,6 +214,7 @@ export default function BadgesPage() {
     { id: "tasks", label: "Tasks" },
     { id: "time", label: "Time" },
     { id: "goals", label: "Goals" },
+    { id: "practice", label: "Practice" },
   ];
 
   const filteredBadges = [
@@ -271,31 +284,19 @@ export default function BadgesPage() {
                 <option value="" disabled hidden>
                   Sort
                 </option>
-                <option
-                  className="bg-transparent"
-                  value="prestige-asc"
-                >
+                <option className="bg-transparent" value="prestige-asc">
                   {sortBy === "prestige" && sortOrder === "asc" ? "✓ " : ""}
                   Prestige (Asc)
                 </option>
-                <option
-                  className="bg-transparent"
-                  value="prestige-desc"
-                >
+                <option className="bg-transparent" value="prestige-desc">
                   {sortBy === "prestige" && sortOrder === "desc" ? "✓ " : ""}
                   Prestige (Desc)
                 </option>
-                <option
-                  className="bg-transparent"
-                  value="progress-desc"
-                >
+                <option className="bg-transparent" value="progress-desc">
                   {sortBy === "progress" && sortOrder === "desc" ? "✓ " : ""}
                   Progress (High to Low)
                 </option>
-                <option
-                  className="bg-transparent"
-                  value="progress-asc"
-                >
+                <option className="bg-transparent" value="progress-asc">
                   {sortBy === "progress" && sortOrder === "asc" ? "✓ " : ""}
                   Progress (Low to High)
                 </option>
@@ -328,38 +329,59 @@ export default function BadgesPage() {
         </div>
 
         {/* Stats */}
-        {showStats && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
+        <div
+          className={`grid transition-all duration-300 ease-out ${
+            showStats
+              ? "grid-rows-[1fr] opacity-100 translate-y-0"
+              : "grid-rows-[0fr] opacity-0 -translate-y-1 pointer-events-none"
+          }`}
+          aria-hidden={!showStats}
+        >
+          <div className="overflow-hidden">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 pb-1">
             <StatCard
               label="Longest Streak"
               value={metrics.maxStreak}
               sub="days"
+              index={0}
+              isVisible={showStats}
             />
             <StatCard
               label="Tasks Completed"
               value={metrics.totalTasksCompleted.toLocaleString()}
+              index={1}
+              isVisible={showStats}
             />
             <StatCard
               label="Before 8 AM"
               value={metrics.earlyBirdCount}
               sub="early tasks"
+              index={2}
+              isVisible={showStats}
             />
             <StatCard
               label="After 10 PM"
               value={metrics.nightOwlCount}
               sub="night tasks"
+              index={3}
+              isVisible={showStats}
             />
             <StatCard
               label="Perfect Days"
               value={metrics.perfectDaysCount}
               sub="all tasks done"
+              index={4}
+              isVisible={showStats}
             />
             <StatCard
               label="Goals Finished"
               value={metrics.completedGoalsCount}
+              index={5}
+              isVisible={showStats}
             />
           </div>
-        )}
+          </div>
+        </div>
 
         {/* Category filter */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 mt-6">
