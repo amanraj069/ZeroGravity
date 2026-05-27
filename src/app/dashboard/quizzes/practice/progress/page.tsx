@@ -303,11 +303,23 @@ export default function PracticeProgressPage() {
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-60 blur group-hover:opacity-100 animate-pulse transition duration-500 rounded-lg"></div>
                         <button 
                           onClick={() => {
-                            const topicsToImprove = insightData?.topicScores
+                            const weakTopics = insightData?.topicScores
                               ?.filter((t: { score: number, topic: string }) => t.score < 70)
                               .map((t: { topic: string }) => t.topic)
                               .join(", ");
-                            const promptText = `I want to strengthen ${topicsToImprove ? topicsToImprove : 'key topics'} from the ${selectedCategory} category.`;
+                              
+                            let promptText = "";
+                            if (weakTopics) {
+                               promptText = `I want to strengthen my understanding of ${weakTopics} from the ${selectedCategory} category.`;
+                            } else {
+                               const lowestTopics = insightData?.topicScores
+                                 ?.sort((a: {score: number}, b: {score: number}) => a.score - b.score)
+                                 .slice(0, 2)
+                                 .map((t: { topic: string }) => t.topic)
+                                 .join(" and ");
+                               promptText = `I want to achieve complete expert mastery in ${selectedCategory}. Give me advanced challenges, focusing especially on ${lowestTopics || 'core concepts'}.`;
+                            }
+                            
                             router.push(`/dashboard/goals?tab=daily&aiPlanner=true&style=practical&prompt=${encodeURIComponent(promptText)}`);
                           }}
                           className="relative text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors w-fit border border-gray-900 dark:border-gray-100"
@@ -363,7 +375,20 @@ export default function PracticeProgressPage() {
               <div className="lg:col-span-3 bg-white dark:bg-[#121216] border border-gray-200 dark:border-white/5 rounded-2xl p-5">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                   <h3 className="text-base font-medium">Accuracy over Questions</h3>
-                  {availableQuizzes.length > 1 && (
+                  {availableQuizzes.length > 3 ? (
+                    <select
+                      value={selectedTopic}
+                      onChange={(e) => setSelectedTopic(e.target.value)}
+                      className="bg-gray-100 dark:bg-[#1C1C22] text-xs font-medium text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 outline-none cursor-pointer focus:ring-2 focus:ring-gray-200 dark:focus:ring-white/10 max-w-[200px]"
+                    >
+                      <option value="All">All Quizzes</option>
+                      {availableQuizzes.map(([topicKey, displayName]) => (
+                        <option key={topicKey} value={topicKey}>
+                          {displayName}
+                        </option>
+                      ))}
+                    </select>
+                  ) : availableQuizzes.length > 1 ? (
                     <div className="flex gap-1.5 bg-gray-100 dark:bg-[#1C1C22] p-1 rounded-lg overflow-x-auto custom-scrollbar">
                       <button
                         onClick={() => setSelectedTopic("All")}
@@ -389,7 +414,7 @@ export default function PracticeProgressPage() {
                         </button>
                       ))}
                     </div>
-                  )}
+                  ) : null}
                 </div>
                 <div className="h-[200px] w-full">
                   {chartData.length > 0 ? (
@@ -486,7 +511,20 @@ export default function PracticeProgressPage() {
               <div className="lg:col-span-3 bg-white dark:bg-[#121216] border border-gray-200 dark:border-white/5 rounded-2xl p-5">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
                   <h3 className="text-base font-medium">Accuracy Over Trials</h3>
-                  {availableQuizzes.length > 1 && (
+                  {availableQuizzes.length > 3 ? (
+                    <select
+                      value={selectedTopic}
+                      onChange={(e) => setSelectedTopic(e.target.value)}
+                      className="bg-gray-100 dark:bg-[#1C1C22] text-xs font-medium text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 outline-none cursor-pointer focus:ring-2 focus:ring-gray-200 dark:focus:ring-white/10 max-w-[200px]"
+                    >
+                      <option value="All">All Quizzes</option>
+                      {availableQuizzes.map(([topicKey, displayName]) => (
+                        <option key={topicKey} value={topicKey}>
+                          {displayName}
+                        </option>
+                      ))}
+                    </select>
+                  ) : availableQuizzes.length > 1 ? (
                     <div className="flex gap-1.5 bg-gray-100 dark:bg-[#1C1C22] p-1 rounded-lg overflow-x-auto custom-scrollbar">
                       <button
                         onClick={() => setSelectedTopic("All")}
@@ -512,7 +550,7 @@ export default function PracticeProgressPage() {
                         </button>
                       ))}
                     </div>
-                  )}
+                  ) : null}
                 </div>
                 
                 <div className="h-[200px] w-full">

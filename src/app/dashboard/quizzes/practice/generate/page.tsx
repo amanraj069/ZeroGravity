@@ -14,6 +14,7 @@ const DIFFICULTY_OPTIONS = [
   { value: "easy", label: "Easy" },
   { value: "medium", label: "Medium" },
   { value: "hard", label: "Hard" },
+  { value: "god", label: "GOD" },
 ];
 
 const QUESTIONS_OPTIONS = [
@@ -123,7 +124,8 @@ export default function GeneratePracticeQuizPage() {
 
     setLoading(true);
     try {
-      const response = await generatePracticeQuiz(topic, categories, difficulty, timePerQuestion, numberOfQuestions, quizName);
+      const effectiveTime = (difficulty === "hard" || difficulty === "god") ? 0 : timePerQuestion;
+      const response = await generatePracticeQuiz(topic, categories, difficulty, effectiveTime, numberOfQuestions, quizName);
       if (response.success) {
         showToast("Practice quiz generated successfully!", "success");
         router.push(`/dashboard/quizzes/practice/${response.quizId}`);
@@ -213,36 +215,44 @@ export default function GeneratePracticeQuizPage() {
                     />
                   </div>
 
-                  {/* Time Per Question (60%) */}
+                  {/* Time Per Question (60%) — hidden for Hard/GOD since AI controls timing */}
                   <div className="md:col-span-3">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                       Time Per Question <span className="text-gray-400 font-normal">({timePerQuestion}s)</span>
                     </label>
-                    <div className="flex items-center gap-3 sm:gap-4 h-[40px] sm:h-[50px]">
-                      <div className="relative flex-1 h-2.5 sm:h-3 bg-gray-200 dark:bg-gray-700/50 rounded-full flex items-center shadow-inner">
-                        <div 
-                          className="absolute left-0 top-0 bottom-0 bg-black dark:bg-white rounded-full"
-                          style={{ width: `${((timePerQuestion - 10) / 110) * 100}%` }}
-                        />
-                        <input
-                          type="range"
-                          min={10}
-                          max={120}
-                          step={5}
-                          value={timePerQuestion}
-                          onChange={(e) => setTimePerQuestion(Number(e.target.value))}
-                          className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                          disabled={isDisabled}
-                        />
-                        <div 
-                          className="absolute w-4 h-4 sm:w-5 sm:h-5 bg-white border-[3px] border-black dark:border-white rounded-full shadow-md pointer-events-none transition-transform"
-                          style={{ left: `calc(${((timePerQuestion - 10) / 110) * 100}% - 10px)` }}
-                        />
+                    {(difficulty === "hard" || difficulty === "god") ? (
+                      <div className="flex items-center h-[40px] sm:h-[50px]">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700/50 border border-dashed border-gray-300 dark:border-gray-600 text-xs sm:text-sm text-gray-500 dark:text-gray-400 w-full">
+                          <span>Timings will be set automatically</span>
+                        </div>
                       </div>
-                      <span className="w-12 text-right text-xs sm:text-sm font-bold bg-gray-100 dark:bg-gray-800 py-1.5 px-2 rounded-lg dark:text-white">
-                        {timePerQuestion}s
-                      </span>
-                    </div>
+                    ) : (
+                      <div className="flex items-center gap-3 sm:gap-4 h-[40px] sm:h-[50px]">
+                        <div className="relative flex-1 h-2.5 sm:h-3 bg-gray-200 dark:bg-gray-700/50 rounded-full flex items-center shadow-inner">
+                          <div 
+                            className="absolute left-0 top-0 bottom-0 bg-black dark:bg-white rounded-full"
+                            style={{ width: `${((timePerQuestion - 10) / 110) * 100}%` }}
+                          />
+                          <input
+                            type="range"
+                            min={10}
+                            max={120}
+                            step={5}
+                            value={timePerQuestion}
+                            onChange={(e) => setTimePerQuestion(Number(e.target.value))}
+                            className="absolute inset-0 w-full opacity-0 cursor-pointer"
+                            disabled={isDisabled}
+                          />
+                          <div 
+                            className="absolute w-4 h-4 sm:w-5 sm:h-5 bg-white border-[3px] border-black dark:border-white rounded-full shadow-md pointer-events-none transition-transform"
+                            style={{ left: `calc(${((timePerQuestion - 10) / 110) * 100}% - 10px)` }}
+                          />
+                        </div>
+                        <span className="w-12 text-right text-xs sm:text-sm font-bold bg-gray-100 dark:bg-gray-800 py-1.5 px-2 rounded-lg dark:text-white">
+                          {timePerQuestion}s
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

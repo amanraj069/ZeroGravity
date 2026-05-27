@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "portfolio-aman-raj.vercel.app",
+        hostname: "aman-raj.me",
       },
     ],
   },

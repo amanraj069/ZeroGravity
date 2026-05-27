@@ -13,10 +13,10 @@ export default function AboutPage() {
   const versions = [
     {
       version: "1.0.0",
-      date: "April 25, 2026",
+      date: "May 28, 2026",
       status: "Current",
       features: [
-        "Interactive Live Sessions & Knowledge Testing Quizzes",
+        "Interactive Personalized Knowledge Testing Quizzes with proper Insights",
         "AI-Powered Daily Planner with Dynamic Goal Sequencing",
         "Achievement Badge System & Milestone Showcasing",
         "Academic Manager with Integrated Attendance Tracking",
@@ -185,7 +185,7 @@ export default function AboutPage() {
               
               <div className="w-full md:w-64 h-56 sm:h-72 md:h-auto relative order-1 md:order-2">
                 <Image
-                  src="https://portfolio-aman-raj.vercel.app/home/cover_me.JPG"
+                  src="https://aman-raj.me/home/cover_me.JPG"
                   alt={dev.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
