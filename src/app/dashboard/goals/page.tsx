@@ -10,7 +10,7 @@ function GoalsLoadingFallback() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab");
   const mode = tab === "all" ? "goals" : "daily";
-  
+
   return <GoalsSkeleton mode={mode} />;
 }
 
@@ -37,7 +37,7 @@ function GoalsPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-transparent flex flex-col pb-12 sm:pb-16">
+    <div className="min-h-screen bg-transparent flex flex-col">
       <main className="flex-1">
         <Goals />
       </main>
@@ -47,7 +47,13 @@ function GoalsPageContent() {
 
 export default function GoalsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12"><GoalsSkeleton /></div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
+          <GoalsSkeleton />
+        </div>
+      }
+    >
       <GoalsPageContent />
     </Suspense>
   );

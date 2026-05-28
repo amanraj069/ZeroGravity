@@ -204,7 +204,7 @@ function QuizzesContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
-      <main className="flex-1 py-4 sm:py-10">
+      <main className="flex-1 py-4 sm:py-10 pb-16 sm:pb-24">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header */}
           <motion.div

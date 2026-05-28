@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_ENDPOINTS, apiCall } from "@/config/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 const highlights = [
   {
@@ -55,6 +56,7 @@ const highlights = [
 ];
 
 export default function HighlightsSection() {
+  const { isLoggedIn } = useAuth();
   const [stars, setStars] = useState<
     { id: number; top: string; left: string; size: number; delay: number }[]
   >([]);
@@ -65,6 +67,8 @@ export default function HighlightsSection() {
   const router = useRouter();
 
   useEffect(() => {
+    // Don't fetch promo status for logged-in users
+    if (isLoggedIn) return;
     const fetchPromoStatus = async () => {
       try {
         const res = await apiCall(API_ENDPOINTS.PROMO.STATUS);
@@ -77,7 +81,7 @@ export default function HighlightsSection() {
       }
     };
     fetchPromoStatus();
-  }, []);
+  }, [isLoggedIn]);
 
   const handleClaimPromo = async () => {
     try {
@@ -179,7 +183,7 @@ export default function HighlightsSection() {
                 <span className="font-normal italic bg-clip-text text-transparent bg-gradient-to-r from-black via-black to-black dark:from-white dark:via-purple-200 dark:to-blue-200">
                   ZeroGravity
                 </span>
-                {promoCount !== null && promoCount > 0 && (
+                {!isLoggedIn && promoCount !== null && promoCount > 0 && (
                   <motion.button
                     onClick={() => setShowPromoPopup(true)}
                     className="text-black dark:text-white hover:opacity-85 focus:outline-none inline-flex items-center flex-shrink-0 leading-none"

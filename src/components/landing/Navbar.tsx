@@ -22,7 +22,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-function LandingNavbar() {
+function Navbar() {
   const { isLoggedIn, isLoading, logout, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -267,4 +267,4 @@ function LandingNavbar() {
   );
 }
 
-export default memo(LandingNavbar);
+export default memo(Navbar);

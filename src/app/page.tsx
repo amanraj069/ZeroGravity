@@ -3,6 +3,7 @@
 import HeroSection from "@/components/landing/HeroSection";
 import HighlightsSection from "@/components/landing/HighlightsSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
+import FAQSection from "@/components/landing/FAQSection";
 import LoginCTASection from "@/components/landing/LoginCTASection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
@@ -42,6 +43,7 @@ export default function Home() {
         
         <HighlightsSection />
         <FeaturesSection />
+        <FAQSection />
         {!isLoading && !isLoggedIn && <LoginCTASection />}
       </div>
     </div>

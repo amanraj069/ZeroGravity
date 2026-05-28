@@ -637,7 +637,7 @@ function JoinQuizContent() {
         </div>
 
         <main className="flex-1 flex justify-center px-4 sm:px-6 pt-0 pb-12 sm:pb-16 min-h-0">
-          <div className="max-w-6xl mx-auto w-full">
+          <div className="max-w-6xl mx-auto w-full px-2 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-stretch">
               {/* Form section - First on mobile, Second on desktop */}
               <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-5 sm:p-8 lg:p-10 border border-black dark:border-gray-700 shadow-lg h-auto lg:h-[75dvh] flex flex-col justify-start order-1 lg:order-2 rounded-xl">

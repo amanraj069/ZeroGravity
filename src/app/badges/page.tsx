@@ -60,7 +60,7 @@ function BadgeCard({ badge }: { badge: BadgeProgress }) {
   const pct = Math.round(badge.progress * 100);
 
   // Parse shadow value from tailwind class shadow-[...]
-  const glowShadow = visual.glow.match(/\[(.*)\]/)?.[1]?.replaceAll("_", " ");
+  const glowShadow = visual?.glow?.match(/\[(.*)\]/)?.[1]?.replaceAll("_", " ");
 
   return (
     <div
@@ -113,12 +113,12 @@ function BadgeCard({ badge }: { badge: BadgeProgress }) {
           {badge.unlocked && <RandomStars />}
           <div
             className={
-              (badge.unlocked && visual.dropShadow ? visual.dropShadow : "") +
+              (badge.unlocked && visual?.dropShadow ? visual.dropShadow : "") +
               " relative z-10"
             }
           >
             <span
-              className={`bg-gradient-to-br ${visual.gradient} bg-clip-text text-transparent`}
+              className={`bg-gradient-to-br ${visual?.gradient || "from-gray-400 to-gray-500"} bg-clip-text text-transparent`}
               style={
                 badge.id === "the-perfectionist" || badge.id === "full-house"
                   ? { fontSize: "1.15em" }
@@ -127,7 +127,7 @@ function BadgeCard({ badge }: { badge: BadgeProgress }) {
                     : {}
               }
             >
-              {visual.icon}
+              {visual?.icon}
             </span>
           </div>
         </div>
@@ -157,7 +157,7 @@ function BadgeCard({ badge }: { badge: BadgeProgress }) {
         </div>
         <div className="w-full h-1.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r ${visual.gradient} transition-all duration-700 rounded-full ${badge.unlocked ? "" : "opacity-40"}`}
+            className={`h-full bg-gradient-to-r ${visual?.gradient || "from-gray-400 to-gray-500"} transition-all duration-700 rounded-full ${badge.unlocked ? "" : "opacity-40"}`}
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -339,47 +339,53 @@ export default function BadgesPage() {
         >
           <div className="overflow-hidden">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 pb-1">
-            <StatCard
-              label="Longest Streak"
-              value={metrics.maxStreak}
-              sub="days"
-              index={0}
-              isVisible={showStats}
-            />
-            <StatCard
-              label="Tasks Completed"
-              value={metrics.totalTasksCompleted.toLocaleString()}
-              index={1}
-              isVisible={showStats}
-            />
-            <StatCard
-              label="Before 8 AM"
-              value={metrics.earlyBirdCount}
-              sub="early tasks"
-              index={2}
-              isVisible={showStats}
-            />
-            <StatCard
-              label="After 10 PM"
-              value={metrics.nightOwlCount}
-              sub="night tasks"
-              index={3}
-              isVisible={showStats}
-            />
-            <StatCard
-              label="Perfect Days"
-              value={metrics.perfectDaysCount}
-              sub="all tasks done"
-              index={4}
-              isVisible={showStats}
-            />
-            <StatCard
-              label="Goals Finished"
-              value={metrics.completedGoalsCount}
-              index={5}
-              isVisible={showStats}
-            />
-          </div>
+              <StatCard
+                label="Longest Streak"
+                value={metrics.maxStreak}
+                sub="days"
+                index={0}
+                isVisible={showStats}
+              />
+              <StatCard
+                label="Tasks Completed"
+                value={metrics.totalTasksCompleted.toLocaleString()}
+                index={1}
+                isVisible={showStats}
+              />
+              <StatCard
+                label="Before 8 AM"
+                value={metrics.earlyBirdCount}
+                sub="early tasks"
+                index={2}
+                isVisible={showStats}
+              />
+              <StatCard
+                label="After 10 PM"
+                value={metrics.nightOwlCount}
+                sub="night tasks"
+                index={3}
+                isVisible={showStats}
+              />
+              <StatCard
+                label="Perfect Days"
+                value={metrics.perfectDaysCount}
+                sub="all tasks done"
+                index={4}
+                isVisible={showStats}
+              />
+              <StatCard
+                label="Goals Finished"
+                value={metrics.completedGoalsCount}
+                index={5}
+                isVisible={showStats}
+              />
+              <StatCard
+                label="Practice Quizzes"
+                value={metrics.practiceQuizzesCount || 0}
+                index={6}
+                isVisible={showStats}
+              />
+            </div>
           </div>
         </div>
 

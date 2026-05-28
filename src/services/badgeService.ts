@@ -4,7 +4,7 @@ export interface BadgeProgress {
   id: string;
   name: string;
   description: string;
-  category: "streak" | "time" | "tasks" | "goals";
+  category: "streak" | "time" | "tasks" | "goals" | "practice";
   requirement: number;
   current: number;
   progress: number; // 0–1
@@ -20,6 +20,7 @@ export interface BadgeMetrics {
   nightOwlCount: number;
   completedGoalsCount: number;
   perfectDaysCount: number;
+  practiceQuizzesCount: number;
 }
 
 export interface BadgeData {
@@ -46,7 +47,7 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
   // COSMIC TIER
   "zero-gravity": {
     id: "zero-gravity",
-    icon: "⌬",
+    icon: "🪐",
     gradient: "from-purple-400 via-fuchsia-400 to-pink-500",
     border: "border-purple-400/60",
     glow: "shadow-[0_0_22px_4px_rgba(192,132,252,0.5)]",
@@ -57,6 +58,21 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
       "dark:from-fuchsia-950/50 dark:via-purple-950/40 dark:to-pink-950/50",
     bgLight: "from-fuchsia-50 via-purple-50 to-pink-100",
     prestigeRank: -1,
+  },
+  // COSMIC TIER
+  "the-omniscient": {
+    id: "the-omniscient",
+    icon: "👑",
+    gradient: "from-purple-400 via-fuchsia-400 to-pink-500",
+    border: "border-purple-400/60",
+    glow: "shadow-[0_0_22px_4px_rgba(192,132,252,0.5)]",
+    dropShadow:
+      "drop-shadow-[0_0_8px_rgba(255,255,255,0.9)] drop-shadow-[0_0_15px_rgba(192,132,252,0.8)] drop-shadow-[0_0_25px_rgba(216,180,254,0.6)]",
+    textColor: "text-purple-300",
+    bgDark:
+      "dark:from-fuchsia-950/50 dark:via-purple-950/40 dark:to-pink-950/50",
+    bgLight: "from-fuchsia-50 via-purple-50 to-pink-100",
+    prestigeRank: 0,
   },
   // COSMIC TIER
   "the-infinite": {
@@ -88,6 +104,20 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
     prestigeRank: 1,
   },
   // DIAMOND TIER
+  "the-mastermind": {
+    id: "the-mastermind",
+    icon: "🔮",
+    gradient: "from-sky-300 via-indigo-300 to-cyan-300",
+    border: "border-sky-300/60",
+    glow: "shadow-[0_0_18px_2px_rgba(125,211,252,0.45)]",
+    dropShadow:
+      "drop-shadow-[0_0_5px_rgba(255,255,255,0.9)] drop-shadow-[0_0_12px_rgba(59,130,246,0.7)] drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]",
+    textColor: "text-sky-300",
+    bgDark: "dark:from-sky-950/40 dark:via-indigo-950/30 dark:to-cyan-950/40",
+    bgLight: "from-sky-50 via-indigo-50 to-cyan-50",
+    prestigeRank: 2,
+  },
+  // DIAMOND TIER
   "the-guardian": {
     id: "the-guardian",
     icon: "◈",
@@ -114,6 +144,21 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
     bgDark: "dark:from-sky-950/40 dark:via-indigo-950/30 dark:to-cyan-950/40",
     bgLight: "from-sky-50 via-indigo-50 to-cyan-50",
     prestigeRank: 3,
+  },
+  // GOLD TIER
+  "the-scholar": {
+    id: "the-scholar",
+    icon: "📚",
+    gradient: "from-yellow-500 via-amber-400 to-yellow-600",
+    border: "border-yellow-400/60",
+    glow: "shadow-[0_0_18px_2px_rgba(250,204,21,0.45)]",
+    dropShadow:
+      "drop-shadow-[0_0_10px_rgba(168,85,247,0.75)] drop-shadow-[0_0_18px_rgba(147,51,234,0.5)]",
+    textColor: "text-yellow-500",
+    bgDark:
+      "dark:from-yellow-950/40 dark:via-amber-950/30 dark:to-yellow-950/40",
+    bgLight: "from-yellow-50 via-amber-50 to-yellow-100",
+    prestigeRank: 4,
   },
   // GOLD TIER
   "the-perfectionist": {
@@ -159,6 +204,20 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
       "dark:from-yellow-950/40 dark:via-amber-950/30 dark:to-yellow-950/40",
     bgLight: "from-yellow-50 via-amber-50 to-yellow-100",
     prestigeRank: 6,
+  },
+  // SILVER TIER
+  "the-novice": {
+    id: "the-novice",
+    icon: "🧠",
+    gradient: "from-gray-300 via-slate-300 to-gray-400",
+    border: "border-gray-300/60",
+    glow: "shadow-[0_0_18px_2px_rgba(209,213,219,0.4)]",
+    dropShadow:
+      "drop-shadow-[0_0_10px_rgba(255,255,255,0.6)] drop-shadow-[0_0_15px_rgba(203,213,225,0.4)]",
+    textColor: "text-gray-400",
+    bgDark: "dark:from-gray-800/40 dark:via-slate-800/30 dark:to-gray-900/40",
+    bgLight: "from-gray-50 via-slate-50 to-gray-100",
+    prestigeRank: 7,
   },
   // SILVER TIER
   "the-keeper": {
@@ -220,14 +279,18 @@ export const BADGE_VISUALS: Record<string, BadgeVisual> = {
 
 export const PRESTIGE_ORDER = [
   "zero-gravity",
+  "the-omniscient",
   "the-infinite",
+  "the-mastermind",
   "the-immortal",
   "the-guardian",
+  "the-scholar",
   "the-perfectionist",
   "the-keeper",
   "millennial",
   "goal-crusher",
   "full-house",
+  "the-novice",
   "centurion",
   "night-owl",
   "early-bird",

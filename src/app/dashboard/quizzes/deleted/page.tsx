@@ -247,7 +247,7 @@ function DeletedQuizzesContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-transparent">
-      <main className="py-6 sm:py-10">
+      <main className="py-6 sm:py-10 pb-16 sm:pb-24">
         <div className="max-w-6xl mx-auto px-3 sm:px-4">
           {/* Header */}
           <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -399,7 +399,10 @@ export default function LandingFooter() {
         >
           <p
             className="whitespace-nowrap font-light text-white/[0.22] leading-none"
-            style={{ fontSize: "clamp(18px, 18vw, 240px)", letterSpacing: "-0.01em" }}
+            style={{
+              fontSize: "clamp(18px, 18vw, 240px)",
+              letterSpacing: "-0.01em",
+            }}
           >
             Zero<span className="italic font-normal">Gravity</span>
           </p>
@@ -407,12 +410,12 @@ export default function LandingFooter() {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to bottom, transparent 0%, rgba(5,5,5,0.5) 55%, #050505 90%)",
+              background:
+                "linear-gradient(to bottom, transparent 0%, rgba(5,5,5,0.5) 55%, #050505 90%)",
             }}
           />
         </div>
       )}
-
     </AnimatedFooter>
   );
 }
