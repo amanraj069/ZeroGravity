@@ -37,6 +37,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { PracticeQuizInsightsSkeleton } from "@/components/quizzes/PracticeQuizInsightsSkeleton";
 
 export default function PracticeQuizInsightsPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -49,6 +50,12 @@ export default function PracticeQuizInsightsPage() {
   const [attempts, setAttempts] = useState<PracticeAttempt[]>([]);
   const [loading, setLoading] = useState(true);
   const [isUnlocking, setIsUnlocking] = useState(false);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setNavigatingTo(path);
+    router.push(path);
+  };
 
   const [selectedAttemptId, setSelectedAttemptId] = useState<string>("");
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
@@ -110,10 +117,7 @@ export default function PracticeQuizInsightsPage() {
     }
   };
 
-  if (authLoading || loading)
-    return (
-      <ZeroGravityLoading title="Loading Insights" showNavigation={false} />
-    );
+  if (authLoading || loading) return <PracticeQuizInsightsSkeleton />;
   if (!quiz) return null;
 
   // When not given up, API omits questions entirely
@@ -173,13 +177,23 @@ export default function PracticeQuizInsightsPage() {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
                 onClick={() =>
-                  router.push(
+                  handleNavigate(
                     `/dashboard/quizzes/practice/progress?category=${encodeURIComponent(quiz.categories?.[0] || "General")}`,
                   )
                 }
-                className="relative flex items-center justify-center gap-1.5 bg-black text-white dark:bg-white dark:text-black px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap"
+                onMouseEnter={() =>
+                  router.prefetch(
+                    `/dashboard/quizzes/practice/progress?category=${encodeURIComponent(quiz.categories?.[0] || "General")}`,
+                  )
+                }
+                disabled={navigatingTo !== null}
+                className="relative flex items-center justify-center gap-1.5 bg-black text-white dark:bg-white dark:text-black px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap disabled:opacity-70"
               >
-                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                {navigatingTo !== null ? (
+                  <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                )}
                 <span className="hidden sm:inline">Category AI insights</span>
                 <span className="sm:hidden">AI Insights</span>
               </button>

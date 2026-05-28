@@ -8,6 +8,7 @@ import { getPracticeQuizById, giveUpPracticeQuiz, PracticeQuiz, PracticeAttempt 
 import { BackButton } from "@/components/BackButton";
 import { Brain, Clock, Play, BarChart2, AlertTriangle, Folder, Calendar } from "lucide-react";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { PracticeQuizDetailsSkeleton } from "@/components/quizzes/PracticeQuizDetailsSkeleton";
 
 export default function PracticeQuizDetailsPage() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -19,6 +20,12 @@ export default function PracticeQuizDetailsPage() {
   const [quiz, setQuiz] = useState<PracticeQuiz | null>(null);
   const [attempts, setAttempts] = useState<PracticeAttempt[]>([]);
   const [loading, setLoading] = useState(true);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setNavigatingTo(path);
+    router.push(path);
+  };
 
   const fetchQuizDetails = useCallback(async () => {
     try {
@@ -55,7 +62,7 @@ export default function PracticeQuizDetailsPage() {
       showToast("You have reached the maximum number of trials.", "error");
       return;
     }
-    router.push(`/dashboard/quizzes/practice/${quizId}/take`);
+    handleNavigate(`/dashboard/quizzes/practice/${quizId}/take`);
   };
 
 
@@ -84,11 +91,11 @@ export default function PracticeQuizDetailsPage() {
     }
 
     // Navigate — insights page will handle the lock if still has trials
-    router.push(`/dashboard/quizzes/practice/${quizId}/insights`);
+    handleNavigate(`/dashboard/quizzes/practice/${quizId}/insights`);
   };
 
 
-  if (authLoading || loading) return <ZeroGravityLoading title="Loading Details" showNavigation={false} />;
+  if (authLoading || loading) return <PracticeQuizDetailsSkeleton />;
   if (!quiz) return null;
 
   const trialsRemaining = quiz.maxTrials - attempts.length;
@@ -101,7 +108,7 @@ export default function PracticeQuizDetailsPage() {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       <main className="flex-1 py-8 sm:py-12">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="mb-3 sm:mb-8 flex flex-col md:flex-row md:items-start justify-between gap-5 sm:gap-6">
+          <div className="mb-3 sm:mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4 sm:gap-6">
             <div className="w-full">
               <div className="flex items-start sm:items-center gap-3 sm:gap-4">
                 <div className="mt-1 sm:mt-0">
@@ -119,7 +126,8 @@ export default function PracticeQuizDetailsPage() {
                     </div>
                     
                     <div className="md:hidden flex flex-col items-end gap-1.5 mt-1">
-                      <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md w-fit whitespace-nowrap ${
+                      <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md w-fit whitespace-nowrap border border-transparent ${
+                        quiz.difficulty === "god" ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/40" :
                         quiz.difficulty === "hard" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
                         quiz.difficulty === "medium" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" :
                         "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
@@ -151,7 +159,8 @@ export default function PracticeQuizDetailsPage() {
             {/* Buttons: mobile = single row (Insights left, Take Quiz right), desktop = row */}
             <div className="flex flex-row sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto md:pt-2 sm:ml-[3.25rem] md:ml-0 mt-2 sm:mt-0">
               <div className="hidden md:flex items-center">
-                <span className={`flex items-center justify-center px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg ${
+                <span className={`flex items-center justify-center px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg border border-transparent ${
+                  quiz.difficulty === "god" ? "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/40" :
                   quiz.difficulty === "hard" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
                   quiz.difficulty === "medium" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" :
                   "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
@@ -164,9 +173,16 @@ export default function PracticeQuizDetailsPage() {
               {(attempts.length > 0 || quiz.isGivenUp) && (
                 <button
                   onClick={handleViewInsights}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 border border-black dark:border-white bg-transparent text-black dark:text-white px-4 sm:px-6 py-2.5 rounded-lg hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out font-medium text-sm whitespace-nowrap"
+                  onMouseEnter={() => router.prefetch(`/dashboard/quizzes/practice/${quizId}/insights`)}
+                  disabled={navigatingTo !== null}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 border border-black dark:border-white bg-transparent text-black dark:text-white px-4 sm:px-6 py-2.5 rounded-lg hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out font-medium text-sm whitespace-nowrap disabled:opacity-70"
                 >
-                  <BarChart2 className="w-4 h-4" /> <span className="hidden sm:inline">View Insights</span><span className="sm:hidden">Insights</span>
+                  {navigatingTo === `/dashboard/quizzes/practice/${quizId}/insights` ? (
+                    <div className="w-4 h-4 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <BarChart2 className="w-4 h-4" />
+                  )}
+                  <span className="hidden sm:inline">View Insights</span><span className="sm:hidden">Insights</span>
                 </button>
               )}
 
@@ -174,9 +190,16 @@ export default function PracticeQuizDetailsPage() {
               {!quiz.isGivenUp && !isOutOfTrials && (
                 <button
                   onClick={handleTakeQuiz}
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-medium text-sm whitespace-nowrap"
+                  onMouseEnter={() => router.prefetch(`/dashboard/quizzes/practice/${quizId}/take`)}
+                  disabled={navigatingTo !== null}
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors font-medium text-sm whitespace-nowrap disabled:opacity-70"
                 >
-                  <Play className="w-4 h-4" /> Take Quiz
+                  {navigatingTo === `/dashboard/quizzes/practice/${quizId}/take` ? (
+                    <div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
+                  Take Quiz
                 </button>
               )}
             </div>

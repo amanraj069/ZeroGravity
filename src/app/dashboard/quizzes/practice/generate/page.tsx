@@ -9,6 +9,7 @@ import { BackButton } from "@/components/BackButton";
 import { Sparkles, AlertCircle, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { PracticeGenerateSkeleton } from "@/components/quizzes/PracticeGenerateSkeleton";
 
 const DIFFICULTY_OPTIONS = [
   { value: "easy", label: "Easy" },
@@ -21,7 +22,6 @@ const QUESTIONS_OPTIONS = [
   { value: 5, label: "5Q" },
   { value: 10, label: "10Q" },
   { value: 15, label: "15Q" },
-  { value: 20, label: "20Q" },
 ];
 
 export default function GeneratePracticeQuizPage() {
@@ -143,7 +143,7 @@ export default function GeneratePracticeQuizPage() {
   const suggestedCategories = existingCategories.filter(cat => !categories.includes(cat));
 
   if (authLoading || quotaLoading) {
-    return <ZeroGravityLoading title="Loading" showNavigation={false} />;
+    return <PracticeGenerateSkeleton />;
   }
 
   const isDisabled = loading || (quota ? quota.remaining <= 0 : false);

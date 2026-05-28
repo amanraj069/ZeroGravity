@@ -79,7 +79,7 @@ export default function FeaturesSection() {
   }, []);
 
   return (
-    <section className="relative py-20 lg:py-32 overflow-hidden bg-white dark:bg-[#0a0a0c] transition-colors duration-1000">
+    <section className="relative pt-20 lg:pt-32 pb-16 overflow-hidden bg-white dark:bg-[#0a0a0c] transition-colors duration-1000">
       {/* Cosmic Atmosphere - Optimized for Mobile */}
       <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
         <div className="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-purple-600/[0.05] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />

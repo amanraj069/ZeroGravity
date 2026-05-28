@@ -247,7 +247,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             {/* Points Branding */}
             <div className="hidden sm:flex items-baseline px-3 py-1 border-r border-black/10 dark:border-white/10">
-              <span className="text-lg md:text-2xl font-bold text-black dark:text-white">
+              <span className="text-lg md:text-2xl font-bold text-black dark:text-white mr-2">
                 {(user?.points || 0).toLocaleString()}
               </span>
               <CurrencyIcon

@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import LandingNavbar from "@/components/landing/LandingNavbar";
-import LandingFooter from "@/components/landing/LandingFooter";
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -24,17 +24,18 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div
-      className={`flex flex-col bg-transparent ${isFullScreenPage ? "h-[100dvh] overflow-hidden" : "min-h-screen"
-        }`}
+      className={`flex flex-col bg-transparent ${
+        isFullScreenPage ? "h-[100dvh] overflow-hidden" : "min-h-screen"
+      }`}
     >
-      {!hideNavigation && <LandingNavbar />}
+      {!hideNavigation && <Navbar />}
       <main
         className={`flex-grow flex flex-col ${!hideNavigation ? "pt-16" : ""} ${isFullScreenPage ? "overflow-hidden min-h-0" : ""}`}
       >
         {children}
       </main>
 
-      {isFullScreenPage || hideNavigation ? null : <LandingFooter />}
+      {isFullScreenPage || hideNavigation ? null : <Footer />}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
+import { PracticeProgressSkeleton } from "@/components/quizzes/PracticeProgressSkeleton";
 import {
   getPracticeAnalytics,
   getCategoryInsights,
@@ -104,6 +105,12 @@ export default function PracticeProgressPage() {
   const [insightData, setInsightData] = useState<InsightData | null>(null);
   const [insightLoading, setInsightLoading] = useState(false);
   const insightCacheRef = useRef<Record<string, InsightData>>({});
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setNavigatingTo(path);
+    router.push(path);
+  };
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -223,13 +230,7 @@ export default function PracticeProgressPage() {
   };
 
   if (loading || authLoading) {
-    return (
-      <ZeroGravityLoading
-        title="Loading Analytics"
-        subtitle="Fetching your progress..."
-        showNavigation={false}
-      />
-    );
+    return <PracticeProgressSkeleton />;
   }
 
   const { attempts, categoryStats } = analyticsData;
@@ -336,10 +337,16 @@ export default function PracticeProgressPage() {
               quizzes to see your progress here!
             </p>
             <button
-              onClick={() => router.push("/dashboard/quizzes?type=practice")}
-              className="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
+              onClick={() => handleNavigate("/dashboard/quizzes?type=practice")}
+              onMouseEnter={() => router.prefetch("/dashboard/quizzes?type=practice")}
+              disabled={navigatingTo !== null}
+              className="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center justify-center min-w-[160px]"
             >
-              Take a Practice Quiz
+              {navigatingTo === "/dashboard/quizzes?type=practice" ? (
+                <div className="w-5 h-5 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                "Take a Practice Quiz"
+              )}
             </button>
           </div>
         ) : (
@@ -382,9 +389,12 @@ export default function PracticeProgressPage() {
                         {insightData.generalInsight}
                       </p>
                       <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 sm:mb-8 block sm:hidden">
+                        {insightData.generalInsight}
+                      </p>
+                      {/* <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 sm:mb-8 block sm:hidden">
                         {insightData.shortGeneralInsight ||
                           insightData.generalInsight}
-                      </p>
+                      </p> */}
 
                       <div className="flex items-center gap-2 sm:gap-0 flex-wrap sm:flex-nowrap">
                         <div className="relative group w-fit mt-1">
@@ -416,13 +426,17 @@ export default function PracticeProgressPage() {
                                 promptText = `I want to achieve complete expert mastery in ${selectedCategory}. Give me advanced challenges, focusing especially on ${lowestTopics || "core concepts"}.`;
                               }
 
-                              router.push(
-                                `/dashboard/goals?tab=daily&aiPlanner=true&style=practical&prompt=${encodeURIComponent(promptText)}`,
-                              );
+                              const url = `/dashboard/goals?tab=daily&aiPlanner=true&style=practical&prompt=${encodeURIComponent(promptText)}`;
+                              handleNavigate(url);
                             }}
-                            className="relative text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors w-fit border border-gray-900 dark:border-gray-100"
+                            disabled={navigatingTo !== null}
+                            className="relative text-sm font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors w-fit border border-gray-900 dark:border-gray-100 disabled:opacity-70"
                           >
-                            <Sparkles className="w-4 h-4" />
+                            {navigatingTo !== null ? (
+                              <div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin"></div>
+                            ) : (
+                              <Sparkles className="w-4 h-4" />
+                            )}
                             Improve this category
                           </button>
                         </div>
