@@ -40,6 +40,12 @@ function QuizzesContent() {
   const [filteredQuizzes, setFilteredQuizzes] = useState<Quiz[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [deletingQuizId, setDeletingQuizId] = useState<string | null>(null);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setNavigatingTo(path);
+    router.push(path);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -131,15 +137,15 @@ function QuizzesContent() {
   };
 
   const handleQuizClick = (quiz: Quiz) => {
+    let path: string;
     if (quiz.status === "active") {
-      router.push(`/hosted/${quiz.quizId}`);
+      path = `/hosted/${quiz.quizId}`;
     } else if (quiz.status === "published") {
-      router.push(
-        `/dashboard/quizzes/host/${quiz.quizId}${quiz.joinCode ? `?code=${quiz.joinCode}` : ""}`,
-      );
+      path = `/dashboard/quizzes/host/${quiz.quizId}${quiz.joinCode ? `?code=${quiz.joinCode}` : ""}`;
     } else {
-      router.push(`/dashboard/quizzes/create?quizId=${quiz.quizId}&edit=true`);
+      path = `/dashboard/quizzes/create?quizId=${quiz.quizId}&edit=true`;
     }
+    handleNavigate(path);
   };
 
   const handleDeleteQuiz = async (
@@ -227,19 +233,31 @@ function QuizzesContent() {
                 {/* Mobile icon actions */}
                 <div className="flex items-center gap-2 sm:hidden">
                   <button
-                    onClick={() => router.push("/joinQuiz")}
-                    className="h-8 flex items-center justify-center border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-black dark:text-white px-3.5 hover:bg-black/10 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out text-[13px] font-medium cursor-pointer rounded-xl box-border"
+                    onClick={() => handleNavigate("/joinQuiz")}
+                    onMouseEnter={() => router.prefetch("/joinQuiz")}
+                    disabled={navigatingTo !== null}
+                    className="h-8 flex items-center justify-center border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-black dark:text-white px-3.5 hover:bg-black/10 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out text-[13px] font-medium cursor-pointer rounded-xl box-border disabled:opacity-70"
                   >
-                    Join
+                    {navigatingTo === "/joinQuiz" ? (
+                      <div className="w-4 h-4 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      "Join"
+                    )}
                   </button>
                   {activeTab === "practice" && (
                     <div className="relative group">
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500 rounded-xl"></div>
                       <button
-                        onClick={() => router.push("/dashboard/quizzes/practice/progress")}
-                        className="relative h-8 flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3.5 hover:bg-gray-900 dark:hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-[13px] font-medium rounded-xl box-border shadow-sm"
+                        onClick={() => handleNavigate("/dashboard/quizzes/practice/progress")}
+                        onMouseEnter={() => router.prefetch("/dashboard/quizzes/practice/progress")}
+                        disabled={navigatingTo !== null}
+                        className="relative h-8 flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black px-3.5 hover:bg-gray-900 dark:hover:bg-gray-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 text-[13px] font-medium rounded-xl box-border shadow-sm disabled:opacity-70"
                       >
-                        <BarChart2 className="w-3.5 h-3.5" />
+                        {navigatingTo === "/dashboard/quizzes/practice/progress" ? (
+                          <div className="w-3.5 h-3.5 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <BarChart2 className="w-3.5 h-3.5" />
+                        )}
                         Progress
                       </button>
                     </div>
@@ -249,28 +267,46 @@ function QuizzesContent() {
 
               <div className="hidden sm:flex flex-row gap-3 items-center justify-end shrink-0">
                 <button
-                  onClick={() => router.push("/joinQuiz")}
-                  className="flex items-center justify-center border border-black dark:border-white bg-white dark:bg-[#1C1C22] text-black dark:text-white px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out text-sm font-medium cursor-pointer rounded-xl"
+                  onClick={() => handleNavigate("/joinQuiz")}
+                  onMouseEnter={() => router.prefetch("/joinQuiz")}
+                  disabled={navigatingTo !== null}
+                  className="flex items-center justify-center border border-black dark:border-white bg-white dark:bg-[#1C1C22] text-black dark:text-white px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out text-sm font-medium cursor-pointer rounded-xl disabled:opacity-70"
                 >
-                  Join Quiz
+                  {navigatingTo === "/joinQuiz" ? (
+                    <div className="w-5 h-5 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Join Quiz"
+                  )}
                 </button>
                 {activeTab === "practice" && (
                   <div className="relative group">
                     <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500 rounded-xl"></div>
                     <button
-                      onClick={() => router.push("/dashboard/quizzes/practice/progress")}
-                      className="relative flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                      onClick={() => handleNavigate("/dashboard/quizzes/practice/progress")}
+                      onMouseEnter={() => router.prefetch("/dashboard/quizzes/practice/progress")}
+                      disabled={navigatingTo !== null}
+                      className="relative flex items-center justify-center gap-2 bg-black dark:bg-white text-white dark:text-black px-4 sm:px-6 py-2.5 sm:py-3 hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors text-sm font-medium cursor-pointer rounded-xl disabled:opacity-70"
                     >
-                      <BarChart2 className="w-4 h-4" />
+                      {navigatingTo === "/dashboard/quizzes/practice/progress" ? (
+                        <div className="w-4 h-4 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <BarChart2 className="w-4 h-4" />
+                      )}
                       AI Progress
                     </button>
                   </div>
                 )}
                 <button
-                  onClick={() => router.push(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
-                  className="flex items-center justify-center gap-2 bg-white dark:bg-[#1C1C22] border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl"
+                  onClick={() => handleNavigate(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
+                  onMouseEnter={() => router.prefetch(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
+                  disabled={navigatingTo !== null}
+                  className="flex items-center justify-center gap-2 bg-white dark:bg-[#1C1C22] border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-4 sm:px-6 py-2.5 sm:py-3 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium cursor-pointer rounded-xl disabled:opacity-70"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  {navigatingTo?.startsWith("/dashboard/quizzes/deleted") ? (
+                    <div className="w-4 h-4 border-2 border-gray-500 dark:border-gray-300 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
                   Trash
                 </button>
               </div>
@@ -314,12 +350,18 @@ function QuizzesContent() {
               
               {/* Mobile Trash Button */}
               <button
-                onClick={() => router.push(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
-                className="sm:hidden px-4 shrink-0 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 bg-gray-100/80 dark:bg-[#121216]/80 backdrop-blur-xl border border-gray-200/50 dark:border-white/5 hover:border-red-200 dark:hover:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all rounded-xl box-border"
+                onClick={() => handleNavigate(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
+                onMouseEnter={() => router.prefetch(`/dashboard/quizzes/deleted?type=${activeTab === "hosted" ? "host" : "practice"}`)}
+                disabled={navigatingTo !== null}
+                className="sm:hidden px-4 shrink-0 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 bg-gray-100/80 dark:bg-[#121216]/80 backdrop-blur-xl border border-gray-200/50 dark:border-white/5 hover:border-red-200 dark:hover:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all rounded-xl box-border disabled:opacity-70"
                 aria-label="View Deleted"
                 title="View Deleted"
               >
-                <Trash2 className="w-4 h-4" />
+                {navigatingTo?.startsWith("/dashboard/quizzes/deleted") ? (
+                  <div className="w-4 h-4 border-2 border-red-500 dark:border-red-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
               </button>
             </div>
 
@@ -423,10 +465,16 @@ function QuizzesContent() {
                             <motion.button
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              onClick={() => router.push("/createQuiz")}
-                              className="inline-flex items-center justify-center px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-xl"
+                              onClick={() => handleNavigate("/createQuiz")}
+                              onMouseEnter={() => router.prefetch("/createQuiz")}
+                              disabled={navigatingTo !== null}
+                              className="inline-flex items-center justify-center px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-xl disabled:opacity-70"
                             >
-                              Create Your First Quiz
+                              {navigatingTo === "/createQuiz" ? (
+                                <div className="w-5 h-5 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                "Create Your First Quiz"
+                              )}
                             </motion.button>
                           </div>
                         </div>
@@ -489,61 +537,63 @@ function QuizzesContent() {
 
           {/* Quizzes Grid */}
           {!loading && filteredQuizzes.length > 0 && (
-            <motion.div
-              layout
-              className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6"
-            >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <motion.button
-                layout
-                initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{
-                  layout: { type: "spring", stiffness: 350, damping: 25, mass: 0.8 },
-                  opacity: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: 0 },
-                  y: { type: "spring", stiffness: 350, damping: 25, delay: 0 },
-                  scale: { type: "spring", stiffness: 350, damping: 25, delay: 0 }
-                }}
-                onClick={() => router.push("/createQuiz")}
-                whileHover={{
-                  y: -4,
-                  scale: 1.005,
-                  transition: { duration: 0.2, ease: "easeOut" }
-                }}
-                className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151a]/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-colors duration-300 p-8 rounded-xl group/add"
+                onClick={() => handleNavigate("/createQuiz")}
+                onMouseEnter={() => router.prefetch("/createQuiz")}
+                disabled={navigatingTo !== null}
+                whileHover={{ y: -4 }}
+                className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151a]/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 p-8 rounded-xl group/add disabled:opacity-70"
                 style={{ minHeight: "180px" }}
               >
                 {/* Actual button content */}
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover/add:border-gray-400 transition-colors mb-3">
-                  <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors" />
+                  {navigatingTo === "/createQuiz" ? (
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-gray-400 dark:border-gray-500 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors" />
+                  )}
                 </div>
                 <span className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 group-hover/add:text-black dark:group-hover/add:text-white transition-colors">
-                  ADD QUIZ
+                  {navigatingTo === "/createQuiz" ? "PREPARING..." : "ADD QUIZ"}
                 </span>
               </motion.button>
-              <AnimatePresence>
-                {filteredQuizzes.map((quiz, index) => (
+              <AnimatePresence mode="popLayout">
+                {filteredQuizzes.map((quiz) => (
                   <motion.div
                     key={quiz.quizId}
-                    layout
-                    initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                    transition={{
-                      layout: { duration: 0.3, ease: "easeInOut" },
-                      opacity: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: (index + 1) * 0.06 },
-                      y: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: (index + 1) * 0.06 },
-                      scale: { duration: 0.4, ease: [0.23, 1, 0.32, 1], delay: (index + 1) * 0.06 }
-                    }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    whileHover={{ y: -4 }}
                     onClick={() => handleQuizClick(quiz)}
-                    whileHover={{
-                      y: -4,
-                      boxShadow:
-                        "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                      transition: { duration: 0.2, ease: "easeOut" }
+                    onMouseEnter={() => {
+                      const path = quiz.status === "active"
+                        ? `/hosted/${quiz.quizId}`
+                        : quiz.status === "published"
+                        ? `/dashboard/quizzes/host/${quiz.quizId}`
+                        : `/dashboard/quizzes/create?quizId=${quiz.quizId}&edit=true`;
+                      router.prefetch(path);
                     }}
-                    className="flex flex-col h-full bg-white dark:bg-[#15151a] shadow-sm p-5 sm:p-6 transition-all cursor-pointer border border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 group rounded-xl"
+                    className="relative flex flex-col h-full bg-white dark:bg-[#15151a] shadow-sm p-5 sm:p-6 transition-all duration-300 ease-out cursor-pointer border border-gray-100 dark:border-gray-800 hover:shadow-xl dark:hover:shadow-[0_16px_36px_rgba(0,0,0,0.8)] hover:border-gray-200 dark:hover:border-gray-700/80 group rounded-xl"
                     style={{ minHeight: "180px" }}
                   >
+                    {/* Loading overlay */}
+                    {navigatingTo !== null && (
+                      (() => {
+                        const path = quiz.status === "active"
+                          ? `/hosted/${quiz.quizId}`
+                          : quiz.status === "published"
+                          ? `/dashboard/quizzes/host/${quiz.quizId}${quiz.joinCode ? `?code=${quiz.joinCode}` : ""}`
+                          : `/dashboard/quizzes/create?quizId=${quiz.quizId}&edit=true`;
+                        return navigatingTo === path ? (
+                          <div className="absolute inset-0 bg-white/50 dark:bg-[#15151a]/50 backdrop-blur-[1px] flex items-center justify-center rounded-xl z-10 transition-all">
+                            <div className="w-8 h-8 border-4 border-black dark:border-white border-t-transparent rounded-full animate-spin" />
+                          </div>
+                        ) : null;
+                      })()
+                    )}
                     {/* Header with Title and Actions */}
                     <div className="flex items-start justify-between gap-4 mb-auto">
                       <h3 className="text-xl sm:text-2xl font-light text-black dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2 leading-snug">
@@ -616,7 +666,7 @@ function QuizzesContent() {
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </div>
           )}
           </>
           )}

@@ -8,7 +8,6 @@ import { generatePracticeQuiz, getPracticeQuizQuota, getPracticeAnalytics, Quota
 import { BackButton } from "@/components/BackButton";
 import { Sparkles, AlertCircle, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { PracticeGenerateSkeleton } from "@/components/quizzes/PracticeGenerateSkeleton";
 
 const DIFFICULTY_OPTIONS = [

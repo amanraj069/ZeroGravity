@@ -4,12 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { PracticeProgressSkeleton } from "@/components/quizzes/PracticeProgressSkeleton";
 import {
   getPracticeAnalytics,
   getCategoryInsights,
 } from "@/services/practiceQuizService";
+import { getPracticeQuizzes } from "@/services/practiceQuizService";
 import {
   LineChart,
   Line,
@@ -119,14 +119,48 @@ export default function PracticeProgressPage() {
         const response = await getPracticeAnalytics();
         if (response.success) {
           setAnalyticsData(response.data);
-          const uniqueCategories = Array.from(
-            new Set(
-              response.data.attempts.map(
-                (a: { category: string }) => a.category,
+
+          // Fetch user's current practice quizzes to derive categories only
+          // from quizzes that are not deleted (`isDeleted: false`).
+          let activeCategories: string[] = [];
+          try {
+            const quizzesRes = await getPracticeQuizzes();
+            if (
+              quizzesRes &&
+              quizzesRes.success &&
+              Array.isArray(quizzesRes.data)
+            ) {
+              const cats = new Set<string>();
+              for (const q of quizzesRes.data) {
+                if (q.isDeleted) continue; // skip deleted quizzes
+                if (Array.isArray(q.categories) && q.categories.length > 0) {
+                  q.categories.forEach((c: string) => cats.add(c));
+                } else if (q.topic) {
+                  cats.add(q.topic);
+                }
+              }
+              activeCategories = Array.from(cats);
+            }
+          } catch (err) {
+            console.error(
+              "Failed to fetch practice quizzes for categories:",
+              err,
+            );
+          }
+
+          // Fallback: if no active categories found, derive from analytics attempts
+          if (activeCategories.length === 0) {
+            const uniqueCategories = Array.from(
+              new Set(
+                response.data.attempts.map(
+                  (a: { category: string }) => a.category,
+                ),
               ),
-            ),
-          );
-          const updatedCategories = uniqueCategories as string[];
+            );
+            activeCategories = uniqueCategories as string[];
+          }
+
+          const updatedCategories = activeCategories as string[];
           setCategories(updatedCategories);
 
           let defaultCategory = selectedCategory;
@@ -142,9 +176,9 @@ export default function PracticeProgressPage() {
           // If defaultCategory is not in categories and current selection isn't valid, pick first available
           if (
             !updatedCategories.includes(defaultCategory) &&
-            uniqueCategories.length > 0
+            updatedCategories.length > 0
           ) {
-            setSelectedCategory(uniqueCategories[0] as string);
+            setSelectedCategory(updatedCategories[0] as string);
           } else {
             setSelectedCategory(defaultCategory);
           }
@@ -215,7 +249,7 @@ export default function PracticeProgressPage() {
         // Rate limit reached
         showToast(
           res.message ||
-            "AI insights can only be refreshed once every 24 hours. Please try again later.",
+            "AI insights can only be refreshed once every 6 hours. Please try again later.",
           "error",
         );
       } else {
@@ -338,7 +372,9 @@ export default function PracticeProgressPage() {
             </p>
             <button
               onClick={() => handleNavigate("/dashboard/quizzes?type=practice")}
-              onMouseEnter={() => router.prefetch("/dashboard/quizzes?type=practice")}
+              onMouseEnter={() =>
+                router.prefetch("/dashboard/quizzes?type=practice")
+              }
               disabled={navigatingTo !== null}
               className="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-70 flex items-center justify-center min-w-[160px]"
             >

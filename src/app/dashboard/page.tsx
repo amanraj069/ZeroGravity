@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,6 +38,12 @@ export default function Dashboard() {
   const [pointsAnimation, setPointsAnimation] = useState<{
     points: number;
   } | null>(null);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setNavigatingTo(path);
+    router.push(path);
+  };
 
   // Generate random stars for background atmosphere
   const stars = useMemo(() => {
@@ -257,16 +262,22 @@ export default function Dashboard() {
             </div>
 
             {/* Shop Button */}
-            <Link
-              href="/shop"
-              className="group relative inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 font-medium tracking-wide text-white dark:text-black transition-all duration-300 rounded-lg overflow-hidden"
+            <button
+              onClick={() => handleNavigate("/shop")}
+              onMouseEnter={() => router.prefetch("/shop")}
+              disabled={navigatingTo !== null}
+              className="group relative inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 font-medium tracking-wide text-white dark:text-black transition-all duration-300 rounded-lg overflow-hidden disabled:opacity-80 cursor-pointer"
             >
               <div className="absolute inset-0 bg-black dark:bg-white transition-all duration-300 group-hover:opacity-90" />
-              <ShoppingBag className="w-3.5 h-3.5 relative" />
+              {navigatingTo === "/shop" ? (
+                <div className="w-3.5 h-3.5 border-2 border-white dark:border-black border-t-transparent rounded-full animate-spin relative" />
+              ) : (
+                <ShoppingBag className="w-3.5 h-3.5 relative" />
+              )}
               <span className="relative text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                Shop
+                {navigatingTo === "/shop" ? "Loading..." : "Shop"}
               </span>
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -284,10 +295,11 @@ export default function Dashboard() {
               }}
               whileHover={{ y: -2, scale: 1.005 }}
             >
-              <Link
-                href={item.url}
+              <div
+                onClick={() => handleNavigate(item.url)}
+                onMouseEnter={() => router.prefetch(item.url)}
                 id={item.id}
-                className="group block overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-xl"
+                className="group block overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] transition-all duration-200 hover:border-purple-300/30 dark:hover:border-purple-200/50 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-xl cursor-pointer"
               >
                 <div className="relative flex flex-row items-center justify-between gap-5 px-4 py-4 md:px-6 md:py-5">
                   <div className="flex items-center gap-4 lg:gap-4">
@@ -308,11 +320,15 @@ export default function Dashboard() {
                   </div>
                   <div className="flex-shrink-0">
                     <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-white transition duration-200 group-hover:bg-gray-100 dark:group-hover:bg-white/10 group-hover:text-gray-900 dark:group-hover:text-white">
-                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                      {navigatingTo === item.url ? (
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-600 dark:border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                      )}
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -324,9 +340,10 @@ export default function Dashboard() {
           transition={{ delay: 0.4 }}
           className="mb-4 md:mb-5"
         >
-          <Link
-            href="/leaderboard"
-            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 transition-all duration-500 hover:border-amber-300/30 dark:hover:border-amber-200/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(251,191,36,0.15)] rounded-2xl"
+          <div
+            onClick={() => handleNavigate("/leaderboard")}
+            onMouseEnter={() => router.prefetch("/leaderboard")}
+            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 transition-all duration-500 hover:border-amber-300/30 dark:hover:border-amber-200/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(251,191,36,0.15)] rounded-2xl cursor-pointer"
           >
             {/* Immersive Star Layer - Golden */}
             <div className="absolute inset-0 opacity-20 dark:opacity-40 pointer-events-none group-hover:opacity-40 dark:group-hover:opacity-70 transition-opacity">
@@ -346,6 +363,7 @@ export default function Dashboard() {
               <div className="absolute top-1/2 -translate-y-1/2 right-0 w-64 h-64 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[80px]" />
             </div>
 
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-10">
               <div className="text-center md:text-left">
                 <h2 className="text-xl sm:text-3xl md:text-5xl font-light text-black dark:text-white mb-4 tracking-tight leading-none">
@@ -361,12 +379,18 @@ export default function Dashboard() {
                   🏆
                 </div>
                 <div className="flex items-center gap-2 text-[9px] sm:text-sm uppercase tracking-[0.3em] font-bold text-gray-600 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                  <span>View Top</span>
-                  <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                  {navigatingTo === "/leaderboard" ? (
+                    <div className="w-4 h-4 border-2 border-amber-500 dark:border-amber-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>View Top</span>
+                      <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-          </Link>
+          </div>
         </motion.div>
 
         {/* Global Interaction Point - Students Hub (Prominent) */}
@@ -375,9 +399,10 @@ export default function Dashboard() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <Link
-            href="/studentsHub"
-            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 group transition-all duration-500 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-2xl"
+          <div
+            onClick={() => handleNavigate("/studentsHub")}
+            onMouseEnter={() => router.prefetch("/studentsHub")}
+            className="group relative block w-full overflow-hidden border border-gray-200 dark:border-white/5 bg-white dark:bg-[#050710] shadow-sm dark:shadow-[0_12px_25px_rgba(0,0,0,0.45)] py-6 sm:py-10 px-6 sm:px-8 transition-all duration-500 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-md dark:hover:shadow-[0_18px_45px_rgba(230,220,255,0.25)] rounded-2xl cursor-pointer"
           >
             {/* Immersive Star Layer */}
             <div className="absolute inset-0 opacity-20 dark:opacity-40 pointer-events-none group-hover:opacity-40 dark:group-hover:opacity-70 transition-opacity">
@@ -396,6 +421,7 @@ export default function Dashboard() {
               ))}
             </div>
 
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-10">
               <div className="text-center md:text-left">
                 <h2 className="text-xl sm:text-3xl md:text-5xl font-light text-black dark:text-white mb-4 tracking-tight leading-none">
@@ -411,12 +437,18 @@ export default function Dashboard() {
                   🚀
                 </div>
                 <div className="flex items-center gap-2 text-[9px] sm:text-sm uppercase tracking-[0.3em] font-bold text-gray-600 dark:text-gray-600 group-hover:text-black dark:group-hover:text-white transition-colors">
-                  <span>Enter Orbit</span>
-                  <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                  {navigatingTo === "/studentsHub" ? (
+                    <div className="w-4 h-4 border-2 border-gray-600 dark:border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>Enter Orbit</span>
+                      <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
-          </Link>
+          </div>
         </motion.div>
 
         {/* Floating Background Glow (Corner) */}

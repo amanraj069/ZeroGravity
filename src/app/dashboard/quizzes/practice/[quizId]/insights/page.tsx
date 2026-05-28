@@ -36,7 +36,6 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { PracticeQuizInsightsSkeleton } from "@/components/quizzes/PracticeQuizInsightsSkeleton";
 
 export default function PracticeQuizInsightsPage() {
@@ -426,7 +425,7 @@ export default function PracticeQuizInsightsPage() {
 
               {/* Detailed Breakdown — only rendered when answers are unlocked (questions present) */}
               {!answersLocked && quiz.questions && (
-                <div className="space-y-3 sm:space-y-8 pt-4 pb-4 sm:pb-16">
+                <div className="space-y-2 sm:space-y-3 pt-4 pb-4 sm:pb-16">
                   <h3 className="text-xl font-medium text-black dark:text-white mb-4 px-2">
                     Detailed Breakdown
                   </h3>
@@ -502,7 +501,7 @@ export default function PracticeQuizInsightsPage() {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm sm:text-base font-medium text-black dark:text-white leading-normal sm:leading-snug">
+                              <p className="text-[12px] sm:text-base font-medium text-black dark:text-white leading-normal sm:leading-snug">
                                 {question.text}
                               </p>
                             </div>
@@ -560,10 +559,10 @@ export default function PracticeQuizInsightsPage() {
                                 })}
                               </div>
                               <div className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-xl p-3 sm:p-5">
-                                <h4 className="text-xs sm:text-sm font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wider mb-2">
+                                <h4 className="text-[12px] sm:text-sm font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wider mb-2">
                                   Explanation
                                 </h4>
-                                <p className="text-blue-900 dark:text-blue-100/80 text-sm leading-relaxed">
+                                <p className="text-blue-900 dark:text-blue-100/80 text-[12px] sm:text-sm leading-relaxed">
                                   {question.explanation}
                                 </p>
                               </div>

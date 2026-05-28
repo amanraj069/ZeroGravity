@@ -152,7 +152,7 @@ export default function ShopPage() {
               <BackButton />
               <h1 className="text-xl md:text-3xl font-light text-black dark:text-white">Shop</h1>
             </div>
-            <div className="flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div className="flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-xl">
               <span className="text-sm md:text-lg font-semibold text-black dark:text-white">{userPoints.toLocaleString()}</span>
               <CurrencyIcon size={12} className="text-gray-500 dark:text-gray-400" />
             </div>
@@ -332,7 +332,7 @@ export default function ShopPage() {
               <h2 className="text-xs md:text-sm font-bold uppercase tracking-widest text-gray-600 dark:text-gray-400">Profile Borders</h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {borders.map(border => (
-                  <div key={border.id} className={`relative border p-4 md:p-8 bg-white dark:bg-gray-800 flex flex-col min-h-[260px] md:min-h-[420px] transition-all hover:shadow-lg hover:scale-[1.02] ${purchasedBorderId === border.id ? "animate-purchase-premium" : ""} ${border.equipped ? "border-green-500 dark:border-green-400 shadow-md shadow-green-500/20" : "border-gray-200 dark:border-gray-700"}`}>
+                  <div key={border.id} className={`relative border p-4 md:p-8 bg-white dark:bg-gray-800 flex flex-col min-h-[260px] md:min-h-[420px] rounded-xl transition-all hover:shadow-lg hover:scale-[1.02] ${purchasedBorderId === border.id ? "animate-purchase-premium" : ""} ${border.equipped ? "border-green-500 dark:border-green-400 shadow-md shadow-green-500/20" : "border-gray-200 dark:border-gray-700"}`}>
                     <div className="absolute top-2.5 right-2.5 md:hidden flex items-center">
                       <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{border.price.toLocaleString()}</span>
                       <CurrencyIcon size={8} className="text-gray-500" />
@@ -356,7 +356,7 @@ export default function ShopPage() {
                         <CurrencyIcon size={10} className="text-gray-400" />
                       </div>
                       <div className="w-full md:w-auto flex justify-center md:justify-end">
-                        {border.owned ? (border.equipped ? <span className="text-xs md:text-sm text-green-600 dark:text-green-400">Equipped</span> : <button onClick={() => handleEquip(border.id)} disabled={equipping === border.id} className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 w-full md:w-auto">{equipping === border.id ? "..." : "Equip"}</button>) : (
+                        {border.owned ? (border.equipped ? <span className="text-xs md:text-sm text-green-600 dark:text-green-400">Equipped</span> : <button onClick={() => handleEquip(border.id)} disabled={equipping === border.id} className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 w-full md:w-auto rounded-lg">{equipping === border.id ? "..." : "Equip"}</button>) : (
                           <button onClick={() => handlePurchase(border.id)} disabled={purchasing === border.id || userPoints < border.price} className={`px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm transition-colors disabled:opacity-50 w-full md:w-auto ${userPoints >= border.price ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200" : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"}`}>
                             {purchasing === border.id ? "..." : userPoints < border.price ? "Insufficient" : "Purchase"}
                           </button>

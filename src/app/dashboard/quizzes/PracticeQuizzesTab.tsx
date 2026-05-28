@@ -85,15 +85,10 @@ export default function PracticeQuizzesTab({ searchTerm }: { searchTerm: string 
     <div className="w-full">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <motion.button
-          layout
           onClick={() => handleNavigate("/dashboard/quizzes/practice/generate")}
           onMouseEnter={() => router.prefetch("/dashboard/quizzes/practice/generate")}
-          whileHover={{ 
-            y: -4, 
-            scale: 1.005,
-            transition: { duration: 0.2, ease: "easeOut" }
-          }}
-          className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151a]/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm transition-colors duration-300 p-8 rounded-xl group"
+          whileHover={{ y: -2 }}
+          className="relative flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#15151a]/40 hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200 p-8 rounded-xl group"
           style={{ minHeight: "180px" }}
         >
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700 group-hover:border-gray-400 transition-colors mb-3">
@@ -108,28 +103,18 @@ export default function PracticeQuizzesTab({ searchTerm }: { searchTerm: string 
           </span>
         </motion.button>
 
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
           {filteredQuizzes.map((quiz) => (
             <motion.div
               key={quiz.quizId}
-              layout
-              initial={{ opacity: 0, y: 15, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-              transition={{
-                layout: { duration: 0.3, ease: "easeInOut" },
-                opacity: { duration: 0.4, ease: [0.23, 1, 0.32, 1] },
-                y: { duration: 0.4, ease: [0.23, 1, 0.32, 1] },
-                scale: { duration: 0.4, ease: [0.23, 1, 0.32, 1] }
-              }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.15 } }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              whileHover={{ y: -2 }}
               onClick={() => handleNavigate(`/dashboard/quizzes/practice/${quiz.quizId}`)}
               onMouseEnter={() => router.prefetch(`/dashboard/quizzes/practice/${quiz.quizId}`)}
-              whileHover={{ 
-                y: -4, 
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-                transition: { duration: 0.2, ease: "easeOut" }
-              }}
-              className="flex flex-col h-full bg-white dark:bg-[#15151a] shadow-sm p-5 sm:p-6 transition-all cursor-pointer border border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 rounded-xl"
+              className="relative flex flex-col h-full bg-white dark:bg-[#15151a] shadow-sm p-5 sm:p-6 transition-all duration-300 ease-out cursor-pointer border border-gray-100 dark:border-gray-800 hover:shadow-xl dark:hover:shadow-[0_16px_36px_rgba(0,0,0,0.8)] hover:border-gray-200 dark:hover:border-gray-700/80 group rounded-xl"
               style={{ minHeight: "180px" }}
             >
               {/* Header: Title and Actions */}

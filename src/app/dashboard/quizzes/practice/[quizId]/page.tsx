@@ -7,7 +7,6 @@ import { useToast } from "@/contexts/ToastContext";
 import { getPracticeQuizById, giveUpPracticeQuiz, PracticeQuiz, PracticeAttempt } from "@/services/practiceQuizService";
 import { BackButton } from "@/components/BackButton";
 import { Brain, Clock, Play, BarChart2, AlertTriangle, Folder, Calendar } from "lucide-react";
-import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { PracticeQuizDetailsSkeleton } from "@/components/quizzes/PracticeQuizDetailsSkeleton";
 
 export default function PracticeQuizDetailsPage() {
