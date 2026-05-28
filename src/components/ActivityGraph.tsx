@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 
 interface ActivityDay {
@@ -106,8 +106,7 @@ export default function ActivityGraph({
     }
   }, [loading, activityData]);
 
-  // Generate months data - each month contains its weeks
-  const generateMonthsData = (): MonthData[] => {
+  const months = useMemo(() => {
     if (!activityData) return [];
 
     // Create activity map for quick lookup
@@ -117,20 +116,17 @@ export default function ActivityGraph({
     });
 
     const today = new Date();
-    const months: MonthData[] = [];
+    const result: MonthData[] = [];
 
     // Show the last 12 months ending at the current month
-    // e.g. if today is Mar 2026, show Apr 2025 → Mar 2026
     for (let i = 11; i >= 0; i--) {
       const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
       const monthIndex = monthDate.getMonth();
       const monthYear = monthDate.getFullYear();
 
-      // Get first and last day of the month
       const firstDay = new Date(monthYear, monthIndex, 1);
       const lastDay = new Date(monthYear, monthIndex + 1, 0);
 
-      // Check if the month starts on Sunday
       const startsOnSunday = firstDay.getDay() === 0;
 
       const monthData: MonthData = {
@@ -139,11 +135,9 @@ export default function ActivityGraph({
         startsOnSunday,
       };
 
-      // Start from the Sunday of the week containing the 1st
       const startDate = new Date(firstDay);
       startDate.setDate(startDate.getDate() - startDate.getDay());
 
-      // End on the Saturday of the week containing the last day
       const endDate = new Date(lastDay);
       if (endDate.getDay() !== 6) {
         endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
@@ -163,11 +157,8 @@ export default function ActivityGraph({
             "0",
           )}-${String(day).padStart(2, "0")}`;
 
-          // Check if this day belongs to the current month
           const belongsToMonth = month === monthIndex && year === monthYear;
           const activityCount = activityMap.get(dateStr) || 0;
-          
-          // Strictly treat as "future" (hidden) if it's past today
           const isFuture = currentDate > today;
 
           week.push({
@@ -181,35 +172,32 @@ export default function ActivityGraph({
         monthData.weeks.push(week);
       }
 
-      months.push(monthData);
+      result.push(monthData);
     }
 
-    return months;
-  };
-
-  const months = generateMonthsData();
+    return result;
+  }, [activityData]);
 
   // Format joined date for comparison
-  const formattedJoinedDate = joinedDate
-    ? new Date(joinedDate).toISOString().split("T")[0]
-    : null;
+  const formattedJoinedDate = useMemo(() => 
+    joinedDate ? new Date(joinedDate).toISOString().split("T")[0] : null,
+    [joinedDate]
+  );
 
-  // Get color based on count - fixed levels: 0=none, 1=light, 2, 3, 4+=darkest
-  const getColorClass = (count: number, maxCount: number, dateStr: string) => {
-    // Check if this is the joined date - only highlight if it belongs to this month (count >= 0)
+  // Get color based on count
+  const getColorClass = useCallback((count: number, maxCount: number, dateStr: string) => {
     if (formattedJoinedDate && dateStr === formattedJoinedDate && count >= 0) {
       return "bg-yellow-400 dark:bg-yellow-500";
     }
 
-    if (count < 0) return "bg-transparent"; // Outside month or future
-    if (count === 0) return "bg-gray-200 dark:bg-gray-700"; // No tasks - gray
+    if (count < 0) return "bg-transparent";
+    if (count === 0) return "bg-gray-200 dark:bg-gray-700";
 
-    // Fixed levels based on task count - stronger contrast
-    if (count === 1) return "bg-green-200 dark:bg-green-900"; // 1 task - lightest green
-    if (count === 2) return "bg-green-400 dark:bg-green-700"; // 2 tasks
-    if (count === 3) return "bg-green-600 dark:bg-green-500"; // 3 tasks
-    return "bg-green-800 dark:bg-green-300"; // 4+ tasks - darkest green
-  };
+    if (count === 1) return "bg-green-200 dark:bg-green-900";
+    if (count === 2) return "bg-green-400 dark:bg-green-700";
+    if (count === 3) return "bg-green-600 dark:bg-green-500";
+    return "bg-green-800 dark:bg-green-300";
+  }, [formattedJoinedDate]);
 
   const handleMouseEnter = (
     day: ActivityDay,

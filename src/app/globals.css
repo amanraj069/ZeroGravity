@@ -1266,6 +1266,187 @@ html.dark input[type="date"] {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   CSS-only Starfield — replaces 60+ DOM nodes per section
+   Uses box-shadow to render many stars from a single pseudo-element.
+   ══════════════════════════════════════════════════════════════ */
+@keyframes starfield-twinkle {
+  0%, 100% { opacity: 0.18; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes starfield-twinkle-alt {
+  0%, 100% { opacity: 0.22; }
+  50% { opacity: 0.12; }
+}
+
+.css-starfield {
+  pointer-events: none;
+}
+
+.css-starfield::before,
+.css-starfield::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* Layer 1 - main stars */
+.css-starfield::before {
+  box-shadow:
+    /* Row 1 */
+    80px 40px 0 0.5px rgba(255,255,255,0.7),
+    200px 80px 0 0.3px rgba(255,255,255,0.5),
+    350px 25px 0 0.6px rgba(255,255,255,0.6),
+    500px 65px 0 0.4px rgba(255,255,255,0.8),
+    680px 35px 0 0.5px rgba(255,255,255,0.5),
+    820px 90px 0 0.3px rgba(255,255,255,0.7),
+    950px 55px 0 0.5px rgba(255,255,255,0.6),
+    1100px 30px 0 0.4px rgba(255,255,255,0.5),
+    /* Row 2 */
+    120px 160px 0 0.5px rgba(255,255,255,0.6),
+    280px 200px 0 0.6px rgba(255,255,255,0.7),
+    420px 140px 0 0.3px rgba(255,255,255,0.5),
+    580px 190px 0 0.5px rgba(255,255,255,0.8),
+    750px 150px 0 0.4px rgba(255,255,255,0.6),
+    900px 210px 0 0.5px rgba(255,255,255,0.5),
+    1050px 170px 0 0.3px rgba(255,255,255,0.7),
+    /* Row 3 */
+    50px 300px 0 0.4px rgba(255,255,255,0.5),
+    180px 340px 0 0.5px rgba(255,255,255,0.7),
+    320px 280px 0 0.6px rgba(255,255,255,0.6),
+    480px 320px 0 0.3px rgba(255,255,255,0.8),
+    640px 290px 0 0.5px rgba(255,255,255,0.5),
+    800px 350px 0 0.4px rgba(255,255,255,0.7),
+    960px 310px 0 0.5px rgba(255,255,255,0.6),
+    1120px 280px 0 0.3px rgba(255,255,255,0.5),
+    /* Row 4 */
+    90px 440px 0 0.5px rgba(255,255,255,0.6),
+    240px 470px 0 0.4px rgba(255,255,255,0.5),
+    400px 420px 0 0.6px rgba(255,255,255,0.7),
+    560px 460px 0 0.3px rgba(255,255,255,0.8),
+    720px 430px 0 0.5px rgba(255,255,255,0.6),
+    880px 480px 0 0.4px rgba(255,255,255,0.5),
+    1040px 450px 0 0.5px rgba(255,255,255,0.7),
+    /* Row 5 */
+    60px 560px 0 0.3px rgba(255,255,255,0.5),
+    210px 600px 0 0.5px rgba(255,255,255,0.7),
+    370px 540px 0 0.4px rgba(255,255,255,0.6),
+    530px 580px 0 0.6px rgba(255,255,255,0.8),
+    690px 550px 0 0.3px rgba(255,255,255,0.5),
+    850px 610px 0 0.5px rgba(255,255,255,0.7),
+    1010px 570px 0 0.4px rgba(255,255,255,0.6);
+  animation: starfield-twinkle 6s ease-in-out infinite;
+}
+
+/* Layer 2 - offset stars for density */
+.css-starfield::after {
+  box-shadow:
+    150px 60px 0 0.3px rgba(199,210,254,0.6),
+    310px 110px 0 0.5px rgba(251,207,232,0.5),
+    470px 50px 0 0.4px rgba(196,181,253,0.7),
+    630px 100px 0 0.3px rgba(199,210,254,0.5),
+    790px 70px 0 0.5px rgba(251,207,232,0.6),
+    940px 120px 0 0.4px rgba(196,181,253,0.5),
+    /* Row 2 */
+    100px 230px 0 0.4px rgba(199,210,254,0.5),
+    260px 260px 0 0.3px rgba(251,207,232,0.7),
+    430px 220px 0 0.5px rgba(196,181,253,0.6),
+    590px 250px 0 0.4px rgba(199,210,254,0.5),
+    760px 240px 0 0.3px rgba(251,207,232,0.7),
+    920px 270px 0 0.5px rgba(196,181,253,0.5),
+    1080px 230px 0 0.4px rgba(199,210,254,0.6),
+    /* Row 3 */
+    140px 380px 0 0.3px rgba(251,207,232,0.5),
+    300px 400px 0 0.5px rgba(196,181,253,0.7),
+    460px 360px 0 0.4px rgba(199,210,254,0.6),
+    620px 390px 0 0.3px rgba(251,207,232,0.5),
+    780px 370px 0 0.5px rgba(196,181,253,0.7),
+    940px 410px 0 0.4px rgba(199,210,254,0.5),
+    /* Row 4 */
+    70px 500px 0 0.5px rgba(196,181,253,0.6),
+    230px 530px 0 0.3px rgba(199,210,254,0.5),
+    390px 510px 0 0.4px rgba(251,207,232,0.7),
+    550px 540px 0 0.5px rgba(196,181,253,0.5),
+    710px 520px 0 0.3px rgba(199,210,254,0.7),
+    870px 550px 0 0.4px rgba(251,207,232,0.6),
+    1030px 510px 0 0.5px rgba(196,181,253,0.5);
+  animation: starfield-twinkle-alt 8s ease-in-out infinite 2s;
+}
+
+/* Alternate variant with different star positions */
+.css-starfield--alt::before {
+  box-shadow:
+    70px 50px 0 0.4px rgba(255,255,255,0.6),
+    190px 95px 0 0.5px rgba(255,255,255,0.5),
+    340px 35px 0 0.3px rgba(255,255,255,0.7),
+    490px 75px 0 0.5px rgba(255,255,255,0.6),
+    660px 45px 0 0.4px rgba(255,255,255,0.8),
+    810px 100px 0 0.3px rgba(255,255,255,0.5),
+    970px 60px 0 0.5px rgba(255,255,255,0.7),
+    1110px 40px 0 0.4px rgba(255,255,255,0.6),
+    130px 175px 0 0.5px rgba(255,255,255,0.5),
+    270px 215px 0 0.3px rgba(255,255,255,0.7),
+    410px 155px 0 0.6px rgba(255,255,255,0.6),
+    570px 205px 0 0.4px rgba(255,255,255,0.5),
+    740px 165px 0 0.5px rgba(255,255,255,0.8),
+    890px 225px 0 0.3px rgba(255,255,255,0.6),
+    1040px 185px 0 0.4px rgba(255,255,255,0.7),
+    55px 315px 0 0.5px rgba(255,255,255,0.6),
+    195px 355px 0 0.4px rgba(255,255,255,0.5),
+    335px 295px 0 0.3px rgba(255,255,255,0.7),
+    495px 335px 0 0.5px rgba(255,255,255,0.8),
+    655px 305px 0 0.4px rgba(255,255,255,0.5),
+    815px 365px 0 0.6px rgba(255,255,255,0.6),
+    975px 325px 0 0.3px rgba(255,255,255,0.7),
+    1130px 295px 0 0.5px rgba(255,255,255,0.5);
+  animation: starfield-twinkle 7s ease-in-out infinite 1s;
+}
+
+.css-starfield--alt::after {
+  box-shadow:
+    160px 70px 0 0.4px rgba(196,181,253,0.6),
+    320px 120px 0 0.3px rgba(199,210,254,0.7),
+    480px 60px 0 0.5px rgba(251,207,232,0.5),
+    640px 110px 0 0.4px rgba(196,181,253,0.6),
+    800px 80px 0 0.3px rgba(199,210,254,0.5),
+    950px 130px 0 0.5px rgba(251,207,232,0.7),
+    110px 240px 0 0.3px rgba(196,181,253,0.5),
+    270px 270px 0 0.5px rgba(199,210,254,0.6),
+    440px 230px 0 0.4px rgba(251,207,232,0.7),
+    600px 260px 0 0.3px rgba(196,181,253,0.5),
+    770px 250px 0 0.5px rgba(199,210,254,0.7),
+    930px 280px 0 0.4px rgba(251,207,232,0.6),
+    150px 390px 0 0.5px rgba(196,181,253,0.7),
+    310px 410px 0 0.3px rgba(199,210,254,0.5),
+    470px 370px 0 0.4px rgba(251,207,232,0.6),
+    630px 400px 0 0.5px rgba(196,181,253,0.5),
+    790px 380px 0 0.3px rgba(199,210,254,0.7),
+    950px 420px 0 0.4px rgba(251,207,232,0.5),
+    80px 510px 0 0.4px rgba(199,210,254,0.6),
+    240px 540px 0 0.5px rgba(196,181,253,0.5),
+    400px 520px 0 0.3px rgba(251,207,232,0.7),
+    560px 550px 0 0.4px rgba(199,210,254,0.5),
+    720px 530px 0 0.5px rgba(196,181,253,0.7),
+    880px 560px 0 0.3px rgba(251,207,232,0.6);
+  animation: starfield-twinkle-alt 9s ease-in-out infinite 3s;
+}
+
+/* Hide stars on mobile for performance */
+@media (max-width: 640px) {
+  .css-starfield::after {
+    display: none;
+  }
+  .css-starfield--alt::after {
+    display: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
    TipTap WYSIWYG editor styles
    ══════════════════════════════════════════════════════════════ */
 

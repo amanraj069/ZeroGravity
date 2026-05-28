@@ -796,10 +796,9 @@ export default function Profile() {
               {/* Current Streak */}
               <div className="relative border border-orange-200 dark:border-orange-900/50 p-2.5 md:p-3 bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-yellow-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center rounded-xl">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5">
-                  <div className="absolute top-0 left-1/4 w-12 h-12 bg-orange-400 rounded-full blur-2xl animate-pulse"></div>
+                  <div className="absolute top-0 left-1/4 w-12 h-12 bg-orange-400 rounded-full blur-2xl"></div>
                   <div
-                    className="absolute bottom-0 right-1/4 w-16 h-16 bg-red-400 rounded-full blur-3xl animate-pulse"
-                    style={{ animationDelay: "0.5s" }}
+                    className="absolute bottom-0 right-1/4 w-16 h-16 bg-red-400 rounded-full blur-3xl"
                   ></div>
                 </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
@@ -833,10 +832,9 @@ export default function Profile() {
               {/* Highest Streak */}
               <div className="relative border border-purple-200 dark:border-purple-900/50 p-2.5 md:p-3 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20 overflow-hidden group hover:shadow-lg transition-shadow flex flex-col justify-center rounded-xl">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5">
-                  <div className="absolute top-0 right-1/4 w-12 h-12 bg-purple-400 rounded-full blur-2xl animate-pulse"></div>
+                  <div className="absolute top-0 right-1/4 w-12 h-12 bg-purple-400 rounded-full blur-2xl"></div>
                   <div
-                    className="absolute bottom-0 left-1/4 w-16 h-16 bg-pink-400 rounded-full blur-3xl animate-pulse"
-                    style={{ animationDelay: "0.5s" }}
+                    className="absolute bottom-0 left-1/4 w-16 h-16 bg-pink-400 rounded-full blur-3xl"
                   ></div>
                 </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
