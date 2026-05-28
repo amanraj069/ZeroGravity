@@ -5,7 +5,6 @@ import {
   AnimatedFeatureItem,
   AnimatedSection,
 } from "@/components/AnimatedSection";
-import { useEffect, useState } from "react";
 import { Target, TrendingUp, Bell, ShieldCheck, Zap } from "lucide-react";
 
 const features = [
@@ -60,44 +59,15 @@ const features = [
 ];
 
 export default function FeaturesSection() {
-  const [stars, setStars] = useState<{ id: number; top: string; left: string; size: number; delay: number; color: string }[]>([]);
-
-  useEffect(() => {
-    const mobile = window.innerWidth < 640;
-    const starColors = ["bg-white", "bg-purple-100", "bg-blue-100"];
-    const starCount = mobile ? 20 : 60;
-    
-    const newStars = Array.from({ length: starCount }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 0.5,
-      delay: Math.random() * 5,
-      color: starColors[Math.floor(Math.random() * starColors.length)],
-    }));
-    setStars(newStars);
-  }, []);
-
   return (
     <section className="relative pt-20 lg:pt-32 pb-16 overflow-hidden bg-white dark:bg-[#0a0a0c] transition-colors duration-1000">
-      {/* Cosmic Atmosphere - Optimized for Mobile */}
+      {/* Cosmic Atmosphere - static blurs, CSS starfield */}
       <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
-        <div className="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-purple-600/[0.05] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/[0.05] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />
+        <div className="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-purple-600/[0.05] rounded-full blur-[80px] sm:blur-[140px]" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[40%] h-[40%] bg-blue-600/[0.05] rounded-full blur-[80px] sm:blur-[140px]" />
         
-        {stars.map((star) => (
-          <div
-            key={star.id}
-            className={`absolute rounded-full ${star.color} opacity-[0.2] will-change-opacity`}
-            style={{
-              top: star.top,
-              left: star.left,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              animation: `pulse ${3 + Math.random() * 4}s infinite ${star.delay}s`
-            }}
-          />
-        ))}
+        {/* CSS-only starfield - single element replaces 60 DOM nodes */}
+        <div className="absolute inset-0 css-starfield css-starfield--alt" />
       </div>
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 relative z-10">
@@ -124,7 +94,7 @@ export default function FeaturesSection() {
           {features.map((feature) => (
             <AnimatedFeatureItem 
               key={feature.id} 
-              className={`group relative overflow-hidden bg-white/70 dark:bg-white/[0.02] sm:backdrop-blur-md rounded-3xl border border-slate-200/80 dark:border-white/[0.05] shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] dark:hover:shadow-none transition-all duration-500 cursor-default ${feature.border} ${feature.size}`}
+              className={`group relative overflow-hidden bg-white/70 dark:bg-white/[0.02] rounded-3xl border border-slate-200/80 dark:border-white/[0.05] shadow-[0_8px_30px_rgb(0,0,0,0.02)] dark:shadow-none hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] dark:hover:shadow-none transition-all duration-500 cursor-default ${feature.border} ${feature.size}`}
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
               
@@ -171,6 +141,7 @@ export default function FeaturesSection() {
                       alt={feature.title}
                       width={800}
                       height={500}
+                      loading="lazy"
                       className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-[1.03] will-change-transform"
                     />
                   </div>

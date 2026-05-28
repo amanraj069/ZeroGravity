@@ -7,7 +7,7 @@ import {
 } from "@/components/AnimatedSection";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { API_ENDPOINTS, apiCall } from "@/config/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,10 +57,6 @@ const highlights = [
 
 export default function HighlightsSection() {
   const { isLoggedIn } = useAuth();
-  const [stars, setStars] = useState<
-    { id: number; top: string; left: string; size: number; delay: number }[]
-  >([]);
-  const [isMobile, setIsMobile] = useState(false);
   const [showPromoPopup, setShowPromoPopup] = useState(false);
   const [promoCount, setPromoCount] = useState<number | null>(null);
   const [loadingCode, setLoadingCode] = useState(false);
@@ -98,43 +94,20 @@ export default function HighlightsSection() {
     }
   };
 
-  useEffect(() => {
-    // Responsive Check first to determine star count
-    const mobile = window.innerWidth < 640;
-    setIsMobile(mobile);
-
-    // Generate Stars - Fewer on mobile for performance
-    const starCount = mobile ? 20 : 60;
-    const newStars = Array.from({ length: starCount }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 0.5,
-      delay: Math.random() * 5,
-    }));
-    setStars(newStars);
-
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const cardVariants: Variants = {
+  const cardVariants: Variants = useMemo(() => ({
     hidden: {
       opacity: 0,
-      x: isMobile ? 20 : 0,
-      y: isMobile ? 0 : 30,
+      y: 30,
     },
     visible: {
       opacity: 1,
-      x: 0,
       y: 0,
       transition: {
         duration: 0.5,
         ease: "easeOut",
       },
     },
-  };
+  }), []);
 
   return (
     <section className="bg-white dark:bg-[#0a0a0a] py-10 sm:py-24 border-y border-gray-100 dark:border-white/[0.03] relative overflow-hidden transition-colors duration-1000">
@@ -143,29 +116,13 @@ export default function HighlightsSection() {
         {/* Deep space base gradient */}
         <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a0a] via-[#0d0d0d] to-[#111111]" />
 
-        {/* Animated Background Atmosphere - Optimized for Mobile */}
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/[0.07] rounded-full blur-[80px] sm:blur-[140px] animate-pulse will-change-[opacity,filter]" />
-        <div
-          className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-violet-600/[0.07] rounded-full blur-[80px] sm:blur-[140px] animate-pulse will-change-[opacity,filter]"
-          style={{ animationDelay: "1s" }}
-        />
+        {/* Background Atmosphere - static blurs, no animate-pulse on large elements */}
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/[0.07] rounded-full blur-[80px] sm:blur-[140px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-violet-600/[0.07] rounded-full blur-[80px] sm:blur-[140px]" />
         <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-violet-600/[0.05] rounded-full blur-[60px] sm:blur-[120px]" />
 
-        {/* Animated Stars */}
-        {stars.map((star) => (
-          <div
-            key={star.id}
-            className="absolute rounded-full bg-white opacity-[0.15] animate-pulse will-change-opacity"
-            style={{
-              top: star.top,
-              left: star.left,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              animationDelay: `${star.delay}s`,
-              animationDuration: `${3 + Math.random() * 4}s`,
-            }}
-          />
-        ))}
+        {/* CSS-only starfield - single element replaces 60 DOM nodes */}
+        <div className="absolute inset-0 css-starfield" />
       </div>
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 relative z-10">
@@ -218,7 +175,7 @@ export default function HighlightsSection() {
             <motion.div key={index} variants={cardVariants}>
               <Link
                 href={item.href}
-                className={`block h-full group bg-white dark:bg-[#0a0a0a]/30 sm:backdrop-blur-md overflow-hidden relative transition-all duration-500 ${item.glow}`}
+                className={`block h-full group bg-white dark:bg-[#0a0a0a]/80 overflow-hidden relative transition-all duration-500 ${item.glow}`}
               >
                 {/* Subtle Hover Gradient */}
                 <div

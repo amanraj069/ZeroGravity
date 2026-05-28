@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AnimatedSection, AnimatedFeatureGrid } from "@/components/AnimatedSection";
 import { motion, Variants } from "framer-motion";
@@ -44,44 +44,16 @@ const cardVariants: Variants = {
 
 export default function FAQSection() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [stars, setStars] = useState<{ id: number; top: string; left: string; size: number; delay: number; color: string }[]>([]);
-
-  useEffect(() => {
-    const mobile = window.innerWidth < 640;
-    const starColors = ["bg-white", "bg-purple-100", "bg-blue-100"];
-    const starCount = mobile ? 20 : 60;
-    
-    const newStars = Array.from({ length: starCount }, (_, i) => ({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 2 + 0.5,
-      delay: Math.random() * 5,
-      color: starColors[Math.floor(Math.random() * starColors.length)],
-    }));
-    setStars(newStars);
-  }, []);
 
   return (
     <section className="relative py-16 sm:py-24 overflow-hidden bg-white dark:bg-[#0a0a0c] border-t border-gray-100 dark:border-white/[0.03] transition-colors duration-1000">
       {/* Cosmic atmosphere */}
       <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
-        <div className="absolute bottom-[-10%] left-[10%] w-[50%] h-[50%] bg-indigo-600/[0.04] rounded-full blur-[100px] sm:blur-[160px] will-change-[filter]" />
-        <div className="absolute top-[-10%] right-[5%] w-[40%] h-[40%] bg-purple-600/[0.04] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />
+        <div className="absolute bottom-[-10%] left-[10%] w-[50%] h-[50%] bg-indigo-600/[0.04] rounded-full blur-[100px] sm:blur-[160px]" />
+        <div className="absolute top-[-10%] right-[5%] w-[40%] h-[40%] bg-purple-600/[0.04] rounded-full blur-[80px] sm:blur-[140px]" />
         
-        {stars.map((star) => (
-          <div
-            key={star.id}
-            className={`absolute rounded-full ${star.color} opacity-[0.2] will-change-opacity`}
-            style={{
-              top: star.top,
-              left: star.left,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-              animation: `pulse ${3 + Math.random() * 4}s infinite ${star.delay}s`
-            }}
-          />
-        ))}
+        {/* CSS-only starfield - single element replaces 60 DOM nodes */}
+        <div className="absolute inset-0 css-starfield" />
       </div>
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 relative z-10">

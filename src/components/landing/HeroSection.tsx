@@ -90,7 +90,7 @@ export default function HeroSection() {
 
         {/* Subtle Cosmic Overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-white/5 dark:from-[#111116] dark:via-transparent dark:to-[#111116]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-[1200px] h-full sm:h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[80px] sm:blur-[160px] pointer-events-none will-change-[filter]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-[1200px] h-full sm:h-[800px] bg-purple-500/[0.03] dark:bg-indigo-500/[0.05] rounded-full blur-[80px] sm:blur-[160px] pointer-events-none" />
       </div>
 
       <AnimatedHero className="relative z-10 text-center max-w-5xl mx-auto px-6">

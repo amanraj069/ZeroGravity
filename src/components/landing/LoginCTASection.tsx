@@ -55,7 +55,7 @@ export default function LoginCTASection() {
             alt=""
             fill
             className="object-cover scale-110"
-            priority
+            loading="lazy"
           />
         </div>
       </div>
