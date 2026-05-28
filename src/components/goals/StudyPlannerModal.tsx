@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
 import {
   X,
   Check,
@@ -215,18 +214,10 @@ export default function StudyPlannerModal({
                 disabled={spIsGenerating}
                 className={`relative flex flex-col items-start gap-1 p-2.5 sm:p-3 rounded-xl border text-left transition-colors duration-200 z-0 active:scale-[0.98] ${
                   isSelected
-                    ? "border-transparent"
+                    ? "bg-gray-50 dark:bg-gray-800 border-black dark:border-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
                     : "border-gray-200 dark:border-gray-700 bg-transparent hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                 }`}
               >
-                {isSelected && (
-                  <motion.div
-                    layoutId="study-focus-style-bg"
-                    className="absolute -inset-[1px] bg-gray-50 dark:bg-gray-800 border border-black dark:border-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] rounded-xl"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    style={{ zIndex: -1 }}
-                  />
-                )}
                 <div className="flex items-center gap-1.5 w-full relative z-10">
                   <span
                     className={
@@ -247,14 +238,9 @@ export default function StudyPlannerModal({
                     {style.label}
                   </span>
                   {isSelected && (
-                    <motion.div 
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30, delay: 0.1 }}
-                      className="ml-auto flex-shrink-0"
-                    >
+                    <div className="ml-auto flex-shrink-0">
                       <Check className="w-3 h-3 text-gray-900 dark:text-white" />
-                    </motion.div>
+                    </div>
                   )}
                 </div>
                 <p

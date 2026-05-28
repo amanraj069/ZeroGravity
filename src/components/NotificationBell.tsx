@@ -26,11 +26,12 @@ export default function NotificationBell() {
   const fetchNotifications = useCallback(async () => {
     try {
       const data = await notificationService.getNotificationCount();
-      setHasNewNotifications(data.hasNewNotifications);
+      setHasNewNotifications(data.unreadCount > 0);
 
       if (isOpen) {
         const fullData = await notificationService.getNotifications();
         setNotifications(fullData.notifications);
+        setHasNewNotifications(fullData.unreadCount > 0);
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -70,7 +71,7 @@ export default function NotificationBell() {
       try {
         const data = await notificationService.getNotifications();
         setNotifications(data.notifications);
-        setHasNewNotifications(data.hasNewNotifications);
+        setHasNewNotifications(data.unreadCount > 0);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       } finally {
@@ -83,11 +84,12 @@ export default function NotificationBell() {
   const handleMarkAsRead = async (notificationId: string) => {
     try {
       await notificationService.markAsRead(notificationId);
-      setNotifications((prev) =>
-        prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n))
-      );
-      await fetchNotifications();
-      setIsOpen(false);
+      setNotifications((prev) => {
+        const next = prev.map((n) => (n._id === notificationId ? { ...n, isRead: true } : n));
+        setHasNewNotifications(next.some(n => !n.isRead));
+        return next;
+      });
+      fetchNotifications(); // Fetch in background to sync state without blocking
     } catch (error) {
       console.error("Error marking notification as read:", error);
     }
@@ -105,11 +107,13 @@ export default function NotificationBell() {
         await notificationService.markAsRead(notificationId);
       }
 
-      setNotifications((prev) =>
-        prev.map((n) =>
+      setNotifications((prev) => {
+        const next = prev.map((n) =>
           n._id === notificationId ? { ...n, isClaimed: true, isRead: true } : n
-        )
-      );
+        );
+        setHasNewNotifications(next.some(n => !n.isRead));
+        return next;
+      });
 
       // Show points animation
       if (pointsToClaim > 0) {
@@ -130,7 +134,8 @@ export default function NotificationBell() {
     try {
       await notificationService.markAllAsRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-      await fetchNotifications();
+      setHasNewNotifications(false);
+      fetchNotifications(); // Fetch in background
     } catch (error) {
       console.error("Error marking all as read:", error);
     }
@@ -167,7 +172,7 @@ export default function NotificationBell() {
 
         {/* Dropdown */}
         {isOpen && (
-          <div className="absolute right-[-50px] lg:right-[-100px] mt-2 w-[21rem] md:w-96 bg-transparent border border-gray-200 dark:border-gray-800 shadow-lg z-50 max-h-96 overflow-hidden flex flex-col rounded-xl">
+          <div className="absolute right-[-50px] lg:right-[-100px] mt-2 w-[21rem] md:w-96 bg-white dark:bg-[#121216] border border-gray-200 dark:border-gray-800 shadow-lg z-50 max-h-96 overflow-hidden flex flex-col rounded-xl">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
               <h3 className="text-lg font-semibold text-black dark:text-white">

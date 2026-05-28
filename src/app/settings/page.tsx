@@ -1384,10 +1384,9 @@ export default function EditProfile() {
                   </div>
                 </div>
 
-                {/* Auto Stop Quiz Duration — PRO only */}
-                {user.subscription === "pro" && (
-                  <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <div className="flex items-start justify-between mb-4">
+                {/* Auto Stop Quiz Duration — Available to ALL users */}
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-black dark:text-white">
                           Auto Stop Quiz Duration
@@ -1430,8 +1429,7 @@ export default function EditProfile() {
                       </p>
                     )}
                   </div>
-                )}
-              </div>
+                </div>
             )}
           </div>
         </div>

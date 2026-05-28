@@ -1,18 +1,10 @@
 "use client";
 
 import { useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Goals from "@/components/goals/Goals";
 import GoalsSkeleton from "@/components/goals/GoalsSkeleton";
-
-function GoalsLoadingFallback() {
-  const searchParams = useSearchParams();
-  const tab = searchParams.get("tab");
-  const mode = tab === "all" ? "goals" : "daily";
-
-  return <GoalsSkeleton mode={mode} />;
-}
 
 function GoalsPageContent() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -27,7 +19,8 @@ function GoalsPageContent() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
-        <GoalsLoadingFallback />
+        {/* Render a consistent skeleton to avoid SSR/hydration mismatches from URL params */}
+        <GoalsSkeleton mode="daily" />
       </div>
     );
   }
@@ -50,7 +43,7 @@ export default function GoalsPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
-          <GoalsSkeleton />
+          <GoalsSkeleton mode="daily" />
         </div>
       }
     >

@@ -44,8 +44,6 @@ export default function CreateQuizContent({
   const [showJsonModal, setShowJsonModal] = useState(false);
   const [jsonInput, setJsonInput] = useState("");
 
-  const isPro = user?.subscription === "pro";
-
   // Load existing quiz or prefill from /createQuiz
   useEffect(() => {
     const existingQuizId = searchParams?.quizId as string;
@@ -234,16 +232,6 @@ export default function CreateQuizContent({
         subtitle="Preparing your quiz..."
         showNavigation={false}
       />
-    );
-  if (!isPro)
-    return (
-      <div className="min-h-screen bg-transparent flex items-center justify-center">
-        <div className="text-center p-6">
-          <p className="text-lg text-black dark:text-white">
-            Pro subscription required to create quizzes.
-          </p>
-        </div>
-      </div>
     );
 
   const q = questions[currentIndex];
