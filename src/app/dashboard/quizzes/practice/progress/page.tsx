@@ -25,7 +25,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { RefreshCw, Sparkles, BarChart2 } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { motion } from "framer-motion";
 
@@ -315,7 +315,7 @@ export default function PracticeProgressPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-transparent text-black dark:text-white overflow-x-hidden">
-      <main className="py-6 sm:py-10 px-4 max-w-6xl mx-auto w-full">
+      <main className="py-6 sm:py-10 px-4 max-w-6xl mx-auto w-full flex-1 flex flex-col">
         <div className="mb-3 sm:mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
             <BackButton />
@@ -364,9 +364,12 @@ export default function PracticeProgressPage() {
         </div>
 
         {attempts.length === 0 ? (
-          <div className="bg-white dark:bg-[#121216] border border-gray-200 dark:border-white/5 rounded-2xl p-10 text-center flex flex-col items-center">
-            <h2 className="text-xl font-medium mb-2">No data yet</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+          <div className="bg-white dark:bg-[#121216] border border-gray-200 dark:border-white/5 rounded-2xl p-6 sm:p-10 text-center flex flex-col items-center justify-center flex-1 min-h-[500px] sm:min-h-[60vh] my-4 shadow-sm">
+            <div className="mb-6 text-gray-300 dark:text-gray-600 flex items-center justify-center">
+              <BarChart2 className="w-12 h-12 sm:w-20 sm:h-20 text-gray-300 dark:text-gray-600" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-medium mb-2">No data yet</h2>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-xs sm:max-w-md mx-auto leading-relaxed">
               You haven&apos;t completed any practice quizzes yet. Take a few
               quizzes to see your progress here!
             </p>

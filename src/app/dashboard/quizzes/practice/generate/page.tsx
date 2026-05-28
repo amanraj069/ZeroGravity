@@ -189,7 +189,7 @@ export default function GeneratePracticeQuizPage() {
                     placeholder="e.g. History of World War II, JavaScript Fundamentals, Machine Learning..."
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow"
                     disabled={isDisabled}
                     required
                   />
@@ -204,10 +204,10 @@ export default function GeneratePracticeQuizPage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="e.g. CSS Basics..."
+                      placeholder="e.g. DSA-Q1..."
                       value={quizName}
                       onChange={(e) => setQuizName(e.target.value)}
-                      className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow"
                       disabled={isDisabled}
                       maxLength={10}
                       required
@@ -313,7 +313,7 @@ export default function GeneratePracticeQuizPage() {
                           }}
                           autoFocus
                           placeholder="New category..."
-                          className="h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white"
+                          className="h-8 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white"
                           disabled={loading}
                         />
                         <button

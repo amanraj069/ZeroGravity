@@ -116,7 +116,12 @@ const Goals: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const { showErrorToast } = useToast();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Update URL when activeView changes
   const updateURL = (view: ViewType) => {
@@ -541,7 +546,7 @@ const Goals: React.FC = () => {
                   key={goal._id}
                   className={`rounded-xl shadow-sm overflow-hidden ${goal.completed
                     ? "bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700"
-                    : isGoalOverdue(goal)
+                    : mounted && isGoalOverdue(goal)
                       ? "bg-red-50/40 dark:bg-red-950/30 border-2 border-dashed border-red-400 dark:border-red-600"
                       : goal.priority === "high"
                         ? "bg-red-50/30 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50"
@@ -624,12 +629,12 @@ const Goals: React.FC = () => {
 
                         <div className="flex items-center justify-between mt-2">
                           <span
-                            className={`text-xs ${isGoalOverdue(goal)
+                            className={`text-xs ${mounted && isGoalOverdue(goal)
                               ? "text-red-600 dark:text-red-400 font-medium"
                               : "text-gray-500 dark:text-gray-400"
                               }`}
                           >
-                            {isGoalOverdue(goal) ? (
+                            {mounted && isGoalOverdue(goal) ? (
                               <>
                                 ⚠️ Overdue (was due{" "}
                                 {new Date(goal.targetDate).toLocaleDateString()}

@@ -90,6 +90,11 @@ const DailyTasks: React.FC = () => {
   const [showStudyPlanner, setShowStudyPlanner] = useState(false);
   const [initialPlannerPrompt, setInitialPlannerPrompt] = useState("");
   const [initialPlannerStyle, setInitialPlannerStyle] = useState("balanced");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const shouldOpenPlanner = searchParams.get("aiPlanner") === "true";
@@ -496,7 +501,7 @@ const DailyTasks: React.FC = () => {
           </div>
           {/* Upcoming Days - full width */}
           <div className="flex-1 flex items-center gap-2 overflow-x-auto pb-1">
-            {getUpcomingDays().map((day) => {
+            {mounted && getUpcomingDays().map((day) => {
               const isSelected = selectedDate === day.date;
               // Format as 'Fri (3rd Dec)'
               const dateObj = new Date(day.date);
@@ -564,7 +569,7 @@ const DailyTasks: React.FC = () => {
       </div>
 
       {/* Read-only indicator for non-today dates */}
-      {!isToday && (
+      {mounted && !isToday && (
         <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 p-3 flex items-center gap-2 mt-2 sm:mt-4 rounded-xl">
           <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
           <p className="text-[13px] sm:text-sm text-amber-700 dark:text-amber-300">

@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
-import Link from "next/link";
+import { InteractiveLink } from "@/components/InteractiveLink";
 import Image from "next/image";
 import { Flame, ShoppingBag, Share2, Settings } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
@@ -146,22 +146,22 @@ export default function PublicProfile() {
           </div>
           <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
             {currentUser?.userId === user.userId && (
-              <Link
+              <InteractiveLink
                 href="/shop"
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
               >
                 <ShoppingBag className="w-3 h-3 flex-shrink-0" />
                 Shop
-              </Link>
+              </InteractiveLink>
             )}
             {currentUser?.userId === user.userId && (
-              <Link
+              <InteractiveLink
                 href="/settings"
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg"
               >
                 <Settings className="w-3 h-3 flex-shrink-0" />
                 Settings
-              </Link>
+              </InteractiveLink>
             )}
           </div>
         </div>

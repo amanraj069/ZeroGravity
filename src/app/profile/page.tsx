@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { DashboardLayout } from "@/components/dashboard";
-import Link from "next/link";
+import { InteractiveLink } from "@/components/InteractiveLink";
 import Image from "next/image";
 import ProfileSkeleton from "./ProfileSkeleton";
 import {
@@ -19,6 +19,7 @@ import {
   Plus,
   X,
   Settings,
+  Loader2,
 } from "lucide-react";
 import ActivityGraph from "@/components/ActivityGraph";
 import {
@@ -68,6 +69,7 @@ export default function Profile() {
   const [userBorders, setUserBorders] = useState<Border[]>([]);
   const [equipping, setEquipping] = useState(false);
   const [showPhotoEditor, setShowPhotoEditor] = useState(false);
+  const [isLoadingBorders, setIsLoadingBorders] = useState(false);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [copied, setCopied] = useState(false);
   const [badgeData, setBadgeData] = useState<BadgeData | null>(null);
@@ -259,6 +261,7 @@ export default function Profile() {
   };
 
   const handleOpenBorderPicker = async () => {
+    setIsLoadingBorders(true);
     try {
       const data = await getUserBorders();
       if (data?.success) {
@@ -266,6 +269,8 @@ export default function Profile() {
       }
     } catch (error) {
       console.error("Error fetching borders:", error);
+    } finally {
+      setIsLoadingBorders(false);
     }
     setShowBorderPicker(true);
   };
@@ -369,47 +374,56 @@ export default function Profile() {
                 </span>
                 <CurrencyIcon size={12} className="ml-0.5" />
               </div>
-              <Link
+              <InteractiveLink
                 href="/shop"
                 className="flex sm:hidden items-center justify-center p-1.5 bg-black dark:bg-white text-white dark:text-black transition-colors rounded-lg"
                 title="Shop"
+                showSpinner={true}
               >
                 <ShoppingBag className="w-4 h-4 flex-shrink-0" />
-              </Link>
+              </InteractiveLink>
             </div>
           </div>
           {/* History, Shop, Edit Card, Edit Profile - Full width on mobile, original on desktop */}
           <div className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto">
             {user?.subscription === "pro" && (
-              <Link
+              <InteractiveLink
                 href="/profileVisitors"
                 className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap min-w-0 rounded-lg"
               >
                 <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
                 History
-              </Link>
+              </InteractiveLink>
             )}
-            <Link
+            <InteractiveLink
               href="/shop"
               className="hidden sm:flex flex-none items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <ShoppingBag className="w-3 h-3 flex-shrink-0" />
               Shop
-            </Link>
+            </InteractiveLink>
             <button
               onClick={handleOpenBorderPicker}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap min-w-0 rounded-lg"
+              disabled={isLoadingBorders}
+              className={`relative flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all active:scale-95 whitespace-nowrap min-w-0 rounded-lg ${isLoadingBorders ? 'pointer-events-none' : ''}`}
             >
-              <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
-              Edit Card
+              <div className={`flex items-center justify-center gap-1 sm:gap-1.5 transition-opacity duration-200 ${isLoadingBorders ? 'opacity-0' : 'opacity-100'}`}>
+                <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                Edit Card
+              </div>
+              {isLoadingBorders && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                </div>
+              )}
             </button>
-            <Link
+            <InteractiveLink
               href="/settings"
               className="flex-1 sm:flex-none flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors whitespace-nowrap min-w-0 rounded-lg"
             >
               <Settings className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               Settings
-            </Link>
+            </InteractiveLink>
           </div>
         </div>
 
@@ -677,12 +691,12 @@ export default function Profile() {
                 <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
                   Badges
                 </div>
-                <Link
+                <InteractiveLink
                   href="/badges"
                   className="text-[10px] text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors z-20"
                 >
                   View all →
-                </Link>
+                </InteractiveLink>
               </div>
               {badgeData ? (
                 <div className="flex items-stretch gap-2 h-full">
@@ -975,12 +989,12 @@ export default function Profile() {
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                     No borders yet
                   </p>
-                  <Link
+                  <InteractiveLink
                     href="/shop"
                     className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors rounded-lg"
                   >
                     Visit Shop
-                  </Link>
+                  </InteractiveLink>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
@@ -1012,13 +1026,13 @@ export default function Profile() {
               )}
             </div>
             <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-800">
-              <Link
+              <InteractiveLink
                 href="/shop"
                 onClick={() => setShowBorderPicker(false)}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
               >
                 Get More Borders
-              </Link>
+              </InteractiveLink>
             </div>
           </div>
         </div>
@@ -1135,13 +1149,13 @@ export default function Profile() {
             </div>
 
             <div className="p-5 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
-              <Link
+              <InteractiveLink
                 href="/badges"
                 onClick={() => setEditingBadgeSlot(null)}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
               >
                 Go to Badges Page
-              </Link>
+              </InteractiveLink>
             </div>
           </div>
         </div>
