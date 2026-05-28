@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { AnimatedSection, AnimatedFeatureGrid } from "@/components/AnimatedSection";
 import { motion, Variants } from "framer-motion";
@@ -24,12 +24,7 @@ const faqs = [
     answer:
       "Privacy is a core design principle. Your CGPA, grades, and academic records are stored with encryption. Granular privacy toggles let you decide exactly what's visible on your profile and what stays completely private, you're always in full control of your data.",
   },
-  {
-    id: "badges",
-    question: "How do achievement badges and streaks work?",
-    answer:
-      "Every action on ZeroGravity contributes to your journey. Maintain daily login streaks to earn bonus coins, complete quizzes to unlock achievement badges, and hit milestones to level up your profile. Badges are displayed on your public profile as proof of your dedication and progress.",
-  },
+
   {
     id: "free",
     question: "Is ZeroGravity free to use?",
@@ -49,13 +44,44 @@ const cardVariants: Variants = {
 
 export default function FAQSection() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [stars, setStars] = useState<{ id: number; top: string; left: string; size: number; delay: number; color: string }[]>([]);
+
+  useEffect(() => {
+    const mobile = window.innerWidth < 640;
+    const starColors = ["bg-white", "bg-purple-100", "bg-blue-100"];
+    const starCount = mobile ? 20 : 60;
+    
+    const newStars = Array.from({ length: starCount }, (_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      size: Math.random() * 2 + 0.5,
+      delay: Math.random() * 5,
+      color: starColors[Math.floor(Math.random() * starColors.length)],
+    }));
+    setStars(newStars);
+  }, []);
 
   return (
     <section className="relative py-16 sm:py-24 overflow-hidden bg-white dark:bg-[#0a0a0c] border-t border-gray-100 dark:border-white/[0.03] transition-colors duration-1000">
       {/* Cosmic atmosphere */}
       <div className="absolute inset-0 pointer-events-none opacity-0 dark:opacity-100 transition-opacity duration-1000">
-        <div className="absolute bottom-[-10%] left-[10%] w-[50%] h-[50%] bg-indigo-600/[0.04] rounded-full blur-[100px] sm:blur-[160px]" />
-        <div className="absolute top-[-10%] right-[5%] w-[40%] h-[40%] bg-purple-600/[0.04] rounded-full blur-[80px] sm:blur-[140px]" />
+        <div className="absolute bottom-[-10%] left-[10%] w-[50%] h-[50%] bg-indigo-600/[0.04] rounded-full blur-[100px] sm:blur-[160px] will-change-[filter]" />
+        <div className="absolute top-[-10%] right-[5%] w-[40%] h-[40%] bg-purple-600/[0.04] rounded-full blur-[80px] sm:blur-[140px] will-change-[filter]" />
+        
+        {stars.map((star) => (
+          <div
+            key={star.id}
+            className={`absolute rounded-full ${star.color} opacity-[0.2] will-change-opacity`}
+            style={{
+              top: star.top,
+              left: star.left,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              animation: `pulse ${3 + Math.random() * 4}s infinite ${star.delay}s`
+            }}
+          />
+        ))}
       </div>
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 relative z-10">
@@ -75,7 +101,7 @@ export default function FAQSection() {
               </span>
             </h2>
           </div>
-          <div className="md:max-w-[300px] mx-auto md:mx-0">
+          <div className="md:max-w-[350px] mx-auto md:mx-0">
             <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-base font-light leading-relaxed">
               Everything you need to know about ZeroGravity.
             </p>
@@ -103,7 +129,7 @@ export default function FAQSection() {
                   }
                   className="w-full p-3 sm:p-6 flex items-start sm:items-center justify-between gap-2 sm:gap-4 text-left group"
                 >
-                  <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4">
                     <div className="mt-0.5 sm:mt-0 shrink-0">
                       <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/10 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-gray-200 dark:group-hover:border-white/20">
                         <span className="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">{index + 1}</span>

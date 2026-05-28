@@ -21,7 +21,6 @@ import {
   dailyTasksService,
   StudyPlanTask,
   StudyPlanQuota,
-  DailyTask,
 } from "@/services/dailyTasksService";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useAuth } from "@/contexts/AuthContext";

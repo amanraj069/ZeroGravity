@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
@@ -36,6 +35,12 @@ export default function AcademiaPage() {
   );
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [justSwapped, setJustSwapped] = useState<string | null>(null);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const handleNavigate = (path: string) => {
+    setNavigatingTo(path);
+    router.push(path);
+  };
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -504,16 +509,23 @@ export default function AcademiaPage() {
                           </button>
                         </div>
 
-                        <Link
-                          href={`/dashboard/academia/${semester.semesterId}`}
+                        <div
                           onClick={(e) => {
                             // Prevent navigation when dragging
                             if (draggedSemesterId) {
                               e.preventDefault();
+                              return;
                             }
+                            handleNavigate(`/dashboard/academia/${semester.semesterId}`);
                           }}
-                          className="flex flex-col h-full"
+                          onMouseEnter={() => router.prefetch(`/dashboard/academia/${semester.semesterId}`)}
+                          className="flex flex-col h-full cursor-pointer"
                         >
+                          {navigatingTo === `/dashboard/academia/${semester.semesterId}` && (
+                            <div className="absolute inset-0 bg-white/50 dark:bg-[#050710]/50 backdrop-blur-[1px] flex items-center justify-center rounded-xl z-30 transition-all">
+                              <div className="w-7 h-7 border-[3px] border-black dark:border-white border-t-transparent rounded-full animate-spin" />
+                            </div>
+                          )}
                           <div className="flex items-center gap-2 mb-3">
                             <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white transition-colors truncate">
                               {semester.name.includes(":")
@@ -557,7 +569,7 @@ export default function AcademiaPage() {
                               →
                             </span>
                           </div>
-                        </Link>
+                        </div>
                       </>
                     )}
                   </motion.div>

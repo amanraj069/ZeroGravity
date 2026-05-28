@@ -3,6 +3,7 @@
 import {
   AnimatedSection,
 } from "@/components/AnimatedSection";
+import { BackButton } from "@/components/BackButton";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -144,14 +145,17 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-12 pt-10 pb-24 sm:pt-16 sm:pb-32">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-10 pb-24 sm:pt-16 sm:pb-32">
         
         {/* Header */}
         <AnimatedSection className="mb-12 sm:mb-16">
-          <h1 className="text-2xl sm:text-5xl font-light text-black dark:text-white mb-2 sm:mb-4 tracking-tight">
-            About Zero<span className="font-normal italic">Gravity</span>
-          </h1>
-          <p className="text-[13px] sm:text-base text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light">
+          <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-4">
+            <BackButton onClick={() => window.history.back()} />
+            <h1 className="text-2xl sm:text-5xl font-light text-black dark:text-white mb-0 tracking-tight">
+              About Zero<span className="font-normal italic">Gravity</span>
+            </h1>
+          </div>
+          <p className="text-[13px] sm:text-base text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-light pl-1">
             A minimalist productivity sanctuary designed to help you achieve goals with clarity and focus.
           </p>
         </AnimatedSection>

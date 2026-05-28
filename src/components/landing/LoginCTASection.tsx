@@ -49,7 +49,7 @@ export default function LoginCTASection() {
     <AnimatedCTA className="relative bg-gray-50 dark:bg-[#111114] py-12 sm:py-32 border-t border-gray-100 dark:border-white/[0.03] transition-colors duration-1000 overflow-hidden">
       {/* Background Cosmic Effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.08] mix-blend-overlay dark:mix-blend-luminosity">
+        <div className="absolute inset-0 opacity-[0.1] dark:opacity-[0.1] dark:mix-blend-luminosity">
           <Image
             src="/landing/zerogravity3.webp"
             alt=""

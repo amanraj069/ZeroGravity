@@ -178,3 +178,13 @@ export const getCategoryInsights = async (
   // Include status code in response for rate limit handling
   return { ...data, status: response.status };
 };
+
+export const permanentlyDeletePracticeQuiz = async (quizId: string) => {
+  const response = await apiCallWithAuth(
+    `${API_BASE_URL}/api/practice-quizzes/${quizId}/permanent`,
+    {
+      method: "DELETE",
+    },
+  );
+  return response.json();
+};

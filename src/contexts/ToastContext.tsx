@@ -245,7 +245,7 @@ function AlertModal({
         transition={{ type: "spring", stiffness: 420, damping: 30 }}
         className="bg-white dark:bg-[#1c1c24] border border-gray-200 dark:border-gray-700 shadow-2xl rounded-2xl w-full max-w-sm overflow-hidden"
       >
-        <div className="px-6 pt-6 pb-4">
+        <div className="px-4 pt-4 pb-4">
           <div className="flex items-start gap-3">
             <div
               className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center ${bg}`}
