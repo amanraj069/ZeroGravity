@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { getPracticeQuizzes, deletePracticeQuiz, PracticeQuiz } from "@/services/practiceQuizService";
 import { Plus, Brain, Clock, Folder, Trash2 } from "lucide-react";
@@ -10,7 +10,6 @@ import Image from "next/image";
 export default function PracticeQuizzesTab({ searchTerm }: { searchTerm: string }) {
   const [quizzes, setQuizzes] = useState<PracticeQuiz[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filteredQuizzes, setFilteredQuizzes] = useState<PracticeQuiz[]>([]);
   const [deletingQuizId, setDeletingQuizId] = useState<string | null>(null);
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
   const { showToast, showDialog } = useToast();
@@ -19,18 +18,15 @@ export default function PracticeQuizzesTab({ searchTerm }: { searchTerm: string 
   useEffect(() => {
     fetchQuizzes();
   }, []);
-
-  useEffect(() => {
+  const filteredQuizzes = useMemo(() => {
     if (!searchTerm.trim()) {
-      setFilteredQuizzes(quizzes);
-      return;
+      return quizzes;
     }
-    const filtered = quizzes.filter(q => {
+    const term = searchTerm.toLowerCase();
+    return quizzes.filter(q => {
       const displayName = (q.name || q.topic).toLowerCase();
-      const term = searchTerm.toLowerCase();
       return displayName.includes(term) || q.topic.toLowerCase().includes(term);
     });
-    setFilteredQuizzes(filtered);
   }, [searchTerm, quizzes]);
 
   const fetchQuizzes = async () => {

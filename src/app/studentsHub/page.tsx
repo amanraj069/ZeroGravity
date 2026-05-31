@@ -9,6 +9,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { DashboardLayout } from "@/components/dashboard";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { BackButton } from "@/components/BackButton";
+import { CanvasStars } from "@/components/studentsHub/CanvasStars";
 
 interface Category {
   title: string;
@@ -453,44 +454,7 @@ export default function StudentsHub() {
           <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white mb-4 sm:mb-6">
             Verification Platforms
           </h2>
-          {/* CSS for star animations */}
-          <style
-            dangerouslySetInnerHTML={{
-              __html: `
-              @keyframes verificationStarTwinkle {
-                0%, 100% {
-                  opacity: 0.2;
-                }
-                50% {
-                  opacity: 1;
-                }
-              }
-              
-              @keyframes verificationStarFadeIn {
-                0% {
-                  opacity: 0;
-                  transform: scale(0);
-                }
-                100% {
-                  opacity: var(--verification-star-opacity);
-                  transform: scale(1);
-                }
-              }
-              
-              .verification-star-base {
-                animation: verificationStarFadeIn 0.5s ease-out forwards, verificationStarTwinkle var(--verification-twinkle-duration) ease-in-out infinite;
-                animation-delay: var(--verification-appear-delay), var(--verification-twinkle-delay);
-                opacity: 0;
-                transform: scale(1) translate(0, 0);
-                transition: transform 0.3s ease-out;
-              }
-              
-              .verification-card:hover .verification-star-base {
-                transform: scale(1) translate(var(--verification-move-x), var(--verification-move-y)) !important;
-              }
-            `,
-            }}
-          />
+
 
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             {/* UNiDAYS Card */}
@@ -502,26 +466,7 @@ export default function StudentsHub() {
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
-                {unidaysStars.map((star, index) => (
-                  <div
-                    key={index}
-                    className="verification-star-base absolute rounded-full bg-white"
-                    style={
-                      {
-                        left: star.left,
-                        top: star.top,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                        "--verification-star-opacity": `${star.opacity}`,
-                        "--verification-appear-delay": `${star.delay * 0.1}s`,
-                        "--verification-twinkle-duration": `${star.twinkleDuration}s`,
-                        "--verification-twinkle-delay": `${star.twinkleDelay}s`,
-                        "--verification-move-x": `${star.moveX}px`,
-                        "--verification-move-y": `${star.moveY}px`,
-                      } as React.CSSProperties
-                    }
-                  />
-                ))}
+                <CanvasStars stars={unidaysStars} />
               </div>
 
               {/* Card Content */}
@@ -541,26 +486,7 @@ export default function StudentsHub() {
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
-                {studentpeepsStars.map((star, index) => (
-                  <div
-                    key={index}
-                    className="verification-star-base absolute rounded-full bg-white"
-                    style={
-                      {
-                        left: star.left,
-                        top: star.top,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                        "--verification-star-opacity": `${star.opacity}`,
-                        "--verification-appear-delay": `${star.delay * 0.1}s`,
-                        "--verification-twinkle-duration": `${star.twinkleDuration}s`,
-                        "--verification-twinkle-delay": `${star.twinkleDelay}s`,
-                        "--verification-move-x": `${star.moveX}px`,
-                        "--verification-move-y": `${star.moveY}px`,
-                      } as React.CSSProperties
-                    }
-                  />
-                ))}
+                <CanvasStars stars={studentpeepsStars} />
               </div>
 
               {/* Card Content */}
@@ -580,26 +506,7 @@ export default function StudentsHub() {
             >
               {/* Starfield Background */}
               <div className="absolute inset-0 bg-gray-800 dark:bg-black">
-                {studentbeansStars.map((star, index) => (
-                  <div
-                    key={index}
-                    className="verification-star-base absolute rounded-full bg-white"
-                    style={
-                      {
-                        left: star.left,
-                        top: star.top,
-                        width: `${star.size}px`,
-                        height: `${star.size}px`,
-                        "--verification-star-opacity": `${star.opacity}`,
-                        "--verification-appear-delay": `${star.delay * 0.1}s`,
-                        "--verification-twinkle-duration": `${star.twinkleDuration}s`,
-                        "--verification-twinkle-delay": `${star.twinkleDelay}s`,
-                        "--verification-move-x": `${star.moveX}px`,
-                        "--verification-move-y": `${star.moveY}px`,
-                      } as React.CSSProperties
-                    }
-                  />
-                ))}
+                <CanvasStars stars={studentbeansStars} />
               </div>
 
               {/* Card Content */}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Target,
@@ -219,11 +219,21 @@ const Goals: React.FC = () => {
     return Math.round((completedMilestones / goal.milestones.length) * 100);
   };
 
-  const filteredGoals = goals.filter((goal) => {
-    if (activeFilter === "all") return true;
-    if (activeFilter === "current") return isGoalCurrent(goal);
-    return goal.category === activeFilter;
-  });
+  const filteredGoals = useMemo(() => {
+    return goals
+      .filter((goal) => {
+        if (activeFilter === "all") return true;
+        if (activeFilter === "current") return isGoalCurrent(goal);
+        return goal.category === activeFilter;
+      })
+      .sort((a, b) => {
+        // Unfinished goals come first
+        if (a.completed !== b.completed) {
+          return a.completed ? 1 : -1;
+        }
+        return 0;
+      });
+  }, [goals, activeFilter]);
 
   const toggleGoalExpansion = (goalId: string) => {
     setExpandedGoals((prev) => {
@@ -533,15 +543,7 @@ const Goals: React.FC = () => {
               )}
             </div>
           ) : (
-            [...filteredGoals]
-              .sort((a, b) => {
-                // Unfinished goals come first
-                if (a.completed !== b.completed) {
-                  return a.completed ? 1 : -1;
-                }
-                return 0;
-              })
-              .map((goal) => (
+            filteredGoals.map((goal) => (
                 <div
                   key={goal._id}
                   className={`rounded-xl shadow-sm overflow-hidden ${goal.completed
