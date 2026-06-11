@@ -962,7 +962,7 @@ export default function NoteEditor({
             </button>
           )}
 
-          <div className="relative" ref={downloadRef}>
+          {/* <div className="relative" ref={downloadRef}>
             <button
               onClick={() => setShowDownloadDropdown((s) => !s)}
               className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded transition-colors"
@@ -992,7 +992,7 @@ export default function NoteEditor({
                 </button>
               </div>
             )}
-          </div>
+          </div> */}
 
           {!isTrash && (
             <button

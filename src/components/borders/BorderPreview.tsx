@@ -42,29 +42,31 @@ export default function BorderPreview({
       className={`${sizeClass} aspect-square overflow-hidden rounded-xl ${animationClass} ${className}`}
       style={borderStyle}
     >
-      {profilePicture ? (
-        <Image
-          src={profilePicture}
-          alt={`${firstName} ${lastName}`}
-          width={size === "sm" ? 112 : size === "md" ? 144 : 192}
-          height={size === "sm" ? 112 : size === "md" ? 144 : 192}
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
-          <span
-            className={`font-bold text-gray-500 dark:text-gray-400 ${size === "sm"
-                ? "text-3xl"
-                : size === "md"
-                  ? "text-4xl"
-                  : "text-5xl"
-              }`}
-          >
-            {firstName.charAt(0)}
-            {lastName.charAt(0)}
-          </span>
-        </div>
-      )}
+      <div className="w-full h-full overflow-hidden rounded-lg">
+        {profilePicture ? (
+          <Image
+            src={profilePicture}
+            alt={`${firstName} ${lastName}`}
+            width={size === "sm" ? 112 : size === "md" ? 144 : 192}
+            height={size === "sm" ? 112 : size === "md" ? 144 : 192}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
+            <span
+              className={`font-bold text-gray-500 dark:text-gray-400 ${size === "sm"
+                  ? "text-3xl"
+                  : size === "md"
+                    ? "text-4xl"
+                    : "text-5xl"
+                }`}
+            >
+              {firstName.charAt(0)}
+              {lastName.charAt(0)}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
