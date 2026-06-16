@@ -164,7 +164,8 @@ export default function TakePracticeQuizPage() {
   }, [timeLeft, loading, isSubmitting, isFinished, quiz, hasStarted, handleNext]);
 
   const handleSelectOption = (questionId: string, optionKey: string) => {
-    if (quiz?.difficulty === "god") {
+    const currentQ = quiz?.questions?.find((q) => q.questionId === questionId);
+    if (quiz?.difficulty === "god" && currentQ?.isMultiSelect) {
       // Multi-select: toggle the clicked option in/out of the comma-joined selection
       setUserAnswers(prev => {
         const current = prev[questionId] ? prev[questionId].split(",") : [];
@@ -347,8 +348,9 @@ export default function TakePracticeQuizPage() {
   const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
   const currentAnswer = userAnswers[currentQuestion.questionId] || "";
   const isGodMode = quiz.difficulty === "god";
-  // For GOD: split comma-joined selection into a Set for O(1) lookup
-  const selectedKeys = isGodMode ? new Set(currentAnswer.split(",").filter(Boolean)) : null;
+  const isMultiSelect = isGodMode && currentQuestion.isMultiSelect;
+  // For multi-select: split comma-joined selection into a Set for O(1) lookup
+  const selectedKeys = isMultiSelect ? new Set(currentAnswer.split(",").filter(Boolean)) : null;
 
   return (
     <div className="min-h-screen bg-transparent flex flex-col">
@@ -399,7 +401,7 @@ export default function TakePracticeQuizPage() {
                 <span className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 tracking-wider uppercase">
                   Question {currentQuestionIndex + 1}
                 </span>
-                {isGodMode && (
+                {isMultiSelect && (
                   <span className="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40">
                     Select all correct answers
                   </span>
@@ -412,7 +414,7 @@ export default function TakePracticeQuizPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-auto sm:mt-0">
               {currentQuestion.options.map((option) => {
-                const isSelected = isGodMode ? selectedKeys!.has(option.key) : currentAnswer === option.key;
+                const isSelected = isMultiSelect ? selectedKeys!.has(option.key) : currentAnswer === option.key;
                 return (
                   <button
                     key={option.key}
@@ -424,7 +426,7 @@ export default function TakePracticeQuizPage() {
                     }`}
                   >
                     <div className="flex items-start gap-3 sm:gap-4">
-                      {isGodMode ? (
+                      {isMultiSelect ? (
                         // Checkbox-style indicator for GOD multi-select
                         <span className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-md border-2 shrink-0 mt-0.5 transition-colors ${
                           isSelected
