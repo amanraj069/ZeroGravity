@@ -15,6 +15,7 @@ export interface PracticeQuizQuestion {
   explanation?: string;
   // Per-question timer set by AI for Hard/GOD mode. Null/absent for Easy/Medium.
   timePerQuestion?: number | null;
+  isMultiSelect?: boolean;
 }
 
 export interface PracticeQuiz {

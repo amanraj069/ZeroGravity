@@ -211,51 +211,53 @@ export default function ContactPage() {
                   </motion.div>
                 )}
 
-                <div>
-                  <label
-                    htmlFor="fullName"
-                    className="block text-xs sm:text-sm font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2"
-                  >
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400">
-                      <User className="w-4 h-4" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  <div>
+                    <label
+                      htmlFor="fullName"
+                      className="block text-xs sm:text-sm font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2"
+                    >
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-white/10 bg-white/20 dark:bg-white/[0.03] backdrop-blur-md text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-black dark:focus:border-white/30 rounded-xl focus:ring-1 focus:ring-black dark:focus:ring-white/10 transition-all duration-300 text-sm"
+                        placeholder="Enter your full name"
+                      />
                     </div>
-                    <input
-                      type="text"
-                      id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-white/10 bg-white/20 dark:bg-white/[0.03] backdrop-blur-md text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-black dark:focus:border-white/30 rounded-xl focus:ring-1 focus:ring-black dark:focus:ring-white/10 transition-all duration-300 text-sm"
-                      placeholder="Enter your full name"
-                    />
                   </div>
-                </div>
 
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-xs sm:text-sm font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2"
-                  >
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400">
-                      <Mail className="w-4 h-4" />
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-xs sm:text-sm font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2"
+                    >
+                      Email Address <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-white/10 bg-white/20 dark:bg-white/[0.03] backdrop-blur-md text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-black dark:focus:border-white/30 rounded-xl focus:ring-1 focus:ring-black dark:focus:ring-white/10 transition-all duration-300 text-sm"
+                        placeholder="Enter your email address"
+                      />
                     </div>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-white/10 bg-white/20 dark:bg-white/[0.03] backdrop-blur-md text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-black dark:focus:border-white/30 rounded-xl focus:ring-1 focus:ring-black dark:focus:ring-white/10 transition-all duration-300 text-sm"
-                      placeholder="Enter your email address"
-                    />
                   </div>
                 </div>
 
@@ -326,35 +328,9 @@ export default function ContactPage() {
 
           {/* Contact Details Panel (frosted column card) */}
           <AnimatedSection className="lg:col-span-1 flex flex-col gap-6">
-            <div className="bg-white/40 dark:bg-[#181820]/40 backdrop-blur-xl border border-gray-100 dark:border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex-1 flex flex-col justify-between shadow-sm dark:shadow-none min-h-[480px]">
+            <div className="bg-white/40 dark:bg-[#181820]/40 backdrop-blur-xl border border-gray-100 dark:border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 flex-1 flex flex-col justify-between shadow-sm dark:shadow-none lg:min-h-[480px]">
               <div>
-                {/* Top Half: Bug Bounty Program Info (No Icons) */}
-                <div className="mb-6">
-                  <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold text-amber-600 dark:text-amber-500 mb-3">
-                    Bug Bounty Program
-                  </h3>
-                  <h4 className="text-base sm:text-lg font-light text-black dark:text-white leading-snug mb-2 tracking-tight">
-                    ZeroGravity <span className="font-normal italic text-amber-500">Bug Bounty</span>
-                  </h4>
-                  <p className="text-xs sm:text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed font-light mb-4">
-                    Help us build a flawless, friction-free productivity sanctuary. Spot a bug? Report it to our team to win <strong className="font-medium text-amber-500">exclusive cash prizes</strong> and prestigious platform rewards!
-                  </p>
-                  <motion.a
-                    href="https://forms.gle/jBC2bEukaqLCKF4KA"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all duration-200 mt-1 w-full justify-center shadow-sm cursor-pointer"
-                  >
-                    Report Bug & Win
-                  </motion.a>
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-gray-100 dark:bg-white/10 my-6" />
-
-                {/* Bottom Half: Developer Details */}
+                {/* Top Half: Developer Details */}
                 <div>
                   <h3 className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-400 dark:text-gray-500 mb-4">
                     Developer Details

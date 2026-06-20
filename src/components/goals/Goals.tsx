@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
   Target,
   CheckCircle,
@@ -12,6 +12,8 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import AddGoalForm from "./AddGoalForm";
@@ -103,6 +105,8 @@ const Goals: React.FC = () => {
 
   const [activeView, setActiveView] = useState<ViewType>(getInitialView());
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [decomposingGoalId, setDecomposingGoalId] = useState<string | null>(null);
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<FilterType>("current");
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
@@ -211,6 +215,7 @@ const Goals: React.FC = () => {
 
   const calculateProgress = (goal: Goal): number => {
     if (goal.completed) return 100;
+    if (goal.progress !== undefined) return goal.progress;
     if (goal.milestones.length === 0) return 0;
 
     const completedMilestones = goal.milestones.filter(
@@ -219,11 +224,21 @@ const Goals: React.FC = () => {
     return Math.round((completedMilestones / goal.milestones.length) * 100);
   };
 
-  const filteredGoals = goals.filter((goal) => {
-    if (activeFilter === "all") return true;
-    if (activeFilter === "current") return isGoalCurrent(goal);
-    return goal.category === activeFilter;
-  });
+  const filteredGoals = useMemo(() => {
+    return goals
+      .filter((goal) => {
+        if (activeFilter === "all") return true;
+        if (activeFilter === "current") return isGoalCurrent(goal);
+        return goal.category === activeFilter;
+      })
+      .sort((a, b) => {
+        // Unfinished goals come first
+        if (a.completed !== b.completed) {
+          return a.completed ? 1 : -1;
+        }
+        return 0;
+      });
+  }, [goals, activeFilter]);
 
   const toggleGoalExpansion = (goalId: string) => {
     setExpandedGoals((prev) => {
@@ -357,6 +372,20 @@ const Goals: React.FC = () => {
       setGoalsAnalytics(previousAnalytics);
 
       showErrorToast(error);
+    }
+  };
+
+  const handleDecomposeGoal = async (goalId: string) => {
+    try {
+      setDecomposingGoalId(goalId);
+      const data = await goalsService.decomposeGoal(goalId);
+      // Navigate to the created orbit board
+      router.push(`/dashboard/orbit-board?boardId=${data.boardId}`);
+    } catch (error) {
+      console.error("Error decomposing goal:", error);
+      showErrorToast(error);
+    } finally {
+      setDecomposingGoalId(null);
     }
   };
 
@@ -533,15 +562,7 @@ const Goals: React.FC = () => {
               )}
             </div>
           ) : (
-            [...filteredGoals]
-              .sort((a, b) => {
-                // Unfinished goals come first
-                if (a.completed !== b.completed) {
-                  return a.completed ? 1 : -1;
-                }
-                return 0;
-              })
-              .map((goal) => (
+            filteredGoals.map((goal) => (
                 <div
                   key={goal._id}
                   className={`rounded-xl shadow-sm overflow-hidden ${goal.completed
@@ -593,6 +614,19 @@ const Goals: React.FC = () => {
                               className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDecomposeGoal(goal._id)}
+                              disabled={decomposingGoalId === goal._id}
+                              className="flex items-center gap-1 p-1.5 ml-1 text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 rounded-md hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors disabled:opacity-50"
+                              title="Break into tasks with AI"
+                            >
+                              {decomposingGoalId === goal._id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <Sparkles className="w-3.5 h-3.5" />
+                              )}
+                              <span className="hidden sm:inline">Tasks</span>
                             </button>
                           </div>
                         </div>

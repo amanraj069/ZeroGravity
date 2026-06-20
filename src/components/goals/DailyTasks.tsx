@@ -431,7 +431,7 @@ const DailyTasks: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <div className="relative group hidden sm:block">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 transition duration-500"></div>
               <button
                 onClick={() => setShowStudyPlanner(true)}
                 className="relative flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black h-9 sm:h-10 px-3 sm:px-4 text-xs sm:text-sm font-medium hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap flex-shrink-0 rounded-lg"
@@ -478,7 +478,7 @@ const DailyTasks: React.FC = () => {
           <div className="flex items-center gap-3 w-full sm:w-auto">
             {/* AI Plan Button - Mobile Only */}
             <div className="relative group sm:hidden flex-1">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 transition duration-500"></div>
               <button
                 onClick={() => setShowStudyPlanner(true)}
                 className="relative w-full flex items-center justify-center gap-1.5 bg-black dark:bg-white text-white dark:text-black py-2 text-[13px] hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap rounded-lg"

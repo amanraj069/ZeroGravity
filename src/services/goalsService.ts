@@ -343,4 +343,23 @@ export const goalsService = {
       })),
     }));
   },
+
+  // Decompose goal into Orbit Board cards
+  async decomposeGoal(id: string): Promise<{ boardId: string, boardName: string, cards: Record<string, unknown>[], modelUsed: string }> {
+    const response = await apiCallWithAuth(API_ENDPOINTS.GOALS.DECOMPOSE(id), {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to decompose goal: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || "Failed to decompose goal");
+    }
+
+    return data.data;
+  },
 };
