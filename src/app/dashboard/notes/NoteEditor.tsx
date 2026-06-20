@@ -25,7 +25,6 @@ import CustomCodeBlock from "./extensions/customCodeBlock";
 import {
   Star,
   Trash2,
-  Download,
   PanelLeftClose,
   PanelLeft,
   Loader2,
@@ -120,7 +119,6 @@ export default function NoteEditor({
   onChange,
   onToggleFavorite,
   onTrashNote,
-  onDownloadNote,
   saving,
   onToggleSidebar,
   sidebarOpen,
@@ -130,7 +128,6 @@ export default function NoteEditor({
   onCreateCategory,
 }: NoteEditorProps) {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [showDownloadDropdown, setShowDownloadDropdown] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [addingCatInEditor, setAddingCatInEditor] = useState(false);
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
@@ -165,7 +162,6 @@ export default function NoteEditor({
   const textColorRef = useRef<HTMLDivElement>(null);
   const lineSpacingRef = useRef<HTMLDivElement>(null);
   const titleErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const downloadRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
@@ -395,12 +391,7 @@ export default function NoteEditor({
       ) {
         setShowLineSpacing(false);
       }
-      if (
-        downloadRef.current &&
-        !downloadRef.current.contains(e.target as Node)
-      ) {
-        setShowDownloadDropdown(false);
-      }
+
       if (
         tableRef.current &&
         !tableRef.current.contains(e.target as Node)
@@ -1033,7 +1024,6 @@ export default function NoteEditor({
                       setShowHighlightPicker(false);
                       setShowTextColorPicker(false);
                       setShowLineSpacing(false);
-                      setShowDownloadDropdown(false);
                       setHoveredTableGrid({ rows: 0, cols: 0 });
                     }}
                     disabled={isTableActive}
@@ -1128,7 +1118,6 @@ export default function NoteEditor({
                       setShowHighlightPicker((s) => !s);
                       setShowTextColorPicker(false);
                       setShowLineSpacing(false);
-                      setShowDownloadDropdown(false);
                     }}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
                       editor?.isActive("highlight")
@@ -1217,7 +1206,6 @@ export default function NoteEditor({
                       setShowTextColorPicker((s) => !s);
                       setShowHighlightPicker(false);
                       setShowLineSpacing(false);
-                      setShowDownloadDropdown(false);
                     }}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
                       editor?.getAttributes("textStyle").color
@@ -1313,7 +1301,6 @@ export default function NoteEditor({
                       setShowHighlightPicker(false);
                       setShowTextColorPicker(false);
                       setShowLineSpacing(false);
-                      setShowDownloadDropdown(false);
                     }}
                     disabled={!isTableActive}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
@@ -1401,7 +1388,6 @@ export default function NoteEditor({
                       setShowLineSpacing((s) => !s);
                       setShowHighlightPicker(false);
                       setShowTextColorPicker(false);
-                      setShowDownloadDropdown(false);
                     }}
                     className={`p-1.5 rounded transition-colors flex-shrink-0 flex items-center gap-0.5 ${
                       currentLineHeight

@@ -14,6 +14,7 @@ import {
   BookOpen,
   Trophy,
   FileText,
+  Orbit,
   ChevronRight,
   ArrowRight,
 } from "lucide-react";
@@ -88,6 +89,14 @@ export default function Dashboard() {
       icon: <FileText className="w-5 h-5" />,
       accent: "from-emerald-500 to-teal-500",
       id: "notes-card",
+    },
+    {
+      name: "Orbit Board",
+      url: "/dashboard/orbit-board",
+      description: "Organize tasks and ideas visually",
+      icon: <Orbit className="w-5 h-5" />,
+      accent: "from-purple-500 to-blue-500",
+      id: "orbit-card",
     },
   ];
 

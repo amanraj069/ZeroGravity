@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/api/goals/${goalId}/milestones/${milestoneId}/toggle-completion`,
     BY_CATEGORY: (category: string) =>
       `${API_BASE_URL}/api/goals/category/${category}`,
+    DECOMPOSE: (id: string) => `${API_BASE_URL}/api/goals/${id}/decompose`,
   },
   // Daily Tasks endpoints
   DAILY_TASKS: {
@@ -192,6 +193,39 @@ export const API_ENDPOINTS = {
     DELETE_CATEGORY: (id: string) =>
       `${API_BASE_URL}/api/notes/categories/${id}`,
   },
+  // Orbit Board endpoints
+  ORBIT_BOARDS: {
+    LIST: `${API_BASE_URL}/api/orbit-boards`,
+    CREATE: `${API_BASE_URL}/api/orbit-boards`,
+    GET: (id: string) => `${API_BASE_URL}/api/orbit-boards/${id}`,
+    UPDATE: (id: string) => `${API_BASE_URL}/api/orbit-boards/${id}`,
+    DELETE: (id: string) => `${API_BASE_URL}/api/orbit-boards/${id}`,
+    ADD_COLUMN: (id: string) => `${API_BASE_URL}/api/orbit-boards/${id}/columns`,
+    UPDATE_COLUMN: (id: string, columnId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/columns/${columnId}`,
+    DELETE_COLUMN: (id: string, columnId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/columns/${columnId}`,
+    REORDER_COLUMNS: (id: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/columns-reorder`,
+    CREATE_CARD: (id: string) => `${API_BASE_URL}/api/orbit-boards/${id}/cards`,
+    UPDATE_CARD: (id: string, cardId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/cards/${cardId}`,
+    MOVE_CARD: (id: string, cardId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/cards/move/${cardId}`,
+    REORDER_CARDS: (id: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/cards/reorder`,
+    FAVORITE_CARD: (id: string, cardId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/cards/${cardId}/favorite`,
+    TRASH_CARD: (id: string, cardId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/cards/${cardId}/trash`,
+    DELETE_CARD: (id: string, cardId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/cards/${cardId}`,
+    COLLABORATORS: (id: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/collaborators`,
+    COLLABORATOR: (id: string, userId: string) =>
+      `${API_BASE_URL}/api/orbit-boards/${id}/collaborators/${userId}`,
+  },
+  SEARCH_USERS: `${API_BASE_URL}/api/auth/search`,
   // Promo endpoints
   PROMO: {
     STATUS: `${API_BASE_URL}/api/promo/status`,

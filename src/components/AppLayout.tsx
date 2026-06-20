@@ -13,9 +13,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   const isNotesPage =
     pathname?.startsWith("/notes") || pathname?.startsWith("/dashboard/notes");
+  const isOrbitBoardPage = pathname?.startsWith("/dashboard/orbit-board");
   const isHostedPage = pathname?.startsWith("/hosted");
   const isTakeQuizPage = pathname?.includes("/take");
-  const isFullScreenPage = isNotesPage || isHostedPage || isTakeQuizPage;
+  const isFullScreenPage = isNotesPage || isOrbitBoardPage || isHostedPage || isTakeQuizPage;
   const hideNavigation =
     pathname === "/login" ||
     pathname === "/signup" ||
