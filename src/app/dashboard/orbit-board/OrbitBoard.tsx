@@ -938,6 +938,9 @@ export default function OrbitBoard() {
                     <button onClick={() => handleOpenNewCardModal(col.columnId)} className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-gray-500">
                       <Plus className="w-4 h-4" />
                     </button>
+                    <button onClick={() => { setRenamingColumnId(col.columnId); setColumnRenameValue(col.name); }} className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-gray-500">
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
                     <button onClick={() => handleDeleteColumn(col.columnId)} className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded text-gray-500">
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -1252,26 +1255,32 @@ export default function OrbitBoard() {
                       className={`${INPUT_CLASS} pl-9`}
                     />
                     {/* Search results dropdown */}
-                    {shareSearchResults.length > 0 && (
+                    {(shareSearchResults.length > 0 || (shareSearchQuery.trim().length >= 2 && !shareSearching)) && (
                       <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#1a1a1c] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg z-50 py-1 max-h-40 overflow-y-auto">
-                        {shareSearchResults.map((u) => (
-                          <button
-                            key={u.userId}
-                            onClick={() => handleAddCollaborator(u.username)}
-                            className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-left"
-                          >
-                            <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-medium">
-                              {u.firstName?.charAt(0).toUpperCase() || "U"}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="text-xs font-medium text-gray-900 dark:text-white truncate">{u.firstName} {u.lastName}</p>
-                              <p className="text-[10px] text-gray-500">@{u.username}</p>
-                            </div>
-                          </button>
-                        ))}
+                        {shareSearchResults.length === 0 ? (
+                          <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400 text-center italic">
+                            No matches here
+                          </div>
+                        ) : (
+                          shareSearchResults.map((u) => (
+                            <button
+                              key={u.userId}
+                              onClick={() => handleAddCollaborator(u.username)}
+                              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-left"
+                            >
+                              <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[10px] font-medium">
+                                {u.firstName?.charAt(0).toUpperCase() || "U"}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs font-medium text-gray-900 dark:text-white truncate">{u.firstName} {u.lastName}</p>
+                                <p className="text-[10px] text-gray-500">@{u.username}</p>
+                              </div>
+                            </button>
+                          ))
+                        )}
                       </div>
                     )}
-                    {shareSearching && shareSearchQuery.length >= 2 && (
+                    {shareSearching && shareSearchQuery.trim().length >= 2 && (
                       <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#1a1a1c] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg z-50 py-3 text-center text-xs text-gray-500">
                         Searching...
                       </div>

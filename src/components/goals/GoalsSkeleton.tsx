@@ -13,14 +13,12 @@ export default function GoalsSkeleton({
     <div className={`${includeTabs ? "max-w-6xl mx-auto px-4 py-3 sm:py-6" : ""} space-y-2 sm:space-y-6`}>
       {/* Main Navigation Tabs Skeleton */}
       {includeTabs && (
-        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden rounded-lg">
-          <div className="flex h-12">
-            <div className={`flex-1 flex items-center justify-center bg-white dark:bg-gray-800 border-b-2 ${mode === 'daily' ? 'border-black dark:border-white' : 'border-transparent'} animate-pulse`}>
-              <div className="h-4 w-20 sm:w-24 bg-gray-100 dark:bg-gray-700/50" />
-            </div>
-            <div className={`flex-1 flex items-center justify-center bg-white dark:bg-gray-800 border-b-2 ${mode === 'goals' ? 'border-black dark:border-white' : 'border-transparent'} animate-pulse`}>
-              <div className="h-4 w-12 sm:w-16 bg-gray-50/50 dark:bg-gray-800/50" />
-            </div>
+        <div className="bg-gray-100/80 dark:bg-[#0a0a0f] p-1.5 shadow-inner rounded-xl flex items-center gap-1 border border-gray-200/50 dark:border-white/5 w-full">
+          <div className={`flex-1 h-10 flex items-center justify-center rounded-lg ${mode === 'daily' ? 'bg-black dark:bg-white shadow-md' : 'bg-transparent'} animate-pulse`}>
+            <div className={`h-4 w-20 sm:w-24 ${mode === 'daily' ? 'bg-gray-700 dark:bg-gray-300' : 'bg-gray-300 dark:bg-gray-700/50'} rounded`} />
+          </div>
+          <div className={`flex-1 h-10 flex items-center justify-center rounded-lg ${mode === 'goals' ? 'bg-black dark:bg-white shadow-md' : 'bg-transparent'} animate-pulse`}>
+            <div className={`h-4 w-12 sm:w-16 ${mode === 'goals' ? 'bg-gray-700 dark:bg-gray-300' : 'bg-gray-300 dark:bg-gray-700/50'} rounded`} />
           </div>
         </div>
       )}

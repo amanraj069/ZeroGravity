@@ -403,7 +403,7 @@ export default function StudyPlannerModal({
           <h2 className="text-base sm:text-xl font-light text-gray-900 dark:text-gray-100 flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 dark:text-gray-100 flex-shrink-0" />
             <span className="truncate">
-              AI Study Plan
+              AI Planner
               {isPro && (
                 <span className="text-amber-500 dark:text-amber-400 font-light ml-1">
                   Pro

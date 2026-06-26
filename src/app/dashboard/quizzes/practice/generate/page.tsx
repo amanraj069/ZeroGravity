@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { generatePracticeQuiz, getPracticeQuizQuota, getPracticeAnalytics, QuotaData } from "@/services/practiceQuizService";
@@ -24,18 +25,48 @@ const QUESTIONS_OPTIONS = [
 ];
 
 export default function GeneratePracticeQuizPage() {
+  return (
+    <Suspense fallback={<PracticeGenerateSkeleton />}>
+      <GeneratePracticeQuizContent />
+    </Suspense>
+  );
+}
+
+function GeneratePracticeQuizContent() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
   const { showToast } = useToast();
   const router = useRouter();
 
-  const [quizName, setQuizName] = useState("");
-  const [topic, setTopic] = useState("");
-  const [categories, setCategories] = useState<string[]>(["General"]);
+  const searchParams = useSearchParams();
+  const [quizName, setQuizName] = useState(searchParams.get("quizName") || "");
+  const [topic, setTopic] = useState(searchParams.get("topic") || "");
+  const topicRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const resizeTextarea = () => {
+      if (topicRef.current) {
+        topicRef.current.style.height = "auto";
+        topicRef.current.style.height = `${topicRef.current.scrollHeight + 2}px`;
+      }
+    };
+    
+    resizeTextarea();
+    // Ensure layout is fully computed after render
+    const timeoutId = setTimeout(resizeTextarea, 100);
+    return () => clearTimeout(timeoutId);
+  }, [topic]);
+  const urlCategories = searchParams.getAll("category");
+  const [categories, setCategories] = useState<string[]>(
+    urlCategories.length > 0 ? Array.from(new Set(urlCategories)) : ["General"]
+  );
   const [newCategory, setNewCategory] = useState("");
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [difficulty, setDifficulty] = useState("medium");
   const [timePerQuestion, setTimePerQuestion] = useState(30);
-  const [numberOfQuestions, setNumberOfQuestions] = useState(5);
+  const urlNumQuestions = searchParams.get("numQuestions");
+  const [numberOfQuestions, setNumberOfQuestions] = useState(
+    urlNumQuestions ? parseInt(urlNumQuestions, 10) : 5
+  );
   
   const [loading, setLoading] = useState(false);
   const [quotaLoading, setQuotaLoading] = useState(true);
@@ -184,12 +215,17 @@ export default function GeneratePracticeQuizPage() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5 sm:mb-2">
                     What topic do you want to practice?
                   </label>
-                  <input
-                    type="text"
+                  <textarea
+                    ref={topicRef}
                     placeholder="e.g. History of World War II, JavaScript Fundamentals, Machine Learning..."
                     value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow"
+                    onChange={(e) => {
+                      setTopic(e.target.value);
+                      e.target.style.height = "auto";
+                      e.target.style.height = `${e.target.scrollHeight + 2}px`;
+                    }}
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow resize-none overflow-hidden min-h-[46px] sm:min-h-[50px]"
+                    rows={1}
                     disabled={isDisabled}
                     required
                   />
@@ -209,7 +245,7 @@ export default function GeneratePracticeQuizPage() {
                       onChange={(e) => setQuizName(e.target.value)}
                       className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent dark:bg-gray-800 dark:text-white transition-shadow"
                       disabled={isDisabled}
-                      maxLength={10}
+                      maxLength={30}
                       required
                     />
                   </div>

@@ -15,6 +15,7 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { BackButton } from "@/components/BackButton";
 import AddGoalForm from "./AddGoalForm";
 import DailyTasks from "./DailyTasks";
@@ -804,29 +805,41 @@ const Goals: React.FC = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-12">
       <div className="max-w-6xl mx-auto px-4 py-3 sm:py-4 space-y-2 sm:space-y-4">
         {/* Main Navigation - Always visible */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm overflow-hidden rounded-lg">
-          <div className="flex ">
-            <button
-              onClick={() => handleViewChange("daily-tasks")}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${(activeView as ViewType) === "daily-tasks"
-                ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
-                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+        <div className="flex bg-gray-100/80 dark:bg-[#121216]/80 backdrop-blur-xl p-1.5 rounded-xl border border-gray-200/50 dark:border-white/5 overflow-hidden relative z-0 w-full">
+          {(["daily-tasks", "goals"] as const).map((tab) => {
+            const isActive = activeView === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => handleViewChange(tab)}
+                className={`flex-1 relative flex items-center justify-center gap-2 px-5 py-2 sm:px-8 sm:py-2.5 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap transition-colors z-10 ${
+                  isActive 
+                    ? "text-black dark:text-white" 
+                    : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 }`}
-            >
-              <Clock className="w-4 h-4 inline mr-2" />
-              Daily Tasks
-            </button>
-            <button
-              onClick={() => handleViewChange("goals")}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors border-b-2 ${(activeView as ViewType) === "goals"
-                ? "border-black dark:border-white text-black dark:text-white bg-gray-50 dark:bg-gray-700"
-                : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                }`}
-            >
-              <Target className="w-4 h-4 inline mr-2" />
-              Goals
-            </button>
-          </div>
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="active-goals-tab"
+                    className="absolute inset-0 bg-white dark:bg-[#202028] shadow-[0_4px_12px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.2)] border border-gray-200/50 dark:border-white/10 rounded-xl"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    style={{ zIndex: -1 }}
+                  />
+                )}
+                {tab === "daily-tasks" ? (
+                  <>
+                    <Clock className="w-4 h-4" />
+                    <span>Daily Tasks</span>
+                  </>
+                ) : (
+                  <>
+                    <Target className="w-4 h-4" />
+                    <span>Goals</span>
+                  </>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Dynamic Content */}

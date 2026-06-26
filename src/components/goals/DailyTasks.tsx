@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, AlertCircle, Sparkles } from "lucide-react";
+import { Plus, AlertCircle, Sparkles, Brain, ChevronDown } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
@@ -92,6 +92,20 @@ const DailyTasks: React.FC = () => {
   const [initialPlannerStyle, setInitialPlannerStyle] = useState("balanced");
   const [mounted, setMounted] = useState(false);
 
+  const [showQuizDropdown, setShowQuizDropdown] = useState(false);
+  const [selectedQuizTasks, setSelectedQuizTasks] = useState<string[] | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowQuizDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -140,6 +154,41 @@ const DailyTasks: React.FC = () => {
     },
     [handleTasksCreated, showErrorToast],
   );
+
+  const handleGiveQuiz = () => {
+    const tasksToUse = selectedQuizTasks !== null 
+      ? tasks.filter(t => selectedQuizTasks.includes(t._id))
+      : tasks;
+
+    if (tasksToUse.length === 0) {
+      showErrorToast("No tasks available to generate a quiz for this day.");
+      return;
+    }
+    const topic = tasksToUse.map((t) => {
+      const desc = t.description ? ` - ${t.description}` : "";
+      return `${t.title}${desc}`;
+    }).join(", ");
+
+    // Extract categories from titles (e.g., "OS: History" -> "OS")
+    const extractedCategories = new Set<string>();
+    extractedCategories.add("General");
+    tasksToUse.forEach(t => {
+      const match = t.title.match(/^([^:]+):/);
+      if (match && match[1]) {
+        extractedCategories.add(match[1].trim());
+      }
+    });
+
+    const categoriesParams = Array.from(extractedCategories)
+      .map(c => `&category=${encodeURIComponent(c)}`)
+      .join("");
+
+    const [year, month, day] = selectedDate.split("-");
+    const formattedDate = `${day}/${month}/${year.slice(2)}`;
+    const quizName = `Daily Quiz ${formattedDate}`;
+    
+    router.push(`/dashboard/quizzes/practice/generate?topic=${encodeURIComponent(topic)}&quizName=${encodeURIComponent(quizName)}${categoriesParams}&numQuestions=15`);
+  };
 
   // Check if selected date is today
   const isToday = selectedDate === getLocalDateString();
@@ -429,7 +478,67 @@ const DailyTasks: React.FC = () => {
               </h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {selectedDate === getLocalDateString() && (
+              <div className="relative group hidden sm:block" ref={dropdownRef}>
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 transition duration-500 rounded-lg"></div>
+                <div className="relative flex items-stretch bg-white dark:bg-gray-800 rounded-lg h-9 sm:h-10">
+                  <button
+                    onClick={handleGiveQuiz}
+                    className="flex items-center justify-center gap-1.5 border-y border-l border-black dark:border-white text-black dark:text-white px-3 sm:px-4 text-xs sm:text-sm font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out whitespace-nowrap flex-shrink-0 rounded-l-lg z-10"
+                    title="Give Quiz from Tasks"
+                  >
+                    <Brain className="w-4 h-4" />
+                    <span>Give Quiz</span>
+                  </button>
+                  <div className="w-[1px] bg-black dark:bg-white z-10"></div>
+                  <button
+                    onClick={() => setShowQuizDropdown(!showQuizDropdown)}
+                    className="flex items-center justify-center border-y border-r border-black dark:border-white text-black dark:text-white px-1.5 sm:px-2 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out flex-shrink-0 rounded-r-lg z-10"
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                {showQuizDropdown && (
+                  <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-[#121216] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-50 p-2 backdrop-blur-xl">
+                    <div className="mb-2 px-2 flex items-center justify-between">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Select Topics</span>
+                      {selectedQuizTasks === null || selectedQuizTasks.length === tasks.length ? (
+                        <button onClick={() => setSelectedQuizTasks([])} className="text-xs text-blue-500 hover:text-blue-600 dark:hover:text-blue-400">Deselect All</button>
+                      ) : (
+                        <button onClick={() => setSelectedQuizTasks(null)} className="text-xs text-blue-500 hover:text-blue-600 dark:hover:text-blue-400">Select All</button>
+                      )}
+                    </div>
+                    <div className="max-h-60 overflow-y-auto space-y-1 custom-scrollbar">
+                      {tasks.map(t => (
+                        <label key={t._id} className="flex items-start gap-2 p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={selectedQuizTasks === null || selectedQuizTasks.includes(t._id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                if (selectedQuizTasks !== null) {
+                                  setSelectedQuizTasks([...selectedQuizTasks, t._id]);
+                                }
+                              } else {
+                                if (selectedQuizTasks === null) {
+                                  setSelectedQuizTasks(tasks.map(task => task._id).filter(id => id !== t._id));
+                                } else {
+                                  setSelectedQuizTasks(selectedQuizTasks.filter(id => id !== t._id));
+                                }
+                              }
+                            }}
+                            className="mt-0.5 rounded border-gray-300 text-black dark:text-white focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 cursor-pointer"
+                          />
+                          <span className="text-sm text-gray-700 dark:text-gray-200 line-clamp-2 leading-tight">{t.title}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             <div className="relative group hidden sm:block">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 transition duration-500"></div>
               <button
@@ -438,7 +547,7 @@ const DailyTasks: React.FC = () => {
                 title="AI Study Planner"
               >
                 <Sparkles className="w-4 h-4" />
-                <span className="hidden sm:inline">AI Study Planner</span>
+                <span className="hidden sm:inline">AI Planner</span>
                 <span className="sm:hidden">AI Plan</span>
               </button>
             </div>
@@ -476,6 +585,20 @@ const DailyTasks: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 p-4 shadow-sm mt-2 sm:mt-4 rounded-lg">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Give Quiz Mobile Button */}
+            {selectedDate === getLocalDateString() && (
+              <div className="relative group sm:hidden shrink-0">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 transition duration-500"></div>
+                <button
+                  onClick={handleGiveQuiz}
+                  className="relative flex items-center justify-center w-[38px] h-[38px] border border-black dark:border-white bg-white dark:bg-gray-800 text-black dark:text-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out rounded-lg shrink-0"
+                  title="Give Quiz from Tasks"
+                >
+                  <Brain className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             {/* AI Plan Button - Mobile Only */}
             <div className="relative group sm:hidden flex-1">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 transition duration-500"></div>
