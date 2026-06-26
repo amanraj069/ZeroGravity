@@ -90,14 +90,14 @@ export default function Dashboard() {
       accent: "from-emerald-500 to-teal-500",
       id: "notes-card",
     },
-    {
-      name: "Orbit Board",
-      url: "/dashboard/orbit-board",
-      description: "Organize tasks and ideas visually",
-      icon: <Orbit className="w-5 h-5" />,
-      accent: "from-purple-500 to-blue-500",
-      id: "orbit-card",
-    },
+    // {
+    //   name: "Orbit Board",
+    //   url: "/dashboard/orbit-board",
+    //   description: "Organize tasks and ideas visually",
+    //   icon: <Orbit className="w-5 h-5" />,
+    //   accent: "from-purple-500 to-blue-500",
+    //   id: "orbit-card",
+    // },
   ];
 
   useEffect(() => {
