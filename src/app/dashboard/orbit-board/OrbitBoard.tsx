@@ -6,7 +6,6 @@ import {
   X,
   Trash2,
   ChevronLeft,
-  LayoutGrid,
   PanelLeftClose,
   PanelLeft,
   Calendar,

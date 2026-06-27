@@ -51,9 +51,19 @@ function GeneratePracticeQuizContent() {
     };
     
     resizeTextarea();
-    // Ensure layout is fully computed after render
-    const timeoutId = setTimeout(resizeTextarea, 100);
-    return () => clearTimeout(timeoutId);
+    // Ensure layout is fully computed after render and framer-motion animations
+    const t1 = setTimeout(resizeTextarea, 100);
+    const t2 = setTimeout(resizeTextarea, 300);
+    const t3 = setTimeout(resizeTextarea, 500);
+    
+    window.addEventListener("resize", resizeTextarea);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener("resize", resizeTextarea);
+    };
   }, [topic]);
   const urlCategories = searchParams.getAll("category");
   const [categories, setCategories] = useState<string[]>(

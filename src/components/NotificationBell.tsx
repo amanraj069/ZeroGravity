@@ -34,6 +34,10 @@ export default function NotificationBell() {
         setHasNewNotifications(fullData.unreadCount > 0);
       }
     } catch (error) {
+      // Ignore rate limit errors to prevent dev overlay spam
+      if (error instanceof Error && (error.message.includes("429") || error.message.toLowerCase().includes("too many requests"))) {
+        return;
+      }
       console.error("Error fetching notifications:", error);
     }
   }, [isOpen]);
@@ -72,14 +76,19 @@ export default function NotificationBell() {
         const data = await notificationService.getNotifications();
         setNotifications(data.notifications);
         setHasNewNotifications(data.unreadCount > 0);
-      } catch (error) {
+    } catch (error) {
+      // Ignore rate limit errors to prevent dev overlay spam
+      if (error instanceof Error && (error.message.includes("429") || error.message.toLowerCase().includes("too many requests"))) {
+        // Do nothing, just let it proceed to finally block
+      } else {
         console.error("Error fetching notifications:", error);
-      } finally {
-        setLoading(false);
       }
+    } finally {
+      setLoading(false);
     }
-    setIsOpen(!isOpen);
-  };
+  }
+  setIsOpen(!isOpen);
+};
 
   const handleMarkAsRead = async (notificationId: string) => {
     try {

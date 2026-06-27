@@ -22,7 +22,11 @@ export default function StreakIcon() {
       const data = await dailyTasksService.getStreakInfo();
       setAnalytics(data);
     } catch (error) {
-      console.error("Error fetching streak info:", error);
+      if (error instanceof Error && (error.message.includes("429") || error.message.toLowerCase().includes("too many requests"))) {
+        // Silently ignore rate limit errors during background polling
+      } else {
+        console.error("Error fetching streak info:", error);
+      }
     } finally {
       setLoading(false);
     }

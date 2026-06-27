@@ -140,6 +140,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         },
       );
 
+      if (response.status === 429) {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("Session check rate limited (429). Keeping current auth state.");
+        }
+        if (!silent && localStorage.getItem("authToken")) {
+          // Optimistically keep logged in state if token exists during initial load
+          setIsLoggedIn(true);
+        }
+        return;
+      }
+
       const data = await response.json();
       if (process.env.NODE_ENV === "development") {
         console.log("Session check response:", data);

@@ -14,7 +14,6 @@ import {
   BookOpen,
   Trophy,
   FileText,
-  Orbit,
   ChevronRight,
   ArrowRight,
 } from "lucide-react";
