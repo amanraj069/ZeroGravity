@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { getPracticeQuizById, submitPracticeAttempt, PracticeQuiz } from "@/services/practiceQuizService";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, X, ChevronRight, AlertTriangle, Play } from "lucide-react";
+import { Clock, X, ChevronRight, AlertTriangle, Play, ArrowLeft } from "lucide-react";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 
@@ -333,8 +333,9 @@ export default function TakePracticeQuizPage() {
             </button>
             <button 
               onClick={() => router.push(`/dashboard/quizzes/practice/${quizId}`)}
-              className="w-full bg-transparent border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 py-3 sm:py-3.5 rounded-xl text-sm sm:text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="w-full flex items-center justify-center gap-2 border border-black dark:border-white bg-transparent text-black dark:text-white py-3 sm:py-3.5 rounded-xl text-sm sm:text-base font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 ease-out"
             >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               Back to Quiz Details
             </button>
           </div>

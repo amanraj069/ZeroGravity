@@ -23,6 +23,7 @@ import {
   TrendingUp,
   Sparkles,
   Lock,
+  RotateCcw,
 } from "lucide-react";
 import {
   PieChart,
@@ -598,14 +599,23 @@ export default function PracticeQuizInsightsPage() {
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={handleUnlockAnswers}
-                      disabled={isUnlocking}
-                      className="shrink-0 flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors w-full sm:w-auto justify-center"
-                    >
-                      <Lock className="w-3.5 h-3.5" />
-                      {isUnlocking ? "Unlocking..." : "Unlock Answers"}
-                    </button>
+                    <div className="flex items-center gap-2 w-full sm:w-auto mt-3 sm:mt-0">
+                      <button
+                        onClick={() => router.push(`/dashboard/quizzes/practice/${quizId}`)}
+                        className="shrink-0 flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-[#1c1c21] hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 text-sm font-medium rounded-lg transition-colors w-full sm:w-auto justify-center"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        Retake Quiz
+                      </button>
+                      <button
+                        onClick={handleUnlockAnswers}
+                        disabled={isUnlocking}
+                        className="shrink-0 flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors w-full sm:w-auto justify-center"
+                      >
+                        <Lock className="w-3.5 h-3.5" />
+                        {isUnlocking ? "Unlocking..." : "Unlock Answers"}
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               )}

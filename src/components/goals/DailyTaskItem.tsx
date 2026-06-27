@@ -31,25 +31,45 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
               : "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/50 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 hover:shadow-md"
       }`}
     >
-      <div className="flex items-start gap-3">
-        <button
-          onClick={() => isToday && onToggleCompletion(task._id)}
-          disabled={!isToday}
-          title={!isToday ? "You can only mark tasks for today" : undefined}
-          className={`rounded-md flex-shrink-0 w-6 h-6 border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
-            task.isCompletedToday
-              ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
-              : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
-          } ${!isToday ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
-        >
-          {task.isCompletedToday && <CheckCircle className="w-4 h-4" />}
-        </button>
+      <div className="flex items-stretch gap-3">
+        <div className="flex flex-col justify-between items-center shrink-0">
+          <button
+            onClick={() => isToday && onToggleCompletion(task._id)}
+            disabled={!isToday}
+            title={!isToday ? "You can only mark tasks for today" : undefined}
+            className={`rounded-md w-6 h-6 border-2 flex items-center justify-center mt-0.5 transition-all duration-200 relative ${
+              task.isCompletedToday
+                ? "bg-green-600 dark:bg-green-700 border-green-600 dark:border-green-700 text-white shadow-sm"
+                : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700"
+            } ${!isToday ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
+          >
+            {task.isCompletedToday && <CheckCircle className="w-4 h-4" />}
+          </button>
 
-        <div className="flex-1 min-w-0">
+          {/* Mobile Edit and Delete buttons */}
+          <div className="md:hidden flex flex-col gap-1 mt-auto pb-0.5">
+            <button
+              onClick={() => onEdit(task)}
+              className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              title="Edit task"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => onDelete(task._id)}
+              className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+              title="Delete task"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0 py-0.5">
           <div className="mb-2">
             <div className="flex items-start justify-between">
               <h3
-                className={`font-medium text-sm sm:text-base flex-1 min-w-0 ${
+                className={`font-medium text-[12px] sm:text-base flex-1 min-w-0 ${
                   task.isCompletedToday
                     ? "line-through text-gray-500 dark:text-gray-400"
                     : "text-gray-900 dark:text-white"
@@ -58,7 +78,7 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
                 {task.title}
               </h3>
 
-              <div className="flex items-center gap-1 ml-2 flex-shrink-0">
+              <div className="hidden md:flex items-center gap-1 ml-2 flex-shrink-0">
                 <button
                   onClick={() => onEdit(task)}
                   className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -78,7 +98,7 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
 
             {task.description && (
               <p
-                className={`text-xs sm:text-sm mt-1 leading-relaxed ${
+                className={`text-[10px] sm:text-sm mt-1 leading-relaxed ${
                   task.isCompletedToday
                     ? "text-gray-400 dark:text-gray-500"
                     : "text-gray-600 dark:text-gray-400"
