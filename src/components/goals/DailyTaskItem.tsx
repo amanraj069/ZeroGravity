@@ -98,7 +98,7 @@ const DailyTaskItem: React.FC<DailyTaskItemProps> = ({
 
             {task.description && (
               <p
-                className={`text-[10px] sm:text-sm mt-1 leading-relaxed ${
+                className={`text-[11px] sm:text-sm mt-1 leading-relaxed ${
                   task.isCompletedToday
                     ? "text-gray-400 dark:text-gray-500"
                     : "text-gray-600 dark:text-gray-400"

@@ -803,7 +803,8 @@ export default function Profile() {
                 </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
-                    Current Streak
+                    <span className="md:hidden">Current<br />Streak</span>
+                    <span className="hidden md:inline">Current Streak</span>
                   </div>
                   {streakLoading ? (
                     <div className="h-6 w-12 bg-orange-200/50 dark:bg-orange-800/20 rounded animate-pulse" />
@@ -839,7 +840,8 @@ export default function Profile() {
                 </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
-                    Highest Streak
+                    <span className="md:hidden">Highest<br />Streak</span>
+                    <span className="hidden md:inline">Highest Streak</span>
                   </div>
                   {streakLoading ? (
                     <div className="h-6 w-12 bg-purple-200/50 dark:bg-purple-800/20 rounded animate-pulse" />

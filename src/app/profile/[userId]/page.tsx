@@ -350,7 +350,8 @@ export default function PublicProfile() {
                 </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-orange-700 dark:text-orange-400">
-                    Current Streak
+                    <span className="md:hidden">Current<br />Streak</span>
+                    <span className="hidden md:inline">Current Streak</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-400 dark:to-red-400 bg-clip-text text-transparent">
@@ -382,7 +383,8 @@ export default function PublicProfile() {
                 </div>
                 <div className="relative z-10 flex items-center justify-between w-full">
                   <div className="text-xs md:text-sm font-medium text-purple-700 dark:text-purple-400">
-                    Highest Streak
+                    <span className="md:hidden">Highest<br />Streak</span>
+                    <span className="hidden md:inline">Highest Streak</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
