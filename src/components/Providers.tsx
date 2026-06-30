@@ -6,6 +6,7 @@ import { SocketProvider } from "@/contexts/SocketContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -18,29 +19,33 @@ export default function Providers({
 }: ProvidersProps) {
   if (googleClientId) {
     return (
-      <ThemeProvider>
-        <ToastProvider>
-          <GoogleOAuthProvider clientId={googleClientId}>
-            <AuthProvider>
-              <NavigationProvider>
-                <SocketProvider>{children}</SocketProvider>
-              </NavigationProvider>
-            </AuthProvider>
-          </GoogleOAuthProvider>
-        </ToastProvider>
-      </ThemeProvider>
+      <QueryProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <GoogleOAuthProvider clientId={googleClientId}>
+              <AuthProvider>
+                <NavigationProvider>
+                  <SocketProvider>{children}</SocketProvider>
+                </NavigationProvider>
+              </AuthProvider>
+            </GoogleOAuthProvider>
+          </ToastProvider>
+        </ThemeProvider>
+      </QueryProvider>
     );
   }
 
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <AuthProvider>
-          <NavigationProvider>
-            <SocketProvider>{children}</SocketProvider>
-          </NavigationProvider>
-        </AuthProvider>
-      </ToastProvider>
-    </ThemeProvider>
+    <QueryProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <NavigationProvider>
+              <SocketProvider>{children}</SocketProvider>
+            </NavigationProvider>
+          </AuthProvider>
+        </ToastProvider>
+      </ThemeProvider>
+    </QueryProvider>
   );
 }
