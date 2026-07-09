@@ -230,11 +230,18 @@ export default function PhotoEditor({
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Calculate scaled dimensions to fit container (use minimum dimension)
-    // This ensures the entire image is visible without cropping
+    // Calculate rotated image bounds
+    const angle = (rotation * Math.PI) / 180;
+    const cos = Math.abs(Math.cos(angle));
+    const sin = Math.abs(Math.sin(angle));
+    
+    const unscaledRotatedWidth = img.width * cos + img.height * sin;
+    const unscaledRotatedHeight = img.width * sin + img.height * cos;
+
+    // Calculate scaled dimensions to fit container based on rotated bounds
     const scale = Math.min(
-      containerWidth / img.width,
-      containerHeight / img.height,
+      containerWidth / unscaledRotatedWidth,
+      containerHeight / unscaledRotatedHeight,
     );
     const scaledWidth = img.width * scale;
     const scaledHeight = img.height * scale;
@@ -242,12 +249,8 @@ export default function PhotoEditor({
     // Store display scale for crop size calculations
     setDisplayScale(scale);
 
-    // Calculate rotated image bounds
-    const angle = (rotation * Math.PI) / 180;
-    const cos = Math.abs(Math.cos(angle));
-    const sin = Math.abs(Math.sin(angle));
-    const rotatedWidth = scaledWidth * cos + scaledHeight * sin;
-    const rotatedHeight = scaledWidth * sin + scaledHeight * cos;
+    const rotatedWidth = unscaledRotatedWidth * scale;
+    const rotatedHeight = unscaledRotatedHeight * scale;
 
     // Calculate visible image bounds in canvas coordinates
     const imageMinX = centerX - rotatedWidth / 2;
@@ -810,7 +813,7 @@ export default function PhotoEditor({
   return (
     <div className="fixed top-[53px] sm:top-[64px] left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl p-2 sm:p-4">
       <div
-        className="bg-transparent border border-gray-200 dark:border-gray-800 w-full flex flex-col"
+        className="bg-white dark:bg-[#050710] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 w-full flex flex-col shadow-2xl"
         style={{
           maxWidth: "min(95vw, 95dvh - 120px)",
           maxHeight: "95dvh",
@@ -864,7 +867,7 @@ export default function PhotoEditor({
         <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
           <button
             onClick={handleRotate}
-            className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm"
+            className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm rounded-lg"
           >
             <RotateCw className="w-4 h-4" />
             <span>Rotate</span>
@@ -873,13 +876,13 @@ export default function PhotoEditor({
           <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={onCancel}
-              className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm"
+              className="flex-1 sm:flex-none px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm rounded-lg"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-sm rounded-lg"
             >
               <Check className="w-4 h-4" />
               <span>Save</span>

@@ -271,7 +271,7 @@ export default function HighlightsSection() {
                       ZeroGravity is giving away <strong className="text-gray-950 dark:text-white font-semibold">Pro Subscriptions</strong> to the next <strong className="text-purple-600 dark:text-purple-400 font-semibold">{promoCount} users</strong> who register.
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      By claiming this account, you will unlock unlimited access to the AI Study Planner, interactive quizzes, achievement badges, and cosmic personalization features- completely free.
+                      By claiming this account, you will unlock upgraded access to the AI Study Planner, interactive quizzes, achievement badges, and cosmic personalization features- completely free.
                     </p>
                   </div>
                 </div>

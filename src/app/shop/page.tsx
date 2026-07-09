@@ -338,7 +338,7 @@ export default function ShopPage() {
                       <CurrencyIcon size={8} className="text-gray-500" />
                     </div>
                     {border.owned && (
-                      <div className={`absolute top-2 left-2 md:top-4 md:left-4 flex items-center gap-1 px-2 py-0.5 bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-600 dark:text-green-400 ${border.equipped ? "hidden md:flex" : ""}`}>
+                      <div className={`absolute top-2 left-2 md:top-4 md:left-4 flex items-center gap-1 px-2 py-0.5 rounded-md bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-600 dark:text-green-400 ${border.equipped ? "hidden md:flex" : ""}`}>
                         {border.equipped && <Check className="w-3 h-3" />}
                         <span>{border.equipped ? "Equipped" : "Owned"}</span>
                       </div>
@@ -357,7 +357,7 @@ export default function ShopPage() {
                       </div>
                       <div className="w-full md:w-auto flex justify-center md:justify-end">
                         {border.owned ? (border.equipped ? <span className="text-xs md:text-sm text-green-600 dark:text-green-400">Equipped</span> : <button onClick={() => handleEquip(border.id)} disabled={equipping === border.id} className="px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 w-full md:w-auto rounded-lg">{equipping === border.id ? "..." : "Equip"}</button>) : (
-                          <button onClick={() => handlePurchase(border.id)} disabled={purchasing === border.id || userPoints < border.price} className={`px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm transition-colors disabled:opacity-50 w-full md:w-auto ${userPoints >= border.price ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200" : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"}`}>
+                          <button onClick={() => handlePurchase(border.id)} disabled={purchasing === border.id || userPoints < border.price} className={`px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm transition-colors disabled:opacity-50 w-full md:w-auto rounded-lg ${userPoints >= border.price ? "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200" : "bg-gray-200 dark:bg-gray-700 text-gray-400 cursor-not-allowed"}`}>
                             {purchasing === border.id ? "..." : userPoints < border.price ? "Insufficient" : "Purchase"}
                           </button>
                         )}

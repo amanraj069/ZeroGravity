@@ -91,18 +91,18 @@ export default function ActivityGraph({
     fetchActivityData();
   }, [fetchActivityData]);
 
-  // Scroll to end on mobile when data loads
+  // Scroll to end when data loads (show latest activity)
   useEffect(() => {
     if (!loading && activityData && scrollContainerRef.current) {
-      const isMobile = window.innerWidth < 640;
-      if (isMobile) {
-        const scroll = scrollContainerRef.current;
-        setTimeout(() => {
-          if (!scroll) return;
-          const maxScroll = scroll.scrollWidth - scroll.clientWidth;
-          scroll.scrollLeft = Math.max(maxScroll, 0);
-        }, 100);
-      }
+      const scroll = scrollContainerRef.current;
+      setTimeout(() => {
+        if (!scroll) return;
+        const maxScroll = scroll.scrollWidth - scroll.clientWidth;
+        scroll.scrollTo({
+          left: Math.max(maxScroll, 0),
+          behavior: "smooth",
+        });
+      }, 100);
     }
   }, [loading, activityData]);
 

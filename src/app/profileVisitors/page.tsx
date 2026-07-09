@@ -209,20 +209,22 @@ export default function ProfileVisitors() {
                                   56,
                                 )}
                               >
-                                {visitor.profilePicture ? (
-                                  <Image
-                                    src={visitor.profilePicture}
-                                    alt={`${visitor.firstName} ${visitor.lastName}`}
-                                    width={56}
-                                    height={56}
-                                    className="w-full h-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
-                                    {visitor.firstName.charAt(0).toUpperCase()}
-                                    {visitor.lastName.charAt(0).toUpperCase()}
-                                  </div>
-                                )}
+                                <div className="relative z-20 w-full h-full flex items-center justify-center overflow-hidden bg-gray-200 dark:bg-gray-700">
+                                  {visitor.profilePicture ? (
+                                    <Image
+                                      src={visitor.profilePicture}
+                                      alt={`${visitor.firstName} ${visitor.lastName}`}
+                                      width={56}
+                                      height={56}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
+                                      {visitor.firstName.charAt(0).toUpperCase()}
+                                      {visitor.lastName.charAt(0).toUpperCase()}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                               <div className="min-w-0">
                                 <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
