@@ -1,3 +1,6 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { getBorderStyle, getAnimationClass } from "@/services/shopService";
 import { Border } from "@/services/shopService";
@@ -30,8 +33,29 @@ export default function BorderPreview({
   className = "",
 }: BorderPreviewProps) {
   // Calculate size in pixels for star scaling
-  const sizeInPx = size === "sm" ? 112 : size === "md" ? 144 : 192;
-  const borderStyle = getBorderStyle(border.id, sizeInPx);
+  // Calculate initial size in pixels for star scaling
+  const initialSizeInPx = size === "sm" ? 112 : size === "md" ? 144 : 192;
+  const [currentSizeInPx, setCurrentSizeInPx] = useState(initialSizeInPx);
+
+  useEffect(() => {
+    // If it's used with the specific responsive classes from the shop
+    if (className.includes("w-20")) {
+      const handleResize = () => {
+        if (window.innerWidth < 640) {
+          setCurrentSizeInPx(80); // w-20
+        } else if (window.innerWidth < 768) {
+          setCurrentSizeInPx(112); // sm:w-28
+        } else {
+          setCurrentSizeInPx(144); // md:w-36
+        }
+      };
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [className]);
+
+  const borderStyle = getBorderStyle(border.id, currentSizeInPx);
   const animationClass = border.animated ? getAnimationClass(border.id) : "";
   // Only use sizeClass if className doesn't contain width/height overrides
   const hasSizeOverride = className.includes("w-") || className.includes("h-");
@@ -42,7 +66,7 @@ export default function BorderPreview({
       className={`${sizeClass} aspect-square overflow-hidden rounded-xl ${animationClass} ${className}`}
       style={borderStyle}
     >
-      <div className="w-full h-full overflow-hidden rounded-lg">
+      <div className="w-full h-full overflow-hidden rounded-lg relative z-20">
         {profilePicture ? (
           <Image
             src={profilePicture}

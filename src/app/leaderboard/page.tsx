@@ -304,32 +304,34 @@ export default function Leaderboard() {
                             {entry.user ? (
                               <div className="flex items-center gap-3 sm:gap-8">
                                 <div
-                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
+                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden rounded-xl flex-shrink-0 ${getAnimationClass(
                                     entry.user.equippedBorder || "",
-                                  )}`}
+                                  )} thin-border-override`}
                                   style={getBorderStyle(
                                     entry.user.equippedBorder || "default",
                                     56,
                                   )}
                                 >
-                                  {entry.user.profilePicture ? (
-                                    <Image
-                                      src={entry.user.profilePicture}
-                                      alt={`${entry.user.firstName} ${entry.user.lastName}`}
-                                      width={56}
-                                      height={56}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  ) : (
-                                    <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
-                                      {entry.user.firstName
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                      {entry.user.lastName
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                    </div>
-                                  )}
+                                  <div className="relative z-20 w-full h-full overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    {entry.user.profilePicture ? (
+                                      <Image
+                                        src={entry.user.profilePicture}
+                                        alt={`${entry.user.firstName} ${entry.user.lastName}`}
+                                        width={56}
+                                        height={56}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
+                                        {entry.user.firstName
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                        {entry.user.lastName
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">
@@ -454,32 +456,34 @@ export default function Leaderboard() {
                             {entry.user ? (
                               <div className="flex items-center gap-3 sm:gap-8">
                                 <div
-                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 ${getAnimationClass(
+                                  className={`w-10 h-10 sm:w-14 sm:h-14 overflow-hidden rounded-xl flex-shrink-0 ${getAnimationClass(
                                     entry.user.equippedBorder || "",
-                                  )}`}
+                                  )} thin-border-override`}
                                   style={getBorderStyle(
                                     entry.user.equippedBorder || "default",
                                     56,
                                   )}
                                 >
-                                  {entry.user.profilePicture ? (
-                                    <Image
-                                      src={entry.user.profilePicture}
-                                      alt={`${entry.user.firstName} ${entry.user.lastName}`}
-                                      width={56}
-                                      height={56}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  ) : (
-                                    <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
-                                      {entry.user.firstName
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                      {entry.user.lastName
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                    </div>
-                                  )}
+                                  <div className="relative z-20 w-full h-full overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                    {entry.user.profilePicture ? (
+                                      <Image
+                                        src={entry.user.profilePicture}
+                                        alt={`${entry.user.firstName} ${entry.user.lastName}`}
+                                        width={56}
+                                        height={56}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="text-xs sm:text-base font-light text-gray-400 dark:text-gray-500">
+                                        {entry.user.firstName
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                        {entry.user.lastName
+                                          .charAt(0)
+                                          .toUpperCase()}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                                 <div className="min-w-0">
                                   <div className="text-xs sm:text-sm font-medium text-black dark:text-white truncate">

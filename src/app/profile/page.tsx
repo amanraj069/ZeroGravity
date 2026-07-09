@@ -78,6 +78,22 @@ export default function Profile() {
   const [displayBadgeId, setDisplayBadgeId] = useState<string | null>(null);
   const [showDisplayBadgePicker, setShowDisplayBadgePicker] = useState(false);
   const displayBadgePickerRef = useRef<HTMLDivElement>(null);
+  const [avatarSize, setAvatarSize] = useState(128);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setAvatarSize(96); // mobile: w-24
+      } else if (window.innerWidth < 1024) {
+        setAvatarSize(128); // tablet: md:w-32
+      } else {
+        setAvatarSize(160); // desktop: lg:w-40
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Lock background scroll when border picker is open
   useEffect(() => {
@@ -450,25 +466,27 @@ export default function Profile() {
                 {/* Profile Picture */}
                 <div className="relative group flex-shrink-0 ml-1 lg:ml-6">
                   <div
-                    className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
+                    className={`w-24 h-24 md:w-32 lg:w-40 md:h-32 lg:h-40 overflow-hidden bg-transparent flex items-center justify-center shrink-0 rounded-xl ${getAnimationClass(
                       user.equippedBorder || "",
                     )}`}
-                    style={getBorderStyle(user.equippedBorder || "default")}
+                    style={getBorderStyle(user.equippedBorder || "default", avatarSize)}
                   >
-                    {user.profilePicture ? (
-                      <Image
-                        src={user.profilePicture}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        width={160}
-                        height={160}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="text-3xl md:text-5xl font-light text-gray-400 dark:text-gray-500">
-                        {user.firstName.charAt(0).toUpperCase()}
-                        {user.lastName.charAt(0).toUpperCase()}
-                      </div>
-                    )}
+                    <div className="relative z-20 w-full h-full flex items-center justify-center overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700">
+                      {user.profilePicture ? (
+                        <Image
+                          src={user.profilePicture}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          width={160}
+                          height={160}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-3xl md:text-5xl font-light text-gray-400 dark:text-gray-500">
+                          {user.firstName.charAt(0).toUpperCase()}
+                          {user.lastName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={handleImageClick}

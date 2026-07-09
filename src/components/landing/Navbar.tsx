@@ -146,28 +146,30 @@ function Navbar() {
                       className="group cursor-pointer flex-shrink-0"
                     >
                       <div
-                        className={`w-16 h-16 rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${getAnimationClass(
+                        className={`w-16 h-16 rounded-xl overflow-hidden bg-transparent flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${getAnimationClass(
                           user.equippedBorder || "",
                         )}`}
                         style={getBorderStyle(
                           user.equippedBorder || "default",
-                          64,
+                          56,
                         )}
                       >
-                        {user.profilePicture ? (
-                          <Image
-                            src={user.profilePicture}
-                            alt={`${user.firstName || ""} ${user.lastName || ""}`}
-                            width={64}
-                            height={64}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="text-xl font-light text-gray-500 dark:text-gray-400">
-                            {(user.firstName?.charAt(0) || user.username?.charAt(0) || "").toUpperCase()}
-                            {(user.lastName?.charAt(0) || "").toUpperCase()}
-                          </div>
-                        )}
+                        <div className="relative z-20 w-full h-full flex items-center justify-center overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700">
+                          {user.profilePicture ? (
+                            <Image
+                              src={user.profilePicture}
+                              alt={`${user.firstName || ""} ${user.lastName || ""}`}
+                              width={64}
+                              height={64}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="text-xl font-light text-gray-500 dark:text-gray-400">
+                              {(user.firstName?.charAt(0) || user.username?.charAt(0) || "").toUpperCase()}
+                              {(user.lastName?.charAt(0) || "").toUpperCase()}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </Link>
                     <div className="flex flex-col items-start overflow-hidden">
