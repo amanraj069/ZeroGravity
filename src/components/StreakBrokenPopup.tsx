@@ -35,11 +35,17 @@ export default function StreakBrokenPopup({
     try {
       const result = await consumeTimeTravelTicket(selectedDate);
       if (result?.success) {
+        await onRestoreSuccess();
+        // Notify StreakIcon in navbar to refresh
+        window.dispatchEvent(new Event("streak-updated"));
         if (result.data?.remainingGap === 0) {
+          // Fully restored — show success animation then close
           setRestored(true);
           setTimeout(() => onClose(), 2500);
+        } else {
+          // Partially bridged — close popup; parent will re-check and re-show if needed
+          onClose();
         }
-        await onRestoreSuccess();
       } else setError(result?.message || "Failed to restore streak");
     } catch {
       setError("Network error occurred.");
