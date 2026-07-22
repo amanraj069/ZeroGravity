@@ -106,10 +106,10 @@ export default function ShopPage() {
       const r = await consumeTimeTravelTicket(date);
       if (r?.success) {
         setMessage({ type: "success", text: r.message });
+        setShowCalendar(false);
         await refreshPoints();
         await fetchInventory();
-        setShowCalendar(false);
-        // Notify StreakIcon in navbar to refresh immediately
+        // Notify StreakIcon in navbar to refresh after data is up-to-date
         window.dispatchEvent(new Event("streak-updated"));
       }
       else setMessage({ type: "error", text: r?.message || "Failed" });
