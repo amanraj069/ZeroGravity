@@ -486,51 +486,22 @@ export default function Profile() {
                           {user.lastName.charAt(0).toUpperCase()}
                         </div>
                       )}
+                      {/* Semicircle Edit Profile Picture Button in Bottom-Right */}
+                      <button
+                        onClick={handleImageClick}
+                        disabled={uploading}
+                        className="absolute bottom-0 right-0 w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 bg-black/80 hover:bg-black text-white rounded-tl-full flex items-center justify-center pl-0.5 pt-0.5 sm:pl-1.5 sm:pt-1.5 md:pl-2 md:pt-2 transition-all shadow-md backdrop-blur-sm border-t border-l border-white/20 z-30 cursor-pointer disabled:opacity-50"
+                        title="Edit profile picture"
+                        aria-label="Edit profile picture"
+                      >
+                        {uploading ? (
+                          <div className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Pencil className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-white" />
+                        )}
+                      </button>
                     </div>
                   </div>
-                  <button
-                    onClick={handleImageClick}
-                    disabled={uploading}
-                    className="absolute bottom-1 right-1 w-6 h-6 md:w-7 md:h-7 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 shadow-md"
-                    title="Edit profile picture"
-                  >
-                    {uploading ? (
-                      <svg
-                        className="animate-spin h-3 w-3 md:h-3 md:w-3"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        className="h-3 w-3 md:h-3 md:w-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
-                    )}
-                  </button>
                   <input
                     ref={fileInputRef}
                     type="file"

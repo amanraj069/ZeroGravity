@@ -173,19 +173,18 @@ export default function PracticeQuizInsightsPage() {
               </div>
             </div>
 
+            {(() => {
+              const preferredCategory =
+                quiz.categories?.find((c: string) => c !== "General") ||
+                quiz.categories?.[0] ||
+                "General";
+              const progressUrl = `/dashboard/quizzes/practice/progress?category=${encodeURIComponent(preferredCategory)}`;
+              return (
             <div className="relative group shrink-0 order-2 sm:order-3 self-start sm:self-auto mt-0.5 sm:mt-0">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 opacity-50 blur group-hover:opacity-80 animate-pulse transition duration-500"></div>
               <button
-                onClick={() =>
-                  handleNavigate(
-                    `/dashboard/quizzes/practice/progress?category=${encodeURIComponent(quiz.categories?.[0] || "General")}`,
-                  )
-                }
-                onMouseEnter={() =>
-                  router.prefetch(
-                    `/dashboard/quizzes/practice/progress?category=${encodeURIComponent(quiz.categories?.[0] || "General")}`,
-                  )
-                }
+                onClick={() => handleNavigate(progressUrl)}
+                onMouseEnter={() => router.prefetch(progressUrl)}
                 disabled={navigatingTo !== null}
                 className="relative flex items-center justify-center gap-1.5 bg-black text-white dark:bg-white dark:text-black px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-medium rounded-lg hover:bg-gray-900 dark:hover:bg-gray-100 transition-colors whitespace-nowrap disabled:opacity-70"
               >
@@ -198,6 +197,8 @@ export default function PracticeQuizInsightsPage() {
                 <span className="sm:hidden">AI Insights</span>
               </button>
             </div>
+              );
+            })()}
 
             {attempts.length > 1 && (
               <div className="order-3 sm:order-2 flex bg-gray-200/50 dark:bg-[#15151a] p-1.5 rounded-xl shadow-inner border border-gray-200/50 dark:border-gray-800/50 flex-1 sm:flex-none overflow-x-auto hide-scrollbar w-full sm:w-auto mt-1 sm:mt-0">
@@ -599,7 +600,7 @@ export default function PracticeQuizInsightsPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 w-full sm:w-auto mt-3 sm:mt-0">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto mt-3 sm:mt-0">
                       <button
                         onClick={() => router.push(`/dashboard/quizzes/practice/${quizId}`)}
                         className="shrink-0 flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-[#1c1c21] hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 text-sm font-medium rounded-lg transition-colors w-full sm:w-auto justify-center"
