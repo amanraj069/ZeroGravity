@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { generatePracticeQuiz, getPracticeQuizQuota, getPracticeAnalytics, QuotaData } from "@/services/practiceQuizService";
 import { BackButton } from "@/components/BackButton";
-import { Sparkles, AlertCircle, Plus, X } from "lucide-react";
+import { Sparkles, AlertCircle, Plus, X, Zap, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PracticeGenerateSkeleton } from "@/components/quizzes/PracticeGenerateSkeleton";
 
@@ -82,6 +82,8 @@ function GeneratePracticeQuizContent() {
   const [quotaLoading, setQuotaLoading] = useState(true);
   const [quota, setQuota] = useState<QuotaData | null>(null);
   const [existingCategories, setExistingCategories] = useState<string[]>([]);
+  const [useAgent, setUseAgent] = useState(false);
+  const [showAgentInfo, setShowAgentInfo] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -157,15 +159,22 @@ function GeneratePracticeQuizContent() {
       return;
     }
 
-    if (quota && quota.remaining <= 0) {
-      showToast("Daily limit reached. Try again tomorrow.", "error");
+    // Agent mode costs 2 credits
+    const creditCost = useAgent ? 2 : 1;
+    if (quota && quota.remaining < creditCost) {
+      showToast(
+        useAgent
+          ? "Not enough credits for Agent mode (requires 2). Switch to normal mode or try again tomorrow."
+          : "Daily limit reached. Try again tomorrow.",
+        "error",
+      );
       return;
     }
 
     setLoading(true);
     try {
       const effectiveTime = (difficulty === "hard" || difficulty === "god") ? 0 : timePerQuestion;
-      const response = await generatePracticeQuiz(topic, categories, difficulty, effectiveTime, numberOfQuestions, quizName);
+      const response = await generatePracticeQuiz(topic, categories, difficulty, effectiveTime, numberOfQuestions, quizName, useAgent);
       if (response.success) {
         showToast("Practice quiz generated successfully!", "success");
         router.push(`/dashboard/quizzes/practice/${response.quizId}`);
@@ -192,17 +201,145 @@ function GeneratePracticeQuizContent() {
     <div className="min-h-screen flex flex-col bg-transparent">
       <main className="flex-1 py-8 sm:py-12">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-4 mb-4 sm:mb-8">
-            <BackButton />
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white">
-                Generate AI Quiz
-              </h1>
-              <p className="hidden sm:block text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Enter a topic to generate a personalized practice quiz.
-              </p>
+          <div className="flex items-center justify-between mb-4 sm:mb-8">
+            <div className="flex items-center gap-4">
+              <BackButton />
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-light text-black dark:text-white">
+                  Generate AI Quiz
+                </h1>
+                <p className="hidden sm:block text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Enter a topic to generate a personalized practice quiz.
+                </p>
+              </div>
+            </div>
+
+            {/* Agent Mode Toggle — inline in title bar */}
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <span className={`text-xs sm:text-sm font-medium transition-colors duration-300 ${
+                  useAgent ? "text-red-500 dark:text-red-400" : "text-gray-500 dark:text-gray-400"
+                }`}>
+                  Agent Mode
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowAgentInfo(true)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  aria-label="What is Agent Mode?"
+                >
+                  <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </button>
+              </div>
+
+              {/* Toggle Switch */}
+              <button
+                type="button"
+                onClick={() => setUseAgent(!useAgent)}
+                disabled={isDisabled}
+                className="relative inline-flex items-center group cursor-pointer focus:outline-none"
+                aria-label="Toggle Agent Mode"
+              >
+                {useAgent && (
+                  <div className="absolute -inset-1.5 rounded-full bg-red-500/25 dark:bg-red-500/30 blur-sm animate-pulse pointer-events-none" />
+                )}
+                <div className={`relative w-11 h-6 rounded-full p-[3px] transition-all duration-300 ease-in-out ${
+                  useAgent
+                    ? "bg-gradient-to-r from-red-600 via-red-500 to-rose-500 shadow-[0_0_16px_rgba(239,68,68,0.5)]"
+                    : "bg-gray-300 dark:bg-gray-600"
+                }`}>
+                  <div className={`w-[18px] h-[18px] rounded-full bg-white shadow-md transition-transform duration-300 ease-in-out ${
+                    useAgent
+                      ? "translate-x-5 shadow-[0_0_8px_rgba(239,68,68,0.4)]"
+                      : "translate-x-0"
+                  }`} />
+                </div>
+              </button>
             </div>
           </div>
+
+          {/* Agent Info Modal */}
+          <AnimatePresence>
+            {showAgentInfo && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+                onClick={() => setShowAgentInfo(false)}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 max-w-md w-full overflow-hidden"
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-5 sm:px-6 pt-5 sm:pt-6 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10 dark:bg-red-500/20">
+                        <Zap className="w-4 h-4 text-red-500 dark:text-red-400 fill-red-500 dark:fill-red-400" />
+                      </div>
+                      <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white">Agent Mode</h3>
+                    </div>
+                    <button
+                      onClick={() => setShowAgentInfo(false)}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div className="px-5 sm:px-6 pb-5 sm:pb-6 space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                      Agent Mode uses a <strong>self-correcting AI pipeline</strong> powered by LangGraph to generate higher-quality quiz questions.
+                    </p>
+
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">How it works</h4>
+                      <div className="space-y-2">
+                        {[
+                          { step: "1", title: "Plans", desc: "Breaks your topic into diverse sub-concepts" },
+                          { step: "2", title: "Generates", desc: "Drafts questions covering each concept" },
+                          { step: "3", title: "Validates", desc: "Independently fact-checks every answer" },
+                          { step: "4", title: "Self-Corrects", desc: "Rewrites any flawed questions automatically" },
+                        ].map((item) => (
+                          <div key={item.step} className="flex items-start gap-3">
+                            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500/10 dark:bg-red-500/20 text-red-500 dark:text-red-400 text-[10px] font-bold shrink-0 mt-0.5">
+                              {item.step}
+                            </div>
+                            <div>
+                              <span className="text-sm font-medium text-black dark:text-white">{item.title}</span>
+                              <span className="text-sm text-gray-500 dark:text-gray-400"> — {item.desc}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-gray-100 dark:border-gray-700 space-y-2">
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Differences from standard</h4>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2.5">
+                          <p className="text-gray-500 dark:text-gray-400 mb-0.5">Standard Mode</p>
+                          <p className="font-semibold text-black dark:text-white">1 credit · ~3s</p>
+                          <p className="text-gray-500 dark:text-gray-400 mt-1">Single AI call</p>
+                        </div>
+                        <div className="bg-red-50 dark:bg-red-950/30 rounded-lg p-2.5 border border-red-100 dark:border-red-900/30">
+                          <p className="text-red-500/80 dark:text-red-400/80 mb-0.5">Agent Mode</p>
+                          <p className="font-semibold text-red-600 dark:text-red-400">2 credits · ~8s</p>
+                          <p className="text-red-500/70 dark:text-red-400/70 mt-1">Multi-step verified</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -461,9 +598,14 @@ function GeneratePracticeQuizContent() {
               <div className="pt-6 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
                 <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   {quota && (
-                    <span className="flex flex-col sm:flex-row sm:items-center sm:gap-1">
+                    <span className="flex items-center gap-1.5 flex-wrap">
                       <span>Daily Generations:</span>
                       <strong className="text-black dark:text-white text-sm sm:text-base">{quota.used}/{quota.limit}</strong>
+                      {useAgent && (
+                        <span className="text-red-500 dark:text-red-400 text-sm sm:text-base font-semibold ml-0.5">
+                          (2 Credits / quiz)
+                        </span>
+                      )}
                     </span>
                   )}
                 </div>
@@ -476,14 +618,18 @@ function GeneratePracticeQuizContent() {
                   {loading ? (
                     <>
                       <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white dark:border-black border-t-transparent animate-spin rounded-full"></div>
-                      <span className="hidden sm:inline">Generating...</span>
-                      <span className="sm:hidden">Generating</span>
+                      <span className="hidden sm:inline">{useAgent ? "Agent Generating..." : "Generating..."}</span>
+                      <span className="sm:hidden">{useAgent ? "Agent..." : "Generating"}</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-                      <span className="hidden sm:inline">Generate Quiz</span>
-                      <span className="sm:hidden">Generate</span>
+                      {useAgent ? (
+                        <Zap className="w-4 h-4 sm:w-5 sm:h-5 fill-white dark:fill-black" />
+                      ) : (
+                        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+                      )}
+                      <span className="hidden sm:inline">{useAgent ? "Generate with Agent" : "Generate Quiz"}</span>
+                      <span className="sm:hidden">{useAgent ? "Agent" : "Generate"}</span>
                     </>
                   )}
                 </button>

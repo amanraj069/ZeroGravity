@@ -607,7 +607,7 @@ export default function PracticeProgressPage() {
                     ) : null}
                   </div>
                 </div>
-                <div className="h-[200px] w-full">
+                <div className="h-[250px] w-full">
                   {chartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
@@ -727,14 +727,14 @@ export default function PracticeProgressPage() {
                 <h3 className="text-xs sm:text-base font-medium mb-4">
                   Attempts by Category
                 </h3>
-                <div className="h-[200px] w-full flex flex-col justify-center">
+                <div className="h-[250px] w-full flex flex-col justify-center">
                   {categoryStats.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={categoryStats}
-                          innerRadius={60}
-                          outerRadius={80}
+                          innerRadius="60%"
+                          outerRadius="80%"
                           paddingAngle={4}
                           dataKey="totalAttempts"
                           nameKey="category"
@@ -851,7 +851,7 @@ export default function PracticeProgressPage() {
                   </div>
                 </div>
 
-                <div className="h-[200px] w-full">
+                <div className="h-[250px] w-full">
                   {chartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart

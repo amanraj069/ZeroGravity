@@ -56,6 +56,7 @@ export const generatePracticeQuiz = async (
   timePerQuestion: number,
   numberOfQuestions: number,
   name: string = "",
+  useAgent: boolean = false,
 ) => {
   const response = await apiCallWithAuth(
     `${API_BASE_URL}/api/practice-quizzes/generate`,
@@ -68,6 +69,7 @@ export const generatePracticeQuiz = async (
         difficulty,
         timePerQuestion,
         numberOfQuestions,
+        useAgent,
       }),
     },
   );
