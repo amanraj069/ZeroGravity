@@ -21,6 +21,8 @@ export interface LeaderboardResponse {
   weekEnd: string;
   entries: LeaderboardEntry[];
   notEligibleEntries: LeaderboardEntry[];
+  // Total 0-point users; notEligibleEntries only lists the most recent ones
+  notEligibleCount?: number;
 }
 
 class LeaderboardService {

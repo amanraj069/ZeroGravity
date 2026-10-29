@@ -26,6 +26,7 @@ export default function Leaderboard() {
     weekEnd: string;
     entries: LeaderboardEntry[];
     notEligibleEntries: LeaderboardEntry[];
+    notEligibleCount?: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -408,7 +409,7 @@ export default function Leaderboard() {
             >
               <h2 className="text-xl sm:text-2xl font-light text-black dark:text-white my-6 tracking-tight">
                 Not <span className="font-normal italic">Eligible</span>
-                <span className="ml-2 text-lg sm:text-xl text-gray-400 dark:text-gray-500 font-normal">({leaderboard.notEligibleEntries.length})</span>
+                <span className="ml-2 text-lg sm:text-xl text-gray-400 dark:text-gray-500 font-normal">({leaderboard.notEligibleCount ?? leaderboard.notEligibleEntries.length})</span>
               </h2>
               <div className="border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-[#050710]/80 backdrop-blur-xl shadow-sm overflow-hidden transition-all duration-300 rounded-xl">
                 <div className="overflow-x-auto">
@@ -526,6 +527,12 @@ export default function Leaderboard() {
                   </table>
                 </div>
               </div>
+              {(leaderboard.notEligibleCount ?? 0) > leaderboard.notEligibleEntries.length && (
+                <p className="mt-4 text-center text-sm text-gray-400 dark:text-gray-500">
+                  Showing the {leaderboard.notEligibleEntries.length} newest of{" "}
+                  {leaderboard.notEligibleCount} members
+                </p>
+              )}
             </motion.div>
           )}
       </div>
