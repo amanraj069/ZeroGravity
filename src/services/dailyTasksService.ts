@@ -1,4 +1,4 @@
-import { apiCallWithAuth, API_ENDPOINTS } from "@/config/api";
+import { apiCallWithAuth, API_ENDPOINTS, idempotencyHeaders } from "@/config/api";
 
 export interface DailyTask {
   _id: string;
@@ -197,6 +197,7 @@ class DailyTasksService {
       {
         method: "PATCH",
         body,
+        headers: idempotencyHeaders(),
       }
     );
 

@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, apiCallWithAuth } from "@/config/api";
+import { API_ENDPOINTS, apiCallWithAuth, idempotencyHeaders } from "@/config/api";
 import { CSSProperties } from "react";
 
 export interface Border {
@@ -153,6 +153,7 @@ export const purchaseBorder = async (
   try {
     const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.PURCHASE, {
       method: "POST",
+      headers: idempotencyHeaders(),
       body: JSON.stringify({ borderId }),
     });
     const data = await response.json();
@@ -247,6 +248,7 @@ export const buyPowerUp = async (
   try {
     const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.BUY_POWERUP, {
       method: "POST",
+      headers: idempotencyHeaders(),
       body: JSON.stringify({ type }),
     });
     return await response.json();
@@ -264,6 +266,7 @@ export const consumeTimeTravelTicket = async (date: string): Promise<{
   try {
     const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.USE_TICKET, {
       method: "POST",
+      headers: idempotencyHeaders(),
       body: JSON.stringify({ date }),
     });
     return await response.json();
@@ -283,6 +286,7 @@ export const consumeFutureVoyager = async (
   try {
     const response = await apiCallWithAuth(API_ENDPOINTS.SHOP.USE_VOYAGER, {
       method: "POST",
+      headers: idempotencyHeaders(),
       body: JSON.stringify({ date }),
     });
     return await response.json();

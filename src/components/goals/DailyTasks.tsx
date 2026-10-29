@@ -95,6 +95,8 @@ const DailyTasks: React.FC = () => {
   const [showQuizDropdown, setShowQuizDropdown] = useState(false);
   const [selectedQuizTasks, setSelectedQuizTasks] = useState<string[] | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  // Task IDs with a toggle request in flight; extra clicks are ignored until it settles
+  const togglingRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -312,6 +314,9 @@ const DailyTasks: React.FC = () => {
   };
 
   const toggleTaskCompletion = async (taskId: string) => {
+    if (togglingRef.current.has(taskId)) return;
+    togglingRef.current.add(taskId);
+
     // Optimistic Update
     const previousTasks = [...tasks];
     const previousAnalytics = { ...analytics };
@@ -378,6 +383,8 @@ const DailyTasks: React.FC = () => {
       setAnalytics(previousAnalytics);
 
       showErrorToast(error);
+    } finally {
+      togglingRef.current.delete(taskId);
     }
   };
 

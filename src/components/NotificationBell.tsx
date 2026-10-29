@@ -8,6 +8,7 @@ import {
 } from "@/services/notificationService";
 import { useAuth } from "@/contexts/AuthContext";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { useVisibleInterval } from "@/hooks/useVisibleInterval";
 
 interface PointsAnimation {
   points: number;
@@ -44,10 +45,11 @@ export default function NotificationBell() {
 
   useEffect(() => {
     fetchNotifications();
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
   }, [fetchNotifications]);
+
+  // Notifications are rare (weekly rewards): check every minute, and only while
+  // the tab is visible. Opening the bell always fetches fresh data.
+  useVisibleInterval(fetchNotifications, 60000);
 
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -4,7 +4,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { getQuiz, leaderboard } from "@/services/quizzesService";
-import { getSocket, joinQuizRoom } from "@/services/socketClient";
+import {
+  getSocket,
+  joinQuizHostRoom,
+  joinQuizRoom,
+} from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { Quiz, QuizLeaderboardEntry } from "@/types/quiz";
 import { useAuth } from "@/contexts/AuthContext";
@@ -70,8 +74,10 @@ export default function LeaderboardPage() {
       }
     })();
 
-    // Start polling every 5 seconds for live updates
-    pollingRef.current = setInterval(fetchLeaderboard, 5000);
+    // Fallback polling only while the socket is down; live updates come over the socket
+    pollingRef.current = setInterval(() => {
+      if (!getSocket().connected) fetchLeaderboard();
+    }, 5000);
 
     return () => {
       if (pollingRef.current) {
@@ -84,16 +90,28 @@ export default function LeaderboardPage() {
     if (!quizId) return;
 
     joinQuizRoom(quizId);
+    joinQuizHostRoom(quizId);
     const s = getSocket();
 
+    // Votes arrive in bursts while a question is open: refetch at most once a second
+    let voteRefreshTimer: NodeJS.Timeout | null = null;
+    const onVotes = () => {
+      if (voteRefreshTimer) return;
+      voteRefreshTimer = setTimeout(() => {
+        voteRefreshTimer = null;
+        fetchLeaderboard();
+      }, 1000);
+    };
+
     // Refresh leaderboard on various events
-    s.on("votes:update", fetchLeaderboard);
+    s.on("votes:update", onVotes);
     s.on("question:timeup", fetchLeaderboard);
     s.on("question:pushed", fetchLeaderboard);
     s.on("quiz:ended", fetchLeaderboard);
 
     return () => {
-      s.off("votes:update", fetchLeaderboard);
+      if (voteRefreshTimer) clearTimeout(voteRefreshTimer);
+      s.off("votes:update", onVotes);
       s.off("question:timeup", fetchLeaderboard);
       s.off("question:pushed", fetchLeaderboard);
       s.off("quiz:ended", fetchLeaderboard);

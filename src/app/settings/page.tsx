@@ -526,6 +526,12 @@ export default function EditProfile() {
         if (editMode === "email" && data.user) {
           setUser(data.user);
         }
+        // A password change revokes older tokens; keep the fallback copy current
+        if (data.token) {
+          try {
+            localStorage.setItem("authToken", data.token);
+          } catch {}
+        }
         setEditMode("none");
         setNewEmail("");
         setNewPassword("");

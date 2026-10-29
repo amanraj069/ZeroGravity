@@ -8,6 +8,7 @@ import {
   DailyTasksAnalytics,
 } from "@/services/dailyTasksService";
 import Link from "next/link";
+import { useVisibleInterval } from "@/hooks/useVisibleInterval";
 
 export default function StreakIcon() {
   const { isLoggedIn, isLoading: authLoading } = useAuth();
@@ -35,19 +36,23 @@ export default function StreakIcon() {
   useEffect(() => {
     if (!authLoading && isLoggedIn) {
       fetchStreakInfo();
-      // Refresh streak info every 60 seconds
-      const interval = setInterval(fetchStreakInfo, 60000);
-      // Listen for streak-updated events from other components (e.g. DailyTasks, Shop)
+      // The streak only changes when the user acts, and those components fire
+      // streak-updated (e.g. DailyTasks, Shop), so no tight polling is needed
       const handleStreakUpdated = () => fetchStreakInfo();
       window.addEventListener("streak-updated", handleStreakUpdated);
       return () => {
-        clearInterval(interval);
         window.removeEventListener("streak-updated", handleStreakUpdated);
       };
     } else if (!authLoading) {
       setLoading(false);
     }
   }, [authLoading, isLoggedIn, fetchStreakInfo]);
+
+  // Safety net for changes no event covers (e.g. the day rolling over)
+  useVisibleInterval(
+    fetchStreakInfo,
+    !authLoading && isLoggedIn ? 10 * 60 * 1000 : null,
+  );
 
   // Close tooltip on click outside
   useEffect(() => {
