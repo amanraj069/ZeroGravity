@@ -319,4 +319,14 @@ export const apiCallWithAuth = async (
   return response;
 };
 
+// Header for a mutation that must take effect at most once. Retries of the same
+// call (e.g. the 401 retry above) reuse the key, so the backend replays the first
+// response instead of running the action again.
+export const idempotencyHeaders = (): Record<string, string> => ({
+  "Idempotency-Key":
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+});
+
 export default API_BASE_URL;
