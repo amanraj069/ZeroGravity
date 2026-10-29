@@ -350,14 +350,11 @@ export const goalsService = {
       method: "POST",
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to decompose goal: ${response.statusText}`);
-    }
+    // Error responses carry a readable message (e.g. the daily limit)
+    const data = await response.json().catch(() => null);
 
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.message || "Failed to decompose goal");
+    if (!response.ok || !data?.success) {
+      throw new Error(data?.message || `Failed to decompose goal: ${response.statusText}`);
     }
 
     return data.data;
