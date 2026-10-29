@@ -120,6 +120,11 @@ export const pushQuestion = async (quizId: string, index: number) => {
   return res.json();
 };
 
+// The rejoin token proves the request comes from this participant
+const participantHeaders = (rejoinToken: string) => ({
+  "X-Quiz-Session-Token": rejoinToken,
+});
+
 export const submitAnswer = async (
   quizId: string,
   payload: {
@@ -128,9 +133,11 @@ export const submitAnswer = async (
     selectedOptionKey: string;
     timeLeftSeconds: number;
   },
+  rejoinToken: string,
 ) => {
   const res = await apiCall(API_ENDPOINTS.QUIZZES.ANSWER(quizId), {
     method: "POST",
+    headers: participantHeaders(rejoinToken),
     body: JSON.stringify(payload),
   });
   return res.json();
@@ -165,8 +172,22 @@ export const endQuestion = async (quizId: string) => {
   return res.json();
 };
 
-export const leaveQuiz = async (quizId: string, quizUserId: string) => {
+export const leaveQuiz = async (
+  quizId: string,
+  quizUserId: string,
+  rejoinToken: string,
+) => {
   const res = await apiCall(API_ENDPOINTS.QUIZZES.LEAVE(quizId), {
+    method: "POST",
+    headers: participantHeaders(rejoinToken),
+    body: JSON.stringify({ quizUserId }),
+  });
+  return res.json();
+};
+
+// Host removing a participant: authorised by the host's own session
+export const removeParticipant = async (quizId: string, quizUserId: string) => {
+  const res = await apiCallWithAuth(API_ENDPOINTS.QUIZZES.LEAVE(quizId), {
     method: "POST",
     body: JSON.stringify({ quizUserId }),
   });

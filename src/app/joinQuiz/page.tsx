@@ -547,7 +547,7 @@ function JoinQuizContent() {
         questionId: currentQuestion.questionId,
         selectedOptionKey: key,
         timeLeftSeconds: timeLeft,
-      });
+      }, rejoinToken);
       if (!result?.success) {
         // If time is up on server side, don't revert - the answer window has closed
         if (result?.message?.toLowerCase().includes("time")) {
@@ -581,7 +581,7 @@ function JoinQuizContent() {
       // If we're currently in a quiz, attempt to remove from backend
       if (joined?.quizId && joined?.quizUserId) {
         try {
-          await leaveQuiz(joined.quizId, joined.quizUserId);
+          await leaveQuiz(joined.quizId, joined.quizUserId, rejoinToken);
         } catch (error) {
           console.error("Failed to leave quiz on backend:", error);
           // Continue with local cleanup even if backend call fails
