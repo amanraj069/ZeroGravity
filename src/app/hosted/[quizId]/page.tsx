@@ -8,7 +8,11 @@ import {
   pushQuestion,
   endQuestion,
 } from "@/services/quizzesService";
-import { getSocket, joinQuizRoom } from "@/services/socketClient";
+import {
+  getSocket,
+  joinQuizHostRoom,
+  joinQuizRoom,
+} from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { useAuth } from "@/contexts/AuthContext";
 import { Quiz, QuizParticipant } from "@/types/quiz";
@@ -75,6 +79,7 @@ export default function HostedQuizPage() {
   useEffect(() => {
     if (!quizId) return;
     joinQuizRoom(quizId);
+    joinQuizHostRoom(quizId);
     const s = getSocket();
 
     const onQuestion = (payload: {

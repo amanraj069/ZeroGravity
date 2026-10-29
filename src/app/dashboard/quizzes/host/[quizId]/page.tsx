@@ -14,7 +14,11 @@ import {
   unhostQuiz,
   getQuizSessions,
 } from "@/services/quizzesService";
-import { getSocket, joinQuizRoom } from "@/services/socketClient";
+import {
+  getSocket,
+  joinQuizHostRoom,
+  joinQuizRoom,
+} from "@/services/socketClient";
 import ZeroGravityLoading from "@/components/ZeroGravityLoading";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
@@ -115,6 +119,7 @@ export default function HostQuizPage() {
   useEffect(() => {
     if (!quizId) return;
     joinQuizRoom(quizId);
+    joinQuizHostRoom(quizId);
     const s = getSocket();
     const onJoined = (payload: {
       quizId: string;
@@ -136,8 +141,19 @@ export default function HostQuizPage() {
       });
     };
 
-    // Fallback: Poll for participants every 5 seconds whenever quiz is hosted.
+    const onLeft = (payload: { quizId: string; quizUserId: string }) => {
+      if (payload?.quizId !== quizId) return;
+      setParticipants((prev) =>
+        prev.filter((p) => p.quizUserId !== payload.quizUserId),
+      );
+    };
+
+    // Fallback: poll for participants whenever quiz is hosted. Joins and leaves
+    // arrive over the socket, so while it's connected this is only a slow safety net.
+    let pollTicks = 0;
     const pollParticipants = async () => {
+      pollTicks++;
+      if (s.connected && pollTicks % 6 !== 0) return;
       if (isHosted) {
         try {
           const p = await listParticipants(quizId);
@@ -239,8 +255,10 @@ export default function HostQuizPage() {
     s.on("quiz:unhosted", onUnhosted);
     s.on("participants:cleared", onParticipantsCleared);
     s.on("question:timeup", onQuestionTimeUp);
+    s.on("participant:left", onLeft);
     return () => {
       clearInterval(pollInterval);
+      s.off("participant:left", onLeft);
       s.off("quiz:started", onStarted);
       s.off("participant:joined", onJoined);
       s.off("question:pushed", onQuestion);
