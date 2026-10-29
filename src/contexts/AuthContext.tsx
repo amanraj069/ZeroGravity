@@ -474,8 +474,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Logout function
   const logout = async () => {
     try {
+      // Send the fallback token too so the server can revoke it, not just the cookie
+      const token = localStorage.getItem("authToken");
       await apiCall(API_ENDPOINTS.AUTH.LOGOUT, {
         method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
     } catch (error) {
       console.error("Logout error:", error);
