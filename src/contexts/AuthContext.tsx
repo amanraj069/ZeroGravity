@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { API_ENDPOINTS, apiCall, apiCallWithAuth } from "@/config/api";
+import { useVisibleInterval } from "@/hooks/useVisibleInterval";
 
 interface User {
   _id: string;
@@ -530,13 +531,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkSession();
   }, [checkSession]);
 
-  // Optional: Set up periodic session checking (silent — no loading state)
-  useEffect(() => {
-    if (isLoggedIn) {
-      const interval = setInterval(() => checkSession(true), 5 * 60 * 1000); // Check every 5 minutes
-      return () => clearInterval(interval);
-    }
-  }, [isLoggedIn, checkSession]);
+  // Periodic session check (silent — no loading state), only while the tab is visible
+  const silentSessionCheck = useCallback(() => checkSession(true), [checkSession]);
+  useVisibleInterval(silentSessionCheck, isLoggedIn ? 5 * 60 * 1000 : null);
 
   const value: AuthContextType = {
     user,
