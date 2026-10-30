@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The Docker image runs Next's self-contained server (only the files it needs,
+  // no full node_modules). Opt-in, so other hosts build exactly as before.
+  ...(process.env.NEXT_OUTPUT_STANDALONE === "1" && { output: "standalone" as const }),
   devIndicators: {
     // buildActivity: false,
     // buildActivityPosition: "bottom-right",

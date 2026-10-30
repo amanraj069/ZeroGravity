@@ -481,9 +481,9 @@ export default function HostQuizPage() {
                                 });
                                 if (!ok) return;
                                 try {
-                                  const { leaveQuiz } =
+                                  const { removeParticipant } =
                                     await import("@/services/quizzesService");
-                                  const res = await leaveQuiz(
+                                  const res = await removeParticipant(
                                     quizId,
                                     p.quizUserId,
                                   );
